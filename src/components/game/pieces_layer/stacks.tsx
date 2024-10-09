@@ -3,7 +3,7 @@ import {SidePiece, TopDownPiece} from "./pieces.js";
 import {ForwardedRef, forwardRef, MutableRefObject} from "react";
 import {Color} from "./color.ts";
 import {Direction} from "./direction.ts";
-import {HoverTracker} from "../HoverTracker.ts";
+import {HoverTracker} from "./HoverTracker.ts";
 import {assertForced} from "../../../guards.ts";
 
 interface StackProps {
@@ -19,7 +19,7 @@ export const TopDownStack = ({quantity, color, direction, originX, originY}: Sta
     const pieces = []
     for (let i = 0; i < quantity; ++i) {
         pieces.push(
-            <TopDownPiece color={color} cx={originX} cy={originY + i * dif * direction} style={{transition: "cy .2s"}} key={i}/>
+            <TopDownPiece color={color!} cx={originX} cy={originY + i * dif * direction} style={{transition: "cy .2s"}} key={i}/>
         )
     }
     return (
@@ -33,7 +33,7 @@ export const SideStack = ({quantity, color, direction, originX, originY}: StackP
     const pieces = []
     for (let i = 0; i < quantity; ++i) {
         pieces.push(
-            <SidePiece color={color} x={originX} y={originY + pieceHeight * i * direction} key={i}/>
+            <SidePiece color={color!} x={originX} y={originY + pieceHeight * i * direction} key={i}/>
         )
     }
     return (

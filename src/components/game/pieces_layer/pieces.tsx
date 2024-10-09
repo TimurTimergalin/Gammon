@@ -1,5 +1,5 @@
 import {pieceHeight} from "../size_constants";
-import {Color} from "./color.ts";
+import {Color, colorFill, colorStroke} from "./color.ts";
 
 const pieceWidth = 100
 const borderWidth = 2
@@ -7,7 +7,7 @@ const borderWidth = 2
 export function TopDownPiece({cx, cy, color, style}: {
     cx: number,
     cy: number,
-    color: Color | null,
+    color: Color,
     style?: object
 }) {
     return (
@@ -16,8 +16,8 @@ export function TopDownPiece({cx, cy, color, style}: {
             cy={cy}
             r={pieceWidth / 2 - borderWidth / 2}
             strokeWidth={borderWidth}
-            stroke={color === Color.WHITE ? "#cfc2b6" : "#3e3834"}
-            fill={color === Color.WHITE ? "#f5ede6" : "#302d2a"}
+            stroke={colorStroke(color)}
+            fill={colorFill(color)}
             style={style || {}}
         />
     )
@@ -26,7 +26,7 @@ export function TopDownPiece({cx, cy, color, style}: {
 export function SidePiece({x, y, color}: {
     x: number,
     y: number,
-    color: Color | null
+    color: Color
 }) {
     const borderWidth = 2
     const cornerShift = 5
@@ -42,8 +42,8 @@ export function SidePiece({x, y, color}: {
             a ${r} ${r} 0 0 1 ${r} ${-r}
             `}
             strokeWidth={borderWidth}
-            stroke={color === Color.WHITE ? "#cfc2b6" : "#3e3834"}
-            fill={color === Color.WHITE ? "#f5ede6" : "#302d2a"}
+            stroke={colorStroke(color)}
+            fill={colorFill(color)}
         />
     )
 }
