@@ -1,10 +1,8 @@
 import {pieceHeight, pieceWidth} from "../board_size_constants.ts";
 import {SidePiece, TopDownPiece} from "./pieces.js";
-import {ForwardedRef, forwardRef, MutableRefObject} from "react";
 import {Color} from "../color.ts";
 import {Direction} from "./direction.ts";
 import {HoverTracker} from "./HoverTracker.ts";
-import {assertForced} from "../../../guards.ts";
 
 interface StackProps {
     quantity: number,
@@ -19,7 +17,8 @@ export const TopDownStack = ({quantity, color, direction, originX, originY}: Sta
     const pieces = []
     for (let i = 0; i < quantity; ++i) {
         pieces.push(
-            <TopDownPiece color={color!} cx={originX} cy={originY + i * dif * direction} style={{transition: "cy .2s"}} key={i}/>
+            <TopDownPiece color={color!} cx={originX} cy={originY + i * dif * direction} style={{transition: "cy .2s"}}
+                          key={i}/>
         )
     }
     return (
@@ -43,16 +42,15 @@ export const SideStack = ({quantity, color, direction, originX, originY}: StackP
     )
 }
 
-export const HoverTrigger = forwardRef((
-    {originX, originY, width, height, index} : {
+export const HoverTrigger = (
+    {originX, originY, width, height, index, hoverTracker}: {
         originX: number,
         originY: number,
         width: number,
         height: number,
-        index: number
-    },
-    ref: ForwardedRef<HoverTracker>) => {
-    assertForced<MutableRefObject<HoverTracker>>(ref)
+        index: number,
+        hoverTracker: HoverTracker
+    }) => {
 
     return (
         <rect
@@ -61,9 +59,9 @@ export const HoverTrigger = forwardRef((
             width={width}
             height={height}
             fill={"#ffffff00"}
-            onMouseEnter={() => ref.current.hoveredIndex = index}
-            onMouseLeave={() => ref.current.hoveredIndex = null}
+            onMouseEnter={() => hoverTracker.hoveredIndex = index}
+            onMouseLeave={() => hoverTracker.hoveredIndex = null}
         />
     )
-})
+}
 

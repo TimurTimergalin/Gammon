@@ -9,7 +9,7 @@ import {
     storeHeight,
     triangleHeight
 } from "../board_size_constants.ts";
-import {RefObject, useCallback, useContext, useEffect, useRef, useState} from "react";
+import {useCallback, useContext, useEffect, useRef, useState} from "react";
 import {HoverTrigger, SideStack, TopDownStack} from "./stacks";
 import DragPiece from "./DragPiece.tsx";
 import {HoverTracker} from "./HoverTracker.ts";
@@ -98,7 +98,7 @@ function getStacks(getPositionProps: (i: number) => PositionState
     return stacks;
 }
 
-function getHoverTriggers(hoverTracker: RefObject<HoverTracker>) {
+function getHoverTriggers(hoverTracker: HoverTracker) {
     const triggers = []
 
     const triangleTriggerHeight = triangleHeight + pieceWidth / 2
@@ -112,7 +112,7 @@ function getHoverTriggers(hoverTracker: RefObject<HoverTracker>) {
                 width={pieceWidth}
                 height={triangleTriggerHeight}
                 index={i}
-                ref={hoverTracker}
+                hoverTracker={hoverTracker}
                 key={i}
             />,
             <HoverTrigger
@@ -121,7 +121,7 @@ function getHoverTriggers(hoverTracker: RefObject<HoverTracker>) {
                 width={pieceWidth}
                 height={triangleTriggerHeight}
                 index={12 + i}
-                ref={hoverTracker}
+                hoverTracker={hoverTracker}
                 key={12 + i}
             />
         )
@@ -134,7 +134,7 @@ function getHoverTriggers(hoverTracker: RefObject<HoverTracker>) {
             width={pieceWidth}
             height={storeHeight}
             index={24}
-            ref={hoverTracker}
+            hoverTracker={hoverTracker}
             key={24}
         />,
         <HoverTrigger
@@ -143,7 +143,7 @@ function getHoverTriggers(hoverTracker: RefObject<HoverTracker>) {
             width={pieceWidth}
             height={triangleTriggerHeight}
             index={25}
-            ref={hoverTracker}
+            hoverTracker={hoverTracker}
             key={25}
         />,
         <HoverTrigger
@@ -152,7 +152,7 @@ function getHoverTriggers(hoverTracker: RefObject<HoverTracker>) {
             width={pieceWidth}
             height={storeHeight}
             index={26}
-            ref={hoverTracker}
+            hoverTracker={hoverTracker}
             key={26}
         />,
         <HoverTrigger
@@ -161,7 +161,7 @@ function getHoverTriggers(hoverTracker: RefObject<HoverTracker>) {
             width={pieceWidth}
             height={storeHeight}
             index={27}
-            ref={hoverTracker}
+            hoverTracker={hoverTracker}
             key={27}
         />,
         <HoverTrigger
@@ -170,7 +170,7 @@ function getHoverTriggers(hoverTracker: RefObject<HoverTracker>) {
             width={pieceWidth}
             height={triangleTriggerHeight}
             index={28}
-            ref={hoverTracker}
+            hoverTracker={hoverTracker}
             key={28}
         />,
         <HoverTrigger
@@ -179,7 +179,7 @@ function getHoverTriggers(hoverTracker: RefObject<HoverTracker>) {
             width={pieceWidth}
             height={storeHeight}
             index={29}
-            ref={hoverTracker}
+            hoverTracker={hoverTracker}
             key={29}
         />
     )
@@ -199,7 +199,12 @@ interface DragStatus {
 const PiecesLayer = observer(() => {
     const gameState = useContext(GameStateContext)!
     const hoverTracker = useRef(new HoverTracker())
-    const [dragStatus, setDragStatus] = useState<DragStatus>({clickX: null, clickY: null, clickedIndex: null, pickedColor: null})
+    const [dragStatus, setDragStatus] = useState<DragStatus>({
+        clickX: null,
+        clickY: null,
+        clickedIndex: null,
+        pickedColor: null
+    })
 
 
     const getPositionProps = useCallback((i: number) => {
@@ -259,7 +264,10 @@ const PiecesLayer = observer(() => {
                     color: dragStatus.pickedColor
                 }]])
             } else {
-                gameState.setPlacementProperty([[releaseIndex, {quantity: releaseStack!.quantity + 1, color: dragStatus.pickedColor}]])
+                gameState.setPlacementProperty([[releaseIndex, {
+                    quantity: releaseStack!.quantity + 1,
+                    color: dragStatus.pickedColor
+                }]])
             }
 
             setDragStatus({clickX: null, clickY: null, clickedIndex: null, pickedColor: null})
@@ -275,7 +283,7 @@ const PiecesLayer = observer(() => {
     }, [gameState, dragStatus, getPositionProps]);
 
     const stacks = getStacks(getPositionProps);
-    const triggers = getHoverTriggers(hoverTracker)
+    const triggers = getHoverTriggers(hoverTracker.current)
 
     return (
         <>
