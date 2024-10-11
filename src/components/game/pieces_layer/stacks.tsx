@@ -1,7 +1,7 @@
-import {pieceHeight, pieceWidth} from "../size_constants.js";
+import {pieceHeight, pieceWidth} from "../board_size_constants.ts";
 import {SidePiece, TopDownPiece} from "./pieces.js";
 import {ForwardedRef, forwardRef, MutableRefObject} from "react";
-import {Color} from "./color.ts";
+import {Color} from "../color.ts";
 import {Direction} from "./direction.ts";
 import {HoverTracker} from "./HoverTracker.ts";
 import {assertForced} from "../../../guards.ts";

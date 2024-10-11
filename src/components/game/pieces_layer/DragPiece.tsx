@@ -1,10 +1,10 @@
 import {useMousePosition} from "../../../hooks";
-import {boardHeight, boardWidth, pieceWidth, svgOriginX, svgOriginY} from "../size_constants";
+import {boardHeight, boardWidth, pieceWidth, svgOriginX, svgOriginY} from "../board_size_constants.ts";
 import {TopDownPiece} from "./pieces";
 import {useContext} from "react";
 import {SvgClientRectContext} from "../../../contexts";
 import {assertNN} from "../../../guards.ts";
-import {Color} from "./color.ts";
+import {Color} from "../color.ts";
 
 function clientToSvg(clientX: number, clientY: number, clientRect: DOMRect): [number, number] {
     const svgX = svgOriginX + boardWidth * (clientX - clientRect.left) / (clientRect.width)

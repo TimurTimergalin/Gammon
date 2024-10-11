@@ -1,11 +1,13 @@
-import {boardHeight, boardWidth, svgOriginX, svgOriginY} from "./size_constants.js";
+import {boardHeight, boardWidth, svgOriginX, svgOriginY} from "./board_size_constants.ts";
 import {useCallback, useRef, useState} from "react";
 import {useLayoutMeasure} from "../../hooks";
 import {BoardLayer} from "./BoardLayer.js";
 import PiecesLayer from "./pieces_layer/PiecesLayer.js";
 import {SvgClientRectContext} from "../../contexts";
 import {GameState, GameStateContext} from "./GameState.js";
-import {Color} from "./pieces_layer/color.ts";
+import {Color} from "./color.ts";
+import {LayerStatus} from "./dice_layer/LayerStatus.ts";
+import DiceLayer from "./dice_layer/DiceLayer.tsx";
 
 export default function GameView() {
     const svgRef = useRef<SVGSVGElement | null>(null)
@@ -17,7 +19,21 @@ export default function GameView() {
     placement.set(11, {quantity: 15, color: Color.BLACK})
     placement.set(23, {quantity: 15, color: Color.WHITE})
 
-    const gameStateRef = useRef(new GameState(placement))
+    const dice1 = {
+        value: 3,
+        color: Color.WHITE,
+        usageStatus: LayerStatus.NONE,
+        unavailabilityStatus: LayerStatus.FULL
+    }
+
+    const dice2 = {
+        value: 4,
+        color: Color.BLACK,
+        usageStatus: LayerStatus.HALF,
+        unavailabilityStatus: LayerStatus.HALF
+    }
+
+    const gameStateRef = useRef(new GameState(placement, dice1, dice2))
 
     return (
         <SvgClientRectContext.Provider value={svgRect}>
@@ -28,6 +44,7 @@ export default function GameView() {
                     preserveAspectRatio={"xMinYMin"}
                     ref={svgRef}>
                     <BoardLayer/>
+                    <DiceLayer />
                     <PiecesLayer/>
                 </svg>
             </GameStateContext.Provider>

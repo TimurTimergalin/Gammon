@@ -8,7 +8,7 @@ export function colorFill(color: Color) {
 }
 
 export function colorStroke(color: Color) {
-    return color === Color.WHITE ? "#cfc2b6" : "#3e3834"
+    return color === Color.WHITE ? "#cfc2b6" : "#4d4641"
 }
 
 export function oppositeColor(color: Color) {

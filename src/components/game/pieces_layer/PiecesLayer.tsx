@@ -8,17 +8,17 @@ import {
     sideWidth,
     storeHeight,
     triangleHeight
-} from "../size_constants.js";
+} from "../board_size_constants.ts";
 import {RefObject, useCallback, useContext, useEffect, useRef, useState} from "react";
 import {HoverTrigger, SideStack, TopDownStack} from "./stacks";
 import DragPiece from "./DragPiece.tsx";
 import {HoverTracker} from "./HoverTracker.ts";
-import {GameStateContext, PositionProperty} from "../GameState";
+import {GameStateContext, PositionState} from "../GameState";
 import {observer} from "mobx-react-lite";
-import {Color} from "./color.ts";
+import {Color} from "../color.ts";
 import {Direction} from "./direction.ts";
 
-function getStacks(getPositionProps: (i: number) => PositionProperty
+function getStacks(getPositionProps: (i: number) => PositionState
 ) {
     const stacks = []
 

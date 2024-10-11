@@ -1,21 +1,33 @@
 import {makeAutoObservable} from "mobx";
 import {createContext} from "react";
-import {Color} from "./pieces_layer/color.ts";
+import {Color} from "./color.ts";
+import {LayerStatus} from "./dice_layer/LayerStatus.ts";
 
-export interface PositionProperty {
+export interface PositionState {
     quantity: number,
     color: Color | null
 }
 
-export type PiecePlacement = Map<number, PositionProperty>
-export type PiecePlacementEntry = [number, PositionProperty]
+export interface DiceState {
+    value: number,
+    color: Color,
+    usageStatus: LayerStatus,
+    unavailabilityStatus: LayerStatus
+}
+
+export type PiecePlacement = Map<number, PositionState>
+export type PiecePlacementEntry = [number, PositionState]
 
 export class GameState {
     piecePlacement: PiecePlacement
+    dice1: DiceState
+    dice2: DiceState
 
-    constructor(piecePlacement: PiecePlacement) {
+    constructor(piecePlacement: PiecePlacement, dice1: DiceState, dice2: DiceState) {
         makeAutoObservable(this)
         this.piecePlacement = piecePlacement
+        this.dice1 = dice1
+        this.dice2 = dice2
     }
 
     setPlacementProperty = (entries: PiecePlacementEntry[]) => {
