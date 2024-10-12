@@ -20,10 +20,10 @@ export type PiecePlacementEntry = [number, PositionState]
 
 export class GameState {
     piecePlacement: PiecePlacement
-    dice1: DiceState
-    dice2: DiceState
+    dice1: DiceState | null
+    dice2: DiceState | null
 
-    constructor(piecePlacement: PiecePlacement, dice1: DiceState, dice2: DiceState) {
+    constructor(piecePlacement: PiecePlacement, dice1: DiceState | null, dice2: DiceState | null) {
         makeAutoObservable(this)
         this.piecePlacement = piecePlacement
         this.dice1 = dice1

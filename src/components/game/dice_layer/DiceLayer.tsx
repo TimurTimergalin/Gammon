@@ -14,8 +14,22 @@ const DiceLayer = observer(() => {
 
         return (
             <>
-                <Dice x={dice1X} y={diceY} color={dice1.color} value={dice1.value} usageStatus={dice1.usageStatus} unavailabilityStatus={dice1.unavailabilityStatus}/>
-                <Dice x={dice2X} y={diceY} color={dice2.color} value={dice2.value} usageStatus={dice2.usageStatus} unavailabilityStatus={dice2.unavailabilityStatus}/>
+                {dice1 !== null && <Dice
+                    x={dice1X}
+                    y={diceY}
+                    color={dice1.color}
+                    value={dice1.value}
+                    usageStatus={dice1.usageStatus}
+                    unavailabilityStatus={dice1.unavailabilityStatus}
+                />}
+                {dice2 != null && <Dice
+                    x={dice2X}
+                    y={diceY}
+                    color={dice2.color}
+                    value={dice2.value}
+                    usageStatus={dice2.usageStatus}
+                    unavailabilityStatus={dice2.unavailabilityStatus}
+                />}
             </>
         )
     }
