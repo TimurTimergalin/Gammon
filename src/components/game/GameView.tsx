@@ -16,8 +16,15 @@ export default function GameView() {
     useLayoutMeasure(measureSvg)
 
     const placement = new Map()
-    placement.set(11, {quantity: 15, color: Color.BLACK})
-    placement.set(23, {quantity: 15, color: Color.WHITE})
+    placement.set(11, {quantity: 2, color: Color.WHITE})
+    placement.set(0, {quantity: 5, color: Color.WHITE})
+    placement.set(16, {quantity: 3, color: Color.WHITE})
+    placement.set(18, {quantity: 5, color: Color.WHITE})
+
+    placement.set(23, {quantity: 2, color: Color.BLACK})
+    placement.set(12, {quantity: 5, color: Color.BLACK})
+    placement.set(4, {quantity: 3, color: Color.BLACK})
+    placement.set(6, {quantity: 5, color: Color.BLACK})
 
     const dice1 = {
         value: 3,
