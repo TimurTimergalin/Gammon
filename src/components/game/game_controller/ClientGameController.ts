@@ -1,5 +1,5 @@
 import {GameController} from "./GameController.ts";
-import {DiceState, GameState} from "../GameState.ts";
+import {DiceState, GameState} from "../common/GameState.ts";
 import {Color, oppositeColor} from "../color.ts";
 import {LayerStatus} from "../dice_layer/LayerStatus.ts";
 

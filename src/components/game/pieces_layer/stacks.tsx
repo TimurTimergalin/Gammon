@@ -2,7 +2,6 @@ import {pieceHeight, pieceWidth} from "../board_size_constants.ts";
 import {SidePiece, TopDownPiece} from "./pieces.js";
 import {Color} from "../color.ts";
 import {Direction} from "./direction.ts";
-import {HoverTracker} from "./HoverTracker.ts";
 import styled, {css, keyframes} from "styled-components";
 
 interface StackProps {
@@ -80,29 +79,6 @@ export const SideStack = ({quantity, color, direction, originX, originY}: StackP
         <>
             {pieces}
         </>
-    )
-}
-
-export const HoverTrigger = (
-    {originX, originY, width, height, index, hoverTracker}: {
-        originX: number,
-        originY: number,
-        width: number,
-        height: number,
-        index: number,
-        hoverTracker: HoverTracker
-    }) => {
-
-    return (
-        <rect
-            x={originX}
-            y={originY}
-            width={width}
-            height={height}
-            fill={"#ffffff00"}
-            onMouseEnter={() => hoverTracker.hoveredIndex = index}
-            onMouseLeave={() => hoverTracker.hoveredIndex = null}
-        />
     )
 }
 

@@ -7,7 +7,7 @@ import {
     sideWidth,
     standHeight,
     storeHeight, triangleHeight
-} from "./board_size_constants.ts";
+} from "../board_size_constants.ts";
 
 const sideColor = "#9C6644"
 const boardColor = "#E6CCB2"

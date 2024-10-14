@@ -1,7 +1,7 @@
 import {makeAutoObservable} from "mobx";
 import {createContext} from "react";
-import {Color} from "./color.ts";
-import {LayerStatus} from "./dice_layer/LayerStatus.ts";
+import {Color} from "../color.ts";
+import {LayerStatus} from "../dice_layer/LayerStatus.ts";
 
 export interface PositionState {
     quantity: number,

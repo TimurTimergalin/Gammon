@@ -3,7 +3,7 @@ import {boardHeight, boardWidth} from "../board_size_constants.ts";
 import {diceWidth, gapBetweenDice} from "./dice_size_constants.ts";
 import {Dice} from "./dice.tsx";
 import {useContext} from "react";
-import {GameStateContext} from "../GameState.ts";
+import {GameStateContext} from "../common/GameState.ts";
 
 const DiceLayer = observer(() => {
         const {dice1, dice2} = useContext(GameStateContext)!

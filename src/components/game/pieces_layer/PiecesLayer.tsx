@@ -5,15 +5,13 @@ import {
     middleX,
     pieceHeight,
     pieceWidth,
-    sideWidth,
-    storeHeight,
-    triangleHeight
+    sideWidth
 } from "../board_size_constants.ts";
-import {useCallback, useContext, useEffect, useRef, useState} from "react";
-import {HoverTrigger, SideStack, TopDownStack} from "./stacks";
+import {useCallback, useContext, useEffect, useState} from "react";
+import {SideStack, TopDownStack} from "./stacks";
 import DragPiece from "./DragPiece.tsx";
-import {HoverTracker} from "./HoverTracker.ts";
-import {GameStateContext, PositionState} from "../GameState";
+import {HoverTrackerContext} from "../common/HoverTracker.ts";
+import {GameStateContext, PositionState} from "../common/GameState.ts";
 import {observer} from "mobx-react-lite";
 import {Color} from "../color.ts";
 import {Direction} from "./direction.ts";
@@ -98,95 +96,6 @@ function getStacks(getPositionProps: (i: number) => PositionState
     return stacks;
 }
 
-function getHoverTriggers(hoverTracker: HoverTracker) {
-    const triggers = []
-
-    const triangleTriggerHeight = triangleHeight + pieceWidth / 2
-
-    for (let i = 0; i < 12; ++i) {
-        const leftX = sideWidth + pieceWidth + sideWidth + i * pieceWidth + (i >= 6 ? sideWidth + gapWidth + sideWidth : 0)
-        triggers.push(
-            <HoverTrigger
-                originX={leftX}
-                originY={sideWidth}
-                width={pieceWidth}
-                height={triangleTriggerHeight}
-                index={i}
-                hoverTracker={hoverTracker}
-                key={i}
-            />,
-            <HoverTrigger
-                originX={leftX}
-                originY={boardHeight - sideWidth - triangleTriggerHeight}
-                width={pieceWidth}
-                height={triangleTriggerHeight}
-                index={12 + i}
-                hoverTracker={hoverTracker}
-                key={12 + i}
-            />
-        )
-    }
-
-    triggers.push(
-        <HoverTrigger
-            originX={sideWidth}
-            originY={sideWidth}
-            width={pieceWidth}
-            height={storeHeight}
-            index={24}
-            hoverTracker={hoverTracker}
-            key={24}
-        />,
-        <HoverTrigger
-            originX={middleX - pieceWidth / 2}
-            originY={sideWidth}
-            width={pieceWidth}
-            height={triangleTriggerHeight}
-            index={25}
-            hoverTracker={hoverTracker}
-            key={25}
-        />,
-        <HoverTrigger
-            originX={boardWidth - sideWidth - pieceWidth}
-            originY={sideWidth}
-            width={pieceWidth}
-            height={storeHeight}
-            index={26}
-            hoverTracker={hoverTracker}
-            key={26}
-        />,
-        <HoverTrigger
-            originX={sideWidth}
-            originY={boardHeight - sideWidth - storeHeight}
-            width={pieceWidth}
-            height={storeHeight}
-            index={27}
-            hoverTracker={hoverTracker}
-            key={27}
-        />,
-        <HoverTrigger
-            originX={middleX - pieceWidth / 2}
-            originY={boardHeight - sideWidth - triangleTriggerHeight}
-            width={pieceWidth}
-            height={triangleTriggerHeight}
-            index={28}
-            hoverTracker={hoverTracker}
-            key={28}
-        />,
-        <HoverTrigger
-            originX={boardWidth - sideWidth - pieceWidth}
-            originY={boardHeight - sideWidth - storeHeight}
-            width={pieceWidth}
-            height={storeHeight}
-            index={29}
-            hoverTracker={hoverTracker}
-            key={29}
-        />
-    )
-
-    return triggers
-}
-
 
 interface DragStatus {
     clickX: number | null
@@ -198,7 +107,7 @@ interface DragStatus {
 
 const PiecesLayer = observer(() => {
     const gameState = useContext(GameStateContext)!
-    const hoverTracker = useRef(new HoverTracker())
+    const hoverTracker = useContext(HoverTrackerContext)!
     const [dragStatus, setDragStatus] = useState<DragStatus>({
         clickX: null,
         clickY: null,
@@ -224,7 +133,7 @@ const PiecesLayer = observer(() => {
             if (e.button !== 0) {
                 return
             }
-            const clickedIndex = hoverTracker.current.hoveredIndex
+            const clickedIndex = hoverTracker.hoveredIndex
             if (clickedIndex === null) {
                 return
             }
@@ -251,7 +160,7 @@ const PiecesLayer = observer(() => {
                 return
             }
 
-            const releaseIndex = hoverTracker.current.hoveredIndex
+            const releaseIndex = hoverTracker.hoveredIndex
             const releaseStack = releaseIndex === null ? null : getPositionProps(releaseIndex)
             if (
                 releaseIndex === null ||
@@ -283,7 +192,6 @@ const PiecesLayer = observer(() => {
     }, [gameState, dragStatus, getPositionProps]);
 
     const stacks = getStacks(getPositionProps);
-    const triggers = getHoverTriggers(hoverTracker.current)
 
     return (
         <>
@@ -294,7 +202,6 @@ const PiecesLayer = observer(() => {
                     initClientX={dragStatus.clickX!}
                     initClientY={dragStatus.clickY!}
                 />}
-            {triggers}
         </>
     )
 })
