@@ -2,7 +2,7 @@ import {useMousePosition} from "../../../hooks";
 import {boardHeight, boardWidth, pieceWidth, svgOriginX, svgOriginY} from "../board_size_constants.ts";
 import {TopDownPiece} from "./pieces";
 import {useContext} from "react";
-import {SvgClientRectContext} from "../../../contexts";
+import {SvgClientRectContext} from "../svg_client_rect_context.ts";
 import {assertNN} from "../../../guards.ts";
 import {Color} from "../color.ts";
 

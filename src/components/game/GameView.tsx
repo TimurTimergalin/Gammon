@@ -3,12 +3,13 @@ import {useCallback, useRef, useState} from "react";
 import {useLayoutMeasure} from "../../hooks";
 import {BoardLayer} from "./board_layer/BoardLayer.tsx";
 import PiecesLayer from "./pieces_layer/PiecesLayer.js";
-import {SvgClientRectContext} from "../../contexts";
+import {SvgClientRectContext} from "./svg_client_rect_context.ts";
 import {GameState, GameStateContext} from "./common/GameState.ts";
 import {Color} from "./color.ts";
 import DiceLayer from "./dice_layer/DiceLayer.tsx";
 import {HoverLayer} from "./hover_layer/HoverLayer.tsx";
 import {HoverTracker, HoverTrackerContext} from "./common/HoverTracker.ts";
+import WithGlobals, {ContextWithInit} from "../../context_helpers.tsx";
 
 export default function GameView() {
     const svgRef = useRef<SVGSVGElement | null>(null)
@@ -28,26 +29,27 @@ export default function GameView() {
     placement.set(6, {quantity: 5, color: Color.BLACK})
 
 
+    const globals: ContextWithInit<[GameState | null, HoverTracker | null]> = [
+        [new GameState(placement, null, null), GameStateContext],
+        [new HoverTracker(), HoverTrackerContext]
+    ]
 
-    const gameStateRef = useRef(new GameState(placement, null, null))
-    const hoverTrackerRef = useRef(new HoverTracker())
+
 
     return (
         <SvgClientRectContext.Provider value={svgRect}>
-            <GameStateContext.Provider value={gameStateRef.current}>
-                <HoverTrackerContext.Provider value={hoverTrackerRef.current}>
-                    <svg
-                        viewBox={`${svgOriginX} ${svgOriginY} ${boardWidth} ${boardHeight}`}
-                        xmlns="http://www.w3.org/2000/svg"
-                        preserveAspectRatio={"xMinYMin"}
-                        ref={svgRef}>
-                        <BoardLayer/>
-                        <DiceLayer/>
-                        <PiecesLayer/>
-                        <HoverLayer/>
-                    </svg>
-                </HoverTrackerContext.Provider>
-            </GameStateContext.Provider>
+            <WithGlobals contexts={globals}>
+                <svg
+                    viewBox={`${svgOriginX} ${svgOriginY} ${boardWidth} ${boardHeight}`}
+                    xmlns="http://www.w3.org/2000/svg"
+                    preserveAspectRatio={"xMinYMin"}
+                    ref={svgRef}>
+                    <BoardLayer/>
+                    <DiceLayer/>
+                    <PiecesLayer/>
+                    <HoverLayer/>
+                </svg>
+            </WithGlobals>
         </SvgClientRectContext.Provider>
     )
 }
