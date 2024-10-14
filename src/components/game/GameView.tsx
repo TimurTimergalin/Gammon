@@ -6,7 +6,6 @@ import PiecesLayer from "./pieces_layer/PiecesLayer.js";
 import {SvgClientRectContext} from "../../contexts";
 import {GameState, GameStateContext} from "./GameState.js";
 import {Color} from "./color.ts";
-import {LayerStatus} from "./dice_layer/LayerStatus.ts";
 import DiceLayer from "./dice_layer/DiceLayer.tsx";
 
 export default function GameView() {
@@ -26,21 +25,9 @@ export default function GameView() {
     placement.set(4, {quantity: 3, color: Color.BLACK})
     placement.set(6, {quantity: 5, color: Color.BLACK})
 
-    const dice1 = {
-        value: 3,
-        color: Color.WHITE,
-        usageStatus: LayerStatus.NONE,
-        unavailabilityStatus: LayerStatus.FULL
-    }
 
-    const dice2 = {
-        value: 4,
-        color: Color.BLACK,
-        usageStatus: LayerStatus.HALF,
-        unavailabilityStatus: LayerStatus.HALF
-    }
 
-    const gameStateRef = useRef(new GameState(placement, dice1, dice2))
+    const gameStateRef = useRef(new GameState(placement, null, null))
 
     return (
         <SvgClientRectContext.Provider value={svgRect}>
