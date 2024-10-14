@@ -4,11 +4,11 @@ import {Color, colorFill, colorStroke} from "../color.ts";
 const pieceWidth = 100
 const borderWidth = 2
 
-export function TopDownPiece({cx, cy, color, style}: {
+export function TopDownPiece({cx, cy, color, className}: {
     cx: number,
     cy: number,
     color: Color,
-    style?: object
+    className?: string
 }) {
     return (
         <circle
@@ -18,7 +18,7 @@ export function TopDownPiece({cx, cy, color, style}: {
             strokeWidth={borderWidth}
             stroke={colorStroke(color)}
             fill={colorFill(color)}
-            style={style || {}}
+            className={className === undefined ? "" : className}
         />
     )
 }
