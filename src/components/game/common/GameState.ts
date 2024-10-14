@@ -38,6 +38,17 @@ export class GameState {
             }
         }
     }
+
+    getPositionProps = (i: number) => {
+        const res = this.piecePlacement.get(i)
+        if (res === undefined) {
+            return {quantity: 0, color: null}
+        }
+        if (res.quantity === 0) {
+            res.color = null
+        }
+        return res
+    }
 }
 
 export const GameStateContext = createContext<GameState | null>(null)

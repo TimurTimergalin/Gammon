@@ -1,100 +1,10 @@
-import {
-    boardHeight,
-    boardWidth,
-    gapWidth,
-    middleX,
-    pieceHeight,
-    pieceWidth,
-    sideWidth
-} from "../board_size_constants.ts";
-import {useCallback, useContext, useEffect, useState} from "react";
-import {SideStack, TopDownStack} from "./stacks";
+import {useContext, useEffect, useState} from "react";
 import DragPiece from "./DragPiece.tsx";
 import {HoverTrackerContext} from "../common/HoverTracker.ts";
-import {GameStateContext, PositionState} from "../common/GameState.ts";
+import {GameStateContext} from "../common/GameState.ts";
 import {observer} from "mobx-react-lite";
 import {Color} from "../color.ts";
-import {Direction} from "./direction.ts";
-
-function getStacks(getPositionProps: (i: number) => PositionState
-) {
-    const stacks = []
-
-    for (let i = 0; i < 12; ++i) {
-        const leftX = sideWidth + pieceWidth + sideWidth + i * pieceWidth + (i >= 6 ? sideWidth + gapWidth + sideWidth : 0)
-
-        stacks.push(
-            <TopDownStack
-                quantity={getPositionProps(i).quantity}
-                color={getPositionProps(i).color}
-                direction={Direction.DOWN}
-                originX={leftX + pieceWidth / 2}
-                originY={sideWidth + pieceWidth / 2}
-                key={i}
-            />,
-            <TopDownStack
-                quantity={getPositionProps(12 + i).quantity}
-                color={getPositionProps(12 + i).color}
-                direction={Direction.UP}
-                originX={leftX + pieceWidth / 2}
-                originY={boardHeight - sideWidth - pieceWidth / 2}
-                key={12 + i}
-            />
-        )
-    }
-
-    stacks.push(
-        <SideStack
-            quantity={getPositionProps(24).quantity}
-            color={getPositionProps(24).color}
-            direction={Direction.DOWN}
-            originX={sideWidth}
-            originY={sideWidth}
-            key={24}
-        />,
-        <TopDownStack
-            quantity={getPositionProps(25).quantity}
-            color={getPositionProps(25).color}
-            direction={Direction.DOWN}
-            originX={middleX}
-            originY={sideWidth + pieceWidth / 2}
-            key={25}
-        />,
-        <SideStack
-            quantity={getPositionProps(26).quantity}
-            color={getPositionProps(26).color}
-            direction={Direction.DOWN}
-            originX={boardWidth - sideWidth - pieceWidth}
-            originY={sideWidth}
-            key={26}
-        />,
-        <SideStack
-            quantity={getPositionProps(27).quantity}
-            color={getPositionProps(27).color}
-            direction={Direction.UP}
-            originX={sideWidth}
-            originY={boardHeight - sideWidth - pieceHeight}
-            key={27}
-        />,
-        <TopDownStack
-            quantity={getPositionProps(28).quantity}
-            color={getPositionProps(28).color}
-            direction={Direction.UP}
-            originX={middleX}
-            originY={boardHeight - sideWidth - pieceWidth / 2}
-            key={28}
-        />,
-        <SideStack
-            quantity={getPositionProps(29).quantity}
-            color={getPositionProps(29).color}
-            direction={Direction.UP}
-            originX={boardWidth - sideWidth - pieceWidth}
-            originY={boardHeight - sideWidth - pieceHeight}
-            key={29}
-        />
-    )
-    return stacks;
-}
+import {StacksLayer} from "./StacksLayer.tsx";
 
 
 interface DragStatus {
@@ -115,19 +25,6 @@ const PiecesLayer = observer(() => {
         pickedColor: null
     })
 
-
-    const getPositionProps = useCallback((i: number) => {
-        const res = gameState.piecePlacement.get(i)
-        if (res === undefined) {
-            return {quantity: 0, color: null}
-        }
-        if (res.quantity === 0) {
-            res.color = null
-        }
-        return res
-    }, [gameState.piecePlacement])
-
-
     useEffect(() => {
         const onMouseDown = (e: MouseEvent) => {
             if (e.button !== 0) {
@@ -137,7 +34,7 @@ const PiecesLayer = observer(() => {
             if (clickedIndex === null) {
                 return
             }
-            const pickedStack = getPositionProps(clickedIndex)
+            const pickedStack = gameState.getPositionProps(clickedIndex)
 
             if (pickedStack.quantity === 0) {
                 return;
@@ -161,13 +58,13 @@ const PiecesLayer = observer(() => {
             }
 
             const releaseIndex = hoverTracker.hoveredIndex
-            const releaseStack = releaseIndex === null ? null : getPositionProps(releaseIndex)
+            const releaseStack = releaseIndex === null ? null : gameState.getPositionProps(releaseIndex)
             if (
                 releaseIndex === null ||
                 (releaseStack!.color !== null && releaseStack!.color !== dragStatus.pickedColor)
                 // TODO: здесь нужно проверять, можно ли положить фишку
             ) {
-                const pickedStack = getPositionProps(dragStatus.clickedIndex)
+                const pickedStack = gameState.getPositionProps(dragStatus.clickedIndex)
                 gameState.setPlacementProperty([[dragStatus.clickedIndex, {
                     quantity: pickedStack.quantity + 1,
                     color: dragStatus.pickedColor
@@ -189,13 +86,11 @@ const PiecesLayer = observer(() => {
             document.removeEventListener("mousedown", onMouseDown)
             document.removeEventListener("mouseup", onMouseUp)
         }
-    }, [gameState, dragStatus, getPositionProps]);
-
-    const stacks = getStacks(getPositionProps);
-
+    }, [gameState, dragStatus, hoverTracker]);
+    
     return (
         <>
-            {stacks}
+            <StacksLayer />
             {dragStatus.clickedIndex !== null &&
                 <DragPiece
                     color={dragStatus.pickedColor!}

@@ -3,7 +3,6 @@ import {boardHeight, boardWidth, pieceWidth, svgOriginX, svgOriginY} from "../bo
 import {TopDownPiece} from "./pieces";
 import {useContext} from "react";
 import {SvgClientRectContext} from "../svg_client_rect_context.ts";
-import {assertNN} from "../../../guards.ts";
 import {Color} from "../color.ts";
 
 function clientToSvg(clientX: number, clientY: number, clientRect: DOMRect): [number, number] {
@@ -27,10 +26,8 @@ export default function DragPiece({initClientX, initClientY, color}: {
     color: Color
 }) {
     const svgClientRect = useContext(SvgClientRectContext)
-    assertNN(svgClientRect)
-    console.assert(svgClientRect !== null)
     const [clientX, clientY] = useMousePosition(initClientX, initClientY)
-    const [svgX, svgY] = clampSvgCoordinates(...clientToSvg(clientX, clientY, svgClientRect))
+    const [svgX, svgY] = clampSvgCoordinates(...clientToSvg(clientX, clientY, svgClientRect!))
 
     return <TopDownPiece color={color} cx={svgX} cy={svgY}/>
 }
