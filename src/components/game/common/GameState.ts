@@ -1,5 +1,4 @@
 import {makeAutoObservable} from "mobx";
-import {createContext} from "react";
 import {Color} from "../color.ts";
 import {LayerStatus} from "../dice_layer/LayerStatus.ts";
 
@@ -51,5 +50,4 @@ export class GameState {
     }
 }
 
-export const GameStateContext = createContext<GameState | null>(null)
 

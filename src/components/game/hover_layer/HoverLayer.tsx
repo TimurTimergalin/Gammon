@@ -1,4 +1,3 @@
-import {HoverTrackerContext} from "../common/HoverTracker.ts";
 import {
     boardHeight,
     boardWidth,
@@ -10,10 +9,10 @@ import {
     triangleHeight
 } from "../board_size_constants.ts";
 import {HoverTrigger} from "./HoverTrigger.tsx";
-import {useContext} from "react";
+import {useGameContext} from "../common/GameContext.ts";
 
 export function HoverLayer() {
-    const hoverTracker = useContext(HoverTrackerContext)!
+    const hoverTracker = useGameContext("hoverTracker")
 
     const triggers = []
 

@@ -4,14 +4,15 @@ import {useLayoutMeasure} from "../../hooks";
 import {BoardLayer} from "./board_layer/BoardLayer.tsx";
 import PiecesLayer from "./pieces_layer/PiecesLayer.js";
 import {SvgClientRectContext} from "./svg_client_rect_context.ts";
-import {GameState, GameStateContext} from "./common/GameState.ts";
+import {GameState} from "./common/GameState.ts";
 import {Color} from "./color.ts";
 import DiceLayer from "./dice_layer/DiceLayer.tsx";
 import {HoverLayer} from "./hover_layer/HoverLayer.tsx";
-import {HoverTracker, HoverTrackerContext} from "./common/HoverTracker.ts";
-import WithGlobals, {ContextWithInit} from "../../context_helpers.tsx";
+import {HoverTracker} from "./common/HoverTracker.ts";
+import ClientGameController from "./common/game_controller/ClientGameController.ts";
+import {GameContext, GameContextProvider} from "./common/GameContext.ts";
 
-const defaultPlacement = () => {  // for dev purposes only
+const initGameState = () => {  // for dev purposes only
     const placement = new Map()
     placement.set(11, {quantity: 2, color: Color.WHITE})
     placement.set(0, {quantity: 5, color: Color.WHITE})
@@ -32,15 +33,13 @@ export default function GameView() {
     const measureSvg = useCallback(() => setSvgRect(svgRef.current!.getBoundingClientRect()), [])
     useLayoutMeasure(measureSvg)
 
-    const globals: ContextWithInit<[GameState | null, HoverTracker | null]> = [
-        [GameStateContext, defaultPlacement()],
-        [HoverTrackerContext, new HoverTracker()]
-    ]
-
+    const gameState = useRef(initGameState())
+    const hoverTracker = useRef(new HoverTracker())
+    const gameController = useRef(new ClientGameController(gameState.current, Color.WHITE))
 
     return (
-        <SvgClientRectContext.Provider value={svgRect}>
-            <WithGlobals contexts={globals}>
+        <GameContextProvider value={new GameContext(gameState.current, hoverTracker.current, gameController.current)}>
+            <SvgClientRectContext.Provider value={svgRect}>
                 <svg
                     viewBox={`${svgOriginX} ${svgOriginY} ${boardWidth} ${boardHeight}`}
                     xmlns="http://www.w3.org/2000/svg"
@@ -51,7 +50,7 @@ export default function GameView() {
                     <DiceLayer/>
                     <HoverLayer/>
                 </svg>
-            </WithGlobals>
-        </SvgClientRectContext.Provider>
+            </SvgClientRectContext.Provider>
+        </GameContextProvider>
     )
 }

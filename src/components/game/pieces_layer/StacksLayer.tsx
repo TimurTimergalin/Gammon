@@ -1,4 +1,3 @@
-import {GameStateContext} from "../common/GameState.ts";
 import {
     boardHeight,
     boardWidth,
@@ -10,11 +9,11 @@ import {
 } from "../board_size_constants.ts";
 import {SideStack, TopDownStack} from "./stacks.tsx";
 import {Direction} from "./direction.ts";
-import {useContext} from "react";
+import {useGameContext} from "../common/GameContext.ts";
 
 export function StacksLayer(
 ) {
-    const gameState = useContext(GameStateContext)!
+    const gameState = useGameContext("gameState")
     const stacks = []
 
     for (let i = 0; i < 12; ++i) {

@@ -1,7 +1,7 @@
 import {GameController} from "./GameController.ts";
-import {DiceState, GameState} from "../common/GameState.ts";
-import {Color, oppositeColor} from "../color.ts";
-import {LayerStatus} from "../dice_layer/LayerStatus.ts";
+import {DiceState, GameState} from "../GameState.ts";
+import {Color, oppositeColor} from "../../color.ts";
+import {LayerStatus} from "../../dice_layer/LayerStatus.ts";
 
 export default class ClientGameController implements GameController {  // For dev purposes only
     gameState: GameState
@@ -32,8 +32,8 @@ export default class ClientGameController implements GameController {  // For de
     }
 
     isTouchable(point: number): boolean {
-        const pointProp = this.gameState.piecePlacement.get(point)
-        return pointProp !== undefined && pointProp.color === this.color
+        const pointProp = this.gameState.getPositionProps(point)
+        return pointProp.color === this.color
     }
 
     getLegalMoves(point: number): number[] {
@@ -43,8 +43,8 @@ export default class ClientGameController implements GameController {  // For de
                     if (i === point) {
                         return false
                     }
-                    const pointProp = this.gameState.piecePlacement.get(i)
-                    return pointProp === undefined || pointProp.color !== oppositeColor(this.color)
+                    const pointProp = this.gameState.getPositionProps(i)
+                    return pointProp.color !== oppositeColor(this.color)
                 }
             )
     }

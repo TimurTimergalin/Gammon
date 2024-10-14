@@ -1,10 +1,9 @@
-import {useContext, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import DragPiece from "./DragPiece.tsx";
-import {HoverTrackerContext} from "../common/HoverTracker.ts";
-import {GameStateContext} from "../common/GameState.ts";
 import {observer} from "mobx-react-lite";
 import {Color} from "../color.ts";
 import {StacksLayer} from "./StacksLayer.tsx";
+import {useGameContext} from "../common/GameContext.ts";
 
 
 interface DragStatus {
@@ -16,8 +15,8 @@ interface DragStatus {
 
 
 const PiecesLayer = observer(() => {
-    const gameState = useContext(GameStateContext)!
-    const hoverTracker = useContext(HoverTrackerContext)!
+    const gameState = useGameContext("gameState")
+    const hoverTracker = useGameContext("hoverTracker")
     const [dragStatus, setDragStatus] = useState<DragStatus>({
         clickX: null,
         clickY: null,
