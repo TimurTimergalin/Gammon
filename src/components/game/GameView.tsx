@@ -11,12 +11,7 @@ import {HoverLayer} from "./hover_layer/HoverLayer.tsx";
 import {HoverTracker, HoverTrackerContext} from "./common/HoverTracker.ts";
 import WithGlobals, {ContextWithInit} from "../../context_helpers.tsx";
 
-export default function GameView() {
-    const svgRef = useRef<SVGSVGElement | null>(null)
-    const [svgRect, setSvgRect] = useState<DOMRect | null>(null)
-    const measureSvg = useCallback(() => setSvgRect(svgRef.current!.getBoundingClientRect()), [])
-    useLayoutMeasure(measureSvg)
-
+const defaultPlacement = () => {  // for dev purposes only
     const placement = new Map()
     placement.set(11, {quantity: 2, color: Color.WHITE})
     placement.set(0, {quantity: 5, color: Color.WHITE})
@@ -28,12 +23,19 @@ export default function GameView() {
     placement.set(4, {quantity: 3, color: Color.BLACK})
     placement.set(6, {quantity: 5, color: Color.BLACK})
 
+    return new GameState(placement, null, null)
+}
+
+export default function GameView() {
+    const svgRef = useRef<SVGSVGElement | null>(null)
+    const [svgRect, setSvgRect] = useState<DOMRect | null>(null)
+    const measureSvg = useCallback(() => setSvgRect(svgRef.current!.getBoundingClientRect()), [])
+    useLayoutMeasure(measureSvg)
 
     const globals: ContextWithInit<[GameState | null, HoverTracker | null]> = [
-        [new GameState(placement, null, null), GameStateContext],
-        [new HoverTracker(), HoverTrackerContext]
+        [GameStateContext, defaultPlacement()],
+        [HoverTrackerContext, new HoverTracker()]
     ]
-
 
 
     return (
@@ -45,8 +47,8 @@ export default function GameView() {
                     preserveAspectRatio={"xMinYMin"}
                     ref={svgRef}>
                     <BoardLayer/>
-                    <DiceLayer/>
                     <PiecesLayer/>
+                    <DiceLayer/>
                     <HoverLayer/>
                 </svg>
             </WithGlobals>

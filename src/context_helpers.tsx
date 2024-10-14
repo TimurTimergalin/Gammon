@@ -14,7 +14,7 @@ function GlobalContext<T, R extends T>({context, initialValue, children}: {
 }
 
 export type ContextWithInit<T> = {
-    [K in keyof T]: [T[K], Context<T[K]>]
+    [K in keyof T]: [Context<T[K]>, T[K]]
 }
 
 export default function WithGlobals<T>({contexts, children}: {
@@ -23,7 +23,7 @@ export default function WithGlobals<T>({contexts, children}: {
 }) {
     let res = children
     for (const i in contexts) {
-        const [val, context] = contexts[i]
+        const [context, val] = contexts[i]
         res = (
             <GlobalContext context={context} initialValue={val}>
                 {res}
