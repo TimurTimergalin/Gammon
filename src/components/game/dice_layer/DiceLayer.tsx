@@ -1,5 +1,5 @@
 import {observer} from "mobx-react-lite";
-import {boardHeight, boardWidth} from "../board_size_constants.ts";
+import {boardHeight, boardWidth} from "../dimensions/board_size_constants.ts";
 import {diceWidth, gapBetweenDice} from "./dice_size_constants.ts";
 import {Dice} from "./dice.tsx";
 import {useGameContext} from "../common/GameContext.ts";

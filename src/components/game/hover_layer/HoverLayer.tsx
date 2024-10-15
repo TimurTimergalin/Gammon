@@ -1,15 +1,15 @@
 import {
     boardHeight,
     boardWidth,
-    gapWidth,
     middleX,
     pieceWidth,
     sideWidth,
     storeHeight,
     triangleHeight
-} from "../board_size_constants.ts";
+} from "../dimensions/board_size_constants.ts";
 import {HoverTrigger} from "./HoverTrigger.tsx";
 import {useGameContext} from "../common/GameContext.ts";
+import {getTriangleLeft} from "../dimensions/functions.ts";
 
 export function HoverLayer() {
     const hoverTracker = useGameContext("hoverTracker")
@@ -19,7 +19,7 @@ export function HoverLayer() {
     const triangleTriggerHeight = triangleHeight + pieceWidth / 2
 
     for (let i = 0; i < 12; ++i) {
-        const leftX = sideWidth + pieceWidth + sideWidth + i * pieceWidth + (i >= 6 ? sideWidth + gapWidth + sideWidth : 0)
+        const leftX = getTriangleLeft(i)
         triggers.push(
             <HoverTrigger
                 originX={leftX}

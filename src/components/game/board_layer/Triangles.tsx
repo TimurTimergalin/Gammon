@@ -1,7 +1,8 @@
-import {boardHeight, gapWidth, pieceWidth, sideWidth, triangleHeight} from "../board_size_constants.ts";
+import {boardHeight, pieceWidth, sideWidth, triangleHeight} from "../dimensions/board_size_constants.ts";
 import {useGameContext} from "../common/GameContext.ts";
 import {observer} from "mobx-react-lite";
 import {focusedColor} from "./color_constants.ts";
+import {getTriangleLeft} from "../dimensions/functions.ts";
 
 const PointUpTriangle = ({leftX, color, focused}: { leftX: number, color: string, focused: boolean }) => {
     const d =
@@ -52,7 +53,7 @@ export const Triangles = observer(() => {
     const triangles = []
 
     for (let i = 0; i < 12; ++i) {
-        const leftX = sideWidth + pieceWidth + sideWidth + i * pieceWidth + (i >= 6 ? sideWidth + gapWidth + sideWidth : 0)
+        const leftX = getTriangleLeft(i)
 
         triangles.push(
             <PointUpTriangle

@@ -1,15 +1,15 @@
 import {
     boardHeight,
     boardWidth,
-    gapWidth,
     middleX,
     pieceHeight,
     pieceWidth,
     sideWidth
-} from "../board_size_constants.ts";
+} from "../dimensions/board_size_constants.ts";
 import {SideStack, TopDownStack} from "./stacks.tsx";
 import {Direction} from "./direction.ts";
 import {useGameContext} from "../common/GameContext.ts";
+import {getTriangleLeft} from "../dimensions/functions.ts";
 
 export function StacksLayer(
 ) {
@@ -17,7 +17,7 @@ export function StacksLayer(
     const stacks = []
 
     for (let i = 0; i < 12; ++i) {
-        const leftX = sideWidth + pieceWidth + sideWidth + i * pieceWidth + (i >= 6 ? sideWidth + gapWidth + sideWidth : 0)
+        const leftX = getTriangleLeft(i)
 
         stacks.push(
             <TopDownStack

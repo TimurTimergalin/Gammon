@@ -1,4 +1,4 @@
-import {boardHeight, boardWidth, pieceWidth, sideWidth, standHeight, storeHeight} from "../board_size_constants.ts";
+import {boardHeight, boardWidth, pieceWidth, sideWidth, standHeight, storeHeight} from "../dimensions/board_size_constants.ts";
 import {boardColor, focusedColor, sideColor, standColor} from "./color_constants.ts";
 import {observer} from "mobx-react-lite";
 import {useGameContext} from "../common/GameContext.ts";

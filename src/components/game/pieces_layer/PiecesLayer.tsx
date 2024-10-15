@@ -50,13 +50,13 @@ const PiecesLayer = observer(() => {
             }]])
             setDragStatus({clickX: e.clientX, clickY: e.clientY, clickedIndex: clickedIndex, pickedColor: pickedColor})
             gameState.pickedFrom = clickedIndex
+            gameState.legalMoves = gameController.getLegalMoves(clickedIndex)
         }
 
         const onMouseUp = (e: MouseEvent) => {
             if (e.button !== 0) {
                 return
             }
-            gameState.pickedFrom = null
             if (dragStatus.clickedIndex === null) {
                 return
             }
@@ -64,9 +64,7 @@ const PiecesLayer = observer(() => {
             const releaseIndex = hoverTracker.hoveredIndex
             const releaseStack = releaseIndex === null ? null : gameState.getPositionProps(releaseIndex)
             if (
-                releaseIndex === null ||
-                (releaseStack!.color !== null && releaseStack!.color !== dragStatus.pickedColor)
-                // TODO: здесь нужно проверять, можно ли положить фишку
+                releaseIndex === null || !gameState.legalMoves?.includes(releaseIndex)
             ) {
                 const pickedStack = gameState.getPositionProps(dragStatus.clickedIndex)
                 gameState.setPlacementProperty([[dragStatus.clickedIndex, {
@@ -81,6 +79,8 @@ const PiecesLayer = observer(() => {
             }
 
             setDragStatus({clickX: null, clickY: null, clickedIndex: null, pickedColor: null})
+            gameState.pickedFrom = null
+            gameState.legalMoves = []
         }
 
         document.addEventListener("mousedown", onMouseDown)

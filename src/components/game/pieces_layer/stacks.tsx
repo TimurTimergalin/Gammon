@@ -1,4 +1,4 @@
-import {pieceHeight, pieceWidth} from "../board_size_constants.ts";
+import {pieceHeight, pieceWidth} from "../dimensions/board_size_constants.ts";
 import {SidePiece, TopDownPiece} from "./pieces.js";
 import {Color} from "../color.ts";
 import {Direction} from "./direction.ts";

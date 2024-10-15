@@ -1,4 +1,4 @@
-import {pieceHeight} from "../board_size_constants.ts";
+import {pieceHeight} from "../dimensions/board_size_constants.ts";
 import {Color, colorFill, colorStroke} from "../color.ts";
 
 const pieceWidth = 100

@@ -22,6 +22,7 @@ export class GameState {
     private _dice1: DiceState | null = null
     private _dice2: DiceState | null = null
     private _pickedFrom: number | null = null
+    private _legalMoves: number[] = []
 
     constructor(piecePlacement: PiecePlacement) {
         makeAutoObservable(this)
@@ -48,6 +49,14 @@ export class GameState {
 
     set dice1(value: DiceState | null) {
         this._dice1 = value;
+    }
+
+    get legalMoves(): number[] {
+        return this._legalMoves;
+    }
+
+    set legalMoves(value: number[]) {
+        this._legalMoves = value;
     }
 
     setPlacementProperty = (entries: PiecePlacementEntry[]) => {

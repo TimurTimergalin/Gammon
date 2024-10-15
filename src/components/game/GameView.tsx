@@ -1,4 +1,4 @@
-import {boardHeight, boardWidth, svgOriginX, svgOriginY} from "./board_size_constants.ts";
+import {boardHeight, boardWidth, svgOriginX, svgOriginY} from "./dimensions/board_size_constants.ts";
 import {useCallback, useRef, useState} from "react";
 import {useLayoutMeasure} from "../../hooks";
 import {BoardLayer} from "./board_layer/BoardLayer.tsx";
@@ -11,6 +11,7 @@ import {HoverLayer} from "./hover_layer/HoverLayer.tsx";
 import {HoverTracker} from "./common/HoverTracker.ts";
 import ClientGameController from "./common/game_controller/ClientGameController.ts";
 import {GameContext, GameContextProvider} from "./common/GameContext.ts";
+import {MoveHintLayer} from "./move_hint_layer/MoveHintLayer.tsx";
 
 const initGameState = () => {  // for dev purposes only
     const placement = new Map()
@@ -47,6 +48,7 @@ export default function GameView() {
                     ref={svgRef}>
                     <BoardLayer/>
                     <PiecesLayer/>
+                    <MoveHintLayer />
                     <DiceLayer/>
                     <HoverLayer/>
                 </svg>
