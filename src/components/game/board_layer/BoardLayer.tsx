@@ -3,7 +3,7 @@ import {gapColor} from "./color_constants.ts";
 import {Half} from "./Half.tsx";
 import {Store} from "./Store.tsx";
 import {Frame} from "./Frame.tsx";
-import {Triangles} from "./PointUpTriangle.tsx";
+import {Triangles} from "./Triangles.tsx";
 
 export function BoardLayer() {
     return (

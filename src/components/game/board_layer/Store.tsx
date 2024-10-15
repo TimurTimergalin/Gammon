@@ -1,5 +1,25 @@
-import {boardHeight, pieceWidth, sideWidth, standHeight, storeHeight} from "../board_size_constants.ts";
-import {boardColor, sideColor, standColor} from "./color_constants.ts";
+import {boardHeight, boardWidth, pieceWidth, sideWidth, standHeight, storeHeight} from "../board_size_constants.ts";
+import {boardColor, focusedColor, sideColor, standColor} from "./color_constants.ts";
+import {observer} from "mobx-react-lite";
+import {useGameContext} from "../common/GameContext.ts";
+
+const FocusableStore = observer(({x, y, index}: { x: number, y: number, index: number }) => {
+    const gameState = useGameContext("gameState")
+    const focused = gameState.pickedFrom === index
+    return (
+        <>
+            {focused &&
+                <rect
+                    x={x}
+                    y={y}
+                    width={pieceWidth}
+                    height={storeHeight}
+                    fill={focusedColor}
+                />
+            }
+        </>
+    )
+})
 
 export const Store = ({leftX}: { leftX: number }) => (
     <>
@@ -26,5 +46,9 @@ export const Store = ({leftX}: { leftX: number }) => (
             height={standHeight}
             fill={standColor}
         />
+        <FocusableStore x={sideWidth} y={sideWidth} index={24} />
+        <FocusableStore x={boardWidth - sideWidth - pieceWidth} y={sideWidth} index={26} />
+        <FocusableStore x={sideWidth} y={boardHeight - sideWidth - storeHeight} index={27} />
+        <FocusableStore x={boardWidth - sideWidth - pieceWidth} y={boardHeight - sideWidth - storeHeight} index={29} />
     </>
 )

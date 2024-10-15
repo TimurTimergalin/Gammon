@@ -17,6 +17,7 @@ interface DragStatus {
 const PiecesLayer = observer(() => {
     const gameState = useGameContext("gameState")
     const hoverTracker = useGameContext("hoverTracker")
+    const gameController = useGameContext("gameController")
     const [dragStatus, setDragStatus] = useState<DragStatus>({
         clickX: null,
         clickY: null,
@@ -38,7 +39,9 @@ const PiecesLayer = observer(() => {
             if (pickedStack.quantity === 0) {
                 return;
             }
-            // TODO: здесь нужно проверять, можно ли подобрать фишку
+            if (!gameController.isTouchable(clickedIndex)) {
+                return;
+            }
 
             const pickedColor = pickedStack.color
             gameState.setPlacementProperty([[clickedIndex, {
@@ -46,12 +49,14 @@ const PiecesLayer = observer(() => {
                 color: pickedStack.quantity === 1 ? null : pickedColor
             }]])
             setDragStatus({clickX: e.clientX, clickY: e.clientY, clickedIndex: clickedIndex, pickedColor: pickedColor})
+            gameState.pickedFrom = clickedIndex
         }
 
         const onMouseUp = (e: MouseEvent) => {
             if (e.button !== 0) {
                 return
             }
+            gameState.pickedFrom = null
             if (dragStatus.clickedIndex === null) {
                 return
             }
@@ -85,7 +90,7 @@ const PiecesLayer = observer(() => {
             document.removeEventListener("mousedown", onMouseDown)
             document.removeEventListener("mouseup", onMouseUp)
         }
-    }, [gameState, dragStatus, hoverTracker]);
+    }, [gameState, dragStatus, hoverTracker, gameController]);
     
     return (
         <>

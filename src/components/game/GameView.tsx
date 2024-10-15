@@ -24,7 +24,7 @@ const initGameState = () => {  // for dev purposes only
     placement.set(4, {quantity: 3, color: Color.BLACK})
     placement.set(6, {quantity: 5, color: Color.BLACK})
 
-    return new GameState(placement, null, null)
+    return new GameState(placement)
 }
 
 export default function GameView() {
