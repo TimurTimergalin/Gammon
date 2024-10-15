@@ -4,6 +4,8 @@ import {TopDownPiece} from "./pieces";
 import {useContext} from "react";
 import {SvgClientRectContext} from "../svg_client_rect_context.ts";
 import {Color} from "../color.ts";
+import {observer} from "mobx-react-lite";
+import {useGameContext} from "../common/GameContext.ts";
 
 function clientToSvg(clientX: number, clientY: number, clientRect: DOMRect): [number, number] {
     const svgX = svgOriginX + boardWidth * (clientX - clientRect.left) / (clientRect.width)
@@ -20,7 +22,7 @@ function clampSvgCoordinates(x: number, y: number) {
     return [Math.max(minX, Math.min(x, maxX)), Math.max(minY, Math.min(y, maxY))]
 }
 
-export default function DragPiece({initClientX, initClientY, color}: {
+function DragPiece({initClientX, initClientY, color}: {
     initClientX: number,
     initClientY: number,
     color: Color
@@ -31,3 +33,17 @@ export default function DragPiece({initClientX, initClientY, color}: {
 
     return <TopDownPiece color={color} cx={svgX} cy={svgY}/>
 }
+
+export const DragPieceLayer = observer(() => {
+    const gameState = useGameContext("gameState")
+    return (
+        <>
+            {gameState.dragStatus.clickedIndex !== null &&
+                <DragPiece
+                    color={gameState.dragStatus.pickedColor!}
+                    initClientX={gameState.dragStatus.clickX!}
+                    initClientY={gameState.dragStatus.clickY!}
+                />}
+        </>
+    )
+})

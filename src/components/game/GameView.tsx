@@ -12,6 +12,7 @@ import {HoverTracker} from "./common/HoverTracker.ts";
 import ClientGameController from "./common/game_controller/ClientGameController.ts";
 import {GameContext, GameContextProvider} from "./common/GameContext.ts";
 import {MoveHintLayer} from "./move_hint_layer/MoveHintLayer.tsx";
+import {DragPieceLayer} from "./pieces_layer/DragPieceLayer.tsx";
 
 const initGameState = () => {  // for dev purposes only
     const placement = new Map()
@@ -50,6 +51,7 @@ export default function GameView() {
                     <PiecesLayer/>
                     <MoveHintLayer />
                     <DiceLayer/>
+                    <DragPieceLayer />
                     <HoverLayer/>
                 </svg>
             </SvgClientRectContext.Provider>
