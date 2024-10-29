@@ -38,7 +38,7 @@ export const DragPieceLayer = observer(() => {
     const gameState = useGameContext("gameState")
     return (
         <>
-            {gameState.dragStatus.clickedIndex !== null &&
+            {gameState.dragStatus !== null &&
                 <DragPiece
                     color={gameState.dragStatus.pickedColor!}
                     initClientX={gameState.dragStatus.clickX!}

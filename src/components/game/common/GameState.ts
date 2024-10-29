@@ -15,10 +15,10 @@ export interface DiceState {
 }
 
 export interface DragStatus {
-    clickX: number | null
-    clickY: number | null
-    clickedIndex: number | null
-    pickedColor: Color | null
+    clickX: number
+    clickY: number
+    clickedIndex: number
+    pickedColor: Color
 }
 
 export type PiecePlacement = Map<number, PositionState>
@@ -30,7 +30,7 @@ export class GameState {
     private _dice2: DiceState | null = null
     private _pickedFrom: number | null = null
     private _legalMoves: number[] = []
-    private _dragStatus: DragStatus = {clickX: null, clickY: null, clickedIndex: null, pickedColor: null}
+    private _dragStatus: DragStatus | null = null
 
     constructor(piecePlacement: PiecePlacement) {
         makeAutoObservable(this)
@@ -69,11 +69,11 @@ export class GameState {
         this._legalMoves = value;
     }
 
-    get dragStatus(): DragStatus {
+    get dragStatus(): DragStatus | null {
         return this._dragStatus;
     }
 
-    set dragStatus(value: DragStatus) {
+    set dragStatus(value: DragStatus | null) {
         this._dragStatus = value;
     }
 
