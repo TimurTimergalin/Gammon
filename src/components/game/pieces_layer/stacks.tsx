@@ -32,6 +32,23 @@ const homingTopDownAnimation = (xFrom: number, yFrom: number, xTo: number, yTo: 
     `
 }
 
+const homingSidePieceAnimation = (xFrom: number, yFrom: number, xTo: number, yTo: number) => {
+    const keyframe = keyframes`
+        from {
+            x: ${xFrom};
+            y: ${yFrom};
+        }
+        to {
+            x: ${xTo};
+            y: ${yTo};
+        }
+    }
+    `
+    return css`
+        animation: ${keyframe} .2s linear;
+    `
+}
+
 const HomingTopDownPiece = styled(TopDownPiece)<{
     cx: number,
     cy: number,
@@ -40,8 +57,15 @@ const HomingTopDownPiece = styled(TopDownPiece)<{
 }>`
     ${props => homingTopDownAnimation(props.fromX, props.fromY, props.cx, props.cy)}
 `
+const HomingSidePiece = styled(SidePiece)<{
+    x: number,
+    y: number,
+    fromX: number,
+    fromY: number
+}>`
+    ${props => homingSidePieceAnimation(props.fromX, props.fromY, props.x, props.y)}
+`
 
-// TODO: добавить homing для SidePiece
 
 export const TopDownStack = ({pieces, direction, originX, originY}: StackProps) => {
     const quantity = pieces.length
@@ -75,9 +99,17 @@ export const SideStack = ({pieces, direction, originX, originY}: StackProps) => 
     let i = 0
 
     for (const piece of pieces) {
-        finalPieces.push(  // TODO: учитывать from
-            <SidePiece x={originX} y={originY + pieceHeight * i * direction} color={piece.color}/>
-        )
+        const toX = originX
+        const toY = originY + pieceHeight * i * direction
+        if (piece.from === undefined) {
+            finalPieces.push(
+                <SidePiece x={toX} y={toY} color={piece.color}/>
+            )
+        } else {
+            finalPieces.push(
+                <HomingSidePiece color={piece.color} x={toX} y={toY} fromX={piece.from.x} fromY={piece.from.y}/>
+            )
+        }
         ++i
     }
 

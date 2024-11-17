@@ -1,7 +1,6 @@
-import {pieceHeight} from "../dimensions/board_size_constants.ts";
+import {pieceHeight, pieceWidth} from "../dimensions/board_size_constants.ts";
 import {Color, colorFill, colorStroke} from "../color.ts";
 
-const pieceWidth = 100
 const borderWidth = 2
 
 export function TopDownPiece({cx, cy, color, className}: {
@@ -23,27 +22,26 @@ export function TopDownPiece({cx, cy, color, className}: {
     )
 }
 
-export function SidePiece({x, y, color}: {
+export function SidePiece({x, y, color, className}: {
     x: number,
     y: number,
-    color: Color
+    color: Color,
+    className?: string
 }) {
     const borderWidth = 2
-    const cornerShift = 5
-    const r = cornerShift - borderWidth / 2
+    const r = 4
     return (
-        <path  // TODO: заменить на rect
-            d={`M ${x + cornerShift} ${y + borderWidth / 2} 
-            l ${pieceWidth - 2 * cornerShift} 0
-            a ${r} ${r} 0 0 1 ${r} ${r} l 0 ${pieceHeight - 2 * cornerShift} a ${r} ${r} 0 0 1 ${-r} ${r}
-            l ${-(pieceWidth - 2 * cornerShift)} 0
-            a ${r} ${r} 0 0 1 ${-r} ${-r}
-            l 0 ${-(pieceHeight - 2 * cornerShift)}
-            a ${r} ${r} 0 0 1 ${r} ${-r}
-            `}
+        <rect
+            x={x}
+            y={y}
+            width={pieceWidth - borderWidth / 2}
+            height={pieceHeight - borderWidth / 2}
+            rx={r}
+            ry={r}
             strokeWidth={borderWidth}
             stroke={colorStroke(color)}
             fill={colorFill(color)}
+            className={className === undefined ? "" : className}
         />
     )
 }

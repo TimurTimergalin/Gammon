@@ -40,16 +40,16 @@ export const Store = ({leftX}: { leftX: number }) => (
             fill={boardColor}
         />
         <rect
-            x={leftX + sideWidth - 0.5}
+            x={leftX + sideWidth}
             y={sideWidth + storeHeight}
-            width={pieceWidth + 1}
+            width={pieceWidth}
             height={standHeight}
             fill={standColor}
         />
         <rect
-            x={leftX + sideWidth - 0.5}
+            x={leftX + sideWidth}
             y={sideWidth + storeHeight + 2 * standHeight}
-            width={pieceWidth + 1}
+            width={pieceWidth}
             height={standHeight}
             fill={standColor}
         />

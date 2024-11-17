@@ -18,8 +18,9 @@ const initGameState = () => {  // for dev purposes only
     const placement: PiecePlacement = new Map()
     placement.set(11, new PositionState([{color: Color.WHITE}]))
     placement.set(0, new PositionState([{color: Color.WHITE}]))
-    placement.set(16, new PositionState([{color: Color.WHITE, from: {x: 0, y: 0}}]))
+    placement.set(16, new PositionState([{color: Color.WHITE}]))
     placement.set(18, new PositionState([{color: Color.WHITE}]))
+    placement.set(29, new PositionState([{color: Color.WHITE}]))
 
     placement.set(23, new PositionState([{color: Color.BLACK}]))
     placement.set(12, new PositionState([{color: Color.BLACK}]))
