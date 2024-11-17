@@ -32,7 +32,7 @@ export function SidePiece({x, y, color}: {
     const cornerShift = 5
     const r = cornerShift - borderWidth / 2
     return (
-        <path
+        <path  // TODO: заменить на rect
             d={`M ${x + cornerShift} ${y + borderWidth / 2} 
             l ${pieceWidth - 2 * cornerShift} 0
             a ${r} ${r} 0 0 1 ${r} ${r} l 0 ${pieceHeight - 2 * cornerShift} a ${r} ${r} 0 0 1 ${-r} ${r}

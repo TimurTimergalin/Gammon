@@ -1,17 +1,14 @@
 import {pieceHeight, pieceWidth} from "../dimensions/board_size_constants.ts";
 import {SidePiece, TopDownPiece} from "./pieces.js";
-import {Color} from "../color.ts";
 import {Direction} from "./direction.ts";
 import styled, {css, keyframes} from "styled-components";
+import {PieceState} from "../common/GameState.ts";
 
 interface StackProps {
-    quantity: number,
-    color: Color | null,
+    pieces: PieceState[]
     direction: Direction,
     originX: number,
     originY: number,
-    fromX?: number,
-    fromY?: number
 }
 
 const AligningTopDownPiece = styled(TopDownPiece)`
@@ -44,40 +41,49 @@ const HomingTopDownPiece = styled(TopDownPiece)<{
     ${props => homingTopDownAnimation(props.fromX, props.fromY, props.cx, props.cy)}
 `
 
-export const TopDownStack = ({quantity, color, direction, originX, originY, fromX, fromY}: StackProps) => {
-    const dif = quantity > 7 ? pieceWidth / 4 : quantity > 4 ? pieceWidth / 2 : pieceWidth
-    const pieces = []
-    for (let i = 0; i < quantity; ++i) {
-        if (i === quantity - 1 && fromX !== undefined) {
-            continue
-        }
+// TODO: добавить homing для SidePiece
 
-        pieces.push(
-            <AligningTopDownPiece color={color!} cx={originX} cy={originY + i * dif * direction} key={i}/>
-        )
+export const TopDownStack = ({pieces, direction, originX, originY}: StackProps) => {
+    const quantity = pieces.length
+    const dif = quantity > 7 ? pieceWidth / 4 : quantity > 4 ? pieceWidth / 2 : pieceWidth
+    const finalPieces = []
+
+    let i = 0
+    for (const piece of pieces) {
+        const toX = originX
+        const toY = originY + i * dif * direction
+        if (piece.from !== undefined) {
+            finalPieces.push(
+                <HomingTopDownPiece color={piece.color} cx={toX} cy={toY} fromX={piece.from.x} fromY={piece.from.y}/>
+            )
+        } else {
+            finalPieces.push(
+                <AligningTopDownPiece color={piece.color} cx={toX} cy={toY}/>
+            )
+        }
+        ++i
     }
-    const lastCy = originY + (quantity - 1) * dif * direction
     return (
         <>
-            {pieces}
-            {
-                quantity > 0 && fromX !== undefined &&
-                <HomingTopDownPiece color={color!} cx={originX} cy={lastCy} fromX={fromX} fromY={fromY!} />
-            }
+            {finalPieces}
         </>
     )
 }
 
-export const SideStack = ({quantity, color, direction, originX, originY}: StackProps) => {
-    const pieces = []
-    for (let i = 0; i < quantity; ++i) {
-        pieces.push(
-            <SidePiece color={color!} x={originX} y={originY + pieceHeight * i * direction} key={i}/>
+export const SideStack = ({pieces, direction, originX, originY}: StackProps) => {
+    const finalPieces = []
+    let i = 0
+
+    for (const piece of pieces) {
+        finalPieces.push(  // TODO: учитывать from
+            <SidePiece x={originX} y={originY + pieceHeight * i * direction} color={piece.color}/>
         )
+        ++i
     }
+
     return (
         <>
-            {pieces}
+            {finalPieces}
         </>
     )
 }

@@ -11,8 +11,7 @@ import {Direction} from "./direction.ts";
 import {useGameContext} from "../common/GameContext.ts";
 import {getTriangleLeft} from "../dimensions/functions.ts";
 
-export function StacksLayer(
-) {
+export function StacksLayer() {
     const gameState = useGameContext("gameState")
     const stacks = []
 
@@ -21,16 +20,14 @@ export function StacksLayer(
 
         stacks.push(
             <TopDownStack
-                quantity={gameState.getPositionProps(i).quantity}
-                color={gameState.getPositionProps(i).color}
+                pieces={gameState.getPositionProps(i).pieces}
                 direction={Direction.DOWN}
                 originX={leftX + pieceWidth / 2}
                 originY={sideWidth + pieceWidth / 2}
                 key={i}
             />,
             <TopDownStack
-                quantity={gameState.getPositionProps(12 + i).quantity}
-                color={gameState.getPositionProps(12 + i).color}
+                pieces={gameState.getPositionProps(12 + i).pieces}
                 direction={Direction.UP}
                 originX={leftX + pieceWidth / 2}
                 originY={boardHeight - sideWidth - pieceWidth / 2}
@@ -41,48 +38,42 @@ export function StacksLayer(
 
     stacks.push(
         <SideStack
-            quantity={gameState.getPositionProps(24).quantity}
-            color={gameState.getPositionProps(24).color}
+            pieces={gameState.getPositionProps(24).pieces}
             direction={Direction.DOWN}
             originX={sideWidth}
             originY={sideWidth}
             key={24}
         />,
         <TopDownStack
-            quantity={gameState.getPositionProps(25).quantity}
-            color={gameState.getPositionProps(25).color}
+            pieces={gameState.getPositionProps(25).pieces}
             direction={Direction.DOWN}
             originX={middleX}
             originY={sideWidth + pieceWidth / 2}
             key={25}
         />,
         <SideStack
-            quantity={gameState.getPositionProps(26).quantity}
-            color={gameState.getPositionProps(26).color}
+            pieces={gameState.getPositionProps(26).pieces}
             direction={Direction.DOWN}
             originX={boardWidth - sideWidth - pieceWidth}
             originY={sideWidth}
             key={26}
         />,
         <SideStack
-            quantity={gameState.getPositionProps(27).quantity}
-            color={gameState.getPositionProps(27).color}
+            pieces={gameState.getPositionProps(27).pieces}
             direction={Direction.UP}
             originX={sideWidth}
             originY={boardHeight - sideWidth - pieceHeight}
             key={27}
         />,
         <TopDownStack
-            quantity={gameState.getPositionProps(28).quantity}
-            color={gameState.getPositionProps(28).color}
+            pieces={gameState.getPositionProps(28).pieces}
             direction={Direction.UP}
             originX={middleX}
             originY={boardHeight - sideWidth - pieceWidth / 2}
             key={28}
         />,
         <SideStack
-            quantity={gameState.getPositionProps(29).quantity}
-            color={gameState.getPositionProps(29).color}
+            pieces={gameState.getPositionProps(29).pieces}
             direction={Direction.UP}
             originX={boardWidth - sideWidth - pieceWidth}
             originY={boardHeight - sideWidth - pieceHeight}

@@ -12,8 +12,8 @@ export function BoardLayer() {
             <Half leftX={sideWidth + pieceWidth}/>
             <Half leftX={middleX + gapWidth / 2}/>
             <Store leftX={middleX + gapWidth / 2 + sideWidth + 6 * pieceWidth}/>
-            <MiddleLine />
-            <Triangles />
+            <MiddleLine/>
+            <Triangles/>
             <Frame leftX={sideWidth} width={pieceWidth}/>
             <Frame leftX={sideWidth + pieceWidth + sideWidth} width={6 * pieceWidth}/>
             <Frame leftX={middleX + gapWidth / 2 + sideWidth} width={6 * pieceWidth}/>

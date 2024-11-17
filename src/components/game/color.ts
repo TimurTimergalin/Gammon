@@ -1,5 +1,5 @@
 export enum Color {
-    WHITE= 0,
+    WHITE = 0,
     BLACK
 }
 

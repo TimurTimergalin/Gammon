@@ -1,4 +1,11 @@
-import {boardHeight, boardWidth, pieceWidth, sideWidth, standHeight, storeHeight} from "../dimensions/board_size_constants.ts";
+import {
+    boardHeight,
+    boardWidth,
+    pieceWidth,
+    sideWidth,
+    standHeight,
+    storeHeight
+} from "../dimensions/board_size_constants.ts";
 import {boardColor, focusedColor, sideColor, standColor} from "./color_constants.ts";
 import {observer} from "mobx-react-lite";
 import {useGameContext} from "../common/GameContext.ts";
@@ -46,9 +53,9 @@ export const Store = ({leftX}: { leftX: number }) => (
             height={standHeight}
             fill={standColor}
         />
-        <FocusableStore x={sideWidth} y={sideWidth} index={24} />
-        <FocusableStore x={boardWidth - sideWidth - pieceWidth} y={sideWidth} index={26} />
-        <FocusableStore x={sideWidth} y={boardHeight - sideWidth - storeHeight} index={27} />
-        <FocusableStore x={boardWidth - sideWidth - pieceWidth} y={boardHeight - sideWidth - storeHeight} index={29} />
+        <FocusableStore x={sideWidth} y={sideWidth} index={24}/>
+        <FocusableStore x={boardWidth - sideWidth - pieceWidth} y={sideWidth} index={26}/>
+        <FocusableStore x={sideWidth} y={boardHeight - sideWidth - storeHeight} index={27}/>
+        <FocusableStore x={boardWidth - sideWidth - pieceWidth} y={boardHeight - sideWidth - storeHeight} index={29}/>
     </>
 )

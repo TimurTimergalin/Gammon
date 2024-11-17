@@ -168,7 +168,7 @@ export function Dice({x, y, color, value, usageStatus, unavailabilityStatus}: {
             <DiceBase x={x} y={y} color={color}/>
             <DiceFace x={x} y={y} color={color} value={value}/>
             <UsageCover x={x} y={y} status={usageStatus}/>
-            <UnavailabilityCover x={x} y={y} status={unavailabilityStatus} />
+            <UnavailabilityCover x={x} y={y} status={unavailabilityStatus}/>
         </>
     )
 }
