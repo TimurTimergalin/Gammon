@@ -1,4 +1,4 @@
-import {GameState} from "./GameState.ts";
+import {GameState} from "./game_state/GameState.ts";
 import {HoverTracker} from "./HoverTracker.ts";
 import {GameController} from "./game_controller/GameController.ts";
 import {createContext, useContext} from "react";

@@ -1,7 +1,8 @@
 import {GameController} from "./GameController.ts";
-import {DiceState, GameState} from "../GameState.ts";
+import {GameState} from "../game_state/GameState.ts";
 import {Color} from "../../color.ts";
 import {LayerStatus} from "../../dice_layer/LayerStatus.ts";
+import {DiceState} from "../game_state/DiceState.ts";
 
 export default class ClientGameController implements GameController {  // For dev purposes only
     gameState: GameState

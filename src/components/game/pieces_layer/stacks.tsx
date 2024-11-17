@@ -2,7 +2,8 @@ import {pieceHeight, pieceWidth} from "../dimensions/board_size_constants.ts";
 import {SidePiece, TopDownPiece} from "./pieces.js";
 import {Direction} from "./direction.ts";
 import styled, {css, keyframes} from "styled-components";
-import {PieceState} from "../common/GameState.ts";
+
+import {PieceState} from "../common/game_state/piece_placement.ts";
 
 interface StackProps {
     pieces: PieceState[]

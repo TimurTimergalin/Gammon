@@ -1,46 +1,7 @@
 import {makeAutoObservable} from "mobx";
-import {Color} from "../color.ts";
-import {LayerStatus} from "../dice_layer/LayerStatus.ts";
-
-export interface PieceState {
-    color: Color,
-    from?: {
-        x: number,
-        y: number
-    }
-}
-
-export class PositionState {
-    pieces: PieceState[]
-
-    constructor(pieces?: PieceState[]) {
-        this.pieces = pieces === undefined ? [] : pieces;
-    }
-
-    get quantity(): number {
-        return this.pieces.length
-    }
-
-    get last(): PieceState {
-        return this.pieces[this.pieces.length - 1]
-    }
-}
-
-export interface DiceState {
-    value: number,
-    color: Color,
-    usageStatus: LayerStatus,
-    unavailabilityStatus: LayerStatus
-}
-
-export interface DragStatus {
-    clickX: number
-    clickY: number
-    clickedIndex: number
-    pickedColor: Color
-}
-
-export type PiecePlacement = Map<number, PositionState>
+import {PiecePlacement, PieceState, PositionState} from "./piece_placement.ts";
+import {DiceState} from "./DiceState.ts";
+import {DragStatus} from "./DragStatus.ts";
 
 export class GameState {
     private piecePlacement: PiecePlacement  // Текущая расстановка шашек на доске
@@ -70,16 +31,6 @@ export class GameState {
         this._dice2 = value;
     }
 
-
-    get pickedFrom(): number | null {
-        if (this.dragStatus === null) {
-            return null
-        } else {
-            return this.dragStatus.clickedIndex
-        }
-    }
-
-
     private _legalMoves: number[] = []  // Массив всех позиций, на которые можно сходить
 
     get legalMoves(): number[] {
@@ -98,6 +49,14 @@ export class GameState {
 
     set dragStatus(value: DragStatus | null) {
         this._dragStatus = value;
+    }
+
+    get pickedFrom(): number | null {
+        if (this.dragStatus === null) {
+            return null
+        } else {
+            return this.dragStatus.clickedIndex
+        }
     }
 
     addPiece(i: number, piece: PieceState) {

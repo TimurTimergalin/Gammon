@@ -4,7 +4,7 @@ import {useLayoutMeasure} from "../../hooks";
 import {BoardLayer} from "./board_layer/BoardLayer.tsx";
 import PiecesLayer from "./pieces_layer/PiecesLayer.js";
 import {SvgClientRectContext} from "./svg_client_rect_context.ts";
-import {GameState, PiecePlacement, PositionState} from "./common/GameState.ts";
+import {GameState} from "./common/game_state/GameState.ts";
 import {Color} from "./color.ts";
 import DiceLayer from "./dice_layer/DiceLayer.tsx";
 import {HoverLayer} from "./hover_layer/HoverLayer.tsx";
@@ -13,6 +13,7 @@ import {GameContext, GameContextProvider} from "./common/GameContext.ts";
 import {MoveHintLayer} from "./move_hint_layer/MoveHintLayer.tsx";
 import {DragPieceLayer} from "./pieces_layer/DragPieceLayer.tsx";
 import DebugGameController from "./common/game_controller/DebugGameController.ts";
+import {PiecePlacement, PositionState} from "./common/game_state/piece_placement.ts";
 
 const initGameState = () => {  // for dev purposes only
     const placement: PiecePlacement = new Map()
