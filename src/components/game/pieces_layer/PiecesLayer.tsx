@@ -52,7 +52,7 @@ const PiecesLayer = observer(() => {
             ) {
                 gameState.addPiece(gameState.dragStatus.clickedIndex, {color: gameState.dragStatus.pickedColor})
             } else {
-                gameState.addPiece(releaseIndex, {color: gameState.dragStatus.pickedColor})
+                gameController.movePiece(releaseIndex, gameState.dragStatus.pickedColor)
             }
 
             gameState.dragStatus = null

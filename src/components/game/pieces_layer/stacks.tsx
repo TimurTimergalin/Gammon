@@ -1,9 +1,9 @@
-import {pieceHeight, pieceWidth} from "../dimensions/board_size_constants.ts";
 import {SidePiece, TopDownPiece} from "./pieces.js";
 import {Direction} from "./direction.ts";
 import styled, {css, keyframes} from "styled-components";
 
 import {PieceState} from "../common/game_state/piece_placement.ts";
+import {getSidePieceY, getTopDownPieceY} from "../dimensions/functions.ts";
 
 interface StackProps {
     pieces: PieceState[]
@@ -29,7 +29,7 @@ const homingTopDownAnimation = (xFrom: number, yFrom: number, xTo: number, yTo: 
     }
     `
     return css`
-        animation: ${keyframe} .2s linear;
+        animation: ${keyframe} .1s linear;
     `
 }
 
@@ -46,7 +46,7 @@ const homingSidePieceAnimation = (xFrom: number, yFrom: number, xTo: number, yTo
     }
     `
     return css`
-        animation: ${keyframe} .2s linear;
+        animation: ${keyframe} .1s linear;
     `
 }
 
@@ -70,13 +70,12 @@ const HomingSidePiece = styled(SidePiece)<{
 
 export const TopDownStack = ({pieces, direction, originX, originY}: StackProps) => {
     const quantity = pieces.length
-    const dif = quantity > 7 ? pieceWidth / 4 : quantity > 4 ? pieceWidth / 2 : pieceWidth
     const finalPieces = []
 
     let i = 0
     for (const piece of pieces) {
         const toX = originX
-        const toY = originY + i * dif * direction
+        const toY = getTopDownPieceY(originY, direction, i, quantity)
         if (piece.from !== undefined) {
             finalPieces.push(
                 <HomingTopDownPiece color={piece.color} cx={toX} cy={toY} fromX={piece.from.x} fromY={piece.from.y}/>
@@ -101,7 +100,7 @@ export const SideStack = ({pieces, direction, originX, originY}: StackProps) => 
 
     for (const piece of pieces) {
         const toX = originX
-        const toY = originY + pieceHeight * i * direction
+        const toY = getSidePieceY(originY, direction, i)
         if (piece.from === undefined) {
             finalPieces.push(
                 <SidePiece x={toX} y={toY} color={piece.color}/>
