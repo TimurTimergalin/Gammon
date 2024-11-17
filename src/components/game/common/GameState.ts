@@ -70,15 +70,15 @@ export class GameState {
         this._dice2 = value;
     }
 
-    private _pickedFrom: number | null = null  // Откуда была подобрана фишка
 
     get pickedFrom(): number | null {
-        return this._pickedFrom;
+        if (this.dragStatus === null) {
+            return null
+        } else {
+            return this.dragStatus.clickedIndex
+        }
     }
 
-    set pickedFrom(value: number | null) {
-        this._pickedFrom = value;
-    }
 
     private _legalMoves: number[] = []  // Массив всех позиций, на которые можно сходить
 

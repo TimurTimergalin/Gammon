@@ -35,7 +35,6 @@ const PiecesLayer = observer(() => {
                 clickedIndex: clickedIndex,
                 pickedColor: pickedColor!
             }
-            gameState.pickedFrom = clickedIndex
             gameState.legalMoves = gameController.getLegalMoves(clickedIndex)
         }
 
@@ -57,7 +56,6 @@ const PiecesLayer = observer(() => {
             }
 
             gameState.dragStatus = null
-            gameState.pickedFrom = null
             gameState.legalMoves = []
         }
 
