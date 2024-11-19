@@ -24,17 +24,15 @@ export const MoveHintLayer = () => {
     }
 
     tokens.push(
-        <>
-            <HintToken cx={sideWidth + pieceWidth / 2} cy={sideWidth + storeHeight / 2} index={24} key={24}/>
-            <HintToken cx={boardWidth / 2} cy={topCy} index={25} key={25}/>
-            <HintToken cx={boardWidth - sideWidth - pieceWidth / 2} cy={sideWidth + storeHeight / 2} index={26}
-                       key={26}/>
-            <HintToken cx={sideWidth + pieceWidth / 2} cy={boardHeight - sideWidth - storeHeight / 2} index={27}
-                       key={27}/>
-            <HintToken cx={boardWidth / 2} cy={bottomCy} index={28} key={28}/>
-            <HintToken cx={boardWidth - sideWidth - pieceWidth / 2} cy={boardHeight - sideWidth - storeHeight / 2}
-                       index={29} key={29}/>
-        </>
+        <HintToken cx={sideWidth + pieceWidth / 2} cy={sideWidth + storeHeight / 2} index={24} key={24}/>,
+        <HintToken cx={boardWidth / 2} cy={topCy} index={25} key={25}/>,
+        <HintToken cx={boardWidth - sideWidth - pieceWidth / 2} cy={sideWidth + storeHeight / 2} index={26}
+                   key={26}/>,
+        <HintToken cx={sideWidth + pieceWidth / 2} cy={boardHeight - sideWidth - storeHeight / 2} index={27}
+                   key={27}/>,
+        <HintToken cx={boardWidth / 2} cy={bottomCy} index={28} key={28}/>,
+        <HintToken cx={boardWidth - sideWidth - pieceWidth / 2} cy={boardHeight - sideWidth - storeHeight / 2}
+                   index={29} key={29}/>
     )
     return (
         <>

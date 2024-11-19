@@ -78,11 +78,11 @@ export const TopDownStack = ({pieces, direction, originX, originY}: StackProps) 
         const toY = getTopDownPieceY(originY, direction, i, quantity)
         if (piece.from !== undefined) {
             finalPieces.push(
-                <HomingTopDownPiece color={piece.color} cx={toX} cy={toY} fromX={piece.from.x} fromY={piece.from.y}/>
+                <HomingTopDownPiece color={piece.color} cx={toX} cy={toY} fromX={piece.from.x} fromY={piece.from.y} key={i}/>
             )
         } else {
             finalPieces.push(
-                <AligningTopDownPiece color={piece.color} cx={toX} cy={toY}/>
+                <AligningTopDownPiece color={piece.color} cx={toX} cy={toY} key={i}/>
             )
         }
         ++i
@@ -103,11 +103,11 @@ export const SideStack = ({pieces, direction, originX, originY}: StackProps) => 
         const toY = getSidePieceY(originY, direction, i)
         if (piece.from === undefined) {
             finalPieces.push(
-                <SidePiece x={toX} y={toY} color={piece.color}/>
+                <SidePiece x={toX} y={toY} color={piece.color} key={i}/>
             )
         } else {
             finalPieces.push(
-                <HomingSidePiece color={piece.color} x={toX} y={toY} fromX={piece.from.x} fromY={piece.from.y}/>
+                <HomingSidePiece color={piece.color} x={toX} y={toY} fromX={piece.from.x} fromY={piece.from.y} key={i}/>
             )
         }
         ++i

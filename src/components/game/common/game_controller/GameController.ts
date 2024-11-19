@@ -1,13 +1,13 @@
-import {Color} from "../../color.ts";
+import {Color} from "../color.ts";
 
 export interface GameController {
-    getNewDice(): void
+    endTurn(): void
 
     getLegalMoves(point: number): number[]
 
     isTouchable(point: number): boolean
 
-    movePiece(to: number, color: Color): void
+    movePiece(from: number, to: number, color: Color): void
 
-    movePieceFrom(to: number, from: number): void
+    init(): void
 }

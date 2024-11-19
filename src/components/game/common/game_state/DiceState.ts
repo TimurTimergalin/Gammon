@@ -1,4 +1,4 @@
-import {Color} from "../../color.ts";
+import {Color} from "../color.ts";
 import {LayerStatus} from "../../dice_layer/LayerStatus.ts";
 
 export interface DiceState {

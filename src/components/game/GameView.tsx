@@ -1,35 +1,24 @@
 import {boardHeight, boardWidth, svgOriginX, svgOriginY} from "./dimensions/board_size_constants.ts";
-import {useCallback, useRef, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {useLayoutMeasure} from "../../hooks";
 import {BoardLayer} from "./board_layer/BoardLayer.tsx";
 import PiecesLayer from "./pieces_layer/PiecesLayer.js";
 import {SvgClientRectContext} from "./svg_client_rect_context.ts";
 import {GameState} from "./common/game_state/GameState.ts";
-import {Color} from "./color.ts";
+import {Color} from "./common/color.ts";
 import DiceLayer from "./dice_layer/DiceLayer.tsx";
 import {HoverLayer} from "./hover_layer/HoverLayer.tsx";
 import {HoverTracker} from "./common/HoverTracker.ts";
 import {GameContext, GameContextProvider} from "./common/GameContext.ts";
 import {MoveHintLayer} from "./move_hint_layer/MoveHintLayer.tsx";
 import {DragPieceLayer} from "./pieces_layer/DragPieceLayer.tsx";
-import DebugGameController from "./common/game_controller/DebugGameController.ts";
-import {PiecePlacement, PositionState} from "./common/game_state/piece_placement.ts";
+import {LocalGameController} from "./common/game_controller/LocalGameController.ts";
+import {BackgammonPositionIndex, BackgammonPositionProp} from "./common/game_rule/backgammon/types.ts";
+import {BackgammonRules} from "./common/game_rule/backgammon/Rules.ts";
+import {BackgammonIndexMapping} from "./common/game_rule/backgammon/IndexMapping.ts";
+import {BackgammonPropMapping} from "./common/game_rule/backgammon/PropMapping.ts";
+import {backgammonDefaultPlacement} from "./common/game_rule/backgammon/placement_factory.ts";
 
-const initGameState = () => {  // for dev purposes only
-    const placement: PiecePlacement = new Map()
-    placement.set(11, new PositionState([{color: Color.WHITE}]))
-    placement.set(0, new PositionState([{color: Color.WHITE}]))
-    placement.set(16, new PositionState([{color: Color.WHITE}]))
-    placement.set(18, new PositionState([{color: Color.WHITE}]))
-    placement.set(29, new PositionState([{color: Color.WHITE}]))
-
-    placement.set(23, new PositionState([{color: Color.BLACK}]))
-    placement.set(12, new PositionState([{color: Color.BLACK}]))
-    placement.set(4, new PositionState([{color: Color.BLACK}]))
-    placement.set(6, new PositionState([{color: Color.BLACK}]))
-
-    return new GameState(placement)
-}
 
 export default function GameView() {
     const svgRef = useRef<SVGSVGElement | null>(null)
@@ -37,9 +26,22 @@ export default function GameView() {
     const measureSvg = useCallback(() => setSvgRect(svgRef.current!.getBoundingClientRect()), [])
     useLayoutMeasure(measureSvg)
 
-    const gameState = useRef(initGameState())
+    const gameState = useRef(new GameState())
     const hoverTracker = useRef(new HoverTracker())
-    const gameController = useRef(new DebugGameController(gameState.current))
+    const gameController = useRef(
+        new LocalGameController<BackgammonPositionIndex, BackgammonPositionProp>(
+            new BackgammonRules(),
+            new BackgammonIndexMapping(Color.WHITE),
+            new BackgammonPropMapping(),
+            gameState.current,
+            backgammonDefaultPlacement
+        )
+    )
+
+    useEffect(
+        () => gameController.current.init(),
+        []
+    )
 
     return (
         <GameContextProvider value={new GameContext(gameState.current, hoverTracker.current, gameController.current)}>

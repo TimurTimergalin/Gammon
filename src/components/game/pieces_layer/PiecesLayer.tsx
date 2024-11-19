@@ -28,6 +28,7 @@ const PiecesLayer = observer(() => {
             }
 
             const pickedColor = pickedStack.last.color
+            gameState.legalMoves = gameController.getLegalMoves(clickedIndex)
             gameState.removePiece(clickedIndex)
             gameState.dragStatus = {
                 clickX: e.clientX,
@@ -35,7 +36,6 @@ const PiecesLayer = observer(() => {
                 clickedIndex: clickedIndex,
                 pickedColor: pickedColor!
             }
-            gameState.legalMoves = gameController.getLegalMoves(clickedIndex)
         }
 
         const onMouseUp = (e: MouseEvent) => {
@@ -52,7 +52,7 @@ const PiecesLayer = observer(() => {
             ) {
                 gameState.addPiece(gameState.dragStatus.clickedIndex, {color: gameState.dragStatus.pickedColor})
             } else {
-                gameController.movePiece(releaseIndex, gameState.dragStatus.pickedColor)
+                gameController.movePiece(gameState.dragStatus.clickedIndex, releaseIndex, gameState.dragStatus.pickedColor)
             }
 
             gameState.dragStatus = null

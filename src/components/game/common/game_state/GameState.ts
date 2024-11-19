@@ -4,11 +4,10 @@ import {DiceState} from "./DiceState.ts";
 import {DragStatus} from "./DragStatus.ts";
 
 export class GameState {
-    private piecePlacement: PiecePlacement  // Текущая расстановка шашек на доске
+    private piecePlacement: PiecePlacement = new Map() // Текущая расстановка шашек на доске
 
-    constructor(piecePlacement: PiecePlacement) {
+    constructor() {
         makeAutoObservable(this)
-        this.piecePlacement = piecePlacement
     }
 
     private _dice1: DiceState | null = null  // Первая кость
@@ -87,5 +86,12 @@ export class GameState {
             return posState
         }
         return to_return
+    }
+    setPiecePlacement(placement: PiecePlacement) {
+        this.piecePlacement = placement
+    }
+
+    apply(callback: () => void) {
+        callback()
     }
 }
