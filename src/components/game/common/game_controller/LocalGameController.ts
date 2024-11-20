@@ -37,6 +37,8 @@ export class LocalGameController<PositionIndexType, PositionPropsType> extends B
 
     endTurn(): void {
         this.gameState.turnComplete = false
+        this.gameState.movesMade = false
+        this.madeMoves = []
         this.player = oppositeColor(this.player)
         this.setDice(this.generateDice(), [this.player, this.player])
     }

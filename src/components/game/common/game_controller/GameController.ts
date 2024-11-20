@@ -10,4 +10,6 @@ export interface GameController {
     movePiece(from: number, to: number, color: Color): void
 
     init(): void
+
+    undoMoves(): void
 }

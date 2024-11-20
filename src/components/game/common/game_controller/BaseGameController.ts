@@ -27,6 +27,7 @@ export abstract class BaseGameController<PositionIndexType, PositionPropsType> i
     protected gameState: GameState
     protected player: Color
     protected active = false
+    protected madeMoves: [number, number, [number, number][], number[]][] = []
 
     protected legalMovesMap: Map<number, [[number, number][], number[]]> = new Map()
 
@@ -120,35 +121,44 @@ export abstract class BaseGameController<PositionIndexType, PositionPropsType> i
         console.assert(this.gameState.dice2 !== null)
         const dice1 = this.gameState.dice1!
         const dice2 = this.gameState.dice2!
-        if (dice1.value === dice2.value) {
-            console.assert(dice1.value === diceVal)
-            const dec = (st: LayerStatus) => (st == LayerStatus.FULL ? LayerStatus.HALF : LayerStatus.NONE)
-            if (dice1.usageStatus === LayerStatus.FULL) {
-                console.assert(dice2.usageStatus !== LayerStatus.NONE)
-                dice2.usageStatus = dec(dice2.usageStatus)
-            } else {
-                dice1.usageStatus = dec(dice1.usageStatus)
+
+        this.gameState.apply(
+            () => {
+                if (dice1.value === dice2.value) {
+                    console.assert(dice1.value === diceVal)
+                    const dec = (st: LayerStatus) => ((st == LayerStatus.FULL) ? LayerStatus.HALF : LayerStatus.NONE)
+                    if (dice1.usageStatus === LayerStatus.FULL) {
+                        console.assert(dice2.usageStatus !== LayerStatus.NONE)
+                        dice2.usageStatus = dec(dice2.usageStatus)
+                    } else {
+                        dice1.usageStatus = dec(dice1.usageStatus)
+                    }
+                } else {
+                    const targetDice = dice1.value === diceVal ? dice1 : dice2
+                    console.assert(targetDice.value === diceVal)
+                    console.assert(targetDice.usageStatus === LayerStatus.FULL)
+                    targetDice.usageStatus = LayerStatus.NONE
+                }
             }
-        } else {
-            const targetDice = dice1.value === diceVal ? dice1 : dice2
-            console.assert(targetDice.value === diceVal)
-            console.assert(targetDice.usageStatus === LayerStatus.FULL)
-            targetDice.usageStatus = LayerStatus.NONE
-        }
+        )
     }
 
     protected movePieceFrom(to: number, from: number) {
-        const fromProps = this.gameState.getPositionProps(from)
-        const fromTotal = fromProps.quantity
-        const fromX = getStackOriginX(from)
-        let fromY: number
-        if (getStackType(from) == TopDownStack) {
-            fromY = getTopDownPieceY(getStackOriginY(from), getStackDirection(from), fromTotal - 1, fromTotal)
-        } else {
-            fromY = getSidePieceY(getStackOriginY(from), getStackDirection(from), fromTotal - 1)
-        }
-        const {color} = this.gameState.removePiece(from)
-        this.gameState.addPiece(to, {color: color, from: {x: fromX, y: fromY}})
+        this.gameState.apply(
+            () => {
+                const fromProps = this.gameState.getPositionProps(from)
+                const fromTotal = fromProps.quantity
+                const fromX = getStackOriginX(from)
+                let fromY: number
+                if (getStackType(from) == TopDownStack) {
+                    fromY = getTopDownPieceY(getStackOriginY(from), getStackDirection(from), fromTotal - 1, fromTotal)
+                } else {
+                    fromY = getSidePieceY(getStackOriginY(from), getStackDirection(from), fromTotal - 1)
+                }
+                const {color} = this.gameState.removePiece(from)
+                this.gameState.addPiece(to, {color: color, from: {x: fromX, y: fromY}})
+            }
+        )
     }
 
     movePiece(from: number, to: number, color: Color): void {
@@ -156,6 +166,8 @@ export abstract class BaseGameController<PositionIndexType, PositionPropsType> i
         const legalMoveSaved = this.legalMovesMap.get(to)
         console.assert(legalMoveSaved !== undefined)
         const [additionalMoves, diceUsed] = legalMoveSaved!
+        this.madeMoves.push([from, to, ...legalMoveSaved!])
+        this.gameState.movesMade = true
         for (const [from_, to_] of additionalMoves) {
             this.movePieceFrom(to_, from_)
         }
@@ -177,8 +189,37 @@ export abstract class BaseGameController<PositionIndexType, PositionPropsType> i
         }
     }
 
+    undoMoves() {
+        console.assert(this.madeMoves.length > 0)
+        this.gameState.turnComplete = false
+        this.gameState.movesMade = false
+
+        for (const [from, to, additionalMoves, diceUsed] of this.madeMoves) {
+            this.rules.undoMove(
+                this.indexMapping.physicalToLogical(from),
+                this.indexMapping.physicalToLogical(to),
+                additionalMoves.map(
+                    ([from_, to_]): [PositionIndexType, PositionIndexType] =>
+                        [this.indexMapping.physicalToLogical(from_), this.indexMapping.physicalToLogical(to_)]
+                ),
+                diceUsed
+            )
+            for (const diceVal of diceUsed) {
+                this.undoUseDice(diceVal)
+            }
+
+            this.movePieceFrom(from, to)
+            for (const [from_, to_] of additionalMoves.reverse()) {
+                this.movePieceFrom(from_, to_)
+            }
+
+            this.gameState.forceUpdate()
+        }
+        this.madeMoves = []
+    }
+
     protected generateDice(): [number, number] {
-        const genNum = () => Math.ceil(Math.random() * 6 + 1e-9)
+        const genNum = () => Math.ceil(Math.random() * 6 + 5e-324)
         return [genNum(), genNum()]
     }
 
@@ -213,6 +254,6 @@ export abstract class BaseGameController<PositionIndexType, PositionPropsType> i
                 new PositionState(this.propMapping.logicalToPhysical(value).map(colorArrayToPieceState))
             )
         }
-        this.gameState.setPiecePlacement(res)
+        this.gameState.piecePlacement = res
     }
 }

@@ -4,7 +4,7 @@ import {DiceState} from "./DiceState.ts";
 import {DragStatus} from "./DragStatus.ts";
 
 export class GameState {
-    private piecePlacement: PiecePlacement = new Map() // Текущая расстановка шашек на доске
+    _piecePlacement: PiecePlacement = new Map() // Текущая расстановка шашек на доске
 
     constructor() {
         makeAutoObservable(this)
@@ -59,6 +59,14 @@ export class GameState {
         this._turnComplete = val
     }
 
+    private _movesMade: boolean = false
+    get movesMade(): boolean {
+        return this._movesMade
+    }
+    set movesMade(val: boolean) {
+        this._movesMade = val
+    }
+
     get pickedFrom(): number | null {
         if (this.dragStatus === null) {
             return null
@@ -91,16 +99,27 @@ export class GameState {
         const to_return = this.piecePlacement.get(i)
         if (to_return === undefined) {
             const posState = new PositionState()
-            this.piecePlacement.set(i, posState)
+            this._piecePlacement.set(i, posState)
             return posState
         }
         return to_return
     }
-    setPiecePlacement(placement: PiecePlacement) {
-        this.piecePlacement = placement
+
+    get piecePlacement(): PiecePlacement {
+        return this._piecePlacement
+    }
+
+    set piecePlacement(placement: PiecePlacement) {
+        for (let i = 0; i < 30; ++i) {
+            if (!placement.has(i)) {
+                placement.set(i, new PositionState([]))
+            }
+        }
+        this._piecePlacement = placement
     }
 
     apply(callback: () => void) {
         callback()
     }
 }
+

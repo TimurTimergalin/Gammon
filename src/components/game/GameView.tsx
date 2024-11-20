@@ -17,8 +17,10 @@ import {BackgammonPositionIndex, BackgammonPositionProp} from "./common/game_rul
 import {BackgammonRules} from "./common/game_rule/backgammon/Rules.ts";
 import {BackgammonIndexMapping} from "./common/game_rule/backgammon/IndexMapping.ts";
 import {BackgammonPropMapping} from "./common/game_rule/backgammon/PropMapping.ts";
-import {backgammonDefaultPlacement} from "./common/game_rule/backgammon/placement_factory.ts";
+import {backgammonDebugPlacement} from "./common/game_rule/backgammon/placement_factory.ts";
 import {FinishTurnButton} from "./control_layer/FinishTurnButton.tsx";
+import {UndoMovesButton} from "./control_layer/UndoMovesButton.tsx";
+import {spy} from "mobx";
 
 
 export default function GameView() {
@@ -35,7 +37,7 @@ export default function GameView() {
             new BackgammonIndexMapping(Color.WHITE),
             new BackgammonPropMapping(),
             gameState.current,
-            backgammonDefaultPlacement
+            backgammonDebugPlacement
         )
     )
 
@@ -43,6 +45,15 @@ export default function GameView() {
         () => gameController.current.init(),
         []
     )
+
+    useEffect(() => {
+        spy(
+            (e) => {
+                console.log(e)
+            }
+        )
+        // console.log(getObserverTree(gameState.current, "getPositionProps"))
+    }, []);
 
     return (
         <GameContextProvider value={new GameContext(gameState.current, hoverTracker.current, gameController.current)}>
@@ -59,7 +70,8 @@ export default function GameView() {
                     <DragPieceLayer/>
                     <HoverLayer/>
                 </svg>
-                <FinishTurnButton />
+                <FinishTurnButton/>
+                <UndoMovesButton/>
             </SvgClientRectContext.Provider>
         </GameContextProvider>
     )
