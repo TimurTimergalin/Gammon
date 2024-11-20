@@ -50,6 +50,15 @@ export class GameState {
         this._dragStatus = value;
     }
 
+    private _turnComplete: boolean = false
+    get turnComplete(): boolean {
+        return this._turnComplete
+    }
+
+    set turnComplete(val: boolean) {
+        this._turnComplete = val
+    }
+
     get pickedFrom(): number | null {
         if (this.dragStatus === null) {
             return null

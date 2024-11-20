@@ -8,6 +8,7 @@ export interface Rules<PositionIndexType, PositionPropsType> {
     get placement(): Map<PositionIndexType, PositionPropsType>
     set placement(placement: Map<PositionIndexType, PositionPropsType>)
     owns(player: Color, position: PositionIndexType): boolean
+    isTurnComplete(): boolean
 }
 
 

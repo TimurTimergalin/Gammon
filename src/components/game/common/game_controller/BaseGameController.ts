@@ -172,6 +172,9 @@ export abstract class BaseGameController<PositionIndexType, PositionPropsType> i
             ),
             diceUsed
         )
+        if (this.rules.isTurnComplete()) {
+            this.gameState.turnComplete = true
+        }
     }
 
     protected generateDice(): [number, number] {
@@ -195,6 +198,9 @@ export abstract class BaseGameController<PositionIndexType, PositionPropsType> i
 
         const availableDice = this.rules.calculateDiceValues(diceValues, this.player)
         this.disableDice(availableDice)
+        if (availableDice.length === 0) {
+            this.gameState.turnComplete = true
+        }
     }
 
     protected setPlacement(placement: Map<PositionIndexType, PositionPropsType>) {

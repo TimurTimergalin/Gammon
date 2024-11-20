@@ -18,6 +18,15 @@ export const getStore = (player: Color): BackgammonPositionIndex => {
 
 export const isBar = (index: BackgammonPositionIndex): boolean => index === "White Bar" || index === "Black Bar"
 export const isStore = (index: BackgammonPositionIndex): boolean => index === "White Store" || index === "Black Store"
+export const isHome = (index: BackgammonPositionIndex, player: Color) => {
+    if (typeof index !== "number") {
+        return false
+    }
+    if (player === Color.WHITE) {
+        return index <= 6
+    }
+    return index >= 19
+}
 export const getValue = (index: BackgammonPositionIndex): number => {
     if (typeof index === "number") {
         return index

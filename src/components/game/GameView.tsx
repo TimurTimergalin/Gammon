@@ -18,6 +18,7 @@ import {BackgammonRules} from "./common/game_rule/backgammon/Rules.ts";
 import {BackgammonIndexMapping} from "./common/game_rule/backgammon/IndexMapping.ts";
 import {BackgammonPropMapping} from "./common/game_rule/backgammon/PropMapping.ts";
 import {backgammonDefaultPlacement} from "./common/game_rule/backgammon/placement_factory.ts";
+import {FinishTurnButton} from "./control_layer/FinishTurnButton.tsx";
 
 
 export default function GameView() {
@@ -58,6 +59,7 @@ export default function GameView() {
                     <DragPieceLayer/>
                     <HoverLayer/>
                 </svg>
+                <FinishTurnButton />
             </SvgClientRectContext.Provider>
         </GameContextProvider>
     )

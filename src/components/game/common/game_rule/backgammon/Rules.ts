@@ -1,11 +1,13 @@
 import {
     allIndices,
+    BackgammonPositionIndex,
+    BackgammonPositionProp,
     getBar,
     getStore,
     getValue,
     isBar,
-    isStore,
-    BackgammonPositionIndex, BackgammonPositionProp
+    isHome,
+    isStore
 } from "./types.ts";
 import {Color, oppositeColor} from "../../color.ts";
 import {Rules} from "../Rules.ts";
@@ -25,6 +27,46 @@ export class BackgammonRules implements Rules<BackgammonPositionIndex, Backgammo
     owns(player: Color, position: BackgammonPositionIndex): boolean {
         const positionProps = this._placement.get(position) || null
         return positionProps !== null && positionProps[0] === player
+    }
+
+    private hasEmptyStore(player: Color) {
+        console.assert((this._placement.get(getBar(player)) || null) === null)
+
+        for (let i = 1; i <= 24; ++i) {
+            if (isHome(i, player)) {
+                continue
+            }
+            const pos = this._placement.get(i) || null
+            if (pos !== null && pos[0] === player) {
+                return false
+            }
+        }
+        return true
+    }
+
+    private isMaxHomePosition(ind: BackgammonPositionIndex, player: Color) {
+        if (!isHome(ind, player)) {
+            return false
+        }
+
+        const check = (i: number) => {
+            const pos = this._placement.get(i) || null
+            return pos !== null && pos[0] === player
+        }
+        if (player === Color.WHITE) {
+            for (let i = (ind as number) + 1; i <= 6; ++i) {
+                if (check(i)) {
+                    return false
+                }
+            }
+            return true
+        }
+        for (let i = 19; i < (ind as number); ++i) {
+            if (check(i)) {
+                return false
+            }
+        }
+        return true
     }
 
     // Может ли игрок player передвинуть фишку с from на to
@@ -55,37 +97,22 @@ export class BackgammonRules implements Rules<BackgammonPositionIndex, Backgammo
         if (to === getStore(oppositeColor(player))) {  // Нельзя ходить в чужой стор
             return false
         }
-        if (player === Color.WHITE) {
-            if (isStore(to)) {  // Нельзя ходить в стор, если не все фишки в доме
-                let noPiecesOutsideHome = true
-                for (let i = 24; i > 6; --i) {
-                    const position = this._placement.get(i) || null
-                    const quantity = position === null ? 0 : position[1]
-                    if (quantity !== 0) {
-                        noPiecesOutsideHome = false
-                        break
-                    }
-                }
-                if (!noPiecesOutsideHome) {
-                    return false
-                }
-            }
-            return dice.includes(getValue(from) - getValue(to))
-        }
 
-        if (isStore(to)) {  // Нельзя ходить в стор, если не все фишки в доме
-            let noPiecesOutsideHome = true
-            for (let i = 1; i <= 18; ++i) {
-                const position = this._placement.get(i) || null
-                const quantity = position === null ? 0 : position[1]
-                if (quantity !== 0) {
-                    noPiecesOutsideHome = false
-                    break
-                }
-            }
-            if (!noPiecesOutsideHome) {
+        if (isStore(to)) {
+            if (!this.hasEmptyStore(player)) { // Нельзя ходить в стор, если не все фишки в доме
                 return false
             }
+            if (this.isMaxHomePosition(from, player)) {  // Проверить можно ли выбросить фишку, используя кость с большим значением
+                console.assert(typeof from === "number")
+                const jumpFor = player === Color.WHITE ? from as number : 25 - (from as number)
+                if (dice.filter(x => x >= jumpFor).length > 0) {
+                    return true
+                }
+            }
+        }
+
+        if (player === Color.WHITE) {
+            return dice.includes(getValue(from) - getValue(to))
         }
 
         return dice.includes(getValue(to) - getValue(from))
@@ -138,13 +165,13 @@ export class BackgammonRules implements Rules<BackgammonPositionIndex, Backgammo
 
         if (player === Color.WHITE) {
             const res: BackgammonPositionIndex[] = dice.map(x => fromValue - x).filter(x => x >= 1 && x <= 24)
-            if (dice.includes(fromValue)) {
+            if (dice.includes(fromValue) || this.isMaxHomePosition(from, player)) {
                 res.push("White Store")
             }
             return res
         }
         const res: BackgammonPositionIndex[] = dice.map(x => fromValue + x).filter(x => x >= 1 && x <= 24)
-        if (dice.includes(25 - fromValue)) {
+        if (dice.includes(25 - fromValue) || this.isMaxHomePosition(from, player)) {
             res.push("Black Store")
         }
         return res
@@ -174,7 +201,10 @@ export class BackgammonRules implements Rules<BackgammonPositionIndex, Backgammo
                 for (const candidate of this.getPotentialDestinations(from, player, _dice)) {  // для каждого кандидата цели
                     if (this.movable(from, candidate, player, _dice)) {  // если из источника в цель можно передвинуть
                         const toBar = this.moveWithBlot(from, candidate, player)  // переместить фишку (и возможно выбить блот)
-                        const diceValue = Math.abs(getValue(from) - getValue(candidate))
+                        let diceValue = Math.abs(getValue(from) - getValue(candidate))
+                        if (!_dice.includes(diceValue)) {
+                            diceValue = Math.max(..._dice)
+                        }
                         this.removeDice(diceValue, _dice)  // удалить использованную для хода кость
                         const res = 1 + getMaxMoves(_dice)  // Рекурсивный вызов
                         // Откат всех изменений
@@ -196,6 +226,20 @@ export class BackgammonRules implements Rules<BackgammonPositionIndex, Backgammo
 
         const max = getMaxMoves(dice)
         dice.sort((a, b) => b - a)
+
+        if (dice[0] !== dice[1] && max === 1) {
+            for (const from of allIndices()) {
+                for (const candidate of this.getPotentialDestinations(from, player, [dice[0]])) {
+                    if (this.movable(from, candidate, player, [dice[0]])) {
+                        this.diceValues = [dice[0]]
+                        return [dice[0]]
+                    }
+                }
+            }
+            this.diceValues = [dice[1]]
+            return [dice[1]]
+        }
+
         this.diceValues = Array.from(dice.slice(0, max))
         return Array.from(this.diceValues)  // Чтобы нельзя было поменять извне
     }
@@ -211,7 +255,10 @@ export class BackgammonRules implements Rules<BackgammonPositionIndex, Backgammo
                     if (toBar) {
                         additionalMoves.push([candidate, bar])
                     }
-                    const diceValue = Math.abs(getValue(from_) - getValue(candidate))
+                    let diceValue = Math.abs(getValue(from_) - getValue(candidate))
+                    if (!this.diceValues.includes(diceValue)) {
+                            diceValue = Math.max(...this.diceValues)
+                        }
                     diceUsed.push(diceValue)
                     this.removeDice(diceValue, this.diceValues)
                     res.push([candidate, Array.from(additionalMoves), Array.from(diceUsed)])
@@ -256,6 +303,9 @@ export class BackgammonRules implements Rules<BackgammonPositionIndex, Backgammo
                 if (!additionalMovesAreEqual) {
                     shouldAdd.delete(to)
                 }
+                if (diceUsed.length < met.get(to)![1].length) {
+                    met.set(to, [additionalMoves, diceUsed])
+                }
             }
             return Array.from(met.entries()).filter(e => shouldAdd.has(e[0])).map(e => [e[0], ...e[1]])
         }
@@ -280,6 +330,10 @@ export class BackgammonRules implements Rules<BackgammonPositionIndex, Backgammo
         for (const[from_, to_] of additionalMoves.reverse()) {
             this.move(to_, from_)
         }
+    }
+
+    isTurnComplete(): boolean {
+        return this.diceValues.length === 0;
     }
 }
 

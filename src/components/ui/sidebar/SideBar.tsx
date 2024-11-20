@@ -26,7 +26,7 @@ export default function SideBar() {
     const shrankPercentage = 62.5
 
     const measureScreen = useCallback(() => {
-        const minExpandedWidth = expandedSize / 0.12
+        const minExpandedWidth = expandedSize / 0.15
         setDisplayText(document.body.offsetWidth >= minExpandedWidth)
     }, [])
     useLayoutMeasure(measureScreen)

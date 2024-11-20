@@ -69,13 +69,13 @@ export class BackgammonIndexMapping implements IndexMapping<BackgammonPositionIn
             return "Black Bar"
         }
         if (physical == 26) {
-            return "White Store"
+            return "Black Store"
         }
         if (physical == 28) {
             return "White Bar"
         }
         if (physical == 29) {
-            return "Black Store"
+            return "White Store"
         }
 
         throw RangeError(`${physical} is not mapped to any logical position`)

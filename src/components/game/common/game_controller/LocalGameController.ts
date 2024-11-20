@@ -29,8 +29,6 @@ export class LocalGameController<PositionIndexType, PositionPropsType> extends B
             [diceVal1, diceVal2] = this.generateDice()
         }
 
-        console.log("Dice generated: ", diceVal1, diceVal2)
-
         this.player = diceVal1 < diceVal2 ? Color.BLACK : Color.WHITE
         this.setDice([diceVal1, diceVal2], [Color.WHITE, Color.BLACK])
         this.active = true
@@ -38,6 +36,7 @@ export class LocalGameController<PositionIndexType, PositionPropsType> extends B
     }
 
     endTurn(): void {
+        this.gameState.turnComplete = false
         this.player = oppositeColor(this.player)
         this.setDice(this.generateDice(), [this.player, this.player])
     }
