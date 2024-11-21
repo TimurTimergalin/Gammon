@@ -1,63 +1,63 @@
-import IconedText from "./IconedText.js";
-import {useCallback, useRef, useState} from "react";
-import {useLayoutMeasure} from "../../../hooks";
+import {CSSProperties, useCallback, useContext, useState} from "react";
+import {LayoutModeContext} from "../adapt/LayoutModeContext.ts";
+import {expandedSideBarWidth, shrankSideBarWidth} from "./size_constants.ts";
+import {Logo} from "./Logo.tsx";
+import {TextWithIcon} from "./TextWithIcon.tsx";
 
-export default function SideBar() {
-    const textStyle = {
-        color: "white",
-        fontSize: "1.3em",
-        fontFamily: "\"Arial\", sans-serif"
+export const SideBar = () => {
+    const layoutMode = useContext(LayoutModeContext)
+
+    const [menuOpen, setMenuOpen] = useState(false)
+
+    const collapsedStyle: CSSProperties = {
+        position: "fixed",
+        transition: "transform .1s ease-out",
+        transform: menuOpen ? "translate(0)" : "translate(-100%)",
+        left: 0,
+        zIndex: 1
     }
 
-    const logoStyle = {
-        ...textStyle,
-        fontSize: "2em",
-        fontWeight: "bold"
+    const barStyle: CSSProperties = {
+        width: layoutMode === "Free" || layoutMode === "Collapsed" ? expandedSideBarWidth : shrankSideBarWidth,
+        height: "100%",
+        backgroundColor: "#200a06",
+        ...(layoutMode === "Collapsed" ? collapsedStyle : {})
     }
 
-    const containerStyle = {
-        marginBottom: "20px"
+    const screenStyle: CSSProperties = {
+        position: "fixed",
+        width: "100%",
+        height: "100%",
+        backgroundColor: "#66666666",
+        display: menuOpen ? "block" : "none"
     }
 
-    const [displayText, setDisplayText] = useState(true)
-    const sideBarRef = useRef(null)
+    const menuIconStyle: CSSProperties = {
+        width: "50px",
+        alignSelf: "start",
+        marginLeft: "15px",
+        marginTop: "10px",
+        marginBottom: "15px"
+    }
 
-    const expandedSize = 170
-    const shrankPercentage = 62.5
+    const toggleMenuCallback = useCallback(
+        () => {
+            setMenuOpen(!menuOpen)
+        }, [menuOpen]
+    )
 
-    const measureScreen = useCallback(() => {
-        const minExpandedWidth = expandedSize / 0.15
-        setDisplayText(document.body.offsetWidth >= minExpandedWidth)
-    }, [])
-    useLayoutMeasure(measureScreen)
-
-    const sideBarPaddingTop = 20
     return (
-        <div
-            style={{
-                width: displayText ? `${expandedSize}px` : `${shrankPercentage}px`,
-                height: `calc(100% - ${sideBarPaddingTop}px)`,
-                backgroundColor: "#200a06",
-                paddingTop: `${sideBarPaddingTop}px`,
-            }}
-            ref={sideBarRef}
-        >
-            <IconedText
-                text={"Logo"}
-                imageSrc={"placeholder.svg"}
-                imageAlt={"Logo"}
-                textStyle={logoStyle}
-                containerStyle={containerStyle}
-                displayText={displayText}
-            />
-            <IconedText
-                text={"Play"}
-                imageSrc={"placeholder.svg"}
-                imageAlt={"Play"}
-                textStyle={textStyle}
-                containerStyle={containerStyle}
-                displayText={displayText}
-            />
-        </div>
+        <>
+            <div style={barStyle}>
+                <Logo/>
+                <TextWithIcon text={"Играть"} imageSrc={"placeholder.svg"} imageAlt={"Play icon"}/>
+            </div>
+            {layoutMode === "Collapsed" &&
+                <>
+                    <img src={"menu_icon.svg"} style={menuIconStyle} alt={"Menu"} onClick={toggleMenuCallback}/>
+                    <div style={screenStyle} onClick={toggleMenuCallback}/>
+                </>
+            }
+        </>
     )
 }

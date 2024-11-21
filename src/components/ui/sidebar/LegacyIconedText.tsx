@@ -1,4 +1,4 @@
-export default function IconedText({text, imageSrc, imageAlt, textStyle, containerStyle, displayText}: {
+export default function LegacyIconedText({text, imageSrc, imageAlt, textStyle, containerStyle, displayText}: {
     text: string,
     imageSrc: string,
     imageAlt: string,

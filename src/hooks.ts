@@ -1,4 +1,4 @@
-import {EffectCallback, useEffect, useLayoutEffect, useState} from "react";
+import {EffectCallback, RefObject, useEffect, useLayoutEffect, useState} from "react";
 
 export function useMousePosition(initX: number, initY: number) {
     const [mousePos, setMousePosition] = useState([initX, initY])
@@ -15,15 +15,26 @@ export function useMousePosition(initX: number, initY: number) {
     return mousePos
 }
 
-export function useLayoutMeasure(f: EffectCallback) {
+export function useLayoutMeasure(f: EffectCallback, receiver?: RefObject<Element>) {
     useLayoutEffect(() => {
-        window.addEventListener("resize", f)
         const cleanup = f()
-        return () => {
-            window.removeEventListener("resize", f)
-            if (cleanup !== undefined) {
-                cleanup()
+        if (receiver === undefined) {
+            window.addEventListener("resize", f)
+            return () => {
+                window.removeEventListener("resize", f)
+                if (cleanup !== undefined) {
+                    cleanup()
+                }
+            }
+        } else {
+            const observer = new ResizeObserver(f)
+            observer.observe(receiver.current!)
+            return () => {
+                observer.disconnect()
+                if (cleanup !== undefined) {
+                    cleanup()
+                }
             }
         }
-    }, [f]);
+    }, [f, receiver]);
 }

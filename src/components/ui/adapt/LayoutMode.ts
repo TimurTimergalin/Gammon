@@ -1,0 +1,1 @@
+export type LayoutMode = "Free" | "Tight" | "Shrinking" | "Collapsed"

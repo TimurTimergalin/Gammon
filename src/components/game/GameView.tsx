@@ -3,7 +3,7 @@ import {useCallback, useEffect, useRef, useState} from "react";
 import {useLayoutMeasure} from "../../hooks";
 import {BoardLayer} from "./board_layer/BoardLayer.tsx";
 import PiecesLayer from "./pieces_layer/PiecesLayer.js";
-import {SvgClientRectContext} from "./svg_client_rect_context.ts";
+import {SvgClientRectContext} from "./SvgClientRectContext.ts";
 import {GameState} from "./common/game_state/GameState.ts";
 import {Color} from "./common/color.ts";
 import DiceLayer from "./dice_layer/DiceLayer.tsx";
@@ -18,15 +18,18 @@ import {BackgammonRules} from "./common/game_rule/backgammon/Rules.ts";
 import {BackgammonIndexMapping} from "./common/game_rule/backgammon/IndexMapping.ts";
 import {BackgammonPropMapping} from "./common/game_rule/backgammon/PropMapping.ts";
 import {backgammonDefaultPlacement} from "./common/game_rule/backgammon/placement_factory.ts";
-import {FinishTurnButton} from "./control_layer/FinishTurnButton.tsx";
-import {UndoMovesButton} from "./control_layer/UndoMovesButton.tsx";
+import {FinishTurnButton} from "./buttons/FinishTurnButton.tsx";
+import {UndoMovesButton} from "./buttons/UndoMovesButton.tsx";
 
 
 export default function GameView() {
     const svgRef = useRef<SVGSVGElement | null>(null)
     const [svgRect, setSvgRect] = useState<DOMRect | null>(null)
     const measureSvg = useCallback(() => setSvgRect(svgRef.current!.getBoundingClientRect()), [])
-    useLayoutMeasure(measureSvg)
+    useLayoutMeasure(measureSvg, svgRef)
+    useEffect(() => {
+        window.dispatchEvent(new Event("resize"))
+    }, [])
 
     const gameState = useRef(new GameState())
     const hoverTracker = useRef(new HoverTracker())
