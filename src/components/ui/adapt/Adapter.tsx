@@ -1,27 +1,24 @@
-import {ReactNode, useCallback, useState} from "react";
-import {LayoutMode} from "./LayoutMode.ts";
+import {ReactNode, useCallback, useRef} from "react";
 import {useLayoutMeasure} from "../../../hooks.ts";
-import {LayoutModeContext} from "./LayoutModeContext.ts";
+import {ScreenSpecs, ScreenSpecsProvider} from "./ScreenSpecs.ts";
 
-export const Adapter = ({children}: {
+export const Adapter = (({children}: {
     children: ReactNode | ReactNode[]
 }) => {
-    const [windowWidth, setWindowWidth] = useState<number>(0)
+    const screenSpecsRef = useRef(new ScreenSpecs())
+
     const measureWindowWidth = useCallback(
         () => {
-            setWindowWidth(document.body.offsetWidth)
-        }, []
+            const screenSpecs = screenSpecsRef.current
+            screenSpecs.width = document.body.offsetWidth
+            screenSpecs.height = document.body.offsetHeight
+        }, [screenSpecsRef]
     )
     useLayoutMeasure(measureWindowWidth)
 
-    const layoutMode: LayoutMode =
-        windowWidth >= 1430 ? "Free" :
-        windowWidth >= 1120 ? "Tight" :
-        windowWidth >= 762 ? "Shrinking" : "Collapsed"
-
     return (
-        <LayoutModeContext.Provider value={layoutMode}>
+        <ScreenSpecsProvider value={screenSpecsRef.current}>
             {children}
-        </LayoutModeContext.Provider>
+        </ScreenSpecsProvider>
     )
-}
+})

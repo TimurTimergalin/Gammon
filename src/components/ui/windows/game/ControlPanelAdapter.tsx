@@ -1,24 +1,28 @@
-import {CSSProperties, ReactNode, useContext} from "react";
-import {LayoutModeContext} from "../../adapt/LayoutModeContext.ts";
+import {CSSProperties, ReactNode} from "react";
+import {useScreenSpecs} from "../../adapt/ScreenSpecs.ts";
+import {observer} from "mobx-react-lite";
 
-export const ControlPanelAdapter = ({children}: {
+export const ControlPanelAdapter = observer(function ControlPanelAdapter({children}: {
     children: ReactNode
-}) => {
-    const layoutMode = useContext(LayoutModeContext)
+}) {
+    const screenSpecs = useScreenSpecs();
+    const layoutMode = screenSpecs.layoutMode
 
     const baseStyle: CSSProperties = {
         display: "flex"
     }
 
+    const fixedHeight = 300 * screenSpecs.height / 900
+
     const specificStyle: CSSProperties =
         layoutMode === "Free" ? {
-            width: "400px",
-            height: "300px"
+            aspectRatio: 4 / 3,
+            height: `${fixedHeight}px`
         } : layoutMode === "Tight" ? {
-            height: "300px",
+            height: `${fixedHeight}px`,
             flex: 1
         } : layoutMode === "Shrinking" ? {
-            width: "20%",
+            width: "18%",
             aspectRatio: 2 / 3
         } : {
             width: "calc(100% - 30px)",
@@ -29,4 +33,4 @@ export const ControlPanelAdapter = ({children}: {
             {children}
         </div>
     )
-}
+})

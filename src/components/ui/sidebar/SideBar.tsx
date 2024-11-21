@@ -1,11 +1,12 @@
-import {CSSProperties, useCallback, useContext, useState} from "react";
-import {LayoutModeContext} from "../adapt/LayoutModeContext.ts";
-import {expandedSideBarWidth, shrankSideBarWidth} from "./size_constants.ts";
+import {CSSProperties, useCallback, useState} from "react";
 import {Logo} from "./Logo.tsx";
 import {TextWithIcon} from "./TextWithIcon.tsx";
+import {useScreenSpecs} from "../adapt/ScreenSpecs.ts";
+import {observer} from "mobx-react-lite";
 
-export const SideBar = () => {
-    const layoutMode = useContext(LayoutModeContext)
+export const SideBar = observer(function SideBar() {
+    const screenSpecs = useScreenSpecs();
+    const layoutMode = screenSpecs.layoutMode
 
     const [menuOpen, setMenuOpen] = useState(false)
 
@@ -16,6 +17,9 @@ export const SideBar = () => {
         left: 0,
         zIndex: 1
     }
+
+    const expandedSideBarWidth = 200 * screenSpecs.height / 900
+    const shrankSideBarWidth = 60 * screenSpecs.height / 900
 
     const barStyle: CSSProperties = {
         width: layoutMode === "Free" || layoutMode === "Collapsed" ? expandedSideBarWidth : shrankSideBarWidth,
@@ -32,10 +36,13 @@ export const SideBar = () => {
         display: menuOpen ? "block" : "none"
     }
 
+    const iconWidth = 40 * screenSpecs.height / 900
+    const iconMarginLeft = 30 * screenSpecs.height / 900
+
     const menuIconStyle: CSSProperties = {
-        width: "50px",
+        width: `${iconWidth}px`,
         alignSelf: "start",
-        marginLeft: "15px",
+        marginLeft: `${iconMarginLeft}px`,
         marginTop: "10px",
         marginBottom: "15px"
     }
@@ -60,4 +67,4 @@ export const SideBar = () => {
             }
         </>
     )
-}
+})

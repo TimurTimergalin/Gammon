@@ -1,10 +1,11 @@
-import {ReactNode, useContext} from "react";
-import {LayoutModeContext} from "./LayoutModeContext.ts";
+import {ReactNode} from "react";
+import {useScreenSpecs} from "./ScreenSpecs.ts";
+import {observer} from "mobx-react-lite";
 
-export const AdaptiveWindow = ({children}: {
+export const AdaptiveWindow = observer(function AdaptiveWindow({children}: {
     children: ReactNode | ReactNode[]
-}) => {
-    const layoutMode = useContext(LayoutModeContext)
+}) {
+    const layoutMode = useScreenSpecs().layoutMode
     const direction = layoutMode === "Collapsed" ? "column" : "row";
     return (
         <div style={{
@@ -17,4 +18,4 @@ export const AdaptiveWindow = ({children}: {
             {children}
         </div>
     )
-}
+})

@@ -27,9 +27,7 @@ export default function GameView() {
     const [svgRect, setSvgRect] = useState<DOMRect | null>(null)
     const measureSvg = useCallback(() => setSvgRect(svgRef.current!.getBoundingClientRect()), [])
     useLayoutMeasure(measureSvg, svgRef)
-    useEffect(() => {
-        window.dispatchEvent(new Event("resize"))
-    }, [])
+    useLayoutMeasure(measureSvg)
 
     const gameState = useRef(new GameState())
     const hoverTracker = useRef(new HoverTracker())
