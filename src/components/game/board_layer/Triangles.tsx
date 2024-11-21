@@ -45,7 +45,7 @@ const PointDownTriangle = ({leftX, color, focused}: { leftX: number, color: stri
     )
 }
 
-export const Triangles = observer(() => {
+export const Triangles = observer(function Triangles() {
     const gameState = useGameContext("gameState")
 
     const darkerTriangleColor = "#B08968"

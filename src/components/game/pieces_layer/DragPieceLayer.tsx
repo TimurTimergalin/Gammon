@@ -34,7 +34,7 @@ function DragPiece({initClientX, initClientY, color}: {
     return <TopDownPiece color={color} cx={svgX} cy={svgY}/>
 }
 
-export const DragPieceLayer = observer(() => {
+export const DragPieceLayer = observer(function DragPieceLayer() {
     const gameState = useGameContext("gameState")
     return (
         <>

@@ -127,8 +127,7 @@ export abstract class BaseGameController<PositionIndexType, PositionPropsType> i
                 if (dice1.value === dice2.value) {
                     console.assert(dice1.value === diceVal)
                     const dec = (st: LayerStatus) => ((st == LayerStatus.FULL) ? LayerStatus.HALF : LayerStatus.NONE)
-                    if (dice1.usageStatus === LayerStatus.FULL) {
-                        console.assert(dice2.usageStatus !== LayerStatus.NONE)
+                    if (dice1.usageStatus === LayerStatus.FULL && dice2.usageStatus !== LayerStatus.NONE) {
                         dice2.usageStatus = dec(dice2.usageStatus)
                     } else {
                         dice1.usageStatus = dec(dice1.usageStatus)
@@ -189,12 +188,31 @@ export abstract class BaseGameController<PositionIndexType, PositionPropsType> i
         }
     }
 
+    private mergeMoves() {
+        const res = []
+        while (this.madeMoves.length > 0) {
+            const used: Set<number> = new Set([0])
+            let merged = this.madeMoves[0]
+            for (let i = 1; i < this.madeMoves.length; ++i) {
+                const cur = this.madeMoves[i]
+                if (merged[1] === cur[0]) {
+                    merged = [merged[0], cur[1], [...merged[2], ...cur[2]], [...merged[3], ...cur[3]]]
+                    used.add(i)
+                }
+            }
+            res.push(merged)
+            this.madeMoves = Array.from(this.madeMoves.entries()).filter(e => !used.has(e[0])).map(e => e[1])
+        }
+        this.madeMoves = res
+    }
+
     undoMoves() {
         console.assert(this.madeMoves.length > 0)
+        this.mergeMoves()
         this.gameState.turnComplete = false
         this.gameState.movesMade = false
 
-        for (const [from, to, additionalMoves, diceUsed] of this.madeMoves) {
+        for (const [from, to, additionalMoves, diceUsed] of this.madeMoves.reverse()) {
             this.rules.undoMove(
                 this.indexMapping.physicalToLogical(from),
                 this.indexMapping.physicalToLogical(to),
@@ -212,8 +230,6 @@ export abstract class BaseGameController<PositionIndexType, PositionPropsType> i
             for (const [from_, to_] of additionalMoves.reverse()) {
                 this.movePieceFrom(from_, to_)
             }
-
-            this.gameState.forceUpdate()
         }
         this.madeMoves = []
     }

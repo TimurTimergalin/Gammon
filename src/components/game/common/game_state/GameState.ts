@@ -76,13 +76,11 @@ export class GameState {
     }
 
     addPiece(i: number, piece: PieceState) {
-        this.getPositionProps(i).pieces.push(piece)
+        this.getPositionProps(i).add(piece)
     }
 
     removePiece(i: number): PieceState {
-        const positionProps = this.getPositionProps(i)
-        console.assert(positionProps.quantity !== 0)
-        return positionProps.pieces.pop()!
+        return this.getPositionProps(i).remove()
     }
 
     getPositionProps = (i: number) => {
@@ -96,17 +94,13 @@ export class GameState {
         // 28 - нижний бар
         // 29 - правый нижний стор
         console.assert(0 <= i && i <= 29)
-        const to_return = this.piecePlacement.get(i)
-        if (to_return === undefined) {
+        if (!this._piecePlacement.has(i)) {
             const posState = new PositionState()
             this._piecePlacement.set(i, posState)
-            return posState
+            return this._piecePlacement.get(i)!
         }
-        return to_return
-    }
 
-    get piecePlacement(): PiecePlacement {
-        return this._piecePlacement
+        return this._piecePlacement.get(i)!
     }
 
     set piecePlacement(placement: PiecePlacement) {

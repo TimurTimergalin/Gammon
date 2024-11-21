@@ -4,6 +4,7 @@ import styled, {css, keyframes} from "styled-components";
 
 import {PieceState} from "../common/game_state/piece_placement.ts";
 import {getSidePieceY, getTopDownPieceY} from "../dimensions/functions.ts";
+import {observer} from "mobx-react-lite";
 
 interface StackProps {
     pieces: PieceState[]
@@ -68,7 +69,7 @@ const HomingSidePiece = styled(SidePiece)<{
 `
 
 
-export const TopDownStack = ({pieces, direction, originX, originY}: StackProps) => {
+export const TopDownStack = observer(function TopDownStack({pieces, direction, originX, originY}: StackProps) {
     const quantity = pieces.length
     const finalPieces = []
 
@@ -78,7 +79,8 @@ export const TopDownStack = ({pieces, direction, originX, originY}: StackProps) 
         const toY = getTopDownPieceY(originY, direction, i, quantity)
         if (piece.from !== undefined) {
             finalPieces.push(
-                <HomingTopDownPiece color={piece.color} cx={toX} cy={toY} fromX={piece.from.x} fromY={piece.from.y} key={i}/>
+                <HomingTopDownPiece color={piece.color} cx={toX} cy={toY} fromX={piece.from.x} fromY={piece.from.y}
+                                    key={i}/>
             )
         } else {
             finalPieces.push(
@@ -92,9 +94,9 @@ export const TopDownStack = ({pieces, direction, originX, originY}: StackProps) 
             {finalPieces}
         </>
     )
-}
+})
 
-export const SideStack = ({pieces, direction, originX, originY}: StackProps) => {
+export const SideStack = observer(function SideStack({pieces, direction, originX, originY}: StackProps) {
     const finalPieces = []
     let i = 0
 
@@ -118,5 +120,5 @@ export const SideStack = ({pieces, direction, originX, originY}: StackProps) => 
             {finalPieces}
         </>
     )
-}
+})
 

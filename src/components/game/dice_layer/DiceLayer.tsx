@@ -4,7 +4,7 @@ import {diceWidth, gapBetweenDice} from "./dice_size_constants.ts";
 import {Dice} from "./dice.tsx";
 import {useGameContext} from "../common/GameContext.ts";
 
-const DiceLayer = observer(() => {
+const DiceLayer = observer(function DiceLayer() {
         const {dice1, dice2} = useGameContext("gameState")
 
         const diceY = boardHeight / 2 - diceWidth / 2

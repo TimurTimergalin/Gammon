@@ -1,4 +1,5 @@
 import {Color} from "../color.ts";
+import {makeAutoObservable} from "mobx";
 
 export interface PieceState {
     color: Color,
@@ -9,9 +10,10 @@ export interface PieceState {
 }
 
 export class PositionState {
-    pieces: PieceState[]
+    pieces: PieceState[] = []
 
     constructor(pieces?: PieceState[]) {
+        makeAutoObservable(this)
         this.pieces = pieces === undefined ? [] : pieces;
     }
 
@@ -21,6 +23,22 @@ export class PositionState {
 
     get last(): PieceState {
         return this.pieces[this.pieces.length - 1]
+    }
+
+    add(st: PieceState) {
+        this.pieces.push(st)
+    }
+
+    remove(): PieceState {
+        console.assert(this.pieces.length > 0)
+        this.eraseFrom()
+        return this.pieces.pop()!
+    }
+
+    eraseFrom() {
+        for (const st of this.pieces) {
+            st.from = undefined
+        }
     }
 }
 

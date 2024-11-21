@@ -4,7 +4,7 @@ import {StacksLayer} from "./StacksLayer.tsx";
 import {useGameContext} from "../common/GameContext.ts";
 
 
-const PiecesLayer = observer(() => {
+const PiecesLayer = observer(function PiecesLayer() {
     const gameState = useGameContext("gameState")
     const hoverTracker = useGameContext("hoverTracker")
     const gameController = useGameContext("gameController")

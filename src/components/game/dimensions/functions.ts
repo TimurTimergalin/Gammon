@@ -1,3 +1,5 @@
+// noinspection JSSuspiciousNameCombination
+
 import {
     boardHeight,
     boardWidth,

@@ -1,7 +1,7 @@
 import {observer} from "mobx-react-lite";
 import {useGameContext} from "../common/GameContext.ts";
 
-export const UndoMovesButton = observer(() => {
+export const UndoMovesButton = observer(function UndoMovesButton() {
     const gameState = useGameContext("gameState")
     const gameController = useGameContext("gameController")
 

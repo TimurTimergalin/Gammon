@@ -3,7 +3,7 @@ import {boardHeight, gapWidth, middleX} from "../dimensions/board_size_constants
 import {focusedColor, gapColor} from "./color_constants.ts";
 import {useGameContext} from "../common/GameContext.ts";
 
-export const MiddleLine = observer(() => {
+export const MiddleLine = observer(function MiddleLine() {
     const gameState = useGameContext("gameState")
     return (
         <>

@@ -10,7 +10,7 @@ import {boardColor, focusedColor, sideColor, standColor} from "./color_constants
 import {observer} from "mobx-react-lite";
 import {useGameContext} from "../common/GameContext.ts";
 
-const FocusableStore = observer(({x, y, index}: { x: number, y: number, index: number }) => {
+const FocusableStore = observer(function FocusableStore({x, y, index}: { x: number, y: number, index: number }) {
     const gameState = useGameContext("gameState")
     const focused = gameState.pickedFrom === index
     return (

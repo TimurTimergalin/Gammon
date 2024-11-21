@@ -1,7 +1,8 @@
 import {useGameContext} from "../common/GameContext.ts";
 import {getStackDirection, getStackOriginX, getStackOriginY, getStackType,} from "../dimensions/functions.ts";
+import {observer} from "mobx-react-lite";
 
-export function StacksLayer() {
+export const StacksLayer = observer(function StacksLayer() {
     const gameState = useGameContext("gameState")
     const stacks = []
 
@@ -23,4 +24,4 @@ export function StacksLayer() {
             {stacks}
         </>
     )
-}
+})
