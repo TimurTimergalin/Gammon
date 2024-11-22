@@ -2,6 +2,7 @@ import {CSSProperties, ReactNode, useState} from "react";
 import {observer} from "mobx-react-lite";
 import {useScreenSpecs} from "../../../adapt/ScreenSpecs.ts";
 import {PlayButton} from "./PlayButton.tsx";
+import {useNavigate} from "react-router";
 
 
 const defaultColor = "#ffffff"
@@ -35,6 +36,7 @@ export const ControlPanel = observer(function ControlPanel({options}: {
     options: Map<string, undefined | (() => ReactNode)>
 }) {
     const screenSpecs = useScreenSpecs()
+    const navigate = useNavigate()
     const optionPanelHeight = 100 * screenSpecs.scaleFactor
 
     let firstOption: string | undefined = undefined
@@ -101,7 +103,7 @@ export const ControlPanel = observer(function ControlPanel({options}: {
                 flexDirection: "row",
                 justifyContent: "center"
             }}>
-                <PlayButton callback={() => {}} />
+                <PlayButton callback={() => navigate("/local-play")}/>
             </div>
         </div>
     )

@@ -1,8 +1,9 @@
 import {ReactNode, useCallback, useRef} from "react";
 import {useLayoutMeasure} from "../../../hooks.ts";
 import {ScreenSpecs, ScreenSpecsProvider} from "./ScreenSpecs.ts";
+import {Outlet} from "react-router";
 
-export const Adapter = (({children}: {
+const Adapter = (({children}: {
     children: ReactNode | ReactNode[]
 }) => {
     const screenSpecsRef = useRef(new ScreenSpecs())
@@ -22,3 +23,9 @@ export const Adapter = (({children}: {
         </ScreenSpecsProvider>
     )
 })
+
+export const AdapterOutlet = () => (
+    <Adapter>
+        <Outlet/>
+    </Adapter>
+)

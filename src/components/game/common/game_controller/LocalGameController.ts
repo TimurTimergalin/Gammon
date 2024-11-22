@@ -8,6 +8,7 @@ import {Color, oppositeColor} from "../color.ts";
 export class LocalGameController<PositionIndexType, PositionPropsType> extends BaseGameController<PositionIndexType, PositionPropsType> {
     private initialized = false
     private readonly defaultPlacementFactory: () => Map<PositionIndexType, PositionPropsType>
+
     constructor(
         rules: Rules<PositionIndexType, PositionPropsType>,
         indexMapping: IndexMapping<PositionIndexType>,

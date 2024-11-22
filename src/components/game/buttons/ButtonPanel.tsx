@@ -8,8 +8,8 @@ export const ButtonPanel = () => {
             flexDirection: "row",
             justifyContent: "flex-end"
         }}>
-            <UndoMovesButton />
-            <FinishTurnButton />
+            <UndoMovesButton/>
+            <FinishTurnButton/>
         </div>
     )
 }

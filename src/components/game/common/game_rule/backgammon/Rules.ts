@@ -12,9 +12,10 @@ import {
 import {Color, oppositeColor} from "../../color.ts";
 import {Rules} from "../Rules.ts";
 
-export class BackgammonRules implements Rules<BackgammonPositionIndex, BackgammonPositionProp>{
-    private _placement: Map<BackgammonPositionIndex, BackgammonPositionProp> = new Map()
+export class BackgammonRules implements Rules<BackgammonPositionIndex, BackgammonPositionProp> {
     private diceValues: number[] = []
+
+    private _placement: Map<BackgammonPositionIndex, BackgammonPositionProp> = new Map()
 
     get placement(): Map<BackgammonPositionIndex, BackgammonPositionProp> {
         return new Map(this._placement);
@@ -27,6 +28,158 @@ export class BackgammonRules implements Rules<BackgammonPositionIndex, Backgammo
     owns(player: Color, position: BackgammonPositionIndex): boolean {
         const positionProps = this._placement.get(position) || null
         return positionProps !== null && positionProps[0] === player
+    }
+
+    // На основе выпавших костей определяет, на какие значения можно сходить
+    calculateDiceValues(dice: [number, number], player: Color) {
+        if (dice[0] == dice[1]) {
+            dice.push(dice[0], dice[0])
+        }
+
+        // Рекурсивно вычисляет максимальную длину хода
+        const getMaxMoves = (_dice: number[]): number => {
+            if (_dice.length === 0) {  // База рекурсии
+                return 0
+            }
+
+            let max = 0
+            for (const from of allIndices()) {  // Для каждой позиции-источника
+                for (const candidate of this.getPotentialDestinations(from, player, _dice)) {  // для каждого кандидата цели
+                    if (this.movable(from, candidate, player, _dice)) {  // если из источника в цель можно передвинуть
+                        const toBar = this.moveWithBlot(from, candidate, player)  // переместить фишку (и возможно выбить блот)
+                        let diceValue = Math.abs(getValue(from) - getValue(candidate))
+                        if (!_dice.includes(diceValue)) {
+                            diceValue = Math.max(..._dice)
+                        }
+                        this.removeDice(diceValue, _dice)  // удалить использованную для хода кость
+                        const res = 1 + getMaxMoves(_dice)  // Рекурсивный вызов
+                        // Откат всех изменений
+                        _dice.push(diceValue)
+                        this.move(candidate, from)
+                        if (toBar) {
+                            const bar = getBar(oppositeColor(player))
+                            this.move(bar, candidate)
+                        }
+                        max = Math.max(max, res)  // Обновление максимума
+                        if (max === _dice.length) {  // Оптимизация - если max максимально возможный, то дальше можно не искать
+                            return max
+                        }
+                    }
+                }
+            }
+            return max
+        }
+
+        const max = getMaxMoves(dice)
+        dice.sort((a, b) => b - a)
+
+        if (dice[0] !== dice[1] && max === 1) {
+            for (const from of allIndices()) {
+                for (const candidate of this.getPotentialDestinations(from, player, [dice[0]])) {
+                    if (this.movable(from, candidate, player, [dice[0]])) {
+                        this.diceValues = [dice[0]]
+                        return [dice[0]]
+                    }
+                }
+            }
+            this.diceValues = [dice[1]]
+            return [dice[1]]
+        }
+
+        this.diceValues = Array.from(dice.slice(0, max))
+        return Array.from(this.diceValues)  // Чтобы нельзя было поменять извне
+    }
+
+    getLegalMoves(from: BackgammonPositionIndex, player: Color) {
+        const res: [BackgammonPositionIndex, [BackgammonPositionIndex, BackgammonPositionIndex][], number[]][] = []
+
+        const getLegalMovesRec = (from_: BackgammonPositionIndex, additionalMoves: [BackgammonPositionIndex, BackgammonPositionIndex][], diceUsed: number[]) => {
+            for (const candidate of this.getPotentialDestinations(from_, player, this.diceValues)) {
+                if (this.movable(from_, candidate, player, this.diceValues)) {
+                    const toBar = this.moveWithBlot(from_, candidate, player)
+                    const bar = getBar(oppositeColor(player))
+                    if (toBar) {
+                        additionalMoves.push([candidate, bar])
+                    }
+                    let diceValue = Math.abs(getValue(from_) - getValue(candidate))
+                    if (!this.diceValues.includes(diceValue)) {
+                        diceValue = Math.max(...this.diceValues)
+                    }
+                    diceUsed.push(diceValue)
+                    this.removeDice(diceValue, this.diceValues)
+                    res.push([candidate, Array.from(additionalMoves), Array.from(diceUsed)])
+                    getLegalMovesRec(candidate, additionalMoves, diceUsed)
+                    this.diceValues.push(diceValue)
+                    this.removeDice(diceValue, diceUsed)
+                    this.move(candidate, from_)
+                    if (toBar) {
+                        this.move(bar, candidate)
+                        additionalMoves.pop()
+                    }
+                }
+            }
+        }
+
+        const filterRes = (): [BackgammonPositionIndex, [BackgammonPositionIndex, BackgammonPositionIndex][], number[]][] => {
+            const met: Map<BackgammonPositionIndex, [[BackgammonPositionIndex, BackgammonPositionIndex][], number[]]> = new Map()
+            const shouldAdd = new Set(res.map(x => x[0]))
+            for (const [to, additionalMoves, diceUsed] of res) {
+                if (!shouldAdd.has(to)) {
+                    continue
+                }
+                additionalMoves.sort()
+                if (!met.has(to)) {
+                    met.set(to, [additionalMoves, diceUsed])
+
+                    continue
+                }
+                const compareWith = met.get(to)![0]
+                let additionalMovesAreEqual = compareWith.length === additionalMoves.length
+                if (!additionalMovesAreEqual) {
+                    shouldAdd.delete(to)
+                    continue
+                }
+
+                for (const i of compareWith.keys()) {
+                    if (compareWith[i][0] !== additionalMoves[i][0] || compareWith[i][1] !== additionalMoves[i][1]) {
+                        additionalMovesAreEqual = false
+                        break
+                    }
+                }
+                if (!additionalMovesAreEqual) {
+                    shouldAdd.delete(to)
+                }
+                if (diceUsed.length < met.get(to)![1].length) {
+                    met.set(to, [additionalMoves, diceUsed])
+                }
+            }
+            return Array.from(met.entries()).filter(e => shouldAdd.has(e[0])).map(e => [e[0], ...e[1]])
+        }
+
+        getLegalMovesRec(from, [], [])
+        return filterRes()
+    }
+
+    performMove(from: BackgammonPositionIndex, to: BackgammonPositionIndex, additionalMoves: [BackgammonPositionIndex, BackgammonPositionIndex][], diceUsed: number[]) {
+        for (const [from_, to_] of additionalMoves) {
+            this.move(from_, to_)
+        }
+        this.move(from, to)
+        for (const dice of diceUsed) {
+            this.removeDice(dice, this.diceValues)
+        }
+    }
+
+    undoMove(from: BackgammonPositionIndex, to: BackgammonPositionIndex, additionalMoves: [BackgammonPositionIndex, BackgammonPositionIndex][], diceUsed: number[]) {
+        this.diceValues.push(...diceUsed)
+        this.move(to, from)
+        for (const [from_, to_] of additionalMoves.reverse()) {
+            this.move(to_, from_)
+        }
+    }
+
+    isTurnComplete(): boolean {
+        return this.diceValues.length === 0;
     }
 
     private hasEmptyStore(player: Color) {
@@ -182,158 +335,6 @@ export class BackgammonRules implements Rules<BackgammonPositionIndex, Backgammo
         const ind = dice.findIndex(x => x === val)
         console.assert(ind >= 0)
         dice.splice(ind, 1)
-    }
-
-    // На основе выпавших костей определяет, на какие значения можно сходить
-    calculateDiceValues(dice: [number, number], player: Color) {
-        if (dice[0] == dice[1]) {
-            dice.push(dice[0], dice[0])
-        }
-
-        // Рекурсивно вычисляет максимальную длину хода
-        const getMaxMoves = (_dice: number[]): number => {
-            if (_dice.length === 0) {  // База рекурсии
-                return 0
-            }
-
-            let max = 0
-            for (const from of allIndices()) {  // Для каждой позиции-источника
-                for (const candidate of this.getPotentialDestinations(from, player, _dice)) {  // для каждого кандидата цели
-                    if (this.movable(from, candidate, player, _dice)) {  // если из источника в цель можно передвинуть
-                        const toBar = this.moveWithBlot(from, candidate, player)  // переместить фишку (и возможно выбить блот)
-                        let diceValue = Math.abs(getValue(from) - getValue(candidate))
-                        if (!_dice.includes(diceValue)) {
-                            diceValue = Math.max(..._dice)
-                        }
-                        this.removeDice(diceValue, _dice)  // удалить использованную для хода кость
-                        const res = 1 + getMaxMoves(_dice)  // Рекурсивный вызов
-                        // Откат всех изменений
-                        _dice.push(diceValue)
-                        this.move(candidate, from)
-                        if (toBar) {
-                            const bar = getBar(oppositeColor(player))
-                            this.move(bar, candidate)
-                        }
-                        max = Math.max(max, res)  // Обновление максимума
-                        if (max === _dice.length) {  // Оптимизация - если max максимально возможный, то дальше можно не искать
-                            return max
-                        }
-                    }
-                }
-            }
-            return max
-        }
-
-        const max = getMaxMoves(dice)
-        dice.sort((a, b) => b - a)
-
-        if (dice[0] !== dice[1] && max === 1) {
-            for (const from of allIndices()) {
-                for (const candidate of this.getPotentialDestinations(from, player, [dice[0]])) {
-                    if (this.movable(from, candidate, player, [dice[0]])) {
-                        this.diceValues = [dice[0]]
-                        return [dice[0]]
-                    }
-                }
-            }
-            this.diceValues = [dice[1]]
-            return [dice[1]]
-        }
-
-        this.diceValues = Array.from(dice.slice(0, max))
-        return Array.from(this.diceValues)  // Чтобы нельзя было поменять извне
-    }
-
-    getLegalMoves(from: BackgammonPositionIndex, player: Color) {
-        const res: [BackgammonPositionIndex, [BackgammonPositionIndex, BackgammonPositionIndex][], number[]][] = []
-
-        const getLegalMovesRec = (from_: BackgammonPositionIndex, additionalMoves: [BackgammonPositionIndex, BackgammonPositionIndex][], diceUsed: number[]) => {
-            for (const candidate of this.getPotentialDestinations(from_, player, this.diceValues)) {
-                if (this.movable(from_, candidate, player, this.diceValues)) {
-                    const toBar = this.moveWithBlot(from_, candidate, player)
-                    const bar = getBar(oppositeColor(player))
-                    if (toBar) {
-                        additionalMoves.push([candidate, bar])
-                    }
-                    let diceValue = Math.abs(getValue(from_) - getValue(candidate))
-                    if (!this.diceValues.includes(diceValue)) {
-                            diceValue = Math.max(...this.diceValues)
-                        }
-                    diceUsed.push(diceValue)
-                    this.removeDice(diceValue, this.diceValues)
-                    res.push([candidate, Array.from(additionalMoves), Array.from(diceUsed)])
-                    getLegalMovesRec(candidate, additionalMoves, diceUsed)
-                    this.diceValues.push(diceValue)
-                    this.removeDice(diceValue, diceUsed)
-                    this.move(candidate, from_)
-                    if (toBar) {
-                        this.move(bar, candidate)
-                        additionalMoves.pop()
-                    }
-                }
-            }
-        }
-
-        const filterRes = (): [BackgammonPositionIndex, [BackgammonPositionIndex, BackgammonPositionIndex][], number[]][] => {
-            const met: Map<BackgammonPositionIndex, [[BackgammonPositionIndex, BackgammonPositionIndex][], number[]]> = new Map()
-            const shouldAdd = new Set(res.map(x => x[0]))
-            for (const [to, additionalMoves, diceUsed] of res) {
-                if (!shouldAdd.has(to)) {
-                    continue
-                }
-                additionalMoves.sort()
-                if (!met.has(to)) {
-                    met.set(to, [additionalMoves, diceUsed])
-
-                    continue
-                }
-                const compareWith = met.get(to)![0]
-                let additionalMovesAreEqual = compareWith.length === additionalMoves.length
-                if (!additionalMovesAreEqual) {
-                    shouldAdd.delete(to)
-                    continue
-                }
-
-                for (const i of compareWith.keys()) {
-                    if (compareWith[i][0] !== additionalMoves[i][0] || compareWith[i][1] !== additionalMoves[i][1]) {
-                        additionalMovesAreEqual = false
-                        break
-                    }
-                }
-                if (!additionalMovesAreEqual) {
-                    shouldAdd.delete(to)
-                }
-                if (diceUsed.length < met.get(to)![1].length) {
-                    met.set(to, [additionalMoves, diceUsed])
-                }
-            }
-            return Array.from(met.entries()).filter(e => shouldAdd.has(e[0])).map(e => [e[0], ...e[1]])
-        }
-
-        getLegalMovesRec(from, [], [])
-        return filterRes()
-    }
-
-    performMove(from: BackgammonPositionIndex, to: BackgammonPositionIndex, additionalMoves: [BackgammonPositionIndex, BackgammonPositionIndex][], diceUsed: number[]) {
-        for (const [from_, to_] of additionalMoves) {
-            this.move(from_, to_)
-        }
-        this.move(from, to)
-        for (const dice of diceUsed) {
-            this.removeDice(dice, this.diceValues)
-        }
-    }
-
-    undoMove(from: BackgammonPositionIndex, to: BackgammonPositionIndex, additionalMoves: [BackgammonPositionIndex, BackgammonPositionIndex][], diceUsed: number[]) {
-        this.diceValues.push(...diceUsed)
-        this.move(to, from)
-        for (const[from_, to_] of additionalMoves.reverse()) {
-            this.move(to_, from_)
-        }
-    }
-
-    isTurnComplete(): boolean {
-        return this.diceValues.length === 0;
     }
 }
 

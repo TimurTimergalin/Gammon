@@ -17,10 +17,6 @@ import {TopDownStack} from "../../pieces_layer/stacks.tsx";
 import {PiecePlacement, PieceState, PositionState} from "../game_state/piece_placement.ts";
 
 export abstract class BaseGameController<PositionIndexType, PositionPropsType> implements GameController {
-    abstract endTurn(): void
-
-    abstract init(): void
-
     protected rules: Rules<PositionIndexType, PositionPropsType>
     protected indexMapping: IndexMapping<PositionIndexType>
     protected propMapping: PropMapping<PositionPropsType>
@@ -28,7 +24,6 @@ export abstract class BaseGameController<PositionIndexType, PositionPropsType> i
     protected player: Color
     protected active = false
     protected madeMoves: [number, number, [number, number][], number[]][] = []
-
     protected legalMovesMap: Map<number, [[number, number][], number[]]> = new Map()
 
     protected constructor(
@@ -45,16 +40,9 @@ export abstract class BaseGameController<PositionIndexType, PositionPropsType> i
         this.player = player
     }
 
-    private fillLegalMovesMap(logical: [PositionIndexType, [PositionIndexType, PositionIndexType][], number[]][]): void {
-        this.legalMovesMap = new Map()
-        for (const [to, additionalMoves, diceUsed] of logical) {
-            const physicalAdditionalMoves = additionalMoves.map(
-                ([from_, to_]): [number, number] =>
-                    [this.indexMapping.logicalToPhysical(from_), this.indexMapping.logicalToPhysical(to_)]
-            )
-            this.legalMovesMap.set(this.indexMapping.logicalToPhysical(to), [physicalAdditionalMoves, diceUsed])
-        }
-    }
+    abstract endTurn(): void
+
+    abstract init(): void
 
     getLegalMoves(point: number): number[] {  // TODO: заменить на void и менять gameState
         console.assert(this.active)
@@ -66,6 +54,62 @@ export abstract class BaseGameController<PositionIndexType, PositionPropsType> i
 
     isTouchable(point: number): boolean {
         return this.active && this.rules.owns(this.player, this.indexMapping.physicalToLogical(point));
+    }
+
+    movePiece(from: number, to: number, color: Color): void {
+        console.assert(this.active)
+        const legalMoveSaved = this.legalMovesMap.get(to)
+        console.assert(legalMoveSaved !== undefined)
+        const [additionalMoves, diceUsed] = legalMoveSaved!
+        this.madeMoves.push([from, to, ...legalMoveSaved!])
+        this.gameState.movesMade = true
+        for (const [from_, to_] of additionalMoves) {
+            this.movePieceFrom(to_, from_)
+        }
+        this.gameState.addPiece(to, {color: color})
+        for (const diceVal of diceUsed) {
+            this.useDice(diceVal)
+        }
+        this.rules.performMove(
+            this.indexMapping.physicalToLogical(from),
+            this.indexMapping.physicalToLogical(to),
+            additionalMoves.map(
+                ([from_, to_]): [PositionIndexType, PositionIndexType] =>
+                    [this.indexMapping.physicalToLogical(from_), this.indexMapping.physicalToLogical(to_)]
+            ),
+            diceUsed
+        )
+        if (this.rules.isTurnComplete()) {
+            this.gameState.turnComplete = true
+        }
+    }
+
+    undoMoves() {
+        console.assert(this.madeMoves.length > 0)
+        this.mergeMoves()
+        this.gameState.turnComplete = false
+        this.gameState.movesMade = false
+
+        for (const [from, to, additionalMoves, diceUsed] of this.madeMoves.reverse()) {
+            this.rules.undoMove(
+                this.indexMapping.physicalToLogical(from),
+                this.indexMapping.physicalToLogical(to),
+                additionalMoves.map(
+                    ([from_, to_]): [PositionIndexType, PositionIndexType] =>
+                        [this.indexMapping.physicalToLogical(from_), this.indexMapping.physicalToLogical(to_)]
+                ),
+                diceUsed
+            )
+            for (const diceVal of diceUsed) {
+                this.undoUseDice(diceVal)
+            }
+
+            this.movePieceFrom(from, to)
+            for (const [from_, to_] of additionalMoves.reverse()) {
+                this.movePieceFrom(from_, to_)
+            }
+        }
+        this.madeMoves = []
     }
 
     protected disableDice(availableDice: number[]) {
@@ -160,80 +204,6 @@ export abstract class BaseGameController<PositionIndexType, PositionPropsType> i
         )
     }
 
-    movePiece(from: number, to: number, color: Color): void {
-        console.assert(this.active)
-        const legalMoveSaved = this.legalMovesMap.get(to)
-        console.assert(legalMoveSaved !== undefined)
-        const [additionalMoves, diceUsed] = legalMoveSaved!
-        this.madeMoves.push([from, to, ...legalMoveSaved!])
-        this.gameState.movesMade = true
-        for (const [from_, to_] of additionalMoves) {
-            this.movePieceFrom(to_, from_)
-        }
-        this.gameState.addPiece(to, {color: color})
-        for (const diceVal of diceUsed) {
-            this.useDice(diceVal)
-        }
-        this.rules.performMove(
-            this.indexMapping.physicalToLogical(from),
-            this.indexMapping.physicalToLogical(to),
-            additionalMoves.map(
-                ([from_, to_]): [PositionIndexType, PositionIndexType] =>
-                    [this.indexMapping.physicalToLogical(from_), this.indexMapping.physicalToLogical(to_)]
-            ),
-            diceUsed
-        )
-        if (this.rules.isTurnComplete()) {
-            this.gameState.turnComplete = true
-        }
-    }
-
-    private mergeMoves() {
-        const res = []
-        while (this.madeMoves.length > 0) {
-            const used: Set<number> = new Set([0])
-            let merged = this.madeMoves[0]
-            for (let i = 1; i < this.madeMoves.length; ++i) {
-                const cur = this.madeMoves[i]
-                if (merged[1] === cur[0]) {
-                    merged = [merged[0], cur[1], [...merged[2], ...cur[2]], [...merged[3], ...cur[3]]]
-                    used.add(i)
-                }
-            }
-            res.push(merged)
-            this.madeMoves = Array.from(this.madeMoves.entries()).filter(e => !used.has(e[0])).map(e => e[1])
-        }
-        this.madeMoves = res
-    }
-
-    undoMoves() {
-        console.assert(this.madeMoves.length > 0)
-        this.mergeMoves()
-        this.gameState.turnComplete = false
-        this.gameState.movesMade = false
-
-        for (const [from, to, additionalMoves, diceUsed] of this.madeMoves.reverse()) {
-            this.rules.undoMove(
-                this.indexMapping.physicalToLogical(from),
-                this.indexMapping.physicalToLogical(to),
-                additionalMoves.map(
-                    ([from_, to_]): [PositionIndexType, PositionIndexType] =>
-                        [this.indexMapping.physicalToLogical(from_), this.indexMapping.physicalToLogical(to_)]
-                ),
-                diceUsed
-            )
-            for (const diceVal of diceUsed) {
-                this.undoUseDice(diceVal)
-            }
-
-            this.movePieceFrom(from, to)
-            for (const [from_, to_] of additionalMoves.reverse()) {
-                this.movePieceFrom(from_, to_)
-            }
-        }
-        this.madeMoves = []
-    }
-
     protected generateDice(): [number, number] {
         const genNum = () => Math.ceil(Math.random() * 6 + 5e-324)
         return [genNum(), genNum()]
@@ -271,5 +241,34 @@ export abstract class BaseGameController<PositionIndexType, PositionPropsType> i
             )
         }
         this.gameState.piecePlacement = res
+    }
+
+    private fillLegalMovesMap(logical: [PositionIndexType, [PositionIndexType, PositionIndexType][], number[]][]): void {
+        this.legalMovesMap = new Map()
+        for (const [to, additionalMoves, diceUsed] of logical) {
+            const physicalAdditionalMoves = additionalMoves.map(
+                ([from_, to_]): [number, number] =>
+                    [this.indexMapping.logicalToPhysical(from_), this.indexMapping.logicalToPhysical(to_)]
+            )
+            this.legalMovesMap.set(this.indexMapping.logicalToPhysical(to), [physicalAdditionalMoves, diceUsed])
+        }
+    }
+
+    private mergeMoves() {
+        const res = []
+        while (this.madeMoves.length > 0) {
+            const used: Set<number> = new Set([0])
+            let merged = this.madeMoves[0]
+            for (let i = 1; i < this.madeMoves.length; ++i) {
+                const cur = this.madeMoves[i]
+                if (merged[1] === cur[0]) {
+                    merged = [merged[0], cur[1], [...merged[2], ...cur[2]], [...merged[3], ...cur[3]]]
+                    used.add(i)
+                }
+            }
+            res.push(merged)
+            this.madeMoves = Array.from(this.madeMoves.entries()).filter(e => !used.has(e[0])).map(e => e[1])
+        }
+        this.madeMoves = res
     }
 }
