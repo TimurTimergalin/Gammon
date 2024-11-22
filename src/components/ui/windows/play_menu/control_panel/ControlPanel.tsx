@@ -7,7 +7,7 @@ import {PlayButton} from "./PlayButton.tsx";
 const defaultColor = "#ffffff"
 const unfocusedColor = "#bbbbbb"
 
-const borderRadius = (windowHeight: number) => 20 * windowHeight / 900
+const borderRadius = (scaleFactor: number) => 20 * scaleFactor
 
 const OptionTab = observer(function OptionTab({chosen, position, callback, name}: {
     chosen: boolean,
@@ -20,8 +20,8 @@ const OptionTab = observer(function OptionTab({chosen, position, callback, name}
 
     const style: CSSProperties = {
         flex: 1,
-        borderTopLeftRadius: position.includes("Left") ? borderRadius(screenSpecs.height) : 0,
-        borderTopRightRadius: position.includes("Right") ? borderRadius(screenSpecs.height) : 0,
+        borderTopLeftRadius: position.includes("Left") ? borderRadius(screenSpecs.scaleFactor) : 0,
+        borderTopRightRadius: position.includes("Right") ? borderRadius(screenSpecs.scaleFactor) : 0,
         backgroundColor: chosen ? defaultColor : unfocusedColor,
         display: "flex",
         justifyContent: "center",
@@ -35,7 +35,7 @@ export const ControlPanel = observer(function ControlPanel({options}: {
     options: Map<string, undefined | (() => ReactNode)>
 }) {
     const screenSpecs = useScreenSpecs()
-    const optionPanelHeight = 100 * screenSpecs.height / 900
+    const optionPanelHeight = 100 * screenSpecs.scaleFactor
 
     let firstOption: string | undefined = undefined
     for (const [name, display] of options.entries()) {
@@ -77,7 +77,7 @@ export const ControlPanel = observer(function ControlPanel({options}: {
             display: "flex",
             flex: 1,
             flexDirection: "column",
-            borderRadius: borderRadius(screenSpecs.height),
+            borderRadius: borderRadius(screenSpecs.scaleFactor),
             backgroundColor: defaultColor,
             userSelect: "none"
         }}>

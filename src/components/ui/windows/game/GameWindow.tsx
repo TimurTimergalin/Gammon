@@ -12,16 +12,17 @@ import {Color} from "../../../game/common/color.ts";
 import {BackgammonPropMapping} from "../../../game/common/game_rule/backgammon/PropMapping.ts";
 import {backgammonDefaultPlacement} from "../../../game/common/game_rule/backgammon/placement_factory.ts";
 
+const factory = (gameState: GameState) => {
+    return new LocalGameController<BackgammonPositionIndex, BackgammonPositionProp>(
+        new BackgammonRules(),
+        new BackgammonIndexMapping(Color.WHITE),
+        new BackgammonPropMapping(),
+        gameState,
+        backgammonDefaultPlacement
+    )
+}
+
 export const GameWindow = () => {
-    const factory = (gameState: GameState) => {
-        return  new LocalGameController<BackgammonPositionIndex, BackgammonPositionProp>(
-            new BackgammonRules(),
-            new BackgammonIndexMapping(Color.WHITE),
-            new BackgammonPropMapping(),
-            gameState,
-            backgammonDefaultPlacement
-        )
-    }
     return (
         <AdaptiveWindow>
             <SideBar/>

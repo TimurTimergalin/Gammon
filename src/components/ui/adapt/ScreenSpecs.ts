@@ -24,6 +24,13 @@ export class ScreenSpecs {
         this._height = val
     }
 
+    // Все вычисления разметки были произведены для экрана высоты 900, поэтому
+    // все размеры, указанные в пикселях, должны быть нормированы по высоте экрана
+    get scaleFactor() {
+        const baseHeight = 900
+        return this._height / baseHeight
+    }
+
     constructor() {
         makeAutoObservable(this)
     }

@@ -14,7 +14,7 @@ export const TextWithIcon = observer(function TextWithIcon({text, imageSrc, imag
 
     const expanded = layoutMode === "Free" || layoutMode === "Collapsed"
 
-    const imageSize = 0.7 * textHeight * screenSpecs.height / 900
+    const imageSize = 0.7 * textHeight * screenSpecs.scaleFactor
 
     const imageStyle: CSSProperties = {
         height: expanded ? `${imageSize}px` : "auto",
@@ -24,7 +24,7 @@ export const TextWithIcon = observer(function TextWithIcon({text, imageSrc, imag
 
     const fontSizeValue = scaleMode === "Normal" ? 1.3 : scaleMode === "Minimized" ? 0.8 : 0.5
 
-    const textMarginLeft = 15 * screenSpecs.height / 900
+    const textMarginLeft = 15 * screenSpecs.scaleFactor
 
     const textStyle: CSSProperties = {
         marginLeft: `${textMarginLeft}px`,

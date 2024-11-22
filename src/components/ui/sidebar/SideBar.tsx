@@ -18,8 +18,8 @@ export const SideBar = observer(function SideBar() {
         zIndex: 1
     }
 
-    const expandedSideBarWidth = 200 * screenSpecs.height / 900
-    const shrankSideBarWidth = 60 * screenSpecs.height / 900
+    const expandedSideBarWidth = 200 * screenSpecs.scaleFactor
+    const shrankSideBarWidth = 60 * screenSpecs.scaleFactor
 
     const barStyle: CSSProperties = {
         width: layoutMode === "Free" || layoutMode === "Collapsed" ? expandedSideBarWidth : shrankSideBarWidth,
@@ -36,8 +36,8 @@ export const SideBar = observer(function SideBar() {
         display: menuOpen ? "block" : "none"
     }
 
-    const iconWidth = 40 * screenSpecs.height / 900
-    const iconMarginLeft = 30 * screenSpecs.height / 900
+    const iconWidth = 40 * screenSpecs.scaleFactor
+    const iconMarginLeft = 30 * screenSpecs.scaleFactor
 
     const menuIconStyle: CSSProperties = {
         width: `${iconWidth}px`,

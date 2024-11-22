@@ -14,7 +14,7 @@ export const ControlPanelAdapter = observer(function ControlPanelAdapter({childr
     }
     const baseHeight = height || 300
 
-    const fixedHeight = (height || baseHeight) * screenSpecs.height / 900
+    const fixedHeight = (height || baseHeight) * screenSpecs.scaleFactor
 
     const specificStyle: CSSProperties =
         layoutMode === "Free" ? {

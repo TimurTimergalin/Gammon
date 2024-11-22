@@ -7,7 +7,7 @@ export const PanelEntry = observer(function PanelEntry({children}: {
 }) {
     const screenSpecs = useScreenSpecs()
 
-    const height = 100 * screenSpecs.height / 900
+    const height = 100 * screenSpecs.scaleFactor
 
     const style: CSSProperties = {
         display: "flex",

@@ -10,7 +10,7 @@ export const GameAndControlPanelContainer = observer(function GameAndControlPane
     const screenSpecs = useScreenSpecs()
     const layoutMode = screenSpecs.layoutMode
 
-    const padding = 15 * screenSpecs.height / 900
+    const padding = 15 * screenSpecs.scaleFactor
 
     const [game, controlPanel] = children
     const flexDirection = layoutMode === "Collapsed" ? "column" : "row"

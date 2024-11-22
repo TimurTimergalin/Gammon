@@ -8,8 +8,8 @@ export const GameViewAdapter = observer(function GameViewAdapter({children}: {
     const screenSpecs = useScreenSpecs()
     const layoutMode = screenSpecs.layoutMode
 
-    const fixedWidth = 900 * screenSpecs.height / 900
-    const controlPanelGapValue = 30 * screenSpecs.height / 900
+    const fixedWidth = 900 * screenSpecs.scaleFactor
+    const controlPanelGapValue = 30 * screenSpecs.scaleFactor
 
     const controlPanelGap = `${controlPanelGapValue}px`
     const width =
