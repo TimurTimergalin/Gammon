@@ -7,10 +7,10 @@ import {ControlPanel} from "../../../game/control_panel/ControlPanel.tsx";
 export const GameWindow = () => {
     return (
         <AdaptiveWindow>
-            <SideBar />
+            <SideBar/>
             <GameAndControlPanelContainer>
-                <GameView />
-                <ControlPanel />
+                <GameView/>
+                <ControlPanel/>
             </GameAndControlPanelContainer>
         </AdaptiveWindow>
     )

@@ -34,7 +34,7 @@ export const GameAndControlPanelContainer = observer(function GameAndControlPane
             <GameViewAdapter>
                 {game}
             </GameViewAdapter>
-            <ControlPanelAdapter>
+            <ControlPanelAdapter height={420}>
                 {controlPanel}
             </ControlPanelAdapter>
         </div>
