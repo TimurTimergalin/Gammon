@@ -6,7 +6,8 @@ export const buttonStyle = (): CSSProperties => ({
     alignItems: "center",
     width: `${70 / 900 * 100}%`,
     padding: 0,
-    marginLeft: `${10 / 900 * 100}%`
+    marginLeft: `${10 / 900 * 100}%`,
+    userSelect: "none"
 })
 
 export const imagStyle = (): CSSProperties => ({

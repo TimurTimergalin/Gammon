@@ -3,7 +3,8 @@ import {CSSProperties} from "react";
 export const Logo = () => {
     const imagStyle: CSSProperties = {
         marginLeft: "auto",
-        marginRight: "auto"
+        marginRight: "auto",
+        userSelect: "none"
     }
     const containerStyle = {display: "flex", marginTop: "20px"};
     return (

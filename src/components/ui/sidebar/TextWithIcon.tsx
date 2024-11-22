@@ -33,8 +33,7 @@ export const TextWithIcon = observer(function TextWithIcon({text, imageSrc, imag
         marginBottom: 0,
         userSelect: "none",
         color: "white",
-        fontSize: `${fontSizeValue}em`,
-        fontFamily: "\"Arial\", sans-serif"
+        fontSize: `${fontSizeValue}em`
     }
 
     return (
