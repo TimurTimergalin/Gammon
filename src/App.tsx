@@ -9,6 +9,7 @@ export default function App() {
         <Routes>
             <Route element={<AdapterOutlet/>}>
                 <Route element={<SideBarPageOutlet/>}>
+                    <Route path={"/play"} element={<PlayMenuWindow/>}/>
                     <Route index element={<PlayMenuWindow/>}/>
                     <Route path={"/local-play"} element={<GameWindow/>}/>
                 </Route>

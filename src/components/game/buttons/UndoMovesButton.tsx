@@ -1,6 +1,7 @@
 import {observer} from "mobx-react-lite";
 import {useGameContext} from "../common/GameContext.ts";
-import {buttonStyle, imagStyle} from "./common.ts";
+import {imagStyle} from "./common.tsx";
+import {ControlButton} from "./ControlButton.tsx";
 // import {useScreenSpecs} from "../../ui/adapt/ScreenSpecs.ts";
 
 export const UndoMovesButton = observer(function UndoMovesButton() {
@@ -12,8 +13,8 @@ export const UndoMovesButton = observer(function UndoMovesButton() {
     }
 
     return (
-        <button disabled={!gameState.movesMade} onClick={onCLickCallback} style={buttonStyle()}>
+        <ControlButton onClick={onCLickCallback} disabled={!gameState.movesMade}>
             <img src={"undo.svg"} alt={"Undo"} style={imagStyle()}/>
-        </button>
+        </ControlButton>
     )
 })

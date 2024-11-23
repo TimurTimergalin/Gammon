@@ -1,15 +1,27 @@
 import {CSSProperties} from "react";
+import {observer} from "mobx-react-lite";
+import {useScreenSpecs} from "../adapt/ScreenSpecs.ts";
+import {useNavigate} from "react-router";
 
-export const Logo = () => {
+export const Logo = observer(function Logo() {
+    const screenSpecs = useScreenSpecs()
+    const layoutMode = screenSpecs.layoutMode
+    const navigate = useNavigate()
+
     const imagStyle: CSSProperties = {
         marginLeft: "auto",
         marginRight: "auto",
         userSelect: "none"
     }
-    const containerStyle = {display: "flex", marginTop: "20px"};
+
+    const iconSrc = layoutMode === "Free" || layoutMode === "Collapsed" ? "expanded_icon.svg" : "collapsed_icon.svg"
+
+    const verticalMargin = 20 * screenSpecs.scaleFactor
+
+    const containerStyle: CSSProperties = {display: "flex", marginTop: verticalMargin, marginBottom: verticalMargin, cursor: "pointer"};
     return (
         <div style={containerStyle}>
-            <img src={"placeholder.svg"} alt={"logo"} width={"65%"} style={imagStyle}/>
+            <img src={iconSrc} alt={"logo"} width={"100%"} style={imagStyle} onClick={() => navigate("/")}/>
         </div>
     )
-}
+})

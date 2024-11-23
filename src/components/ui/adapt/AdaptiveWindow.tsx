@@ -13,7 +13,6 @@ export const AdaptiveWindow = observer(function AdaptiveWindow({children}: {
             flexDirection: direction,
             width: "100%",
             height: "100%",
-            backgroundColor: "#33130d"
         }}>
             {children}
         </div>

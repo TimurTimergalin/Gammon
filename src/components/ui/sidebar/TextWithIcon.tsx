@@ -2,15 +2,20 @@ import {CSSProperties} from "react";
 import {textHeight} from "./size_constants.ts";
 import {useScreenSpecs} from "../adapt/ScreenSpecs.ts";
 import {observer} from "mobx-react-lite";
+import styled from "styled-components";
+import {useNavigate} from "react-router";
 
-export const TextWithIcon = observer(function TextWithIcon({text, imageSrc, imageAlt}: {
+const PlainTextWithIcon = observer(function TextWithIcon({text, imageSrc, imageAlt, className, navigateTo}: {
     text: string,
     imageSrc: string,
-    imageAlt: string
+    imageAlt: string,
+    className?: string,
+    navigateTo: string
 }) {
     const screenSpecs = useScreenSpecs();
     const layoutMode = screenSpecs.layoutMode
     const scaleMode = screenSpecs.scaleMode
+    const navigate = useNavigate()
 
     const expanded = layoutMode === "Free" || layoutMode === "Collapsed"
 
@@ -33,18 +38,15 @@ export const TextWithIcon = observer(function TextWithIcon({text, imageSrc, imag
         marginBottom: 0,
         userSelect: "none",
         color: "white",
-        fontSize: `${fontSizeValue}em`
+        fontSize: `${fontSizeValue}em`,
+        fontFamily: "Comfortaa, serif",
+        fontWeight: 400,
     }
 
     return (
         <div
-            style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                height: textHeight,
-                marginLeft: "15%"
-            }}
+            className={className}
+            onClick={() => navigate(navigateTo)}
         >
             <img src={imageSrc} alt={imageAlt} style={imageStyle}/>
             {expanded &&
@@ -55,3 +57,20 @@ export const TextWithIcon = observer(function TextWithIcon({text, imageSrc, imag
         </div>
     )
 })
+
+export const TextWithIcon = styled(PlainTextWithIcon)`
+    & {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        height: ${() => textHeight};
+        padding-left: 7%;
+        padding-top: 7%;
+        padding-bottom: 7%;
+        align-self: stretch;
+    }
+    
+    &:hover {
+        background-color: #332c26;
+    }
+`

@@ -1,6 +1,7 @@
 import {observer} from "mobx-react-lite";
 import {useGameContext} from "../common/GameContext.ts";
-import {buttonStyle, imagStyle} from "./common.ts";
+import {imagStyle} from "./common.tsx";
+import {ControlButton} from "./ControlButton.tsx";
 
 export const FinishTurnButton = observer(function FinishTurnButton() {
     const gameState = useGameContext("gameState")
@@ -9,8 +10,8 @@ export const FinishTurnButton = observer(function FinishTurnButton() {
     const onCLickCallback = () => gameController.endTurn()
 
     return (
-        <button disabled={!gameState.turnComplete} onClick={onCLickCallback} style={buttonStyle()}>
-            <img src={"placeholder.svg"} alt={"Finish"} style={imagStyle()}/>
-        </button>
+        <ControlButton onClick={onCLickCallback} disabled={!gameState.turnComplete}>
+            <img src={"submit.svg"} alt={"Finish"} style={imagStyle()}/>
+        </ControlButton>
     )
 })

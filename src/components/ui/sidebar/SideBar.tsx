@@ -24,7 +24,10 @@ export const SideBar = observer(function SideBar() {
     const barStyle: CSSProperties = {
         width: layoutMode === "Free" || layoutMode === "Collapsed" ? expandedSideBarWidth : shrankSideBarWidth,
         height: "100%",
-        backgroundColor: "#200a06",
+        backgroundColor: "#252323",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
         ...(layoutMode === "Collapsed" ? collapsedStyle : {})
     }
 
@@ -57,7 +60,7 @@ export const SideBar = observer(function SideBar() {
         <>
             <div style={barStyle}>
                 <Logo/>
-                <TextWithIcon text={"Играть"} imageSrc={"placeholder.svg"} imageAlt={"Play icon"}/>
+                <TextWithIcon text={"Играть"} imageSrc={"placeholder.svg"} imageAlt={"Play icon"} navigateTo={"/play"}/>
             </div>
             {layoutMode === "Collapsed" &&
                 <>

@@ -48,8 +48,8 @@ const PointDownTriangle = ({leftX, color, focused}: { leftX: number, color: stri
 export const Triangles = observer(function Triangles() {
     const gameState = useGameContext("gameState")
 
-    const darkerTriangleColor = "#B08968"
-    const lighterTriangleColor = "#DDB892"
+    const darkerTriangleColor = "#b28660"
+    const lighterTriangleColor = "#deb184"
     const triangles = []
 
     for (let i = 0; i < 12; ++i) {
