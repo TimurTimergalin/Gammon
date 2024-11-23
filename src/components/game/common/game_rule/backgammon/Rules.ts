@@ -178,8 +178,9 @@ export class BackgammonRules implements Rules<BackgammonPositionIndex, Backgammo
         }
     }
 
-    isTurnComplete(): boolean {
-        return this.diceValues.length === 0;
+    isTurnComplete(player: Color): boolean {
+        const store = this.placement.get(getStore(player)) || null
+        return this.diceValues.length === 0 || (store !== null && store[1] === 15)
     }
 
     private hasEmptyStore(player: Color) {

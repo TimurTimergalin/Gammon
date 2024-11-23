@@ -79,7 +79,7 @@ export abstract class BaseGameController<PositionIndexType, PositionPropsType> i
             ),
             diceUsed
         )
-        if (this.rules.isTurnComplete()) {
+        if (this.rules.isTurnComplete(this.player)) {
             this.gameState.turnComplete = true
         }
     }

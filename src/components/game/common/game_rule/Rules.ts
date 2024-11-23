@@ -15,7 +15,7 @@ export interface Rules<PositionIndexType, PositionPropsType> {
 
     owns(player: Color, position: PositionIndexType): boolean
 
-    isTurnComplete(): boolean
+    isTurnComplete(color: Color): boolean
 }
 
 
