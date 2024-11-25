@@ -8,7 +8,7 @@ export const ControlPanelAdapter = observer(function ControlPanelAdapter({childr
     const screenSpecs = useScreenSpecs()
     const layoutMode = screenSpecs.layoutMode
 
-    const fixedWidth = 300 * screenSpecs.scaleFactor
+    const fixedWidth = 400 * screenSpecs.scaleFactor
     const fixedHeight = 400 * screenSpecs.scaleFactor
 
     const baseStyle: CSSProperties = {

@@ -243,6 +243,14 @@ export abstract class BaseGameController<PositionIndexType, PositionPropsType> i
         this.gameState.piecePlacement = res
     }
 
+    protected flipBoard() {  // TODO: есть какие-то странные движения
+        for (const v of this.gameState._piecePlacement.values()) {
+            v.eraseFrom()
+        }
+        this.indexMapping = this.indexMapping.flipped()
+        this.setPlacement(this.rules.placement)
+    }
+
     private fillLegalMovesMap(logical: [PositionIndexType, [PositionIndexType, PositionIndexType][], number[]][]): void {
         this.legalMovesMap = new Map()
         for (const [to, additionalMoves, diceUsed] of logical) {

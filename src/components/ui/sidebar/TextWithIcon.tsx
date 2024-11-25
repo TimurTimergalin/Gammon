@@ -1,14 +1,13 @@
-import {CSSProperties} from "react";
+import {CSSProperties, ReactNode} from "react";
 import {textHeight} from "./size_constants.ts";
 import {useScreenSpecs} from "../adapt/ScreenSpecs.ts";
 import {observer} from "mobx-react-lite";
 import styled from "styled-components";
 import {useNavigate} from "react-router";
 
-const PlainTextWithIcon = observer(function TextWithIcon({text, imageSrc, imageAlt, className, navigateTo}: {
+const PlainTextWithIcon = observer(function TextWithIcon({text, children, className, navigateTo}: {
     text: string,
-    imageSrc: string,
-    imageAlt: string,
+    children: ReactNode,
     className?: string,
     navigateTo: string
 }) {
@@ -48,7 +47,9 @@ const PlainTextWithIcon = observer(function TextWithIcon({text, imageSrc, imageA
             className={className}
             onClick={() => navigate(navigateTo)}
         >
-            <img src={imageSrc} alt={imageAlt} style={imageStyle}/>
+            <div style={imageStyle}>
+                {children}
+            </div>
             {expanded &&
                 <p style={textStyle}>
                     {text}
@@ -63,7 +64,7 @@ export const TextWithIcon = styled(PlainTextWithIcon)`
         display: flex;
         flex-direction: row;
         align-items: center;
-        height: ${() => textHeight};
+        height: ${() => textHeight}px;
         padding-left: 7%;
         padding-top: 7%;
         padding-bottom: 7%;

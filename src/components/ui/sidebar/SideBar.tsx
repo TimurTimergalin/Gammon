@@ -3,6 +3,9 @@ import {Logo} from "./Logo.tsx";
 import {TextWithIcon} from "./TextWithIcon.tsx";
 import {useScreenSpecs} from "../adapt/ScreenSpecs.ts";
 import {observer} from "mobx-react-lite";
+import {Dice} from "../../game/dice_layer/dice.tsx";
+import {Color} from "../../game/common/color.ts";
+import {LayerStatus} from "../../game/dice_layer/LayerStatus.ts";
 
 export const SideBar = observer(function SideBar() {
     const screenSpecs = useScreenSpecs();
@@ -60,7 +63,18 @@ export const SideBar = observer(function SideBar() {
         <>
             <div style={barStyle}>
                 <Logo/>
-                <TextWithIcon text={"Играть"} imageSrc={"placeholder.svg"} imageAlt={"Play icon"} navigateTo={"/play"}/>
+                <TextWithIcon text={"Играть"} navigateTo={"/play"}>
+                    <svg viewBox={"0 0 75 75"} height={"100%"}>
+                        <Dice
+                            x={0}
+                            y={0}
+                            color={Color.WHITE}
+                            value={5}
+                            usageStatus={LayerStatus.NONE}
+                            unavailabilityStatus={LayerStatus.NONE}
+                        />
+                    </svg>
+                </TextWithIcon>
             </div>
             {layoutMode === "Collapsed" &&
                 <>

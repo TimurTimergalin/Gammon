@@ -11,7 +11,7 @@ export const GameViewAdapter = observer(function GameViewAdapter({children}: {
     // При маленькой ширине отображаться не будет
     console.assert(layoutMode === "Free" || layoutMode === "Tight")
 
-    const fixedWidth = 900 * screenSpecs.scaleFactor
+    const fixedWidth = 800 * screenSpecs.scaleFactor
     const controlPanelGapValue = 30 * screenSpecs.scaleFactor
 
     const baseStyle: CSSProperties = {
