@@ -13,11 +13,15 @@ import {MoveHintLayer} from "./move_hint_layer/MoveHintLayer.tsx";
 import {DragPieceLayer} from "./pieces_layer/DragPieceLayer.tsx";
 import {ButtonPanel} from "./buttons/ButtonPanel.tsx";
 import {GameController} from "./common/game_controller/GameController.ts";
+import {PlayerState} from "./common/game_state/PlayerState.ts";
+import {PlayerIcon} from "./players/PlayerIcon.tsx";
 
 
-export default function GameView({gameControllerFactory, displayControls}: {
+export default function GameView({gameControllerFactory, displayControls = true, player1, player2}: {
     gameControllerFactory: (_: GameState) => GameController,
-    displayControls?: boolean
+    displayControls?: boolean,
+    player1: PlayerState,
+    player2: PlayerState
 }) {
     const svgRef = useRef<SVGSVGElement | null>(null)
     const [svgRect, setSvgRect] = useState<DOMRect | null>(null)
@@ -25,7 +29,7 @@ export default function GameView({gameControllerFactory, displayControls}: {
     useLayoutMeasure(measureSvg, svgRef)
     useLayoutMeasure(measureSvg)
 
-    const gameState = useRef(new GameState())
+    const gameState = useRef(new GameState(player1, player2))
     const hoverTracker = useRef(new HoverTracker())
     const gameController = useRef(gameControllerFactory(gameState.current))
 
@@ -33,10 +37,13 @@ export default function GameView({gameControllerFactory, displayControls}: {
         () => gameController.current.init(),
         []
     )
-
     return (
         <GameContextProvider value={new GameContext(gameState.current, hoverTracker.current, gameController.current)}>
             <SvgClientRectContext.Provider value={svgRect}>
+                <div style={{display: "flex", marginBottom: "4px"}}>
+                    <PlayerIcon username={gameState.current.player2.username}
+                                iconSrc={gameState.current.player2.iconSrc}/>
+                </div>
                 <svg
                     viewBox={`${svgOriginX} ${svgOriginY} ${boardWidth} ${boardHeight}`}
                     xmlns="http://www.w3.org/2000/svg"
@@ -49,9 +56,14 @@ export default function GameView({gameControllerFactory, displayControls}: {
                     <DragPieceLayer/>
                     <HoverLayer/>
                 </svg>
-                {(displayControls === undefined || displayControls) &&
-                    <ButtonPanel/>
-                }
+                <div style={{display: "flex"}}>
+                    <PlayerIcon username={gameState.current.player1.username}
+                                iconSrc={gameState.current.player1.iconSrc}/>
+                    <div style={{flex: 1}}></div>
+                    {displayControls &&
+                        <ButtonPanel/>
+                    }
+                </div>
             </SvgClientRectContext.Provider>
         </GameContextProvider>
     )

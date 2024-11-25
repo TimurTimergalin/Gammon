@@ -31,7 +31,6 @@ export class PositionState {
 
     remove(): PieceState {
         console.assert(this.pieces.length > 0)
-        this.eraseFrom()
         return this.pieces.pop()!
     }
 

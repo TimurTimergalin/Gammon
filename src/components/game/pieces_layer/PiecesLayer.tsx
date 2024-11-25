@@ -30,6 +30,7 @@ const PiecesLayer = observer(function PiecesLayer() {
             const pickedColor = pickedStack.last.color
             gameState.legalMoves = gameController.getLegalMoves(clickedIndex)
             gameState.removePiece(clickedIndex)
+            gameState.eraseFrom()
             gameState.dragStatus = {
                 clickX: e.clientX,
                 clickY: e.clientY,

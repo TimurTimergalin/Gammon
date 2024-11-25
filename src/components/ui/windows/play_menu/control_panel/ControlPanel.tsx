@@ -84,7 +84,8 @@ export const ControlPanel = observer(function ControlPanel({options}: {
             flexDirection: "column",
             borderRadius: borderRadius(screenSpecs.scaleFactor),
             backgroundColor: defaultColor,
-            userSelect: "none"
+            userSelect: "none",
+            color: "black"
         }}>
             <div style={{
                 height: `${optionPanelHeight}px`,

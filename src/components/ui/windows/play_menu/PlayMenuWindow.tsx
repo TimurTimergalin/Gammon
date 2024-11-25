@@ -25,7 +25,18 @@ const factory = (gameState: GameState) => new DummyController(dummyPlacement, ga
 export const PlayMenuWindow = () => {
     return (
         <GameAndControlPanelContainer>
-            <GameView gameControllerFactory={factory} displayControls={false}/>
+            <GameView
+                gameControllerFactory={factory}
+                displayControls={false}
+                player1={{
+                    username: "Вы",
+                    iconSrc: "placeholder.svg"
+                }}
+                player2={{
+                    username: "Противник",
+                    iconSrc: "placeholder.svg"
+                }}
+            />
             <ControlPanel options={options}/>
         </GameAndControlPanelContainer>
     )

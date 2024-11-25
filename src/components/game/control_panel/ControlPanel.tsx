@@ -1,7 +1,7 @@
 export const ControlPanel = () => {
     return (
         <div style={{
-            backgroundColor: "white", flex: 1, textAlign: "center"
+            backgroundColor: "white", flex: 1, textAlign: "center", color: "black"
         }}>
             Во время игры здесь будет история ходов. В главном меню здесь будет выбор режима
         </div>

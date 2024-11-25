@@ -7,7 +7,7 @@ export const HintToken = observer(function HintToken({cx, cy, index}: {
     index: number
 }) {
     const gameState = useGameContext("gameState")
-    const fill = "#88888860"
+    const fill = "#77777790"
     return (
         <>
             {gameState.legalMoves?.includes(index) &&

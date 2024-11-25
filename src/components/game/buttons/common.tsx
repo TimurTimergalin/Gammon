@@ -1,11 +1,12 @@
 import {CSSProperties} from "react";
 
 export const additionalStyle = (): CSSProperties => ({
-    width: "8%",
     padding: 0,
     marginLeft: "1%",
     borderRadius: "10%",
-    display: "flex"
+    display: "flex",
+    aspectRatio: 3 / 2,
+    height: "35px",
 })
 
 export const imagStyle = (): CSSProperties => ({

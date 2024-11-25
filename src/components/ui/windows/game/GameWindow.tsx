@@ -23,7 +23,17 @@ const factory = (gameState: GameState) => {
 export const GameWindow = () => {
     return (
         <GameAndControlPanelContainer>
-            <GameView gameControllerFactory={factory}/>
+            <GameView
+                gameControllerFactory={factory}
+                player1={{
+                    username: "Игрок 1",
+                    iconSrc: "placeholder.svg"
+                }}
+                player2={{
+                    username: "Игрок 2",
+                    iconSrc: "placeholder.svg"
+                }}
+            />
             <ControlPanel/>
         </GameAndControlPanelContainer>
     )

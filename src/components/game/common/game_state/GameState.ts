@@ -2,13 +2,34 @@ import {makeAutoObservable} from "mobx";
 import {PiecePlacement, PieceState, PositionState} from "./piece_placement.ts";
 import {DiceState} from "./DiceState.ts";
 import {DragStatus} from "./DragStatus.ts";
+import {PlayerState} from "./PlayerState.ts";
 
 export class GameState {
-    constructor() {
+    private _player1: PlayerState
+    private _player2: PlayerState
+
+    get player2(): PlayerState {
+        return this._player2;
+    }
+
+    set player2(value: PlayerState) {
+        this._player2 = value;
+    }
+    get player1(): PlayerState {
+        return this._player1;
+    }
+
+    set player1(value: PlayerState) {
+        this._player1 = value;
+    }
+
+    constructor(player1: PlayerState, player2: PlayerState) {
+        this._player1 = player1
+        this._player2 = player2
         makeAutoObservable(this)
     }
 
-    _piecePlacement: PiecePlacement = new Map() // Текущая расстановка шашек на доске
+    private _piecePlacement: PiecePlacement = new Map() // Текущая расстановка шашек на доске
 
     set piecePlacement(placement: PiecePlacement) {
         for (let i = 0; i < 30; ++i) {
@@ -17,6 +38,12 @@ export class GameState {
             }
         }
         this._piecePlacement = placement
+    }
+
+    eraseFrom() {
+        for (const p of this._piecePlacement.values()) {
+            p.eraseFrom()
+        }
     }
 
     private _dice1: DiceState | null = null  // Первая кость

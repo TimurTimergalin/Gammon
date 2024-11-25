@@ -15,7 +15,7 @@ export const Logo = observer(function Logo() {
 
     const iconSrc = layoutMode === "Free" || layoutMode === "Collapsed" ? "expanded_icon.svg" : "collapsed_icon.svg"
 
-    const verticalMargin = 20 * screenSpecs.scaleFactor
+    const verticalMargin = 20
 
     const containerStyle: CSSProperties = {display: "flex", marginTop: verticalMargin, marginBottom: verticalMargin, cursor: "pointer"};
     return (

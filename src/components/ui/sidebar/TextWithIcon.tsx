@@ -13,12 +13,11 @@ const PlainTextWithIcon = observer(function TextWithIcon({text, children, classN
 }) {
     const screenSpecs = useScreenSpecs();
     const layoutMode = screenSpecs.layoutMode
-    const scaleMode = screenSpecs.scaleMode
     const navigate = useNavigate()
 
     const expanded = layoutMode === "Free" || layoutMode === "Collapsed"
 
-    const imageSize = 0.7 * textHeight * screenSpecs.scaleFactor
+    const imageSize = 0.7 * textHeight
 
     const imageStyle: CSSProperties = {
         height: expanded ? `${imageSize}px` : "auto",
@@ -26,9 +25,9 @@ const PlainTextWithIcon = observer(function TextWithIcon({text, children, classN
         userSelect: "none"
     }
 
-    const fontSizeValue = scaleMode === "Normal" ? 1.1 : scaleMode === "Minimized" ? 0.75 : 0.4
+    const fontSizeValue = 1.1
 
-    const textMarginLeft = 15 * screenSpecs.scaleFactor
+    const textMarginLeft = 15
 
     const textStyle: CSSProperties = {
         marginLeft: `${textMarginLeft}px`,

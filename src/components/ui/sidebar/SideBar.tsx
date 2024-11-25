@@ -21,8 +21,8 @@ export const SideBar = observer(function SideBar() {
         zIndex: 1
     }
 
-    const expandedSideBarWidth = 200 * screenSpecs.scaleFactor
-    const shrankSideBarWidth = 60 * screenSpecs.scaleFactor
+    const expandedSideBarWidth = 200
+    const shrankSideBarWidth = 60
 
     const barStyle: CSSProperties = {
         width: layoutMode === "Free" || layoutMode === "Collapsed" ? expandedSideBarWidth : shrankSideBarWidth,

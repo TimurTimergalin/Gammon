@@ -10,5 +10,6 @@ html, body {
 #root {
     height: 100%;
     font-family: Comfortaa, sans-serif;
+    color: white;
     background-color: #2f2e2d;
 }
