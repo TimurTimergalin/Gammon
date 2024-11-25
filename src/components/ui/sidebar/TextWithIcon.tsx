@@ -26,7 +26,7 @@ const PlainTextWithIcon = observer(function TextWithIcon({text, children, classN
         userSelect: "none"
     }
 
-    const fontSizeValue = scaleMode === "Normal" ? 1.3 : scaleMode === "Minimized" ? 0.8 : 0.5
+    const fontSizeValue = scaleMode === "Normal" ? 1.1 : scaleMode === "Minimized" ? 0.75 : 0.4
 
     const textMarginLeft = 15 * screenSpecs.scaleFactor
 

@@ -9,8 +9,7 @@ export const Logo = observer(function Logo() {
     const navigate = useNavigate()
 
     const imagStyle: CSSProperties = {
-        marginLeft: "auto",
-        marginRight: "auto",
+        width: "100%",
         userSelect: "none"
     }
 
@@ -21,7 +20,7 @@ export const Logo = observer(function Logo() {
     const containerStyle: CSSProperties = {display: "flex", marginTop: verticalMargin, marginBottom: verticalMargin, cursor: "pointer"};
     return (
         <div style={containerStyle}>
-            <img src={iconSrc} alt={"logo"} width={"100%"} style={imagStyle} onClick={() => navigate("/")}/>
+            <img src={iconSrc} alt={"logo"} style={imagStyle} onClick={() => navigate("/")}/>
         </div>
     )
 })

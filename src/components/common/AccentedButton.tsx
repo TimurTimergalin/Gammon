@@ -1,26 +1,24 @@
-import {ReactNode} from "react";
+import {CSSProperties, ReactNode} from "react";
 import styled from "styled-components";
 
-const PlainControlButton = ({children, disabled, className, onClick}: {
+const PlainAccentedButton = ({children, disabled, className, onClick, style = {}}: {
     children: ReactNode | ReactNode[]
     disabled: boolean,
     className?: string,
-    onClick: () => void
+    onClick: () => void,
+    style?: CSSProperties
 }) => (
-    <button disabled={disabled} onClick={onClick} className={className}>{children}</button>
+    <button disabled={disabled} onClick={onClick} className={className} style={style}>{children}</button>
 )
-export const ControlButton = styled(PlainControlButton)`
+export const AccentedButton = styled(PlainAccentedButton)`
     & {
-        display: flex;
         justify-content: center;
         align-items: center;
-        width: 8%;
-        padding: 0;
-        margin-left: 1%;
         user-select: none;
         background-color: #ff7f2a;
-        border-radius: 10%;
         border: 0;
+        font-family: Comfortaa, sans-serif;
+        color: white;
     }
     &[disabled], &:disabled {
         background-color: #976646;

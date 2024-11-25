@@ -17,7 +17,9 @@ const OptionTab = observer(function OptionTab({chosen, position, callback, name}
     name: string
 }) {
     const screenSpecs = useScreenSpecs()
+    const scaleMode = screenSpecs.scaleMode
 
+    const fontSizeValue = scaleMode === "Normal" ? 0.9 : scaleMode === "Minimized" ? 0.6 : 0.5
 
     const style: CSSProperties = {
         flex: 1,
@@ -26,7 +28,8 @@ const OptionTab = observer(function OptionTab({chosen, position, callback, name}
         backgroundColor: chosen ? defaultColor : unfocusedColor,
         display: "flex",
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        fontSize: `${fontSizeValue}em`
     }
 
     return <div style={style} onClick={callback}>{name}</div>

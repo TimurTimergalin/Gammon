@@ -31,7 +31,8 @@ export const SideBar = observer(function SideBar() {
         display: "flex",
         flexDirection: "column",
         alignItems: "flex-start",
-        ...(layoutMode === "Collapsed" ? collapsedStyle : {})
+        ...(layoutMode === "Collapsed" ? collapsedStyle : {}),
+        // minWidth: "fit-content"
     }
 
     const screenStyle: CSSProperties = {
