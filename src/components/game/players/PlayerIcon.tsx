@@ -15,7 +15,6 @@ export const PlayerIcon = observer(function PlayerIcon({username, iconSrc}:{
 
     const textStyle: CSSProperties = {
         marginLeft: "10px",
-        lineHeight: "1em",
         marginTop: 0,
         marginBottom: 0,
         height: "min-content",

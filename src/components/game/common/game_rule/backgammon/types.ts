@@ -2,6 +2,25 @@ import {Color} from "../../color.ts";
 
 export type BackgammonPositionIndex = number | "White Store" | "Black Store" | "White Bar" | "Black Bar"
 export type BackgammonPositionProp = null | [Color, number]
+export interface BackgammonRemoteConfig {
+    color: "BLACK" | "WHITE",
+    turn: "BLACK" | "WHITE",
+    first: boolean,
+    bar: {
+        WHITE: number,
+        BLACK: number
+    },
+    deck: {
+        color: "BLACK" | "WHITE",
+        count: number,
+        id: number
+    }[],
+    zar: [number, number]
+}
+export interface BackgammonRemoteMove {
+    from: number,
+    to: number
+}
 
 export const getBar = (player: Color): BackgammonPositionIndex => {
     if (player == Color.WHITE) {

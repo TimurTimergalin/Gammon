@@ -23,6 +23,7 @@ export abstract class BaseGameController<PositionIndexType, PositionPropsType> i
     protected gameState: GameState
     protected player: Color
     protected active = false
+    // Массив из [from, to, доп. ходы (from, to), использованные кости
     protected madeMoves: [number, number, [number, number][], number[]][] = []
     protected legalMovesMap: Map<number, [[number, number][], number[]]> = new Map()
 
@@ -42,7 +43,7 @@ export abstract class BaseGameController<PositionIndexType, PositionPropsType> i
 
     abstract endTurn(): void
 
-    abstract init(): void
+    abstract init(): void | (() => void)
 
     getLegalMoves(point: number): number[] {  // TODO: заменить на void и менять gameState
         console.assert(this.active)

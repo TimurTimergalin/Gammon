@@ -15,10 +15,11 @@ import {ButtonPanel} from "./buttons/ButtonPanel.tsx";
 import {GameController} from "./common/game_controller/GameController.ts";
 import {PlayerState} from "./common/game_state/PlayerState.ts";
 import {PlayerIcon} from "./players/PlayerIcon.tsx";
+import {syncDummyGameControllerFactory} from "./common/game_controller/factories/dummy.ts";
 
 
 export default function GameView({gameControllerFactory, displayControls = true, player1, player2}: {
-    gameControllerFactory: (_: GameState) => GameController,
+    gameControllerFactory: (_: GameState) => Promise<GameController>,
     displayControls?: boolean,
     player1: PlayerState,
     player2: PlayerState
@@ -31,14 +32,21 @@ export default function GameView({gameControllerFactory, displayControls = true,
 
     const gameState = useRef(new GameState(player1, player2))
     const hoverTracker = useRef(new HoverTracker())
-    const gameController = useRef(gameControllerFactory(gameState.current))
+    const gameController = useRef<GameController>(syncDummyGameControllerFactory(gameState.current))
 
     useEffect(
-        () => gameController.current.init(),
-        []
+        () => {
+            gameController.current.init()  // Always dummy
+            const prom = gameControllerFactory(gameState.current)
+            prom.then((cont) => {
+            gameController.current = cont
+            return cont.init()
+        })
+        },
+        [gameControllerFactory]
     )
     return (
-        <GameContextProvider value={new GameContext(gameState.current, hoverTracker.current, gameController.current)}>
+        <GameContextProvider value={new GameContext(gameState.current, hoverTracker.current, gameController.current!)}>
             <SvgClientRectContext.Provider value={svgRect}>
                 <div style={{display: "flex", marginBottom: "4px"}}>
                     <PlayerIcon username={gameState.current.player2.username}

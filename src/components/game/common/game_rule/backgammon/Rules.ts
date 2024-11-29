@@ -272,8 +272,7 @@ export class BackgammonRules implements Rules<BackgammonPositionIndex, Backgammo
         return dice.includes(getValue(to) - getValue(from))
     }
 
-    // Передвигает фишку с from на to без проверок
-    private move(from: BackgammonPositionIndex, to: BackgammonPositionIndex) {
+    move(from: BackgammonPositionIndex, to: BackgammonPositionIndex) {
         let fromPosition = this._placement.get(from) || null
         console.assert(fromPosition !== null)
         fromPosition = fromPosition as [Color, number]
@@ -336,6 +335,11 @@ export class BackgammonRules implements Rules<BackgammonPositionIndex, Backgammo
         const ind = dice.findIndex(x => x === val)
         console.assert(ind >= 0)
         dice.splice(ind, 1)
+    }
+
+    getShifted(pos: BackgammonPositionIndex, dice: number, player: Color): BackgammonPositionIndex {
+        const dir = player === Color.WHITE ? -1 : 1
+        return getValue(pos) + dice * dir
     }
 }
 

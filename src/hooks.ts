@@ -17,14 +17,29 @@ export function useMousePosition(initX: number, initY: number) {
 
 export function useLayoutMeasure(f: EffectCallback, receiver?: RefObject<Element>) {
     useLayoutEffect(() => {
-        const cleanup = f()
+        const cleanups = [f()]
+        const callback = () => cleanups.push(f())
 
-        const observer = new ResizeObserver(f)
-        observer.observe(receiver?.current || document.body)
+        const observers: ResizeObserver[] = []
+
+        const bodyObserver = new ResizeObserver(callback)
+        bodyObserver.observe(document.body)
+        observers.push(bodyObserver)
+
+        if (receiver !== undefined && receiver.current !== null) {
+            const targetObserver = new ResizeObserver(callback)
+            targetObserver.observe(receiver.current)
+            observers.push(targetObserver)
+        }
+
         return () => {
-            observer.disconnect()
-            if (cleanup !== undefined) {
-                cleanup()
+            for (const observer of observers) {
+                observer.disconnect()
+            }
+            for (const cleanup of cleanups) {
+                if (cleanup !== undefined) {
+                    cleanup()
+                }
             }
         }
     }, [f, receiver]);

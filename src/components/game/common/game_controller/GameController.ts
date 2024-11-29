@@ -9,7 +9,7 @@ export interface GameController {
 
     movePiece(from: number, to: number, color: Color): void
 
-    init(): void
+    init(): void | (() => void)
 
     undoMoves(): void
 }
