@@ -20,22 +20,11 @@ export function useLayoutMeasure(f: EffectCallback, receiver?: RefObject<Element
         const cleanups = [f()]
         const callback = () => cleanups.push(f())
 
-        const observers: ResizeObserver[] = []
-
-        const bodyObserver = new ResizeObserver(callback)
-        bodyObserver.observe(document.body)
-        observers.push(bodyObserver)
-
-        if (receiver !== undefined && receiver.current !== null) {
-            const targetObserver = new ResizeObserver(callback)
-            targetObserver.observe(receiver.current)
-            observers.push(targetObserver)
-        }
+        const observer = new ResizeObserver(callback)
+        observer.observe(receiver?.current || document.body)
 
         return () => {
-            for (const observer of observers) {
-                observer.disconnect()
-            }
+            observer.disconnect()
             for (const cleanup of cleanups) {
                 if (cleanup !== undefined) {
                     cleanup()

@@ -13,7 +13,7 @@ export const Logo = observer(function Logo() {
         userSelect: "none"
     }
 
-    const iconSrc = layoutMode === "Free" || layoutMode === "Collapsed" ? "expanded_icon.svg" : "collapsed_icon.svg"
+    const iconSrc = layoutMode === "Free" || layoutMode === "Collapsed" ? "/expanded_icon.svg" : "/collapsed_icon.svg"
 
     const verticalMargin = 20
 

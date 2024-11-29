@@ -14,7 +14,7 @@ export const UndoMovesButton = observer(function UndoMovesButton() {
 
     return (
         <AccentedButton onClick={onCLickCallback} disabled={!gameState.movesMade} style={additionalStyle()}>
-            <img src={"undo.svg"} alt={"Undo"} style={imagStyle()}/>
+            <img src={"/undo.svg"} alt={"Undo"} style={imagStyle()}/>
         </AccentedButton>
     )
 })

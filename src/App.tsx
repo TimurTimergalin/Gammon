@@ -11,7 +11,8 @@ export default function App() {
                 <Route element={<SideBarPageOutlet/>}>
                     <Route path={"/play"} element={<PlayMenuWindow/>}/>
                     <Route index element={<PlayMenuWindow/>}/>
-                    <Route path={"/local-play"} element={<GameWindow/>}/>
+                    <Route path={"/local-play"} element={<GameWindow remote={false}/>}/>
+                    <Route path={"/play/:roomId"} element={<GameWindow remote={true}/>}/>
                 </Route>
             </Route>
         </Routes>

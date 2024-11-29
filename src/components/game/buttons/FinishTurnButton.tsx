@@ -11,7 +11,7 @@ export const FinishTurnButton = observer(function FinishTurnButton() {
 
     return (
         <AccentedButton onClick={onCLickCallback} disabled={!gameState.turnComplete} style={additionalStyle()}>
-            <img src={"submit.svg"} alt={"Finish"} style={imagStyle()}/>
+            <img src={"/submit.svg"} alt={"Finish"} style={imagStyle()}/>
         </AccentedButton>
     )
 })

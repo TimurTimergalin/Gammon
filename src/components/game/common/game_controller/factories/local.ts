@@ -6,8 +6,9 @@ import {BackgammonIndexMapping} from "../../game_rule/backgammon/IndexMapping.ts
 import {Color} from "../../color.ts";
 import {BackgammonPropMapping} from "../../game_rule/backgammon/PropMapping.ts";
 import {backgammonDefaultPlacement} from "../../game_rule/backgammon/placement_factory.ts";
+import {GameController} from "../GameController.ts";
 
-export async function localGameControllerFactory(gameState: GameState) {
+export async function localGameControllerFactory(gameState: GameState): Promise<GameController> {
     return new LocalGameController<BackgammonPositionIndex, BackgammonPositionProp>(
         new BackgammonRules(),
         new BackgammonIndexMapping(Color.WHITE),

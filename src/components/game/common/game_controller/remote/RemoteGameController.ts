@@ -66,7 +66,6 @@ export class RemoteGameController<PositionIndexType, PositionPropType> extends B
 
     endTurn(): void {
         const split = this.madeMoves.flatMap(x => this.splitMoves(x))
-        console.log(split)
         this.connector.makeMove(split)
         this.gameState.turnComplete = false
         this.gameState.movesMade = false

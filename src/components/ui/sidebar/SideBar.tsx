@@ -77,7 +77,8 @@ export const SideBar = observer(function SideBar() {
                         />
                     </svg>
                 </TextWithIcon>
-                <AuthButton />
+                <AuthButton username={"timur"} password={"123"}/>
+                <AuthButton username={"roma"} password={"123"}/>
             </div>
             {layoutMode === "Collapsed" &&
                 <>

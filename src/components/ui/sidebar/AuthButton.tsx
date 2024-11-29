@@ -1,14 +1,13 @@
-export const AuthButton = () => {  // TODO: Delete
+export const AuthButton = (credentials: {
+    username: string,
+    password: string
+} ) => {  // TODO: Delete
     const url = "/login"
-    const credentials = JSON.stringify({
-        username: "timur",
-        password: "123"
-    })
     const callback = () => {
         fetch(url, {
             method: "POST",
             credentials: "include",
-            body: credentials,
+            body: JSON.stringify(credentials),
             headers: {
                 'Content-Type': 'application/json',
                 // 'Access-Control-Allow-Origin': '*'

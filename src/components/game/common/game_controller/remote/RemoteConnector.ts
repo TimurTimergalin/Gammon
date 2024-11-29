@@ -12,18 +12,15 @@ export interface RemoteConnector<PositionIndexType> {
     makeMove(moves: [PositionIndexType, PositionIndexType][]): void
 
     unsubscribe(): void
-
-    init(): Promise<void>
 }
 
 export class RemoteConnectorImpl<RemoteConfigType, RemoteMoveType, PositionIndexType, PositionPropType> implements RemoteConnector<PositionIndexType> {
     private readonly configMapper: InitConfigMapper<RemoteConfigType, PositionIndexType, PositionPropType>
     private readonly moveMapper: RemoteMoveMapper<RemoteMoveType, PositionIndexType>
-    private readonly connectUri: string
     private readonly configUri: (id: number) => string
     private readonly eventsUri: (id: number) => string
     private readonly finishTurnUri: (id: number) => string
-    private roomId: number | undefined = undefined
+    private readonly roomId: number
 
     private contentTypeHeader = {
         "Content-Type": "application/json"
@@ -31,32 +28,16 @@ export class RemoteConnectorImpl<RemoteConfigType, RemoteMoveType, PositionIndex
 
     constructor(configMapper: InitConfigMapper<RemoteConfigType, PositionIndexType, PositionPropType>,
                 moveMapper: RemoteMoveMapper<RemoteMoveType, PositionIndexType>,
-                connectUri: string,
+                roomId: number,
                 configUri: (id: number) => string,
                 eventsUri: (id: number) => string,
                 finishTurnUri: (id: number) => string) {
         this.configMapper = configMapper;
         this.moveMapper = moveMapper;
-        this.connectUri = connectUri
+        this.roomId = roomId
         this.configUri = configUri;
         this.eventsUri = eventsUri;
         this.finishTurnUri = finishTurnUri;
-    }
-
-    async init() {
-        console.log("Init")
-        const resp = await fetch(this.connectUri, {
-            credentials: "include",
-            method: "POST",
-            body: JSON.stringify({
-                type: "SHORT_BACKGAMMON"
-            }),
-            headers: {
-                ...this.contentTypeHeader
-            }
-        })
-        const respBody = await resp.text()
-        this.roomId = parseInt(respBody)
     }
 
     makeMove(moves: [PositionIndexType, PositionIndexType][]): void {
@@ -106,6 +87,7 @@ export class RemoteConnectorImpl<RemoteConfigType, RemoteMoveType, PositionIndex
 
     subscribe() {
         console.assert(this.roomId !== undefined)
+        console.log("Subscription initiated")
         this.eventSource = new EventSource(this.eventsUri(this.roomId!), {withCredentials: true})
         this.eventSource.addEventListener("error", (ev) => {
             console.log("error, ", ev)

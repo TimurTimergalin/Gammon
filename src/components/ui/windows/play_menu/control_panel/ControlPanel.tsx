@@ -2,7 +2,7 @@ import {CSSProperties, ReactNode, useState} from "react";
 import {observer} from "mobx-react-lite";
 import {useScreenSpecs} from "../../../adapt/ScreenSpecs.ts";
 import {PlayButton} from "./PlayButton.tsx";
-import {useNavigate} from "react-router";
+import {NavigateFunction, useNavigate} from "react-router";
 
 
 const defaultColor = "#ffffff"
@@ -35,8 +35,13 @@ const OptionTab = observer(function OptionTab({chosen, position, callback, name}
     return <div style={style} onClick={callback}>{name}</div>
 })
 
+export interface OptionCallbacks {
+    element: () => ReactNode,
+    playCallback: (navigate: NavigateFunction) => void
+}
+
 export const ControlPanel = observer(function ControlPanel({options}: {
-    options: Map<string, undefined | (() => ReactNode)>
+    options: Map<string, undefined | OptionCallbacks>
 }) {
     const screenSpecs = useScreenSpecs()
     const navigate = useNavigate()
@@ -75,7 +80,7 @@ export const ControlPanel = observer(function ControlPanel({options}: {
         ++i
     }
 
-    const TabPage = options.get(chosenOption)!
+    const TabPage = options.get(chosenOption)!.element
 
     return (
         <div style={{
@@ -107,7 +112,7 @@ export const ControlPanel = observer(function ControlPanel({options}: {
                 flexDirection: "row",
                 justifyContent: "center"
             }}>
-                <PlayButton callback={() => navigate("/local-play")}/>
+                <PlayButton callback={() => options.get(chosenOption)!.playCallback(navigate)}/>
             </div>
         </div>
     )

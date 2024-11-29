@@ -1,6 +1,5 @@
 import {boardHeight, boardWidth, svgOriginX, svgOriginY} from "./dimensions/board_size_constants.ts";
 import {useCallback, useEffect, useRef, useState} from "react";
-import {useLayoutMeasure} from "../../hooks";
 import {BoardLayer} from "./board_layer/BoardLayer.tsx";
 import PiecesLayer from "./pieces_layer/PiecesLayer.js";
 import {SvgClientRectContext} from "./SvgClientRectContext.ts";
@@ -16,6 +15,7 @@ import {GameController} from "./common/game_controller/GameController.ts";
 import {PlayerState} from "./common/game_state/PlayerState.ts";
 import {PlayerIcon} from "./players/PlayerIcon.tsx";
 import {syncDummyGameControllerFactory} from "./common/game_controller/factories/dummy.ts";
+import {useLayoutMeasure} from "../../hooks.ts";
 
 
 export default function GameView({gameControllerFactory, displayControls = true, player1, player2}: {
@@ -46,7 +46,7 @@ export default function GameView({gameControllerFactory, displayControls = true,
         [gameControllerFactory]
     )
     return (
-        <GameContextProvider value={new GameContext(gameState.current, hoverTracker.current, gameController.current!)}>
+        <GameContextProvider value={new GameContext(gameState, hoverTracker, gameController)}>
             <SvgClientRectContext.Provider value={svgRect}>
                 <div style={{display: "flex", marginBottom: "4px"}}>
                     <PlayerIcon username={gameState.current.player2.username}

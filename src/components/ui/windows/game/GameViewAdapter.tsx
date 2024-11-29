@@ -8,7 +8,7 @@ export const GameViewAdapter = observer(function GameViewAdapter({children}: {
     const screenSpecs = useScreenSpecs()
     const layoutMode = screenSpecs.layoutMode
 
-    const fixedWidth = 900 * screenSpecs.scaleFactor
+    const fixedWidth = 900 * screenSpecs.scaleFactor + 0.01 * screenSpecs.width // Размер svg всегда должен меняться при изменении размера окна - иначе его clientRect будет считаться неправильно
     const controlPanelGapValue = 30 * screenSpecs.scaleFactor
 
     const controlPanelGap = `${controlPanelGapValue}px`
