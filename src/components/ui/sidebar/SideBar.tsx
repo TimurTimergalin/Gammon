@@ -77,7 +77,7 @@ export const SideBar = observer(function SideBar() {
                     </svg>
                 </TextWithIcon>
                 <TextWithIcon navigateTo={"/sign-in"} text={"Войти"}>
-                    <img src={"/placeholder.svg"} alt={"Войти"} style={{height: "100%"}}/>
+                    <img src={"/profile_icon.svg"} alt={"Войти"} style={{height: "100%"}}/>
                 </TextWithIcon>
             </div>
             {layoutMode === "Collapsed" &&

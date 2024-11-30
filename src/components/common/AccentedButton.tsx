@@ -8,7 +8,7 @@ const PlainAccentedButton = ({children, disabled, className, onClick, style = {}
     onClick: () => void,
     style?: CSSProperties
 }) => (
-    <button disabled={disabled} onClick={onClick} className={className} style={style}>{children}</button>
+    <button disabled={disabled} onClick={onClick} className={className} style={style} type={"button"}>{children}</button>
 )
 export const AccentedButton = styled(PlainAccentedButton)`
     & {

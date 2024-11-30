@@ -18,6 +18,9 @@ export const Form = observer(function FormBase(
     const onSubmitWithValidate = useCallback((navigate: NavigateFunction) => {
         for (const success of formState.validationSuccess.values()) {
             if (!success) {
+                for (const key of formState.touched.keys()) {
+                    formState.touched.set(key, true)
+                }
                 return
             }
             onSubmit(navigate)
@@ -34,7 +37,7 @@ export const Form = observer(function FormBase(
     }, [formState, onSubmitWithValidate])
 
     return (
-        <form className={className} style={{position: "relative"}} ref={formRef}>
+        <form className={className} style={{position: "relative", overflow: "clip"}} ref={formRef}>
             {children}
             {!formState.enabled &&
                 <div style={{

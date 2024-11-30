@@ -5,8 +5,16 @@ import {useFormState} from "../forms/state/FormState.ts";
 import {Form} from "../forms/Form.tsx";
 import {FormInput} from "../forms/FormInput.tsx";
 import {FormStateProvider} from "../forms/state/FormStateProvider.tsx";
+import styled from "styled-components";
+import {AccentedButton} from "../../../common/AccentedButton.tsx";
+import {required} from "../forms/validators.ts";
+import {buttonStyle, formStyle, inputStyle} from "./common.ts";
 
-const LoginFormBase = observer(function LoginFormBase() {
+const LoginFormInput = styled(FormInput)`
+    ${() => inputStyle}
+`
+
+const LoginFormBase = observer(function LoginFormBase({className}: {className?: string}) {
     const formState = useFormState()
     const navigate = useNavigate()
 
@@ -40,15 +48,19 @@ const LoginFormBase = observer(function LoginFormBase() {
     }, [formState])
 
     return (
-        <Form onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit} className={className}>
             <p>Логин</p>
-            <FormInput validityCheck={() => [true]} index={0} required={true} name={"name"}/>
+            <LoginFormInput validityCheck={required} index={0} name={"name"}/>
             <p>Пароль</p>
-            <FormInput validityCheck={() => [true]} index={0} required={true} type={"password"} name={"password"}/>
-            <button onClick={() => formState.onSubmit(navigate)} type={"button"}>Войти</button>
+            <LoginFormInput validityCheck={required} index={1} type={"password"} name={"password"}/>
+            <AccentedButton onClick={() => formState.onSubmit(navigate)} disabled={false} style={buttonStyle}>Войти</AccentedButton>
             <p>{errorMessage}</p>
         </Form>
     )
 })
 
-export const LoginForm = () => <FormStateProvider><LoginFormBase /></FormStateProvider>
+const LoginFormStyle = styled(LoginFormBase)`
+    ${() => formStyle}
+`
+
+export const LoginForm = () => <FormStateProvider><LoginFormStyle /></FormStateProvider>

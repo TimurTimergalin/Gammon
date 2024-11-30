@@ -5,7 +5,7 @@ import {BackgammonRules} from "../../game_rule/backgammon/Rules.ts";
 import {BackgammonIndexMapping} from "../../game_rule/backgammon/IndexMapping.ts";
 import {Color} from "../../color.ts";
 import {BackgammonPropMapping} from "../../game_rule/backgammon/PropMapping.ts";
-import {backgammonDebugPlacement} from "../../game_rule/backgammon/placement_factory.ts";
+import {backgammonDefaultPlacement} from "../../game_rule/backgammon/placement_factory.ts";
 import {GameController} from "../GameController.ts";
 
 export async function localGameControllerFactory(gameState: GameState): Promise<GameController> {
@@ -14,6 +14,6 @@ export async function localGameControllerFactory(gameState: GameState): Promise<
         new BackgammonIndexMapping(Color.WHITE),
         new BackgammonPropMapping(),
         gameState,
-        backgammonDebugPlacement
+        backgammonDefaultPlacement
     )
 }

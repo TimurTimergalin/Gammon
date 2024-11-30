@@ -23,7 +23,7 @@ export const PlayerIcon = observer(function PlayerIcon({username, iconSrc}:{
 
     return (
         <div style={containerStyle}>
-            <img src={iconSrc} alt={"Icon"}/>
+            <img src={iconSrc} alt={"Icon"} style={{backgroundColor: "#252323", padding: "2px"}}/>
             <p style={textStyle}>{username}</p>
         </div>
     )

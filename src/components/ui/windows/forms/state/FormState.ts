@@ -9,6 +9,7 @@ export class FormState {
     }
 
     readonly validationSuccess: Map<number, boolean> = new Map()
+    readonly touched: Map<number, boolean> = new Map()
     readonly defaultOnSubmit = () => console.error("No onSubmit specified")
     onSubmit: (navigate: NavigateFunction) => void = this.defaultOnSubmit
     enabled = true

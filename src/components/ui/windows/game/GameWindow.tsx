@@ -18,11 +18,11 @@ export const GameWindow = ({remote}: {remote: boolean}) => {
                 gameControllerFactory={factory}
                 player1={{
                     username: "Игрок 1",
-                    iconSrc: "/placeholder.svg"
+                    iconSrc: "/user_icon_placeholder.svg"
                 }}
                 player2={{
                     username: "Игрок 2",
-                    iconSrc: "/placeholder.svg"
+                    iconSrc: "/user_icon_placeholder.svg"
                 }}
             />
             <ControlPanel/>

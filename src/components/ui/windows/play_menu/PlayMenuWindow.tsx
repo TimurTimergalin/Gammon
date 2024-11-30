@@ -29,11 +29,11 @@ export const PlayMenuWindow = () => {
                 displayControls={false}
                 player1={{
                     username: "Вы",
-                    iconSrc: "/placeholder.svg"
+                    iconSrc: "/user_icon_placeholder.svg"
                 }}
                 player2={{
                     username: "Противник",
-                    iconSrc: "/placeholder.svg"
+                    iconSrc: "/user_icon_placeholder.svg"
                 }}
             />
             <ControlPanel options={options}/>

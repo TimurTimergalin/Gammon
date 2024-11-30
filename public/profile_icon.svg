@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   viewBox="0 0 100 100"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   sodipodi:docname="profile_icon.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#111111"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="1.3772587"
+     inkscape:cx="168.8136"
+     inkscape:cy="196.40464"
+     inkscape:window-width="1920"
+     inkscape:window-height="991"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Слой 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="fill:#aaff2a;fill-opacity:1;stroke-width:0.185208"
+       id="path2"
+       sodipodi:type="arc"
+       sodipodi:cx="65"
+       sodipodi:cy="75"
+       sodipodi:rx="35"
+       sodipodi:ry="35"
+       sodipodi:start="3.1415927"
+       sodipodi:end="0"
+       sodipodi:arc-type="slice"
+       d="m 30,75 a 35,35 0 0 1 17.5,-30.310889 35,35 0 0 1 35,0 A 35,35 0 0 1 100,75 H 65 Z"
+       inkscape:label="body" />
+    <circle
+       style="fill:#ffd9a9;fill-opacity:1;stroke-width:0.185208"
+       id="path3"
+       cx="65"
+       cy="22.5"
+       inkscape:label="head"
+       r="17.5" />
+    <path
+       style="fill:#ff7f2a;fill-opacity:1;stroke-width:0.185208"
+       id="path2-8"
+       sodipodi:type="arc"
+       sodipodi:cx="35"
+       sodipodi:cy="95"
+       sodipodi:rx="35"
+       sodipodi:ry="35"
+       sodipodi:start="3.1415927"
+       sodipodi:end="0"
+       sodipodi:arc-type="slice"
+       d="M 0,95 A 35,35 0 0 1 35,60 35,35 0 0 1 70,95 H 35 Z"
+       inkscape:label="body1" />
+    <circle
+       style="fill:#ffd9a9;fill-opacity:1;stroke-width:0.185208"
+       id="path3-8"
+       cx="35"
+       cy="42.5"
+       inkscape:label="head1"
+       r="17.5" />
+  </g>
+</svg>

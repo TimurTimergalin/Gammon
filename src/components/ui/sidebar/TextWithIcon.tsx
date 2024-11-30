@@ -64,7 +64,7 @@ export const TextWithIcon = styled(PlainTextWithIcon)`
         flex-direction: row;
         align-items: center;
         height: ${() => textHeight}px;
-        padding-left: 7%;
+        padding-left: 15%;
         padding-top: 7%;
         padding-bottom: 7%;
         align-self: stretch;
