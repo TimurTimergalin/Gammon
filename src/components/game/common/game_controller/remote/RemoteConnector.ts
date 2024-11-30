@@ -9,6 +9,8 @@ export interface RemoteConnector<PositionIndexType> {
 
     set onNewDice(value: (dice: [number, number], player: Color) => void)
 
+    set onEnd(value: (winner: Color) => void)
+
     makeMove(moves: [PositionIndexType, PositionIndexType][]): void
 
     unsubscribe(): void
@@ -83,6 +85,11 @@ export class RemoteConnectorImpl<RemoteConfigType, RemoteMoveType, PositionIndex
         this._onNewDice = value;
     }
 
+    private _onEnd: (winner: Color) => void = () => console.warn("No onEnd set")
+    set onEnd(value: (winner: Color) => void) {
+        this._onEnd = value
+    }
+
     private eventSource: EventSource | undefined = undefined
 
     subscribe() {
@@ -109,6 +116,8 @@ export class RemoteConnectorImpl<RemoteConfigType, RemoteMoveType, PositionIndex
                 const [d1, d2] = data.value
                 const color = data.tossedBy === "WHITE" ? Color.WHITE : Color.BLACK
                 this._onNewDice([d1, d2], color)
+            } else if (data.type === "END_EVENT") {
+                this._onEnd(data.win === "WHITE" ? Color.WHITE: Color.BLACK)
             } else {
                 console.warn("Ignoring unknown event")
             }

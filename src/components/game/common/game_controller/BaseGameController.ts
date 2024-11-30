@@ -80,9 +80,7 @@ export abstract class BaseGameController<PositionIndexType, PositionPropsType> i
             ),
             diceUsed
         )
-        if (this.rules.isTurnComplete(this.player)) {
-            this.gameState.turnComplete = true
-        }
+        this.gameState.turnComplete = this.rules.isTurnComplete(this.player)
     }
 
     undoMoves() {
@@ -210,7 +208,8 @@ export abstract class BaseGameController<PositionIndexType, PositionPropsType> i
         return [genNum(), genNum()]
     }
 
-    protected setDice(diceValues: [number, number], colors: [Color, Color]) {
+    protected setDice(diceValues: [number, number], colors: [Color, Color], thrower_?: Color) {
+        const thrower = thrower_ === undefined ? this.player : thrower_
         this.gameState.dice1 = {
             value: diceValues[0],
             color: colors[0],
@@ -224,9 +223,9 @@ export abstract class BaseGameController<PositionIndexType, PositionPropsType> i
             unavailabilityStatus: LayerStatus.NONE
         }
 
-        const availableDice = this.rules.calculateDiceValues(diceValues, this.player)
+        const availableDice = this.rules.calculateDiceValues(diceValues, thrower)
         this.disableDice(availableDice)
-        if (availableDice.length === 0) {
+        if (availableDice.length === 0 && this.player === thrower) {
             this.gameState.turnComplete = true
         }
     }

@@ -341,6 +341,39 @@ export class BackgammonRules implements Rules<BackgammonPositionIndex, Backgammo
         const dir = player === Color.WHITE ? -1 : 1
         return getValue(pos) + dice * dir
     }
+
+    mergeMoves(moves: [BackgammonPositionIndex, BackgammonPositionIndex][], player: Color) {
+        const res: [BackgammonPositionIndex, BackgammonPositionIndex][] = []
+
+        let i = 0
+        for (; i < moves.length; ++i) {
+            let pos = this._placement.get(moves[i][0])
+            console.assert(pos !== null)
+            pos = pos!
+            if (pos !== null && pos[0] !== player) {
+                res.push(moves[i])
+            } else {
+                break
+            }
+        }
+
+        moves = moves.slice(i)
+
+        while (moves.length > 0) {
+            const used = new Set([0])
+            let merged = moves[0]
+            for (let i = 1 ; i < moves.length; ++i) {
+                const cur = moves[i]
+                if (merged[1] === cur[0]) {
+                    merged = [merged[0], cur[1]]
+                    used.add(i)
+                }
+            }
+            res.push(merged)
+            moves = Array.from(moves.entries()).filter(e => !used.has(e[0])).map(e => e[1])
+        }
+        return res
+    }
 }
 
 

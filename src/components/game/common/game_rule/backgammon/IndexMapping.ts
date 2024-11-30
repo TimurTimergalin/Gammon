@@ -39,10 +39,10 @@ export class BackgammonIndexMapping implements IndexMapping<BackgammonPositionIn
             }
         }
         if (logical === "White Store") {
-            return 27
+            return 24
         }
         if (logical === "Black Store") {
-            return 24
+            return 27
         }
         if (logical === "White Bar") {
             return 25

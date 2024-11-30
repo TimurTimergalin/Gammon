@@ -6,7 +6,6 @@ import {observer} from "mobx-react-lite";
 import {Dice} from "../../game/dice_layer/dice.tsx";
 import {Color} from "../../game/common/color.ts";
 import {LayerStatus} from "../../game/dice_layer/LayerStatus.ts";
-import {AuthButton} from "./AuthButton.tsx";
 
 export const SideBar = observer(function SideBar() {
     const screenSpecs = useScreenSpecs();
@@ -77,8 +76,9 @@ export const SideBar = observer(function SideBar() {
                         />
                     </svg>
                 </TextWithIcon>
-                <AuthButton username={"timur"} password={"123"}/>
-                <AuthButton username={"roma"} password={"123"}/>
+                <TextWithIcon navigateTo={"/sign-in"} text={"Войти"}>
+                    <img src={"/placeholder.svg"} alt={"Войти"} style={{height: "100%"}}/>
+                </TextWithIcon>
             </div>
             {layoutMode === "Collapsed" &&
                 <>

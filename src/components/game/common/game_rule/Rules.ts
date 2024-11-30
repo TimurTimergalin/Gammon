@@ -20,6 +20,8 @@ export interface Rules<PositionIndexType, PositionPropsType> {
     isTurnComplete(color: Color): boolean
 
     getShifted(pos: PositionIndexType, dice: number, player: Color): PositionIndexType
+
+    mergeMoves(moves: [PositionIndexType, PositionIndexType][], player: Color): [PositionIndexType, PositionIndexType][]
 }
 
 

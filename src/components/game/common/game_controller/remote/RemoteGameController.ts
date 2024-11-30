@@ -29,16 +29,18 @@ export class RemoteGameController<PositionIndexType, PositionPropType> extends B
 
     init(): void | (() => void) {
         this.connector.onMovesMade = (moves) => {
-            for (const [from, to] of moves) {
+            for (const [from, to] of this.rules.mergeMoves(moves)) {
                 this.rules.move(from, to)
                 this.movePieceFrom(this.indexMapping.logicalToPhysical(to), this.indexMapping.logicalToPhysical(from))
-                this.active = true
             }
+            this.active = true
         }
 
         this.connector.onNewDice = (dice, player) => {
-            this.setDice(dice, [player, player])
+            this.setDice(dice, [player, player], player)
         }
+
+        this.connector.onEnd = (color) => console.log("The game has ended with the winner: " + color)
 
         this.connector.subscribe()
         return () => this.connector.unsubscribe()

@@ -2,6 +2,7 @@ import {GameState} from "./game_state/GameState.ts";
 import {HoverTracker} from "./HoverTracker.ts";
 import {GameController} from "./game_controller/GameController.ts";
 import {createContext, RefObject, useContext} from "react";
+import {forceType} from "../../../typing.ts";
 
 export class GameContext {
     get gameController(): GameController {
@@ -32,13 +33,13 @@ export function useGameContext<T extends keyof GameContext>(member: T): GameCont
     return new Proxy(res, {
         get(target, prop) {
             if (prop in target[member]) {
-                // @ts-expect-error прокси по своей натуре динамический, ts тут бессилен
+                forceType<keyof GameContext[T]>(prop)
                 return target[member][prop];
             }
         },
         set(target, prop, value) {
             if (prop in target[member]) {
-                // @ts-expect-error прокси по своей натуре динамический, ts тут бессилен
+                forceType<keyof GameContext[T]>(prop)
                 target[member][prop] = value
                 return true
             }
