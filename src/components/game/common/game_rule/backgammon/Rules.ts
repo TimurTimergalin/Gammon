@@ -347,7 +347,7 @@ export class BackgammonRules implements Rules<BackgammonPositionIndex, Backgammo
 
         let i = 0
         for (; i < moves.length; ++i) {
-            let pos = this._placement.get(moves[i][0])
+            let pos = this._placement.get(moves[i][0]) || null
             console.assert(pos !== null)
             pos = pos!
             if (pos !== null && pos[0] !== player) {
