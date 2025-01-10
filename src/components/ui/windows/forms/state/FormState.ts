@@ -1,6 +1,6 @@
 import {NavigateFunction} from "react-router";
 import {makeAutoObservable} from "mobx";
-import {createContext, RefObject, useContext} from "react";
+import React, {createContext, RefObject, useContext} from "react";
 
 export class FormState {
     private _formData: FormData | null = null
@@ -12,15 +12,30 @@ export class FormState {
     readonly touched: Map<number, boolean> = new Map()
     readonly defaultOnSubmit = () => console.error("No onSubmit specified")
     onSubmit: (navigate: NavigateFunction) => void = this.defaultOnSubmit
-    enabled = true
-    formRef: RefObject<HTMLFormElement> | null = null
+
+    private _enabled = true
+
+    get enabled(): boolean {
+        return this._enabled;
+    }
+    set enabled(value: boolean) {
+        this._enabled = value;
+    }
+
+    private _formRef: RefObject<HTMLFormElement> | null = null
+    get formRef(): React.RefObject<HTMLFormElement> | null {
+        return this._formRef;
+    }
+    set formRef(value: React.RefObject<HTMLFormElement> | null) {
+        this._formRef = value;
+    }
 
     constructor() {
         makeAutoObservable(this)
     }
 
     updateFormData() {
-        this._formData = new FormData(this.formRef!.current!)
+        this._formData = new FormData(this._formRef!.current!)
     }
 }
 

@@ -29,7 +29,7 @@ export class RemoteGameController<PositionIndexType, PositionPropType> extends B
 
     init(): void | (() => void) {
         this.connector.onMovesMade = (moves) => {
-            for (const [from, to] of this.rules.mergeMoves(moves)) {
+            for (const [from, to] of this.rules.mergeMoves(moves, this.player)) {
                 this.rules.move(from, to)
                 this.movePieceFrom(this.indexMapping.logicalToPhysical(to), this.indexMapping.logicalToPhysical(from))
             }
