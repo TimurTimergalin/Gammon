@@ -6,7 +6,11 @@ export default defineConfig({
   plugins: [react()],
   server: {
     host: '0.0.0.0',
-    port: 1026
+    port: 1026,
+    hmr: {
+            host: "localhost",
+            protocol: "ws",
+        }
   },
   preview: {
     port: 1026
