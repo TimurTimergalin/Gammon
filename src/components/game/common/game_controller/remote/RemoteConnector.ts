@@ -56,7 +56,7 @@ export class RemoteConnectorImpl<RemoteConfigType, RemoteMoveType, PositionIndex
         }).then(resp => {
             if (resp.status !== 200) {
                 console.error("Failed to make move due to error ", resp.status, resp)
-                console.error(resp.text().then(console.error))
+                resp.text().then(console.error)
             }
         })
     }
@@ -69,7 +69,7 @@ export class RemoteConnectorImpl<RemoteConfigType, RemoteMoveType, PositionIndex
 
         if (resp.status !== 200) {
             console.error("Failed to fetch config due to error ", resp.status, resp)
-            console.error(resp.text().then(console.error))
+            resp.text().then(console.error)
         }
 
         const js = await resp.json()
