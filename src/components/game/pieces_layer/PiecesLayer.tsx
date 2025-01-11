@@ -1,13 +1,14 @@
 import {useEffect} from "react";
 import {observer} from "mobx-react-lite";
 import {StacksLayer} from "./StacksLayer.tsx";
-import {useGameContext} from "../common/GameContext.ts";
+import {useGameContext} from "../../../game/GameContext.ts";
 
 
 const PiecesLayer = observer(function PiecesLayer() {
     const gameState = useGameContext("gameState")
     const hoverTracker = useGameContext("hoverTracker")
     const gameController = useGameContext("gameController")
+    const dragState = useGameContext("dragState")
 
     useEffect(() => {
         const onMouseDown = (e: MouseEvent) => {
@@ -31,7 +32,7 @@ const PiecesLayer = observer(function PiecesLayer() {
             gameState.legalMoves = gameController.getLegalMoves(clickedIndex)
             gameState.removePiece(clickedIndex)
             gameState.eraseFrom()
-            gameState.dragStatus = {
+            dragState.dragStatus = {
                 clickX: e.clientX,
                 clickY: e.clientY,
                 clickedIndex: clickedIndex,
@@ -43,7 +44,7 @@ const PiecesLayer = observer(function PiecesLayer() {
             if (e.button !== 0) {
                 return
             }
-            if (gameState.dragStatus === null) {
+            if (dragState.dragStatus === null) {
                 return
             }
 
@@ -51,12 +52,12 @@ const PiecesLayer = observer(function PiecesLayer() {
             if (
                 releaseIndex === null || !gameState.legalMoves?.includes(releaseIndex)
             ) {
-                gameState.addPiece(gameState.dragStatus.clickedIndex, {color: gameState.dragStatus.pickedColor})
+                gameState.addPiece(dragState.dragStatus.clickedIndex, {color: dragState.dragStatus.pickedColor})
             } else {
-                gameController.movePiece(gameState.dragStatus.clickedIndex, releaseIndex, gameState.dragStatus.pickedColor)
+                gameController.movePiece(dragState.dragStatus.clickedIndex, releaseIndex, dragState.dragStatus.pickedColor)
             }
 
-            gameState.dragStatus = null
+            dragState.dragStatus = null
             gameState.legalMoves = []
         }
 
@@ -67,7 +68,7 @@ const PiecesLayer = observer(function PiecesLayer() {
             document.removeEventListener("mousedown", onMouseDown)
             document.removeEventListener("mouseup", onMouseUp)
         }
-    }, [gameState, gameState.dragStatus, hoverTracker, gameController]);
+    }, [dragState, gameController, gameState, hoverTracker.hoveredIndex]);
 
     return (
         <StacksLayer/>

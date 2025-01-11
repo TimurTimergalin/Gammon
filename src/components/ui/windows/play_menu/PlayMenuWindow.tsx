@@ -1,7 +1,7 @@
 import {GameAndControlPanelContainer} from "./GameAndControlPanelContainer.tsx";
 import GameView from "../../../game/GameView.tsx";
 import {ControlPanel, OptionCallbacks} from "./control_panel/ControlPanel.tsx";
-import {dummyGameControllerFactory} from "../../../game/common/game_controller/factories/dummy.ts";
+import {dummyGameControllerFactory} from "../../../../game/game_controller/factories/dummy.ts";
 import {NavigateFunction} from "react-router";
 import {connect} from "../../../../requests/requests.ts";
 import {logResponseError} from "../../../../requests/util.ts";

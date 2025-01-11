@@ -2,7 +2,7 @@ import {InitConfigMapper} from "../InitConfigMapper.ts";
 import {BackgammonPositionIndex, BackgammonPositionProp, BackgammonRemoteConfig} from "./types.ts";
 import {Color} from "../../color.ts";
 import {DiceState} from "../../game_state/DiceState.ts";
-import {LayerStatus} from "../../../dice_layer/LayerStatus.ts";
+import {LayerStatus} from "../../../components/game/dice_layer/LayerStatus.ts";
 
 export class BackgammonInitConfigMapper implements InitConfigMapper<BackgammonRemoteConfig, BackgammonPositionIndex, BackgammonPositionProp> {
     mapConfig(config: BackgammonRemoteConfig): {

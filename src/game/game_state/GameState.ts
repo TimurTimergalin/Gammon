@@ -1,31 +1,9 @@
 import {makeAutoObservable} from "mobx";
 import {PiecePlacement, PieceState, PositionState} from "./piece_placement.ts";
 import {DiceState} from "./DiceState.ts";
-import {DragStatus} from "./DragStatus.ts";
-import {PlayerState} from "./PlayerState.ts";
 
 export class GameState {
-    private _player1: PlayerState
-    private _player2: PlayerState
-
-    get player2(): PlayerState {
-        return this._player2;
-    }
-
-    set player2(value: PlayerState) {
-        this._player2 = value;
-    }
-    get player1(): PlayerState {
-        return this._player1;
-    }
-
-    set player1(value: PlayerState) {
-        this._player1 = value;
-    }
-
-    constructor(player1: PlayerState, player2: PlayerState) {
-        this._player1 = player1
-        this._player2 = player2
+    constructor() {
         makeAutoObservable(this)
     }
 
@@ -76,16 +54,6 @@ export class GameState {
         this._legalMoves = value;
     }
 
-    private _dragStatus: DragStatus | null = null  // Информация о подобранной фишке
-
-    get dragStatus(): DragStatus | null {
-        return this._dragStatus;
-    }
-
-    set dragStatus(value: DragStatus | null) {
-        this._dragStatus = value;
-    }
-
     private _turnComplete: boolean = false
 
     get turnComplete(): boolean {
@@ -104,14 +72,6 @@ export class GameState {
 
     set movesMade(val: boolean) {
         this._movesMade = val
-    }
-
-    get pickedFrom(): number | null {
-        if (this.dragStatus === null) {
-            return null
-        } else {
-            return this.dragStatus.clickedIndex
-        }
     }
 
     addPiece(i: number, piece: PieceState) {
@@ -140,10 +100,6 @@ export class GameState {
         }
 
         return this._piecePlacement.get(i)!
-    }
-
-    apply(callback: () => void) {
-        callback()
     }
 }
 

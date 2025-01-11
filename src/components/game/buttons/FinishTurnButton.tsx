@@ -1,5 +1,5 @@
 import {observer} from "mobx-react-lite";
-import {useGameContext} from "../common/GameContext.ts";
+import {useGameContext} from "../../../game/GameContext.ts";
 import {additionalStyle, imagStyle} from "./common.tsx";
 import {AccentedButton} from "../../common/AccentedButton.tsx";
 

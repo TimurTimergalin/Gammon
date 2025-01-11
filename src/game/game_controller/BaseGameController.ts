@@ -4,7 +4,7 @@ import {IndexMapping} from "../game_rule/IndexMapping.ts";
 import {PropMapping} from "../game_rule/PropMapping.ts";
 import {GameState} from "../game_state/GameState.ts";
 import {Color} from "../color.ts";
-import {LayerStatus} from "../../dice_layer/LayerStatus.ts";
+import {LayerStatus} from "../../components/game/dice_layer/LayerStatus.ts";
 import {
     getSidePieceY,
     getStackDirection,
@@ -12,9 +12,10 @@ import {
     getStackOriginY,
     getStackType,
     getTopDownPieceY
-} from "../../dimensions/functions.ts";
-import {TopDownStack} from "../../pieces_layer/stacks.tsx";
+} from "../../components/game/dimensions/functions.ts";
+import {TopDownStack} from "../../components/game/pieces_layer/stacks.tsx";
 import {PiecePlacement, PieceState, PositionState} from "../game_state/piece_placement.ts";
+import {runInAction} from "mobx";
 
 export abstract class BaseGameController<PositionIndexType, PositionPropsType> implements GameController {
     protected rules: Rules<PositionIndexType, PositionPropsType>
@@ -117,7 +118,7 @@ export abstract class BaseGameController<PositionIndexType, PositionPropsType> i
         const dice1 = this.gameState.dice1!
         const dice2 = this.gameState.dice2!
 
-        this.gameState.apply(
+        runInAction(
             () => {
                 if (dice1.value === dice2.value) {
                     const count = availableDice.length
@@ -137,7 +138,7 @@ export abstract class BaseGameController<PositionIndexType, PositionPropsType> i
         const dice1 = this.gameState.dice1!
         const dice2 = this.gameState.dice2!
 
-        this.gameState.apply(
+        runInAction(
             () => {
                 if (dice1.value === dice2.value) {
                     console.assert(dice1.value === diceVal)
@@ -165,7 +166,7 @@ export abstract class BaseGameController<PositionIndexType, PositionPropsType> i
         const dice1 = this.gameState.dice1!
         const dice2 = this.gameState.dice2!
 
-        this.gameState.apply(
+        runInAction(
             () => {
                 if (dice1.value === dice2.value) {
                     console.assert(dice1.value === diceVal)
@@ -186,7 +187,7 @@ export abstract class BaseGameController<PositionIndexType, PositionPropsType> i
     }
 
     protected movePieceFrom(to: number, from: number) {
-        this.gameState.apply(
+        runInAction(
             () => {
                 const fromProps = this.gameState.getPositionProps(from)
                 const fromTotal = fromProps.quantity

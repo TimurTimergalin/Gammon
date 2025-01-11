@@ -2,9 +2,9 @@ import {GameAndControlPanelContainer} from "./GameAndControlPanelContainer.tsx";
 import GameView from "../../../game/GameView.tsx";
 import {ControlPanel} from "../../../game/control_panel/ControlPanel.tsx";
 // import {remoteGameControllerFactory} from "../../../game/common/game_controller/factories/remote.ts";
-import {localGameControllerFactory} from "../../../game/common/game_controller/factories/local.ts";
+import {localGameControllerFactory} from "../../../../game/game_controller/factories/local.ts";
 import {useParams} from "react-router";
-import {getRemoteGameControllerFactory} from "../../../game/common/game_controller/factories/remote.ts";
+import {getRemoteGameControllerFactory} from "../../../../game/game_controller/factories/remote.ts";
 
 export const GameWindow = ({remote}: {remote: boolean}) => {
     const params = useParams()

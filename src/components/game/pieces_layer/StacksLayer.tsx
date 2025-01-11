@@ -1,4 +1,4 @@
-import {useGameContext} from "../common/GameContext.ts";
+import {useGameContext} from "../../../game/GameContext.ts";
 import {getStackDirection, getStackOriginX, getStackOriginY, getStackType,} from "../dimensions/functions.ts";
 import {observer} from "mobx-react-lite";
 

@@ -8,11 +8,11 @@ import {
 } from "../dimensions/board_size_constants.ts";
 import {boardColor, focusedColor, sideColor, standColor} from "./color_constants.ts";
 import {observer} from "mobx-react-lite";
-import {useGameContext} from "../common/GameContext.ts";
+import {useGameContext} from "../../../game/GameContext.ts";
 
 const FocusableStore = observer(function FocusableStore({x, y, index}: { x: number, y: number, index: number }) {
-    const gameState = useGameContext("gameState")
-    const focused = gameState.pickedFrom === index
+    const dragState = useGameContext("dragState")
+    const focused = dragState.pickedFrom === index
     return (
         <>
             {focused &&

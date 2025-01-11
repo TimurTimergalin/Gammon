@@ -2,7 +2,7 @@ import {observer} from "mobx-react-lite";
 import {boardHeight, boardWidth} from "../dimensions/board_size_constants.ts";
 import {diceWidth, gapBetweenDice} from "./dice_size_constants.ts";
 import {Dice} from "./dice.tsx";
-import {useGameContext} from "../common/GameContext.ts";
+import {useGameContext} from "../../../game/GameContext.ts";
 
 const DiceLayer = observer(function DiceLayer() {
         const {dice1, dice2} = useGameContext("gameState")

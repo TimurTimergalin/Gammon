@@ -1,8 +1,8 @@
 import {Config, InitConfigMapper} from "../../game_rule/InitConfigMapper.ts";
 import {RemoteMoveMapper} from "../../game_rule/RemoteMoveMapper.ts";
 import {Color} from "../../color.ts";
-import {finishTurn, getConfig, subscribeForEvents} from "../../../../../requests/requests.ts";
-import {logResponseError} from "../../../../../requests/util.ts";
+import {finishTurn, getConfig, subscribeForEvents} from "../../../requests/requests.ts";
+import {logResponseError} from "../../../requests/util.ts";
 
 export interface RemoteConnector<PositionIndexType> {
     subscribe(): void

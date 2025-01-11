@@ -1,10 +1,10 @@
 import {observer} from "mobx-react-lite";
 import {boardHeight, gapWidth, middleX} from "../dimensions/board_size_constants.ts";
 import {focusedColor, gapColor} from "./color_constants.ts";
-import {useGameContext} from "../common/GameContext.ts";
+import {useGameContext} from "../../../game/GameContext.ts";
 
 export const MiddleLine = observer(function MiddleLine() {
-    const gameState = useGameContext("gameState")
+    const dragState = useGameContext("dragState")
     return (
         <>
             <line
@@ -15,7 +15,7 @@ export const MiddleLine = observer(function MiddleLine() {
                 stroke={gapColor}
                 strokeWidth={gapWidth + 1}
             />
-            {(gameState.pickedFrom === 25 || gameState.pickedFrom === 28) &&
+            {(dragState.pickedFrom === 25 || dragState.pickedFrom === 28) &&
                 <line
                     x1={middleX}
                     y1={0}
