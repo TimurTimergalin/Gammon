@@ -9,6 +9,7 @@ import styled from "styled-components";
 import {AccentedButton} from "../../../common/AccentedButton.tsx";
 import {required} from "../forms/validators.ts";
 import {buttonStyle, formStyle, inputStyle} from "./common.ts";
+import {Credentials, login} from "../../../../requests/requests.ts";
 
 const LoginFormInput = styled(FormInput)`
     ${() => inputStyle}
@@ -27,16 +28,11 @@ const LoginFormBase = observer(function LoginFormBase({className}: {className?: 
             username: data.get("name"),
             password: data.get("password")
         }
-        const loginUrl = "/login"
 
-        fetch(loginUrl, {
-            method: "POST",
-            credentials: "include",
-            body: JSON.stringify(credentials),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        }).then(resp => {
+        console.assert(typeof credentials.username === "string")
+        console.assert(typeof credentials.password === "string")
+
+        login(credentials as Credentials).then(resp => {
             if (!resp.ok) {
                 throw new Error(resp.status + "")
             }
