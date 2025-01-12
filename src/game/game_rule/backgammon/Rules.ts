@@ -203,20 +203,20 @@ export class BackgammonRules implements Rules<BackgammonPositionIndex, Backgammo
             return false
         }
 
-        const check = (i: number) => {
+        const checkColor = (i: number) => {
             const pos = this._placement.get(i) || null
             return pos !== null && pos[0] === player
         }
         if (player === Color.WHITE) {
             for (let i = (ind as number) + 1; i <= 6; ++i) {
-                if (check(i)) {
+                if (checkColor(i)) {
                     return false
                 }
             }
             return true
         }
         for (let i = 19; i < (ind as number); ++i) {
-            if (check(i)) {
+            if (checkColor(i)) {
                 return false
             }
         }
