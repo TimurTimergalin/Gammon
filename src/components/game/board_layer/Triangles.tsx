@@ -1,5 +1,5 @@
 import {boardHeight, pieceWidth, sideWidth, triangleHeight} from "../dimensions/board_size_constants.ts";
-import {useGameContext} from "../common/GameContext.ts";
+import {useGameContext} from "../../../game/GameContext.ts";
 import {observer} from "mobx-react-lite";
 import {focusedColor} from "./color_constants.ts";
 import {getTriangleLeft} from "../dimensions/functions.ts";
@@ -46,7 +46,7 @@ const PointDownTriangle = ({leftX, color, focused}: { leftX: number, color: stri
 }
 
 export const Triangles = observer(function Triangles() {
-    const gameState = useGameContext("gameState")
+    const dragState = useGameContext("dragState")
 
     const darkerTriangleColor = "#b28660"
     const lighterTriangleColor = "#deb184"
@@ -59,12 +59,12 @@ export const Triangles = observer(function Triangles() {
             <PointUpTriangle
                 leftX={leftX}
                 color={i % 2 === 0 ? darkerTriangleColor : lighterTriangleColor}
-                focused={gameState.pickedFrom === 12 + i}
+                focused={dragState.pickedFrom === 12 + i}
                 key={i}/>,
             <PointDownTriangle
                 leftX={leftX}
                 color={i % 2 === 0 ? lighterTriangleColor : darkerTriangleColor}
-                focused={gameState.pickedFrom === i}
+                focused={dragState.pickedFrom === i}
                 key={12 + i}/>
         )
     }

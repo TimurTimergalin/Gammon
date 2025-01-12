@@ -1,4 +1,4 @@
-import {Color, colorFill, colorStroke, oppositeColor} from "../common/color.ts";
+import {Color, colorFill, colorStroke, oppositeColor} from "../../../game/color.ts";
 import {borderWidth, diceCornerRadius, diceWidth, dotRadius} from "./dice_size_constants.ts";
 import {LayerStatus} from "./LayerStatus.ts";
 

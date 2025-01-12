@@ -8,7 +8,7 @@ import {
     triangleTriggerHeight
 } from "../dimensions/board_size_constants.ts";
 import {HoverTrigger} from "./HoverTrigger.tsx";
-import {useGameContext} from "../common/GameContext.ts";
+import {useGameContext} from "../../../game/GameContext.ts";
 import {getTriangleLeft} from "../dimensions/functions.ts";
 
 export function HoverLayer() {

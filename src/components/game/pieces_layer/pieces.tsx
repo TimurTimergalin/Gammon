@@ -1,5 +1,5 @@
 import {pieceHeight, pieceWidth} from "../dimensions/board_size_constants.ts";
-import {Color, colorFill, colorStroke} from "../common/color.ts";
+import {Color, colorFill, colorStroke} from "../../../game/color.ts";
 
 const borderWidth = 2
 

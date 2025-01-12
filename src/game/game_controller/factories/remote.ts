@@ -8,30 +8,11 @@ import {BackgammonIndexMapping} from "../../game_rule/backgammon/IndexMapping.ts
 import {BackgammonPropMapping} from "../../game_rule/backgammon/PropMapping.ts";
 import {GameController} from "../GameController.ts";
 
-export async function connect(connectUri: string) {
-    const resp = await fetch(connectUri, {
-        credentials: "include",
-        method: "POST",
-        body: JSON.stringify({
-            type: "SHORT_BACKGAMMON"
-        }),
-        headers: {
-            "Content-Type": "application/json"
-        }
-    })
-    const respBody = await resp.text()
-
-    return parseInt(respBody)
-}
-
 export function getRemoteGameControllerFactory(roomId: number) {
     const remoteConnector = new RemoteConnectorImpl(
         new BackgammonInitConfigMapper(),
         new BackgammonRemoteMoveMapper(),
-        roomId,
-        (id) => `/game/backgammon/config/${id}`,
-        (id) => `/game-events/${id}`,
-        (id) => `/game/backgammon/move/${id}`
+        roomId
     )
     return async function (gameState: GameState): Promise<GameController> {
         const conf = await remoteConnector.getConfig()

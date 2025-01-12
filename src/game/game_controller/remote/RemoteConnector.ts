@@ -1,6 +1,8 @@
 import {Config, InitConfigMapper} from "../../game_rule/InitConfigMapper.ts";
 import {RemoteMoveMapper} from "../../game_rule/RemoteMoveMapper.ts";
 import {Color} from "../../color.ts";
+import {finishTurn, getConfig, subscribeForEvents} from "../../../requests/requests.ts";
+import {logResponseError} from "../../../requests/util.ts";
 
 export interface RemoteConnector<PositionIndexType> {
     subscribe(): void
@@ -19,61 +21,25 @@ export interface RemoteConnector<PositionIndexType> {
 export class RemoteConnectorImpl<RemoteConfigType, RemoteMoveType, PositionIndexType, PositionPropType> implements RemoteConnector<PositionIndexType> {
     private readonly configMapper: InitConfigMapper<RemoteConfigType, PositionIndexType, PositionPropType>
     private readonly moveMapper: RemoteMoveMapper<RemoteMoveType, PositionIndexType>
-    private readonly configUri: (id: number) => string
-    private readonly eventsUri: (id: number) => string
-    private readonly finishTurnUri: (id: number) => string
     private readonly roomId: number
-
-    private contentTypeHeader = {
-        "Content-Type": "application/json"
-    }
 
     constructor(configMapper: InitConfigMapper<RemoteConfigType, PositionIndexType, PositionPropType>,
                 moveMapper: RemoteMoveMapper<RemoteMoveType, PositionIndexType>,
-                roomId: number,
-                configUri: (id: number) => string,
-                eventsUri: (id: number) => string,
-                finishTurnUri: (id: number) => string) {
+                roomId: number) {
         this.configMapper = configMapper;
         this.moveMapper = moveMapper;
         this.roomId = roomId
-        this.configUri = configUri;
-        this.eventsUri = eventsUri;
-        this.finishTurnUri = finishTurnUri;
     }
 
     makeMove(moves: [PositionIndexType, PositionIndexType][]): void {
-        console.assert(this.roomId !== undefined)
-        fetch(this.finishTurnUri(this.roomId!), {
-            credentials: "include",
-            method: "POST",
-            body: JSON.stringify({
-                moves: moves.map(this.moveMapper.toRemote)
-            }),
-            headers: {
-                ...this.contentTypeHeader
-            }
-        }).then(resp => {
-            if (resp.status !== 200) {
-                console.error("Failed to make move due to error ", resp.status, resp)
-                resp.text().then(console.error)
-            }
-        })
+        finishTurn(this.roomId, moves.map(this.moveMapper.toRemote))
+            .then(resp => logResponseError(resp, "making a move"))
     }
 
     async getConfig(): Promise<Config<PositionIndexType, PositionPropType>> {
-        console.assert(this.roomId !== undefined)
-        const resp = await fetch(this.configUri(this.roomId!), {
-            credentials: "include"
-        })
-
-        if (resp.status !== 200) {
-            console.error("Failed to fetch config due to error ", resp.status, resp)
-            resp.text().then(console.error)
-        }
-
+        const resp = await getConfig(this.roomId)
+        logResponseError(resp, "getting config")
         const js = await resp.json()
-
         return this.configMapper.mapConfig(js as RemoteConfigType)
     }
 
@@ -95,9 +61,8 @@ export class RemoteConnectorImpl<RemoteConfigType, RemoteMoveType, PositionIndex
     private eventSource: EventSource | undefined = undefined
 
     subscribe() {
-        console.assert(this.roomId !== undefined)
+        this.eventSource = subscribeForEvents(this.roomId)
         console.log("Subscription initiated")
-        this.eventSource = new EventSource(this.eventsUri(this.roomId!), {withCredentials: true})
         this.eventSource.addEventListener("error", (ev) => {
             console.log("error, ", ev)
         })

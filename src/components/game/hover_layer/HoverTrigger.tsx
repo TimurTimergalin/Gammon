@@ -1,4 +1,4 @@
-import {HoverTracker} from "../common/HoverTracker.ts";
+import {HoverTracker} from "../../../game/HoverTracker.ts";
 
 export const HoverTrigger = (
     {originX, originY, width, height, index, hoverTracker}: {

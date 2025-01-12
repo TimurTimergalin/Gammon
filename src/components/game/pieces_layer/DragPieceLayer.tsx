@@ -3,9 +3,9 @@ import {boardHeight, boardWidth, pieceWidth, svgOriginX, svgOriginY} from "../di
 import {TopDownPiece} from "./pieces";
 import {useContext} from "react";
 import {SvgClientRectContext} from "../SvgClientRectContext.ts";
-import {Color} from "../common/color.ts";
+import {Color} from "../../../game/color.ts";
 import {observer} from "mobx-react-lite";
-import {useGameContext} from "../common/GameContext.ts";
+import {useGameContext} from "../../../game/GameContext.ts";
 
 function clientToSvg(clientX: number, clientY: number, clientRect: DOMRect): [number, number] {
     const svgX = svgOriginX + boardWidth * (clientX - clientRect.left) / (clientRect.width)
@@ -35,14 +35,14 @@ function DragPiece({initClientX, initClientY, color}: {
 }
 
 export const DragPieceLayer = observer(function DragPieceLayer() {
-    const gameState = useGameContext("gameState")
+    const dragState = useGameContext("dragState")
     return (
         <>
-            {gameState.dragStatus !== null &&
+            {dragState.dragStatus !== null &&
                 <DragPiece
-                    color={gameState.dragStatus.pickedColor!}
-                    initClientX={gameState.dragStatus.clickX!}
-                    initClientY={gameState.dragStatus.clickY!}
+                    color={dragState.dragStatus.pickedColor!}
+                    initClientX={dragState.dragStatus.clickX!}
+                    initClientY={dragState.dragStatus.clickY!}
                 />}
         </>
     )
