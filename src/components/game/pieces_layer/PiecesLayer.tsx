@@ -5,7 +5,9 @@ import {useGameContext} from "../../../game/GameContext.ts";
 
 
 const PiecesLayer = observer(function PiecesLayer() {
-    const gameState = useGameContext("gameState")
+    const gameState = useGameContext("controlButtonsState")
+    const boardState = useGameContext("boardState")
+    const legalMovesTracker = useGameContext("legalMovesTracker")
     const hoverTracker = useGameContext("hoverTracker")
     const gameController = useGameContext("gameController")
     const dragState = useGameContext("dragState")
@@ -19,7 +21,7 @@ const PiecesLayer = observer(function PiecesLayer() {
             if (clickedIndex === null) {
                 return
             }
-            const pickedStack = gameState.getPositionProps(clickedIndex)
+            const pickedStack = boardState.get(clickedIndex)
 
             if (pickedStack.pieces.length === 0) {
                 return;
@@ -29,9 +31,9 @@ const PiecesLayer = observer(function PiecesLayer() {
             }
 
             const pickedColor = pickedStack.last.color
-            gameState.legalMoves = gameController.getLegalMoves(clickedIndex)
-            gameState.removePiece(clickedIndex)
-            gameState.eraseFrom()
+            gameController.calculateLegalMoves(clickedIndex)
+            gameController.remove(clickedIndex)
+            boardState.eraseFrom()
             dragState.dragStatus = {
                 clickX: e.clientX,
                 clickY: e.clientY,
@@ -50,15 +52,15 @@ const PiecesLayer = observer(function PiecesLayer() {
 
             const releaseIndex = hoverTracker.hoveredIndex
             if (
-                releaseIndex === null || !gameState.legalMoves?.includes(releaseIndex)
+                releaseIndex === null || !gameController.isLegal(releaseIndex)
             ) {
-                gameState.addPiece(dragState.dragStatus.clickedIndex, {color: dragState.dragStatus.pickedColor})
+                gameController.putBack(dragState.dragStatus.clickedIndex, dragState.dragStatus.pickedColor)
             } else {
-                gameController.movePiece(dragState.dragStatus.clickedIndex, releaseIndex, dragState.dragStatus.pickedColor)
+                gameController.put(releaseIndex, dragState.dragStatus.pickedColor)
             }
 
             dragState.dragStatus = null
-            gameState.legalMoves = []
+            legalMovesTracker.clear()
         }
 
         document.addEventListener("mousedown", onMouseDown)
@@ -68,7 +70,7 @@ const PiecesLayer = observer(function PiecesLayer() {
             document.removeEventListener("mousedown", onMouseDown)
             document.removeEventListener("mouseup", onMouseUp)
         }
-    }, [dragState, gameController, gameState, hoverTracker.hoveredIndex]);
+    }, [boardState, dragState, gameController, gameState, hoverTracker, legalMovesTracker]);
 
     return (
         <StacksLayer/>

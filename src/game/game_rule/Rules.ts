@@ -1,27 +1,15 @@
 import {Color} from "../color.ts";
+import {CompoundMove} from "../board/move.ts";
+import {Board} from "../board/Board.ts";
 
-export interface Rules<PositionIndexType, PositionPropsType> {
-    calculateDiceValues(dice: [number, number], player: Color): number[]
+export interface Rules<Index, Prop> {
+    owns(board: Board<Index, Prop>, player: Color, position: Index): boolean;
 
-    getLegalMoves(from: PositionIndexType, player: Color): [PositionIndexType, [PositionIndexType, PositionIndexType][], number[]][]
+    calculateDiceValues(board: Board<Index, Prop>, dice: [number, number], player: Color): number[];
 
-    move(from: PositionIndexType, to: PositionIndexType): void
+    getLegalMoves(board: Board<Index, Prop>, from: Index, player: Color, diceValues: number[]): CompoundMove<Index>[];
 
-    performMove(from: PositionIndexType, to: PositionIndexType, additionalMoves: [PositionIndexType, PositionIndexType][], diceUsed: number[]): void
+    movedBy(from: Index, by: number, player: Color): Index
 
-    undoMove(from: PositionIndexType, to: PositionIndexType, additionalMoves: [PositionIndexType, PositionIndexType][], diceUsed: number[]): void
-
-    get placement(): Map<PositionIndexType, PositionPropsType>
-
-    set placement(placement: Map<PositionIndexType, PositionPropsType>)
-
-    owns(player: Color, position: PositionIndexType): boolean
-
-    isTurnComplete(color: Color): boolean
-
-    getShifted(pos: PositionIndexType, dice: number, player: Color): PositionIndexType
-
-    mergeMoves(moves: [PositionIndexType, PositionIndexType][], player: Color): [PositionIndexType, PositionIndexType][]
+    noMovesLeft(board: Board<Index, Prop>, player: Color): boolean
 }
-
-

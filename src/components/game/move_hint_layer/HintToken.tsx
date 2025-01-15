@@ -6,11 +6,11 @@ export const HintToken = observer(function HintToken({cx, cy, index}: {
     cy: number,
     index: number
 }) {
-    const gameState = useGameContext("gameState")
+    const legalMovesTracker = useGameContext("legalMovesTracker")
     const fill = "#77777790"
     return (
         <>
-            {gameState.legalMoves?.includes(index) &&
+            {legalMovesTracker.has(index) &&
                 <circle
                     r={15}
                     cx={cx}

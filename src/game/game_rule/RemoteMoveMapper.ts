@@ -1,4 +1,6 @@
-export interface RemoteMoveMapper<RemoteMoveType, PositionIndexType> {
-    toRemote(indices: [PositionIndexType, PositionIndexType]): RemoteMoveType
-    fromRemote(move: RemoteMoveType): [PositionIndexType, PositionIndexType]
+import {Move} from "../board/move.ts";
+
+export interface RemoteMoveMapper<RemoteMove, Index> {
+    toRemote(indices: Move<Index>): RemoteMove
+    fromRemote(move: RemoteMove): Move<Index>
 }

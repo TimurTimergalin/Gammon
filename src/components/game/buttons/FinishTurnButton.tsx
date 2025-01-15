@@ -4,7 +4,7 @@ import {additionalStyle, imagStyle} from "./common.tsx";
 import {AccentedButton} from "../../common/AccentedButton.tsx";
 
 export const FinishTurnButton = observer(function FinishTurnButton() {
-    const gameState = useGameContext("gameState")
+    const gameState = useGameContext("controlButtonsState")
     const gameController = useGameContext("gameController")
 
     const onCLickCallback = () => gameController.endTurn()

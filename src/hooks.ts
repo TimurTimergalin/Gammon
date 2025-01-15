@@ -1,4 +1,4 @@
-import {EffectCallback, RefObject, useEffect, useLayoutEffect, useState} from "react";
+import {EffectCallback, MutableRefObject, RefObject, useEffect, useLayoutEffect, useRef, useState} from "react";
 
 export function useMousePosition(initX: number, initY: number) {
     const [mousePos, setMousePosition] = useState([initX, initY])
@@ -32,4 +32,13 @@ export function useLayoutMeasure(f: EffectCallback, receiver?: RefObject<Element
             }
         }
     }, [f, receiver]);
+}
+
+export function useFactoryRef<T>(factory: () => T) {
+    const ref = useRef<T | undefined>(undefined)
+    if (ref.current === undefined) {
+        ref.current = factory()
+    }
+
+    return ref as MutableRefObject<T>
 }
