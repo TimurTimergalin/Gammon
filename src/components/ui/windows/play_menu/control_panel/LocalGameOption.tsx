@@ -3,7 +3,7 @@ import {NavigateFunction} from "react-router";
 import {useRef} from "react";
 
 const routes: Map<number, string> = new Map()
-routes.set(0, "local-play/backgammon")
+routes.set(0, "/local-play/backgammon")
 
 export class LocalGameOption implements OptionCallbacks {
 

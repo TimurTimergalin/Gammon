@@ -2,6 +2,7 @@ import {BoardSynchronizer} from "../rules/BoardSynchronizer.ts";
 import {LocalGameController} from "./LocalGameController.ts";
 import {GameContext} from "../../GameContext.ts";
 import {RuleSet} from "../../game_rule/RuleSet.ts";
+import {Color} from "../../color.ts";
 
 export function localGameControllerFactory<Index, Prop>(
     {gameContext, ruleSet}: {
@@ -9,7 +10,8 @@ export function localGameControllerFactory<Index, Prop>(
         ruleSet: RuleSet<Index, Prop>
     }
 ) {
-    const {rules, initPlacement, indexMapper, propMapper} = ruleSet
+    const {rules, initPlacement, indexMapperFactory, propMapper} = ruleSet
+    const indexMapper = indexMapperFactory(Color.WHITE)
 
     const board = new BoardSynchronizer(
         gameContext.boardState,

@@ -24,23 +24,24 @@ export async function remoteGameControllerFactory<RemoteConfig, Index, Prop, Rem
     const configJson = await getConfigJson(roomId) as RemoteConfig
     const config = remoteSet.configParser.mapConfig(configJson)
 
-    const active = config.player === config.userPlayer
+
+    const indexMapper = ruleSet.indexMapperFactory(config.userPlayer)
 
     const board = new BoardSynchronizer(
         gameContext.boardState,
         config.placement,
-        ruleSet.indexMapper,
+        indexMapper,
         ruleSet.propMapper
     )
     const connector = new RemoteConnectorImpl(remoteSet.remoteMoveMapper, roomId)
 
     const controller = new RemoteGameController({
-        active: active,
         board: board,
         connector: connector,
+        player: config.player,
         controlButtonsState: gameContext.controlButtonsState,
         diceState: gameContext.diceState,
-        indexMapper: ruleSet.indexMapper,
+        indexMapper: indexMapper,
         legalMovesTracker: gameContext.legalMovesTracker,
         rules: ruleSet.rules,
         userPlayer: config.userPlayer

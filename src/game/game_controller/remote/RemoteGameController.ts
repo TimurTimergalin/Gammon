@@ -14,10 +14,10 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
     private connector: RemoteConnector<Index>
     private readonly userPlayer: Color
 
-    constructor({connector, userPlayer, ...base}: {
+    constructor({connector, userPlayer, player, ...base}: {
         board: BoardSynchronizer<Index, Prop>,
         controlButtonsState: ControlButtonsState,
-        active: boolean,
+        player: Color,
         rules: Rules<Index, Prop>,
         indexMapper: IndexMapper<Index>,
         diceState: DiceState,
@@ -25,8 +25,10 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         connector: RemoteConnector<Index>,
         userPlayer: Color
     }) {
-        super(base);
+        const active = player === userPlayer
+        super({...base, active: active});
         this.connector = connector
+        this.player = player
         this.userPlayer = userPlayer
     }
 
