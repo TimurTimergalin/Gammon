@@ -28,7 +28,7 @@ export class RemoteConnectorImpl<RemoteMove, Index> implements RemoteConnector<I
         this.roomId = roomId
     }
 
-    makeMove(moves: Move<Index>[]): void {
+    makeMove = (moves: Move<Index>[]): void => {
         finishTurn(this.roomId, moves.map(this.moveMapper.toRemote))
             .then(resp => logResponseError(resp, "making a move"))
     }
@@ -50,7 +50,7 @@ export class RemoteConnectorImpl<RemoteMove, Index> implements RemoteConnector<I
 
     private eventSource: EventSource | undefined = undefined
 
-    subscribe() {
+    subscribe = () => {
         this.eventSource = subscribeForEvents(this.roomId)
         console.log("Subscription initiated")
         this.eventSource.addEventListener("error", (ev) => {
