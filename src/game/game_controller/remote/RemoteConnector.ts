@@ -57,9 +57,9 @@ export class RemoteConnectorImpl<RemoteMove, Index> implements RemoteConnector<I
             console.log("error, ", ev)
         })
         this.eventSource.addEventListener("open", () => {
-            console.log("IT WORKS!")
+            console.log("Stream opened")
         })
-        this.eventSource.addEventListener("message", (ev) => {
+        this.eventSource.onmessage = (ev) => {
             console.log(ev)
             const data = JSON.parse(ev.data)
             if (data.type === undefined) {
@@ -78,7 +78,7 @@ export class RemoteConnectorImpl<RemoteMove, Index> implements RemoteConnector<I
             } else {
                 console.warn("Ignoring unknown event")
             }
-        })
+        }
 
         setInterval(() => {
 
@@ -86,6 +86,7 @@ export class RemoteConnectorImpl<RemoteMove, Index> implements RemoteConnector<I
     }
 
     unsubscribe = () => {
+        console.log("Unsubscribed")
         if (this.eventSource !== undefined) {
             this.eventSource.close()
             this.eventSource = undefined

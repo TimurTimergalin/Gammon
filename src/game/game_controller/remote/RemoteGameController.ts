@@ -81,6 +81,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
             usageStatus: LayerStatus.NONE
         }
 
+        this.player = player
         if (player === this.userPlayer) {
             this.active = true
         }

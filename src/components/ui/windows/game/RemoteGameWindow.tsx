@@ -33,11 +33,12 @@ const InnerRemoteGameWindow = <RemoteConfig, Index, Prop, RemoteMove>(
 
 
     const [gameController, setGameController] = useState<GameController | undefined>(undefined)
-    const [cleanup, setCleanup] = useState<undefined | (() => void)>(undefined)
+
+    const [cleanup, setCleanup] = useState<undefined | {cleanup: () => void}>(undefined)
 
     useEffect(() => {
-        if (cleanup) {
-            return cleanup
+        if (cleanup !== undefined) {
+            return cleanup.cleanup
         }
     }, [cleanup])
 
@@ -49,7 +50,7 @@ const InnerRemoteGameWindow = <RemoteConfig, Index, Prop, RemoteMove>(
             ruleSet: ruleSet
         }).then(({controller, cleanup}) => {
             setGameController(controller)
-            setCleanup(cleanup)
+            setCleanup({cleanup: cleanup})
         })
     }, [gameContext, remoteSet, roomIdParsed, ruleSet]);
 
