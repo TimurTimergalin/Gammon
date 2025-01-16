@@ -1,8 +1,7 @@
 import {IndexMapper} from "../../game_rule/IndexMapper.ts";
 import {PropMapper} from "../../game_rule/PropMapper.ts";
-import {PiecePlacement} from "../../board/physical/piece_placement.ts";
 import {Board} from "../../board/Board.ts";
-import {PositionState} from "../../board/physical/types.ts";
+import {PiecePlacement, PositionState} from "../../board/physical/types.ts";
 import {PhysicalBoard} from "../../board/physical/PhysicalBoard.ts";
 import {Color} from "../../color.ts";
 import {Move} from "../../board/move.ts";

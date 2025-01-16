@@ -19,7 +19,7 @@ export default function App() {
                     <Route path={"/local-play/backgammon"} element={
                         <LocalGameWindow ruleset={backgammonRuleSet}/>
                     }/>
-                    <Route path={"/play/backgammon/:roomId"} element={
+                    <Route path={"/play/:roomId"} element={
                         <RemoteGameWindow ruleSet={backgammonRuleSet} remoteSet={backgammonRemoteSetV1}/>
                     }/>
                     <Route element={<AuthPageOutlet/>}>

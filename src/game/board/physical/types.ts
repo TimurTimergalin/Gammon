@@ -42,3 +42,5 @@ export class PositionState {
         }
     }
 }
+
+export type PiecePlacement = Map<number, PositionState>
