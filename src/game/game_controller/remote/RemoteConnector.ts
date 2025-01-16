@@ -85,7 +85,7 @@ export class RemoteConnectorImpl<RemoteMove, Index> implements RemoteConnector<I
         })
     }
 
-    unsubscribe() {
+    unsubscribe = () => {
         if (this.eventSource !== undefined) {
             this.eventSource.close()
             this.eventSource = undefined
