@@ -46,6 +46,9 @@ export async function remoteGameControllerFactory<RemoteConfig, Index, Prop, Rem
         userPlayer: config.userPlayer
     })
 
+    gameContext.diceState.dice1 = config.dice[0]
+    gameContext.diceState.dice2 = config.dice[1]
+
     connector.onMovesMade = controller.onMovesMade
     connector.onNewDice = controller.onNewDice
     connector.onEnd = controller.onEnd
