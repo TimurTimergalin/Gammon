@@ -13,6 +13,7 @@ import {
 import {Color, oppositeColor} from "../../color.ts";
 import {BackgammonBoard} from "../../board/backgammon/BackgammonBoard.ts";
 import {Rules} from "../Rules.ts";
+import {Move} from "../../board/move.ts";
 
 export class BackgammonRules implements Rules<BackgammonIndex, BackgammonProp> {
     owns(board: BackgammonBoard, player: Color, position: BackgammonIndex) {
@@ -343,5 +344,26 @@ export class BackgammonRules implements Rules<BackgammonIndex, BackgammonProp> {
         }
 
         return prop !== undefined && prop.quantity === 15
+    }
+
+    squashMoves(moves: Move<BackgammonIndex>[]): Move<BackgammonIndex>[][] {
+        const barMoves: Map<BackgammonIndex, Move<BackgammonIndex>> = new Map()
+        const res: Move<BackgammonIndex>[][] = []
+
+        for (const move of moves) {
+            if (isBar(move.to)) {
+                console.assert(!barMoves.has(move.from))
+                barMoves.set(move.from, move)
+            } else {
+                const toAdd = [move]
+                if (barMoves.has(move.to)) {
+                    toAdd.splice(0, 0, barMoves.get(move.to)!)
+                    barMoves.delete(move.to)
+                }
+                res.push(toAdd)
+            }
+        }
+
+        return res
     }
 }

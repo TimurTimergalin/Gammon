@@ -1,5 +1,5 @@
 import {Color} from "../color.ts";
-import {CompoundMove} from "../board/move.ts";
+import {CompoundMove, Move} from "../board/move.ts";
 import {Board} from "../board/Board.ts";
 
 export interface Rules<Index, Prop> {
@@ -12,4 +12,6 @@ export interface Rules<Index, Prop> {
     movedBy(from: Index, by: number, player: Color): Index
 
     noMovesLeft(board: Board<Index, Prop>, player: Color): boolean
+
+    squashMoves(moves: Move<Index>[]): Move<Index>[][]
 }
