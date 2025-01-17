@@ -11,6 +11,7 @@ import {
 } from "../dimensions/functions.ts";
 import {observer} from "mobx-react-lite";
 import {PieceState} from "../../../game/board/physical/types.ts";
+import {moveDuration} from "./constatnts.ts";
 
 interface StackProps {
     pieces: PieceState[]
@@ -20,7 +21,7 @@ interface StackProps {
 }
 
 const AligningTopDownPiece = styled(TopDownPiece)`
-    transition: cy .2s
+    transition: cy ${moveDuration}s
 `
 
 const homingTopDownAnimation = (xFrom: number, yFrom: number, xTo: number, yTo: number) => {
@@ -36,7 +37,7 @@ const homingTopDownAnimation = (xFrom: number, yFrom: number, xTo: number, yTo: 
     }
     `
     return css`
-        animation: ${keyframe} .1s linear;
+        animation: ${keyframe} ${moveDuration}s ease-in-out;
     `
 }
 
@@ -53,7 +54,7 @@ const homingSidePieceAnimation = (xFrom: number, yFrom: number, xTo: number, yTo
     }
     `
     return css`
-        animation: ${keyframe} .1s linear;
+        animation: ${keyframe} ${moveDuration}s ease-in-out;
     `
 }
 
