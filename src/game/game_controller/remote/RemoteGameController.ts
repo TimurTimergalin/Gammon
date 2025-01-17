@@ -155,6 +155,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         } else {
             this.diceState.dice1 = dice1
             this.diceState.dice2 = dice2
+            this.calculateDice()
         }
     };
 
