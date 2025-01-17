@@ -50,4 +50,7 @@ export class DummyGameController implements GameController {
         console.error("Called", "undoMoves", "on dummy")
         return undefined as never
     }
+
+    swapDice(): void {
+    }
 }

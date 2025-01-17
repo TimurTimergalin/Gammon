@@ -20,4 +20,6 @@ export interface GameController {
     undoMoves(): void
 
     endTurn(): void
+
+    swapDice(): void
 }

@@ -155,4 +155,11 @@ export abstract class RulesGameController<Index, Prop> implements GameController
         this.checkTurnComplete()
         this.performedMoves = []
     }
+
+    swapDice = (): void => {
+        if (!this.active) {
+            return
+        }
+        this.diceState.swapDice()
+    }
 }

@@ -1,6 +1,8 @@
 import {Color, colorFill, colorStroke, oppositeColor} from "../../../game/color.ts";
 import {borderWidth, diceCornerRadius, diceWidth, dotRadius} from "./dice_size_constants.ts";
 import {LayerStatus} from "./LayerStatus.ts";
+import {observer} from "mobx-react-lite";
+import {useGameContext} from "../../../game/GameContext.ts";
 
 
 function DiceBase({x, y, color}: {
@@ -155,13 +157,29 @@ function UnavailabilityCover({x, y, status}: {
     return res
 }
 
-export function Dice({x, y, color, value, usageStatus, unavailabilityStatus}: {
+const SwapDiceClickable = observer(function SwapDiceClickable({x, y}: { x: number, y: number }) {
+    const gameController = useGameContext("gameController")
+    return (
+        <rect
+            x={x}
+            y={y}
+            width={diceWidth}
+            height={diceWidth}
+            rx={diceCornerRadius}
+            fill={"#00000000"}
+            onClick={gameController.swapDice}
+        />
+    )
+})
+
+export function Dice({x, y, color, value, usageStatus, unavailabilityStatus, interactable = false}: {
     x: number,
     y: number,
     color: Color,
     value: number,
     usageStatus: LayerStatus,
-    unavailabilityStatus: LayerStatus
+    unavailabilityStatus: LayerStatus,
+    interactable?: boolean
 }) {
     return (
         <>
@@ -169,6 +187,7 @@ export function Dice({x, y, color, value, usageStatus, unavailabilityStatus}: {
             <DiceFace x={x} y={y} color={color} value={value}/>
             <UsageCover x={x} y={y} status={usageStatus}/>
             <UnavailabilityCover x={x} y={y} status={unavailabilityStatus}/>
+            {interactable && <SwapDiceClickable x={x} y={y}/>}
         </>
     )
 }
