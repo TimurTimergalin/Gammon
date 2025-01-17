@@ -4,6 +4,31 @@ import {StacksLayer} from "./StacksLayer.tsx";
 import {useGameContext} from "../../../game/GameContext.ts";
 
 
+type PointEvent = MouseEvent | TouchEvent
+
+const eventX = (ev: PointEvent) => {
+    if ("clientX" in ev) {
+        return ev.clientX
+    } else {
+        return ev.touches[0].clientX
+    }
+}
+
+const eventY = (ev: PointEvent) => {
+    if ("clientY" in ev) {
+        return ev.clientY
+    } else {
+        return ev.touches[0].clientY
+    }
+}
+
+const isPrimary = (ev: PointEvent) => {
+    if ("button" in ev) {
+        return ev.button === 0
+    }
+    return true
+}
+
 const PiecesLayer = observer(function PiecesLayer() {
     const gameState = useGameContext("controlButtonsState")
     const boardState = useGameContext("boardState")
@@ -13,8 +38,8 @@ const PiecesLayer = observer(function PiecesLayer() {
     const dragState = useGameContext("dragState")
 
     useEffect(() => {
-        const onMouseDown = (e: MouseEvent) => {
-            if (e.button !== 0) {
+        const onMouseDown = (e: PointEvent) => {
+            if (!isPrimary(e)) {
                 return
             }
             const clickedIndex = hoverTracker.hoveredIndex
@@ -35,16 +60,16 @@ const PiecesLayer = observer(function PiecesLayer() {
             gameController.remove(clickedIndex)
             boardState.eraseFrom()
             dragState.dragStatus = {
-                clickX: e.clientX,
-                clickY: e.clientY,
+                clickX: eventX(e),
+                clickY: eventY(e),
                 clickedIndex: clickedIndex,
                 pickedColor: pickedColor!,
                 timestamp: Date.now()
             }
         }
 
-        const onMouseUp = (e: MouseEvent) => {
-            if (e.button !== 0) {
+        const onMouseUp = (e: PointEvent) => {
+            if (!isPrimary(e)) {
                 return
             }
             if (dragState.dragStatus === null) {
@@ -58,8 +83,7 @@ const PiecesLayer = observer(function PiecesLayer() {
 
             if (dragState.dragStatus.timestamp + deltaMs > now && (releaseIndex === dragState.dragStatus.clickedIndex || releaseIndex === null)) {
                 gameController.quickMove(dragState.dragStatus.clickedIndex, dragState.dragStatus.pickedColor)
-            }
-            else if (
+            } else if (
                 releaseIndex === null || !gameController.isLegal(releaseIndex)
             ) {
                 gameController.putBack(dragState.dragStatus.clickedIndex, dragState.dragStatus.pickedColor)
@@ -72,11 +96,15 @@ const PiecesLayer = observer(function PiecesLayer() {
         }
 
         document.addEventListener("mousedown", onMouseDown)
+        document.addEventListener("touchstart", onMouseDown)
         document.addEventListener("mouseup", onMouseUp)
+        document.addEventListener("touchend", onMouseUp)
 
         return () => {
             document.removeEventListener("mousedown", onMouseDown)
             document.removeEventListener("mouseup", onMouseUp)
+            document.removeEventListener("mouseup", onMouseUp)
+            document.removeEventListener("touchend", onMouseUp)
         }
     }, [boardState, dragState, gameController, gameState, hoverTracker, legalMovesTracker]);
 
