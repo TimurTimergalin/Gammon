@@ -5,7 +5,7 @@ import {AccentedButton} from "../../common/AccentedButton.tsx";
 // import {useScreenSpecs} from "../../ui/adapt/ScreenSpecs.ts";
 
 export const UndoMovesButton = observer(function UndoMovesButton() {
-    const gameState = useGameContext("gameState")
+    const gameState = useGameContext("controlButtonsState")
     const gameController = useGameContext("gameController")
 
     const onCLickCallback = () => {

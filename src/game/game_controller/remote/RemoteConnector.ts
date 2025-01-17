@@ -1,50 +1,40 @@
-import {Config, InitConfigMapper} from "../../game_rule/InitConfigMapper.ts";
-import {RemoteMoveMapper} from "../../game_rule/RemoteMoveMapper.ts";
 import {Color} from "../../color.ts";
-import {finishTurn, getConfig, subscribeForEvents} from "../../../requests/requests.ts";
+import {finishTurn, subscribeForEvents} from "../../../requests/requests.ts";
 import {logResponseError} from "../../../requests/util.ts";
+import {Move} from "../../board/move.ts";
+import {RemoteMoveMapper} from "../../game_rule/RemoteMoveMapper.ts";
 
-export interface RemoteConnector<PositionIndexType> {
+export interface RemoteConnector<Index> {
     subscribe(): void
 
-    set onMovesMade(value: (moves: [PositionIndexType, PositionIndexType][]) => void)
+    set onMovesMade(value: (moves: Move<Index>[]) => void)
 
     set onNewDice(value: (dice: [number, number], player: Color) => void)
 
     set onEnd(value: (winner: Color) => void)
 
-    makeMove(moves: [PositionIndexType, PositionIndexType][]): void
+    makeMove(moves: Move<Index>[]): void
 
     unsubscribe(): void
 }
 
-export class RemoteConnectorImpl<RemoteConfigType, RemoteMoveType, PositionIndexType, PositionPropType> implements RemoteConnector<PositionIndexType> {
-    private readonly configMapper: InitConfigMapper<RemoteConfigType, PositionIndexType, PositionPropType>
-    private readonly moveMapper: RemoteMoveMapper<RemoteMoveType, PositionIndexType>
+export class RemoteConnectorImpl<RemoteMove, Index> implements RemoteConnector<Index> {
+    private readonly moveMapper: RemoteMoveMapper<RemoteMove, Index>
     private readonly roomId: number
 
-    constructor(configMapper: InitConfigMapper<RemoteConfigType, PositionIndexType, PositionPropType>,
-                moveMapper: RemoteMoveMapper<RemoteMoveType, PositionIndexType>,
+    constructor(moveMapper: RemoteMoveMapper<RemoteMove, Index>,
                 roomId: number) {
-        this.configMapper = configMapper;
         this.moveMapper = moveMapper;
         this.roomId = roomId
     }
 
-    makeMove(moves: [PositionIndexType, PositionIndexType][]): void {
+    makeMove = (moves: Move<Index>[]): void => {
         finishTurn(this.roomId, moves.map(this.moveMapper.toRemote))
             .then(resp => logResponseError(resp, "making a move"))
     }
 
-    async getConfig(): Promise<Config<PositionIndexType, PositionPropType>> {
-        const resp = await getConfig(this.roomId)
-        logResponseError(resp, "getting config")
-        const js = await resp.json()
-        return this.configMapper.mapConfig(js as RemoteConfigType)
-    }
-
-    private _onMovesMade: (moves: [PositionIndexType, PositionIndexType][]) => void = () => console.warn("No onMovesMade set")
-    set onMovesMade(value: (moves: [PositionIndexType, PositionIndexType][]) => void) {
+    private _onMovesMade: (moves: Move<Index>[]) => void = () => console.warn("No onMovesMade set")
+    set onMovesMade(value: (moves: Move<Index>[]) => void) {
         this._onMovesMade = value;
     }
 
@@ -60,23 +50,23 @@ export class RemoteConnectorImpl<RemoteConfigType, RemoteMoveType, PositionIndex
 
     private eventSource: EventSource | undefined = undefined
 
-    subscribe() {
+    subscribe = () => {
         this.eventSource = subscribeForEvents(this.roomId)
         console.log("Subscription initiated")
         this.eventSource.addEventListener("error", (ev) => {
             console.log("error, ", ev)
         })
         this.eventSource.addEventListener("open", () => {
-            console.log("IT WORKS!")
+            console.log("Stream opened")
         })
-        this.eventSource.addEventListener("message", (ev) => {
+        this.eventSource.onmessage = (ev) => {
             console.log(ev)
             const data = JSON.parse(ev.data)
             if (data.type === undefined) {
                 console.warn("Event without a type encountered: ", ev)
             } else if (data.type === "MOVE_EVENT") {
                 console.log("move event encountered")
-                const moves = data.moves as RemoteMoveType[]
+                const moves = data.moves as RemoteMove[]
                 this._onMovesMade(moves.map(this.moveMapper.fromRemote))
             } else if (data.type === "TOSS_ZAR_EVENT") {
                 console.log("dice event encountered")
@@ -88,14 +78,15 @@ export class RemoteConnectorImpl<RemoteConfigType, RemoteMoveType, PositionIndex
             } else {
                 console.warn("Ignoring unknown event")
             }
-        })
+        }
 
         setInterval(() => {
 
         })
     }
 
-    unsubscribe() {
+    unsubscribe = () => {
+        console.log("Unsubscribed")
         if (this.eventSource !== undefined) {
             this.eventSource.close()
             this.eventSource = undefined

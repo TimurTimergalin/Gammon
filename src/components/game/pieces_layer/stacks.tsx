@@ -2,9 +2,9 @@ import {SidePiece, TopDownPiece} from "./pieces.js";
 import {Direction} from "./direction.ts";
 import styled, {css, keyframes} from "styled-components";
 
-import {PieceState} from "../../../game/game_state/piece_placement.ts";
 import {getSidePieceY, getTopDownPieceY} from "../dimensions/functions.ts";
 import {observer} from "mobx-react-lite";
+import {PieceState} from "../../../game/board/physical/types.ts";
 
 interface StackProps {
     pieces: PieceState[]

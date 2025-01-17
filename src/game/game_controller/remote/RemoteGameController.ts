@@ -1,77 +1,95 @@
-import {BaseGameController} from "../BaseGameController.ts";
+import {RulesGameController} from "../rules/RulesGameController.ts";
+import {BoardSynchronizer} from "../rules/BoardSynchronizer.ts";
+import {ControlButtonsState} from "../../ControlButtonsState.ts";
+import {IndexMapper} from "../../game_rule/IndexMapper.ts";
+import {DiceState} from "../../dice_state/DiceState.ts";
+import {LegalMovesTracker} from "../../LegalMovesTracker.ts";
 import {Rules} from "../../game_rule/Rules.ts";
-import {IndexMapping} from "../../game_rule/IndexMapping.ts";
-import {PropMapping} from "../../game_rule/PropMapping.ts";
-import {GameState} from "../../game_state/GameState.ts";
-import {Color} from "../../color.ts";
 import {RemoteConnector} from "./RemoteConnector.ts";
+import {Color, oppositeColor} from "../../color.ts";
+import {mergeMoves, Move} from "../../board/move.ts";
+import {LayerStatus} from "../../../components/game/dice_layer/LayerStatus.ts";
 
-export class RemoteGameController<PositionIndexType, PositionPropType> extends BaseGameController<PositionIndexType, PositionPropType> {
-    private connector: RemoteConnector<PositionIndexType>
+export class RemoteGameController<Index, Prop> extends RulesGameController<Index, Prop> {
+    private connector: RemoteConnector<Index>
+    private readonly userPlayer: Color
 
-    constructor(
-        rules: Rules<PositionIndexType, PositionPropType>,
-        indexMapping: IndexMapping<PositionIndexType>,
-        propMapping: PropMapping<PositionPropType>,
-        gameState: GameState,
+    constructor({connector, userPlayer, player, ...base}: {
+        board: BoardSynchronizer<Index, Prop>,
+        controlButtonsState: ControlButtonsState,
         player: Color,
-        initPlacement: Map<PositionIndexType, PositionPropType>,
-        connector: RemoteConnector<PositionIndexType>,
-        active: boolean,
-        dice: [[Color, number], [Color, number]]
-    ) {
-        super(rules, indexMapping, propMapping, gameState, player);
-        this.setPlacement(initPlacement)
-        this.setDice([dice[0][1], dice[1][1]], [dice[0][0], dice[1][0]])
+        rules: Rules<Index, Prop>,
+        indexMapper: IndexMapper<Index>,
+        diceState: DiceState,
+        legalMovesTracker: LegalMovesTracker,
+        connector: RemoteConnector<Index>,
+        userPlayer: Color
+    }) {
+        const active = player === userPlayer
+        super({...base, active: active});
         this.connector = connector
-        this.active = active
+        this.player = player
+        this.userPlayer = userPlayer
     }
 
-    init(): void | (() => void) {
-        this.connector.onMovesMade = (moves) => {
-            for (const [from, to] of this.rules.mergeMoves(moves, this.player)) {
-                this.rules.move(from, to)
-                this.movePieceFrom(this.indexMapping.logicalToPhysical(to), this.indexMapping.logicalToPhysical(from))
-            }
-            this.active = true
+    private splitMove(move: Move<Index>, diceUsed: number[], player: Color): Move<Index>[] {
+        const res = []
+
+        let from = move.from
+        for (const dice of diceUsed) {
+            const to = this.rules.movedBy(from, dice, player)
+            res.push({
+                from: from,
+                to: to
+            })
+            from = to
         }
-
-        this.connector.onNewDice = (dice, player) => {
-            this.setDice(dice, [player, player], player)
-        }
-
-        this.connector.onEnd = (color) => console.log("The game has ended with the winner: " + color)
-
-        this.connector.subscribe()
-        return () => this.connector.unsubscribe()
-    }
-
-    private splitMoves(moves: [number, number, [number, number][], number[]]) {
-        const first = this.indexMapping.physicalToLogical(moves[0])
-        const positions = [first]
-        const n = moves[3].length
-        let prev = first
-        for (let i = 0; i < n - 1; ++i) {
-            const next = this.rules.getShifted(prev, moves[3][i], this.player)
-            positions.push(next)
-            prev = next
-        }
-        positions.push(this.indexMapping.physicalToLogical(moves[1]))
-
-        const res: [PositionIndexType, PositionIndexType][] = []
-        const m = positions.length
-        for (let i = 0; i < m - 1; ++i) {
-            res.push([positions[i], positions[i + 1]])
-        }
+        console.assert(from === move.to)
         return res
     }
 
-    endTurn(): void {
-        const split = this.madeMoves.flatMap(x => this.splitMoves(x))
-        this.connector.makeMove(split)
-        this.gameState.turnComplete = false
-        this.gameState.movesMade = false
-        this.madeMoves = []
+    endTurn = (): void => {
+        console.assert(this.player === this.userPlayer)
+        console.assert(this.active)
+        const splitMoves = this.performedMoves
+            .flatMap(m => this.splitMove(m.primaryMove, m.dice, this.player))
+        this.connector.makeMove(splitMoves)
+        this.controlButtonsState.turnComplete = false
+        this.controlButtonsState.movesMade = false
+        this.performedMoves = []
         this.active = false
-    }
+        this.player = oppositeColor(this.player)
+    };
+
+    onMovesMade = (moves: Move<Index>[]) => {
+        const merged = mergeMoves(moves)
+        merged.forEach(this.board.performMoveLogical)
+    };
+
+    onNewDice = (dice: [number, number], player: Color) => {
+        this.diceState.dice1 = {
+            value: dice[0],
+            color: player,
+            unavailabilityStatus: LayerStatus.NONE,
+            usageStatus: LayerStatus.NONE
+        }
+
+        this.diceState.dice2 = {
+            value: dice[1],
+            color: player,
+            unavailabilityStatus: LayerStatus.NONE,
+            usageStatus: LayerStatus.NONE
+        }
+
+        this.player = player
+        if (player === this.userPlayer) {
+            this.active = true
+        }
+
+        this.calculateDice()
+    };
+
+    onEnd = (winner: Color) => {
+        console.log("The game has ended with the winner: " + winner)
+    };
 }

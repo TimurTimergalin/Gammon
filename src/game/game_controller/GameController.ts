@@ -1,15 +1,21 @@
 import {Color} from "../color.ts";
 
 export interface GameController {
-    endTurn(): void
+    calculateLegalMoves(point: number): void
 
-    getLegalMoves(point: number): number[]
+    clearLegalMoves(): void
 
     isTouchable(point: number): boolean
 
-    movePiece(from: number, to: number, color: Color): void
+    isLegal(point: number): boolean
 
-    init(): void | (() => void)
+    remove(from: number): void
+
+    put(to: number, color: Color): void
+
+    putBack(to: number, color: Color): void
 
     undoMoves(): void
+
+    endTurn(): void
 }

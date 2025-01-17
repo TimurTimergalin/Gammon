@@ -5,7 +5,7 @@ import {Dice} from "./dice.tsx";
 import {useGameContext} from "../../../game/GameContext.ts";
 
 const DiceLayer = observer(function DiceLayer() {
-        const {dice1, dice2} = useGameContext("gameState")
+        const {dice1, dice2} = useGameContext("diceState")
 
         const diceY = boardHeight / 2 - diceWidth / 2
         const dice1X = boardWidth / 4 - gapBetweenDice / 2 - diceWidth

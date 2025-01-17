@@ -16,10 +16,8 @@ export const MoveHintLayer = () => {
     for (let i = 0; i < 12; ++i) {
         const cx = getTriangleLeft(i) + pieceWidth / 2
         tokens.push(
-            <>
-                <HintToken cx={cx} cy={topCy} index={i} key={i}/>
-                <HintToken cx={cx} cy={bottomCy} index={12 + i} key={12 + i}/>
-            </>
+            <HintToken cx={cx} cy={topCy} index={i} key={i}/>,
+            <HintToken cx={cx} cy={bottomCy} index={12 + i} key={12 + i}/>
         )
     }
 
