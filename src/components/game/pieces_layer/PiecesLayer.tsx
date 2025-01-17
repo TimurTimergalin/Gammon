@@ -99,12 +99,14 @@ const PiecesLayer = observer(function PiecesLayer() {
         document.addEventListener("touchstart", onMouseDown)
         document.addEventListener("mouseup", onMouseUp)
         document.addEventListener("touchend", onMouseUp)
+        document.addEventListener("touchcancel", onMouseUp)
 
         return () => {
             document.removeEventListener("mousedown", onMouseDown)
             document.removeEventListener("mouseup", onMouseUp)
             document.removeEventListener("mouseup", onMouseUp)
             document.removeEventListener("touchend", onMouseUp)
+            document.removeEventListener("touchcancel", onMouseUp)
         }
     }, [boardState, dragState, gameController, gameState, hoverTracker, legalMovesTracker]);
 
