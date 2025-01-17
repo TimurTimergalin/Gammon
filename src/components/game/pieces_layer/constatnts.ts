@@ -1,0 +1,1 @@
+export const moveDuration = 0.15

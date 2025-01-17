@@ -2,15 +2,6 @@ import {Board} from "../Board.ts";
 import {PositionState, stillPiece} from "./types.ts";
 import {Color} from "../../color.ts";
 import {makeAutoObservable} from "mobx";
-import {
-    getSidePieceY,
-    getStackDirection,
-    getStackOriginX,
-    getStackOriginY,
-    getStackType,
-    getTopDownPieceY
-} from "../../../components/game/dimensions/functions.ts";
-import {TopDownStack} from "../../../components/game/pieces_layer/stacks.tsx";
 
 export class PhysicalBoard implements Board<number, PositionState> {
     constructor() {
@@ -68,17 +59,10 @@ export class PhysicalBoard implements Board<number, PositionState> {
         // TODO: вынести вычисление координат на уровень компонентов
         const fromProps = this.get(from)
         const fromTotal = fromProps.quantity
-        const fromX = getStackOriginX(from)
-        let fromY: number
-        if (getStackType(from) == TopDownStack) {
-            fromY = getTopDownPieceY(getStackOriginY(from), getStackDirection(from), fromTotal - 1, fromTotal)
-        } else {
-            fromY = getSidePieceY(getStackOriginY(from), getStackDirection(from), fromTotal - 1)
-        }
         const color = this.remove(from)
 
         const toProps = this.get(to)
-        toProps.add({color: color, from: {x: fromX, y: fromY}})
+        toProps.add({color: color, from: {index: from, order: fromTotal - 1}})
         this.board.set(to, toProps)
     };
 
