@@ -38,7 +38,8 @@ const PiecesLayer = observer(function PiecesLayer() {
                 clickX: e.clientX,
                 clickY: e.clientY,
                 clickedIndex: clickedIndex,
-                pickedColor: pickedColor!
+                pickedColor: pickedColor!,
+                timestamp: Date.now()
             }
         }
 
@@ -51,7 +52,14 @@ const PiecesLayer = observer(function PiecesLayer() {
             }
 
             const releaseIndex = hoverTracker.hoveredIndex
-            if (
+
+            const deltaMs = 200 // Время, отличающее клик от перетаскивания
+            const now = Date.now()
+
+            if (dragState.dragStatus.timestamp + deltaMs > now && (releaseIndex === dragState.dragStatus.clickedIndex || releaseIndex === null)) {
+                gameController.quickMove(dragState.dragStatus.clickedIndex, dragState.dragStatus.pickedColor)
+            }
+            else if (
                 releaseIndex === null || !gameController.isLegal(releaseIndex)
             ) {
                 gameController.putBack(dragState.dragStatus.clickedIndex, dragState.dragStatus.pickedColor)

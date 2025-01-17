@@ -114,6 +114,28 @@ export abstract class RulesGameController<Index, Prop> implements GameController
         this.checkTurnComplete()
     }
 
+    quickMove(from: number, color: Color): void {
+        console.assert(this.active)
+        const fromL = this.indexMapper.physicalToLogical(from)
+        const diceArray = this.diceState.toDiceArray()
+        for (const dice of diceArray) {
+            const shifted = this.rules.movedBy(fromL, dice, this.player)
+            const shiftedP = this.indexMapper.logicalToPhysical(shifted)
+            if (this.legalMovesMap.has(shiftedP)) {
+                const move = this.legalMovesMap.get(shiftedP)!
+                move.additionalMoves.forEach(this.board.performMoveLogical)
+                move.dice.forEach(this.diceState.useDice)
+                this.board.putPhysical(from, color)
+                this.board.performMoveLogical(move.primaryMove)
+                this.performedMoves.push(move)
+                this.controlButtonsState.movesMade = true
+                this.checkTurnComplete()
+                return
+            }
+        }
+        this.board.putPhysical(from, color)
+    }
+
     putBack(to: number, color: Color): void {
         console.assert(this.active)
         this.board.putPhysical(to, color)

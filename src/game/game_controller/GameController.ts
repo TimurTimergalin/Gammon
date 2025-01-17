@@ -13,6 +13,8 @@ export interface GameController {
 
     put(to: number, color: Color): void
 
+    quickMove(from: number, color: Color): void
+
     putBack(to: number, color: Color): void
 
     undoMoves(): void

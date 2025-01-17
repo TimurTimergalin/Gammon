@@ -31,6 +31,11 @@ export class DummyGameController implements GameController {
         return undefined as never
     }
 
+    quickMove(): never {
+        console.error("Called", "quickMove", "on dummy")
+        return undefined as never
+    }
+
     putBack(): never {
         console.error("Called", "putBack", "on dummy")
         return undefined as never
