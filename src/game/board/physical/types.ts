@@ -4,8 +4,8 @@ import {Color} from "../../color.ts";
 export interface PieceState {
     color: Color,
     from?: {
-        x: number,
-        y: number
+        index: number,
+        order: number
     }
 }
 

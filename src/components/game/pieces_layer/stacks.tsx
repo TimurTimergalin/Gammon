@@ -2,7 +2,13 @@ import {SidePiece, TopDownPiece} from "./pieces.js";
 import {Direction} from "./direction.ts";
 import styled, {css, keyframes} from "styled-components";
 
-import {getSidePieceY, getTopDownPieceY} from "../dimensions/functions.ts";
+import {
+    getSidePieceY,
+    getStackDirection,
+    getStackOriginX,
+    getStackOriginY,
+    getTopDownPieceY
+} from "../dimensions/functions.ts";
 import {observer} from "mobx-react-lite";
 import {PieceState} from "../../../game/board/physical/types.ts";
 
@@ -78,8 +84,11 @@ export const TopDownStack = observer(function TopDownStack({pieces, direction, o
         const toX = originX
         const toY = getTopDownPieceY(originY, direction, i, quantity)
         if (piece.from !== undefined) {
+            const from = piece.from.index
+            const fromX = getStackOriginX(from)
+            const fromY = getTopDownPieceY(getStackOriginY(from), getStackDirection(from), piece.from.order, quantity)
             finalPieces.push(
-                <HomingTopDownPiece color={piece.color} cx={toX} cy={toY} fromX={piece.from.x} fromY={piece.from.y}
+                <HomingTopDownPiece color={piece.color} cx={toX} cy={toY} fromX={fromX} fromY={fromY}
                                     key={i}/>
             )
         } else {
@@ -108,8 +117,11 @@ export const SideStack = observer(function SideStack({pieces, direction, originX
                 <SidePiece x={toX} y={toY} color={piece.color} key={i}/>
             )
         } else {
+            const from = piece.from.index
+            const fromX = getStackOriginX(from)
+            const fromY = getSidePieceY(getStackOriginY(from), getStackDirection(from), piece.from.order)
             finalPieces.push(
-                <HomingSidePiece color={piece.color} x={toX} y={toY} fromX={piece.from.x} fromY={piece.from.y} key={i}/>
+                <HomingSidePiece color={piece.color} x={toX} y={toY} fromX={fromX} fromY={fromY} key={i}/>
             )
         }
         ++i

@@ -124,11 +124,11 @@ export abstract class RulesGameController<Index, Prop> implements GameController
         const invertedMoves = this.performedMoves.map(invertCompound).reverse()
 
         invertedMoves.forEach(m => m.dice.forEach(this.diceState.addDice))
-        invertedMoves.forEach(m => m.additionalMoves.forEach(this.board.performMoveLogical))
 
         const primaryMoves = invertedMoves.map(m => m.primaryMove)
         const merged = mergeMoves(primaryMoves)
         merged.forEach(this.board.performMoveLogical)
+        invertedMoves.forEach(m => m.additionalMoves.forEach(this.board.performMoveLogical))
         this.controlButtonsState.movesMade = false
         this.checkTurnComplete()
         this.performedMoves = []
