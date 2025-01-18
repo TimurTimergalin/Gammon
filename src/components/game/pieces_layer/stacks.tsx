@@ -11,7 +11,7 @@ import {
 } from "../dimensions/functions.ts";
 import {observer} from "mobx-react-lite";
 import {PieceState} from "../../../game/board/physical/types.ts";
-import {moveDuration} from "./constatnts.ts";
+import {moveDuration} from "./constants.ts";
 
 interface StackProps {
     pieces: PieceState[]

@@ -2,32 +2,8 @@ import {useEffect} from "react";
 import {observer} from "mobx-react-lite";
 import {StacksLayer} from "./StacksLayer.tsx";
 import {useGameContext} from "../../../game/GameContext.ts";
+import {isPrimary, PointEvent, pointX, pointY} from "../../../common/point_event.ts";
 
-
-type PointEvent = MouseEvent | TouchEvent
-
-const eventX = (ev: PointEvent) => {
-    if ("clientX" in ev) {
-        return ev.clientX
-    } else {
-        return ev.touches[0].clientX
-    }
-}
-
-const eventY = (ev: PointEvent) => {
-    if ("clientY" in ev) {
-        return ev.clientY
-    } else {
-        return ev.touches[0].clientY
-    }
-}
-
-const isPrimary = (ev: PointEvent) => {
-    if ("button" in ev) {
-        return ev.button === 0
-    }
-    return true
-}
 
 const PiecesLayer = observer(function PiecesLayer() {
     const gameState = useGameContext("controlButtonsState")
@@ -42,6 +18,9 @@ const PiecesLayer = observer(function PiecesLayer() {
             if (!isPrimary(e)) {
                 return
             }
+
+            hoverTracker.changeHoverIndex(pointX(e), pointY(e))
+
             const clickedIndex = hoverTracker.hoveredIndex
             if (clickedIndex === null) {
                 return
@@ -60,8 +39,8 @@ const PiecesLayer = observer(function PiecesLayer() {
             gameController.remove(clickedIndex)
             boardState.eraseFrom()
             dragState.dragStatus = {
-                clickX: eventX(e),
-                clickY: eventY(e),
+                clickX: pointX(e),
+                clickY: pointY(e),
                 clickedIndex: clickedIndex,
                 pickedColor: pickedColor!,
                 timestamp: Date.now()
@@ -74,6 +53,10 @@ const PiecesLayer = observer(function PiecesLayer() {
             }
             if (dragState.dragStatus === null) {
                 return
+            }
+
+            if (e.type === "touchend" || e.type === "touchcancel") {
+                e.preventDefault()
             }
 
             const releaseIndex = hoverTracker.hoveredIndex
@@ -95,18 +78,27 @@ const PiecesLayer = observer(function PiecesLayer() {
             legalMovesTracker.clear()
         }
 
+        const disableContextMenu = (ev: Event) => {
+            ev.preventDefault()
+            ev.stopImmediatePropagation()
+            ev.stopPropagation()
+            return false
+        }
+
         document.addEventListener("mousedown", onMouseDown)
-        document.addEventListener("touchstart", onMouseDown)
         document.addEventListener("mouseup", onMouseUp)
+        document.addEventListener("touchstart", onMouseDown)
         document.addEventListener("touchend", onMouseUp)
         document.addEventListener("touchcancel", onMouseUp)
+        document.addEventListener("contextmenu", disableContextMenu)
 
         return () => {
             document.removeEventListener("mousedown", onMouseDown)
             document.removeEventListener("mouseup", onMouseUp)
-            document.removeEventListener("mouseup", onMouseUp)
+            document.removeEventListener("touchstart", onMouseDown)
             document.removeEventListener("touchend", onMouseUp)
             document.removeEventListener("touchcancel", onMouseUp)
+            document.removeEventListener("contextmenu", disableContextMenu)
         }
     }, [boardState, dragState, gameController, gameState, hoverTracker, legalMovesTracker]);
 
