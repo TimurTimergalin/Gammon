@@ -31,6 +31,11 @@ export class DummyGameController implements GameController {
         return undefined as never
     }
 
+    quickMove(): never {
+        console.error("Called", "quickMove", "on dummy")
+        return undefined as never
+    }
+
     putBack(): never {
         console.error("Called", "putBack", "on dummy")
         return undefined as never
@@ -44,5 +49,8 @@ export class DummyGameController implements GameController {
     undoMoves(): never {
         console.error("Called", "undoMoves", "on dummy")
         return undefined as never
+    }
+
+    swapDice(): void {
     }
 }

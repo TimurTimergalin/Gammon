@@ -130,4 +130,18 @@ export class DiceState {
             ...this.singleDiceArray(dice2, double)
         ]
     };
+
+    swapDice = (): void => {
+        console.assert(this._dice1 !== null)
+        console.assert(this._dice2 !== null)
+        const dice1 = this._dice1!
+        const dice2 = this._dice2!
+
+        if (dice1.value === dice2.value) {
+            return
+        }
+
+        this.dice1 = dice2
+        this.dice2 = dice1
+    }
 }

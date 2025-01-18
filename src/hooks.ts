@@ -1,15 +1,18 @@
 import {EffectCallback, MutableRefObject, RefObject, useEffect, useLayoutEffect, useRef, useState} from "react";
+import {pointX, pointY, PointEvent} from "./common/point_event.ts";
 
 export function useMousePosition(initX: number, initY: number) {
     const [mousePos, setMousePosition] = useState([initX, initY])
 
     useEffect(() => {
-        const callback = (e: MouseEvent) => {
-            setMousePosition([e.clientX, e.clientY])
+        const callback = (e: PointEvent) => {
+            setMousePosition([pointX(e), pointY(e)])
         }
         document.addEventListener("mousemove", callback)
+        document.addEventListener("touchmove", callback)
         return () => {
             document.removeEventListener("mousemove", callback)
+            document.removeEventListener("touchmove", callback)
         }
     }, [])
     return mousePos

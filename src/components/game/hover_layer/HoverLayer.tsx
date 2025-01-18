@@ -10,9 +10,26 @@ import {
 import {HoverTrigger} from "./HoverTrigger.tsx";
 import {useGameContext} from "../../../game/GameContext.ts";
 import {getTriangleLeft} from "../dimensions/functions.ts";
+import {useEffect} from "react";
+import {pointX, pointY, PointEvent} from "../../../common/point_event.ts";
 
 export function HoverLayer() {
     const hoverTracker = useGameContext("hoverTracker")
+
+    useEffect(() => {
+        const callback = (ev: PointEvent) => {
+            hoverTracker.changeHoverIndex(pointX(ev), pointY(ev))
+        }
+
+        document.addEventListener("mousemove", callback)
+        document.addEventListener("touchmove", callback)
+
+        return () => {
+            document.removeEventListener("mousemove", callback)
+            document.removeEventListener("touchmove", callback)
+        }
+
+    }, [hoverTracker]);
 
     const triggers = []
 
@@ -25,7 +42,6 @@ export function HoverLayer() {
                 width={pieceWidth}
                 height={triangleTriggerHeight}
                 index={i}
-                hoverTracker={hoverTracker}
                 key={i}
             />,
             <HoverTrigger
@@ -34,7 +50,6 @@ export function HoverLayer() {
                 width={pieceWidth}
                 height={triangleTriggerHeight}
                 index={12 + i}
-                hoverTracker={hoverTracker}
                 key={12 + i}
             />
         )
@@ -47,7 +62,6 @@ export function HoverLayer() {
             width={pieceWidth}
             height={storeHeight}
             index={24}
-            hoverTracker={hoverTracker}
             key={24}
         />,
         <HoverTrigger
@@ -56,7 +70,6 @@ export function HoverLayer() {
             width={pieceWidth}
             height={triangleTriggerHeight}
             index={25}
-            hoverTracker={hoverTracker}
             key={25}
         />,
         <HoverTrigger
@@ -65,7 +78,6 @@ export function HoverLayer() {
             width={pieceWidth}
             height={storeHeight}
             index={26}
-            hoverTracker={hoverTracker}
             key={26}
         />,
         <HoverTrigger
@@ -74,7 +86,6 @@ export function HoverLayer() {
             width={pieceWidth}
             height={storeHeight}
             index={27}
-            hoverTracker={hoverTracker}
             key={27}
         />,
         <HoverTrigger
@@ -83,7 +94,6 @@ export function HoverLayer() {
             width={pieceWidth}
             height={triangleTriggerHeight}
             index={28}
-            hoverTracker={hoverTracker}
             key={28}
         />,
         <HoverTrigger
@@ -92,7 +102,6 @@ export function HoverLayer() {
             width={pieceWidth}
             height={storeHeight}
             index={29}
-            hoverTracker={hoverTracker}
             key={29}
         />
     )
