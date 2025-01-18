@@ -20,6 +20,7 @@ const DiceLayer = observer(function DiceLayer() {
                     value={dice1.value}
                     usageStatus={dice1.usageStatus}
                     unavailabilityStatus={dice1.unavailabilityStatus}
+                    interactable={true}
                 />}
                 {dice2 != null && <Dice
                     x={dice2X}
@@ -28,6 +29,7 @@ const DiceLayer = observer(function DiceLayer() {
                     value={dice2.value}
                     usageStatus={dice2.usageStatus}
                     unavailabilityStatus={dice2.unavailabilityStatus}
+                    interactable={true}
                 />}
             </>
         )

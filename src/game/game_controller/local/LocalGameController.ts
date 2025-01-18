@@ -77,6 +77,7 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         } else {
             this.rollDice(this.player, this.player)
         }
+        this.controlButtonsState.movesMade = false
         this.calculateDice()
     }
 

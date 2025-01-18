@@ -5,4 +5,5 @@ export interface DragStatus {
     clickY: number
     clickedIndex: number
     pickedColor: Color
+    timestamp: number
 }

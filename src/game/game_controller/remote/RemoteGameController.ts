@@ -9,7 +9,7 @@ import {RemoteConnector} from "./RemoteConnector.ts";
 import {Color, oppositeColor} from "../../color.ts";
 import {Move} from "../../board/move.ts";
 import {LayerStatus} from "../../../components/game/dice_layer/LayerStatus.ts";
-import {moveDuration} from "../../../components/game/pieces_layer/constatnts.ts";
+import {moveDuration} from "../../../components/game/pieces_layer/constants.ts";
 import {DiceStatus} from "../../dice_state/DiceStatus.ts";
 
 export class RemoteGameController<Index, Prop> extends RulesGameController<Index, Prop> {
