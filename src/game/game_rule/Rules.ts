@@ -9,7 +9,7 @@ export interface Rules<Index, Prop> {
 
     getLegalMoves(board: Board<Index, Prop>, from: Index, player: Color, diceValues: number[]): CompoundMove<Index>[];
 
-    movedBy(from: Index, by: number, player: Color): Index | null
+    movedBy(from: Index, by: number, player: Color): Index
 
     noMovesLeft(board: Board<Index, Prop>, player: Color): boolean
 

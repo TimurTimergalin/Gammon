@@ -306,7 +306,7 @@ export class BackgammonRules implements Rules<BackgammonIndex, BackgammonProp> {
         return filterRes().map(toCompoundMove)
     }
 
-    movedBy(from: BackgammonIndex, by: number, player: Color): BackgammonIndex | null {
+    movedBy(from: BackgammonIndex, by: number, player: Color): BackgammonIndex {
         console.assert(from !== "White Store")
         console.assert(from !== "Black Store")
         if (from === "White Bar") {
