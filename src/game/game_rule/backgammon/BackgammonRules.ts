@@ -306,7 +306,7 @@ export class BackgammonRules implements Rules<BackgammonIndex, BackgammonProp> {
         return filterRes().map(toCompoundMove)
     }
 
-    movedBy(from: BackgammonIndex, by: number, player: Color): BackgammonIndex {
+    movedBy(from: BackgammonIndex, by: number, player: Color): BackgammonIndex | null {
         console.assert(from !== "White Store")
         console.assert(from !== "Black Store")
         if (from === "White Bar") {
@@ -322,7 +322,7 @@ export class BackgammonRules implements Rules<BackgammonIndex, BackgammonProp> {
         const dir = player === Color.WHITE ? -1 : 1
         const res = (from as number) + dir * by
 
-        if (res >= 30) {
+        if (res >= 25) {
             console.assert(player === Color.BLACK)
             return "Black Store"
         }

@@ -12,6 +12,7 @@ export class BackgammonIndexMapper implements IndexMapper<BackgammonIndex> {
      private logicalToPhysicalWhite(logical: BackgammonIndex): number {
         if (typeof logical === "number") {
             if (logical >= 13) {
+                console.assert(logical <= 24)
                 return logical - 13
             } else {
                 return 24 - logical
@@ -35,6 +36,7 @@ export class BackgammonIndexMapper implements IndexMapper<BackgammonIndex> {
             if (logical <= 12) {
                 return logical - 1
             } else {
+                console.log(logical >= 24)
                 return 36 - logical
             }
         }
