@@ -10,7 +10,7 @@ import {
     isHome,
     isStore
 } from "../../board/backgammon/types.ts";
-import {Color, oppositeColor} from "../../color.ts";
+import {Color, oppositeColor} from "../../../common/color.ts";
 import {BackgammonBoard} from "../../board/backgammon/BackgammonBoard.ts";
 import {Rules} from "../Rules.ts";
 import {Move} from "../../board/move.ts";

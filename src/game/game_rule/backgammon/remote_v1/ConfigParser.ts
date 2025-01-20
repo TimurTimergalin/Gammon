@@ -1,5 +1,5 @@
 
-import {Color} from "../../../color.ts";
+import {Color} from "../../../../common/color.ts";
 import {DiceStatus} from "../../../dice_state/DiceStatus.ts";
 import {LayerStatus} from "../../../../components/game/dice_layer/LayerStatus.ts";
 import {Config, ConfigParser} from "../../ConfigParser.ts";

@@ -1,5 +1,5 @@
 import {BackgammonPlacement, BackgammonIndex, BackgammonProp} from "./types.ts";
-import {Color} from "../../color.ts";
+import {Color} from "../../../common/color.ts";
 import {Board} from "../Board.ts";
 
 export class BackgammonBoard implements Board<BackgammonIndex, BackgammonProp>{

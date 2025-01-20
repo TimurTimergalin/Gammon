@@ -3,7 +3,7 @@ import {boardHeight, boardWidth, pieceWidth, svgOriginX, svgOriginY} from "../di
 import {TopDownPiece} from "./pieces";
 import {useContext} from "react";
 import {SvgClientRectContext} from "../SvgClientRectContext.ts";
-import {Color} from "../../../game/color.ts";
+import {Color} from "../../../common/color.ts";
 import {observer} from "mobx-react-lite";
 import {useGameContext} from "../../../game/GameContext.ts";
 

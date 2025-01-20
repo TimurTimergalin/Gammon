@@ -4,7 +4,7 @@ import {TextWithIcon} from "./TextWithIcon.tsx";
 import {useScreenSpecs} from "../adapt/ScreenSpecs.ts";
 import {observer} from "mobx-react-lite";
 import {Dice} from "../../game/dice_layer/dice.tsx";
-import {Color} from "../../../game/color.ts";
+import {Color} from "../../../common/color.ts";
 import {LayerStatus} from "../../game/dice_layer/LayerStatus.ts";
 
 export const SideBar = observer(function SideBar() {

@@ -11,22 +11,32 @@ import {HoverTrigger} from "./HoverTrigger.tsx";
 import {useGameContext} from "../../../game/GameContext.ts";
 import {getTriangleLeft} from "../dimensions/functions.ts";
 import {useEffect} from "react";
-import {pointX, pointY, PointEvent} from "../../../common/point_event.ts";
+import {PointEvent, pointX, pointY} from "../../../common/point_event.ts";
 
 export function HoverLayer() {
     const hoverTracker = useGameContext("hoverTracker")
 
     useEffect(() => {
-        const callback = (ev: PointEvent) => {
+        const moveCallback = (ev: PointEvent) => {
             hoverTracker.changeHoverIndex(pointX(ev), pointY(ev))
         }
 
-        document.addEventListener("mousemove", callback)
-        document.addEventListener("touchmove", callback)
+        const touchEndCallback = (e: Event) => {
+            if (hoverTracker.clearHoverIndex()) {
+                e.preventDefault()
+            }
+        }
+
+        document.addEventListener("mousemove", moveCallback)
+        document.addEventListener("touchmove", moveCallback)
+        document.addEventListener("touchend", touchEndCallback)
+        document.addEventListener("touchcancel", touchEndCallback)
 
         return () => {
-            document.removeEventListener("mousemove", callback)
-            document.removeEventListener("touchmove", callback)
+            document.removeEventListener("mousemove", moveCallback)
+            document.removeEventListener("touchmove", moveCallback)
+            document.removeEventListener("touchend", touchEndCallback)
+            document.removeEventListener("touchcancel", touchEndCallback)
         }
 
     }, [hoverTracker]);

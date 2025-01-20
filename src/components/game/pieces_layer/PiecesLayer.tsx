@@ -25,6 +25,7 @@ const PiecesLayer = observer(function PiecesLayer() {
             if (clickedIndex === null) {
                 return
             }
+
             const pickedStack = boardState.get(clickedIndex)
 
             if (pickedStack.pieces.length === 0) {

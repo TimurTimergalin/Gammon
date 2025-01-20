@@ -1,5 +1,5 @@
 import {RulesGameController} from "../rules/RulesGameController.ts";
-import {Color, oppositeColor} from "../../color.ts";
+import {Color, oppositeColor} from "../../../common/color.ts";
 import {DiceStatus} from "../../dice_state/DiceStatus.ts";
 import {LayerStatus} from "../../../components/game/dice_layer/LayerStatus.ts";
 import {BoardSynchronizer} from "../rules/BoardSynchronizer.ts";
@@ -8,6 +8,7 @@ import {IndexMapper} from "../../game_rule/IndexMapper.ts";
 import {DiceState} from "../../dice_state/DiceState.ts";
 import {LegalMovesTracker} from "../../LegalMovesTracker.ts";
 import {Rules} from "../../game_rule/Rules.ts";
+import {LabelState} from "../../LabelState.ts";
 
 export class LocalGameController<Index, Prop> extends RulesGameController<Index, Prop> {
 
@@ -19,7 +20,8 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         rules: Rules<Index, Prop>,
         indexMapper: IndexMapper<Index>,
         diceState: DiceState,
-        legalMovesTracker: LegalMovesTracker
+        legalMovesTracker: LegalMovesTracker,
+        labelState: LabelState
     }) {
         super(args);
     }

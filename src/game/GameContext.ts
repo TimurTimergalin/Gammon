@@ -8,12 +8,16 @@ import {DiceState} from "./dice_state/DiceState.ts";
 import {PhysicalBoard} from "./board/physical/PhysicalBoard.ts";
 import {LegalMovesTracker} from "./LegalMovesTracker.ts";
 import {GameController} from "./game_controller/GameController.ts";
+import {LabelState} from "./LabelState.ts";
 
-interface GameControllerSetter {
-    set(gc: GameController): void
+type Setter<T> = {
+    set(_: T): void
 }
 
 export class GameContext {
+    get labelState(): LabelState {
+        return this._labelState.current!;
+    }
     get legalMovesTracker(): LegalMovesTracker {
         return this._legalMovesTracker.current!;
     }
@@ -38,7 +42,7 @@ export class GameContext {
         return this._gameController.current!;
     }
 
-    get gameControllerSetter(): GameControllerSetter {
+    get gameControllerSetter(): Setter<GameController> {
         return this._gameControllerSetter;
     }
 
@@ -52,15 +56,15 @@ export class GameContext {
 
     private _controlButtonsState: RefObject<ControlButtonsState>
     private _hoverTracker: RefObject<HoverTracker>
-
-    private _gameController: MutableRefObject<GameController>
-    private readonly _gameControllerSetter: GameControllerSetter
-
+    private _labelState: RefObject<LabelState>
     private _playersInfo: RefObject<PlayersInfo>
     private _dragState: RefObject<DragState>
     private _diceState: RefObject<DiceState>
     private _boardState: RefObject<PhysicalBoard>
     private _legalMovesTracker: RefObject<LegalMovesTracker>
+
+    private _gameController: MutableRefObject<GameController>
+    private readonly _gameControllerSetter: Setter<GameController>
 
     constructor({
                     controlButtonsState,
@@ -70,7 +74,8 @@ export class GameContext {
                     dragState,
                     diceState,
                     boardState,
-                    legalMovesTracker
+                    legalMovesTracker,
+                    labelMapperHolder
                 }: {
                     controlButtonsState: RefObject<ControlButtonsState>,
                     hoverTracker: RefObject<HoverTracker>,
@@ -79,26 +84,23 @@ export class GameContext {
                     dragState: RefObject<DragState>,
                     diceState: RefObject<DiceState>,
                     boardState: RefObject<PhysicalBoard>,
-                    legalMovesTracker: RefObject<LegalMovesTracker>
+                    legalMovesTracker: RefObject<LegalMovesTracker>,
+                    labelMapperHolder: RefObject<LabelState>
                 }
     ) {
         this._controlButtonsState = controlButtonsState;
         this._hoverTracker = hoverTracker;
-
         this._gameController = gameController;
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
-        const outer = this
-        this._gameControllerSetter = {
-            set(gc) {
-                outer._gameController.current = gc
-            }
-        }
-
+        this._labelState = labelMapperHolder
         this._playersInfo = playersInfo
         this._dragState = dragState
         this._diceState = diceState
         this._boardState = boardState
         this._legalMovesTracker = legalMovesTracker
+
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        const outer = this
+        this._gameControllerSetter = {set: (gc) => outer._gameController.current = gc}
     }
 }
 
@@ -111,13 +113,13 @@ export function useGameContext<T extends keyof GameContext>(member: T): GameCont
         get(target, prop) {
             if (prop in target[member]) {
                 forceType<keyof GameContext[T]>(prop)
-                return target[member][prop];
+                return target[member]![prop];
             }
         },
         set(target, prop, value) {
             if (prop in target[member]) {
                 forceType<keyof GameContext[T]>(prop)
-                target[member][prop] = value
+                target[member]![prop] = value
                 return true
             }
             return false
@@ -126,6 +128,5 @@ export function useGameContext<T extends keyof GameContext>(member: T): GameCont
 }
 
 export function useFullGameContext(): GameContext {
-    const context = useContext(Context)!
-    return context
+    return useContext(Context)!
 }

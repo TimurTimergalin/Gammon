@@ -1,5 +1,5 @@
 import {boardHeight, boardWidth, svgOriginX, svgOriginY} from "./dimensions/board_size_constants.ts";
-import {useCallback, useRef, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {BoardLayer} from "./board_layer/BoardLayer.tsx";
 import PiecesLayer from "./pieces_layer/PiecesLayer.js";
 import {SvgClientRectContext} from "./SvgClientRectContext.ts";
@@ -13,13 +13,23 @@ import {PlayerIcon} from "./players/PlayerIcon.tsx";
 import {useLayoutMeasure} from "../../hooks.ts";
 import {useGameContext} from "../../game/GameContext.ts";
 import {GameController} from "../../game/game_controller/GameController.ts";
+import {LabelMapper} from "../../game/game_rule/LabelMapper.ts";
+import {IndexLayer} from "./index_layer/IndexLayer.tsx";
 
 
-export default function GameView({gameController, displayControls = true, player1, player2}: {
+export default function GameView(
+    {
+        gameController,
+        displayControls = true,
+        player1,
+        player2,
+        labelMapper
+    }: {
     gameController: GameController
     displayControls?: boolean,
     player1?: PlayerState,
-    player2?: PlayerState
+    player2?: PlayerState,
+    labelMapper?: LabelMapper,
 }) {
     const svgRef = useRef<SVGSVGElement | null>(null)
     const [svgRect, setSvgRect] = useState<DOMRect | null>(null)
@@ -29,10 +39,15 @@ export default function GameView({gameController, displayControls = true, player
 
     const gameControllerSetter = useGameContext("gameControllerSetter")
     const playersInfo = useGameContext("playersInfo")
+    const labelState = useGameContext("labelState")
 
-    gameControllerSetter.set(gameController)
-    playersInfo.player1 = player1 || playersInfo.player1
-    playersInfo.player2 = player2 || playersInfo.player2
+    useEffect(() => {
+        gameControllerSetter.set(gameController)
+        labelState.labelMapper = labelMapper
+        playersInfo.player1 = player1 || playersInfo.player1
+        playersInfo.player2 = player2 || playersInfo.player2
+        
+    }, [gameController, gameControllerSetter, labelMapper, labelState, player1, player2, playersInfo]);
 
     return (
         <SvgClientRectContext.Provider value={svgRect}>
@@ -46,6 +61,7 @@ export default function GameView({gameController, displayControls = true, player
                 preserveAspectRatio={"xMinYMin"}
                 ref={svgRef}>
                 <BoardLayer/>
+                <IndexLayer />
                 <PiecesLayer/>
                 <MoveHintLayer/>
                 <DiceLayer/>

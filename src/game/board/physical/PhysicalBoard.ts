@@ -1,6 +1,6 @@
 import {Board} from "../Board.ts";
 import {PositionState, stillPiece} from "./types.ts";
-import {Color} from "../../color.ts";
+import {Color} from "../../../common/color.ts";
 import {makeAutoObservable} from "mobx";
 
 export class PhysicalBoard implements Board<number, PositionState> {

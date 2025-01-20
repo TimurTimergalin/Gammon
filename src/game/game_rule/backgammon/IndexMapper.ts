@@ -1,5 +1,5 @@
 import {IndexMapper} from "../IndexMapper.ts";
-import {Color, oppositeColor} from "../../color.ts";
+import {Color, oppositeColor} from "../../../common/color.ts";
 import {BackgammonIndex} from "../../board/backgammon/types.ts";
 
 export class BackgammonIndexMapper implements IndexMapper<BackgammonIndex> {

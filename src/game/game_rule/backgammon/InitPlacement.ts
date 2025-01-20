@@ -1,4 +1,4 @@
-import {Color} from "../../color.ts";
+import {Color} from "../../../common/color.ts";
 import {BackgammonBoard} from "../../board/backgammon/BackgammonBoard.ts";
 import {Board} from "../../board/Board.ts";
 import {BackgammonIndex, BackgammonPlacement, BackgammonProp} from "../../board/backgammon/types.ts";

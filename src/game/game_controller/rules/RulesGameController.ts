@@ -1,17 +1,18 @@
 import {GameController} from "../GameController.ts";
 import {BoardSynchronizer} from "./BoardSynchronizer.ts";
 import {Rules} from "../../game_rule/Rules.ts";
-import {Color} from "../../color.ts";
+import {Color} from "../../../common/color.ts";
 import {ControlButtonsState} from "../../ControlButtonsState.ts";
 import {CompoundMove, invertCompound, mergeMoves} from "../../board/move.ts";
 import {IndexMapper} from "../../game_rule/IndexMapper.ts";
 import {DiceState} from "../../dice_state/DiceState.ts";
 import {LegalMovesTracker} from "../../LegalMovesTracker.ts";
+import {LabelState} from "../../LabelState.ts";
 
 export abstract class RulesGameController<Index, Prop> implements GameController {
     protected board: BoardSynchronizer<Index, Prop>
     protected controlButtonsState: ControlButtonsState
-    protected player!: Color
+    protected _player!: Color
     protected active: boolean
     protected performedMoves: CompoundMove<Index>[] = []
     protected legalMovesTracker: LegalMovesTracker
@@ -20,16 +21,27 @@ export abstract class RulesGameController<Index, Prop> implements GameController
 
     private legalMovesMap: Map<number, CompoundMove<Index>> = new Map()
     private indexMapper: IndexMapper<Index>
+    private labelState: LabelState
+
+    protected get player(): Color {
+        return this._player
+    }
+
+    protected set player(color: Color) {
+        this._player = color
+        this.labelState.color = color
+    }
 
     protected constructor(
-        {board, controlButtonsState, active, rules, indexMapper, diceState, legalMovesTracker}: {
+        {board, controlButtonsState, active, rules, indexMapper, diceState, legalMovesTracker, labelState}: {
             board: BoardSynchronizer<Index, Prop>,
             controlButtonsState: ControlButtonsState,
             active: boolean,
             rules: Rules<Index, Prop>,
             indexMapper: IndexMapper<Index>,
             diceState: DiceState,
-            legalMovesTracker: LegalMovesTracker
+            legalMovesTracker: LegalMovesTracker,
+            labelState: LabelState
         }
     ) {
         this.board = board;
@@ -39,6 +51,7 @@ export abstract class RulesGameController<Index, Prop> implements GameController
         this.indexMapper = indexMapper;
         this.diceState = diceState;
         this.legalMovesTracker = legalMovesTracker
+        this.labelState = labelState
     }
 
     abstract endTurn(): void;
