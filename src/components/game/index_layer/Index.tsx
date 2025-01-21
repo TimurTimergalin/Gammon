@@ -16,7 +16,7 @@ export const Index = observer(function Index({index, x, y}: { index: number, x: 
 
     return (
 
-        <text style={{fontSize: "30px"}} x={x + pieceWidth / 2} y={y} textAnchor={"middle"}>
+        <text style={{fontSize: "30px", userSelect: "none"}} x={x + pieceWidth / 2} y={y} textAnchor={"middle"}>
             <tspan style={{fill: colorFill(labelState.color)}}>{toDisplay}</tspan>
         </text>
 

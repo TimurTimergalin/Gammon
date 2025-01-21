@@ -18,6 +18,23 @@ export function useMousePosition(initX: number, initY: number) {
     return mousePos
 }
 
+export function useMousePositionRef() {
+    const mousePos = useRef([0, 0])
+
+    useEffect(() => {
+        const callback = (e: PointEvent) => {
+            mousePos.current = [pointX(e), pointY(e)]
+        }
+        document.addEventListener("mousemove", callback)
+        document.addEventListener("touchmove", callback)
+        return () => {
+            document.removeEventListener("mousemove", callback)
+            document.removeEventListener("touchmove", callback)
+        }
+    }, []);
+    return mousePos
+}
+
 export function useLayoutMeasure(f: EffectCallback, receiver?: RefObject<Element>) {
     useLayoutEffect(() => {
         const cleanups = [f()]

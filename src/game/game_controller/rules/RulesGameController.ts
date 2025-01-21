@@ -80,16 +80,19 @@ export abstract class RulesGameController<Index, Prop> implements GameController
         }
     }
 
-    calculateLegalMoves(pi: number): void {
+    calculateLegalMoves(pi: number): number[] {
         console.assert(this.active)
         const li = this.indexMapper.physicalToLogical(pi)
         const legalMoves = this.rules.getLegalMoves(this.board.ruleBoard, li, this.player, this.diceState.toDiceArray())
 
+
+        const res = []
         for (const move of legalMoves) {
-            const fromP = this.indexMapper.logicalToPhysical(move.primaryMove.to)
-            this.legalMovesTracker.add(fromP)
-            this.legalMovesMap.set(fromP, move)
+            const toP = this.indexMapper.logicalToPhysical(move.primaryMove.to)
+            res.push(toP)
+            this.legalMovesMap.set(toP, move)
         }
+        return res
     }
 
     clearLegalMoves(): void {
@@ -127,7 +130,7 @@ export abstract class RulesGameController<Index, Prop> implements GameController
         this.checkTurnComplete()
     }
 
-    quickMove(from: number, color: Color): void {
+    quickMove(from: number): void {
         console.assert(this.active)
         const fromL = this.indexMapper.physicalToLogical(from)
         const diceArray = this.diceState.toDiceArray()
@@ -138,7 +141,6 @@ export abstract class RulesGameController<Index, Prop> implements GameController
                 const move = this.legalMovesMap.get(shiftedP)!
                 move.additionalMoves.forEach(this.board.performMoveLogical)
                 move.dice.forEach(this.diceState.useDice)
-                this.board.putPhysical(from, color)
                 this.board.performMoveLogical(move.primaryMove)
                 this.performedMoves.push(move)
                 this.controlButtonsState.movesMade = true
@@ -146,7 +148,6 @@ export abstract class RulesGameController<Index, Prop> implements GameController
                 return
             }
         }
-        this.board.putPhysical(from, color)
     }
 
     putBack(to: number, color: Color): void {

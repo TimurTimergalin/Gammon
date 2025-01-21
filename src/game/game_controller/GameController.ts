@@ -1,7 +1,7 @@
 import {Color} from "../../common/color.ts";
 
 export interface GameController {
-    calculateLegalMoves(point: number): void
+    calculateLegalMoves(point: number): Iterable<number>
 
     clearLegalMoves(): void
 
@@ -13,7 +13,7 @@ export interface GameController {
 
     put(to: number, color: Color): void
 
-    quickMove(from: number, color: Color): void
+    quickMove(from: number): void
 
     putBack(to: number, color: Color): void
 
