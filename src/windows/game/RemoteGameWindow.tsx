@@ -1,15 +1,16 @@
-import {RuleSet} from "../../../../game/game_rule/RuleSet.ts";
-import {RemoteSet} from "../../../../game/game_rule/RemoteSet.ts";
-import {useFullGameContext} from "../../../../game/GameContext.ts";
+import {RuleSet} from "../../game/game_rule/RuleSet.ts";
+import {RemoteSet} from "../../game/game_rule/RemoteSet.ts";
+import {useFullGameContext} from "../../game/GameContext.ts";
 import {useParams} from "react-router";
 import {useEffect, useRef, useState} from "react";
-import {GameController} from "../../../../game/game_controller/GameController.ts";
-import {remoteGameInit} from "../../../../game/game_controller/remote/factory.ts";
+import {GameController} from "../../game/game_controller/GameController.ts";
+import {LabelMapper} from "../../game/game_rule/LabelMapper.ts";
+import {remoteGameInit} from "../../game/game_controller/remote/factory.ts";
 import {GameAndControlPanelContainer} from "./GameAndControlPanelContainer.tsx";
-import GameView from "../../../game/GameView.tsx";
-import {ControlPanel} from "../../../game/control_panel/ControlPanel.tsx";
-import {GameContextHolder} from "../../../game/GameContextHolder.tsx";
-import {LabelMapper} from "../../../../game/game_rule/LabelMapper.ts";
+import GameView from "../../components/game/GameView.tsx";
+import {ControlPanel} from "../../components/game/control_panel/ControlPanel.tsx";
+import {GameContextHolder} from "../../components/game/GameContextHolder.tsx";
+
 
 interface RemoteGameWindowProps<RemoteConfig, Index, Prop, RemoteMove> {
     ruleSet: RuleSet<Index, Prop>,

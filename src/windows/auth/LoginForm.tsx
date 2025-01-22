@@ -1,15 +1,16 @@
 import {useCallback, useState} from "react";
 import {NavigateFunction, useNavigate} from "react-router";
 import {observer} from "mobx-react-lite";
-import {useFormState} from "../../forms/state/FormState.ts";
-import {Form} from "../../forms/Form.tsx";
-import {FormInput} from "../../forms/FormInput.tsx";
-import {FormStateProvider} from "../../forms/state/FormStateProvider.tsx";
 import styled from "styled-components";
-import {AccentedButton} from "../../../common/AccentedButton.tsx";
-import {required} from "../../forms/validators.ts";
+import {FormInput} from "../../components/forms/FormInput.tsx";
 import {buttonStyle, formStyle, inputStyle} from "./common.ts";
-import {Credentials, login} from "../../../../requests/requests.ts";
+import {useFormState} from "../../forms/FormState.ts";
+import {Credentials, login} from "../../requests/requests.ts";
+import {Form} from "../../components/forms/Form.tsx";
+import {required} from "../../components/forms/validators.ts";
+import {AccentedButton} from "../../components/AccentedButton.tsx";
+import {FormStateProvider} from "../../forms/FormStateProvider.tsx";
+
 
 const LoginFormInput = styled(FormInput)`
     ${() => inputStyle}

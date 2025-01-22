@@ -1,6 +1,6 @@
 import {ReactNode} from "react";
-import {useScreenSpecs} from "../../adapt/ScreenSpecs.ts";
 import {observer} from "mobx-react-lite";
+import {useScreenSpecs} from "../../components/adapt/ScreenSpecs.ts";
 
 export const GameViewAdapter = observer(function GameViewAdapter({children}: {
     children: ReactNode

@@ -1,5 +1,5 @@
 import {EffectCallback, MutableRefObject, RefObject, useEffect, useLayoutEffect, useRef, useState} from "react";
-import {pointX, pointY, PointEvent} from "./common/point_event.ts";
+import {pointX, pointY, PointEvent} from "./point_event.ts";
 
 export function useMousePosition(initX: number, initY: number) {
     const [mousePos, setMousePosition] = useState([initX, initY])

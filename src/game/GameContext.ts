@@ -1,7 +1,7 @@
 import {ControlButtonsState} from "./ControlButtonsState.ts";
 import {HoverTracker} from "./HoverTracker.ts";
 import {createContext, MutableRefObject, RefObject, useContext} from "react";
-import {forceType} from "../typing.ts";
+import {forceType} from "../common/typing.ts";
 import {PlayersInfo} from "./player_info/PlayersInfo.ts";
 import {DragState} from "./drag_state/DragState.ts";
 import {DiceState} from "./dice_state/DiceState.ts";

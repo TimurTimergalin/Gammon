@@ -3,7 +3,7 @@ import {observer} from "mobx-react-lite";
 import {StacksLayer} from "./StacksLayer.tsx";
 import {useGameContext} from "../../../game/GameContext.ts";
 import {isPrimary, PointEvent, pointX, pointY} from "../../../common/point_event.ts";
-import {useMousePositionRef} from "../../../hooks.ts";
+import {useMousePositionRef} from "../../../common/hooks.ts";
 
 
 const PiecesLayer = observer(function PiecesLayer() {
@@ -81,7 +81,8 @@ const PiecesLayer = observer(function PiecesLayer() {
                 if (dragState.clickedIndex === releaseIndex || releaseIndex === null) {
                     boardState.eraseFrom()
                     gameController.quickMove(dragState.clickedIndex)
-                } 
+                    dragState.clickedIndex = null
+                }
                 return;
             }
             if (
@@ -92,6 +93,7 @@ const PiecesLayer = observer(function PiecesLayer() {
                 gameController.put(releaseIndex, dragState.dragStatus.pickedColor)
             }
 
+            dragState.clickedIndex = null
             dragState.dragStatus = null
             legalMovesTracker.clear()
         }

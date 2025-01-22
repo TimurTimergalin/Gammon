@@ -1,7 +1,7 @@
 import {observer} from "mobx-react-lite";
 import {ReactNode, useCallback, useEffect, useRef} from "react";
 import {NavigateFunction} from "react-router";
-import {useFormState} from "./state/FormState.ts";
+import {useFormState} from "../../forms/FormState.ts";
 
 interface FormProps {
     children: ReactNode | ReactNode[],

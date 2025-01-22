@@ -1,4 +1,4 @@
-import {useMousePosition} from "../../../hooks";
+import {useMousePosition} from "../../../common/hooks.ts";
 import {boardHeight, boardWidth, pieceWidth, svgOriginX, svgOriginY} from "../dimensions/board_size_constants.ts";
 import {TopDownPiece} from "./pieces";
 import {useContext} from "react";

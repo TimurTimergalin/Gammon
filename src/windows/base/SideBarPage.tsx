@@ -1,7 +1,8 @@
 import {ReactNode} from "react";
-import {AdaptiveWindow} from "../../adapt/AdaptiveWindow.tsx";
-import {SideBar} from "../../sidebar/SideBar.tsx";
+
 import {Outlet} from "react-router";
+import {AdaptiveWindow} from "../../components/adapt/AdaptiveWindow.tsx";
+import {SideBar} from "../../components/sidebar/SideBar.tsx";
 
 const SideBarPage = ({children}: {
     children: ReactNode | ReactNode[]

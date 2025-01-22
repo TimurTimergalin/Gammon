@@ -1,5 +1,5 @@
 import {ReactNode, useCallback, useRef} from "react";
-import {useLayoutMeasure} from "../../../hooks.ts";
+import {useLayoutMeasure} from "../../common/hooks.ts";
 import {ScreenSpecs, ScreenSpecsProvider} from "./ScreenSpecs.ts";
 import {Outlet} from "react-router";
 

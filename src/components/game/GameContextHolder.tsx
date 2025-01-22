@@ -1,4 +1,4 @@
-import {useFactoryRef} from "../../hooks.ts";
+import {useFactoryRef} from "../../common/hooks.ts";
 import {ControlButtonsState} from "../../game/ControlButtonsState.ts";
 import {HoverTracker} from "../../game/HoverTracker.ts";
 import {ReactNode} from "react";

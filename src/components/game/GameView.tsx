@@ -10,7 +10,7 @@ import {DragPieceLayer} from "./pieces_layer/DragPieceLayer.tsx";
 import {ButtonPanel} from "./buttons/ButtonPanel.tsx";
 import {PlayerState} from "../../game/player_info/PlayerState.ts";
 import {PlayerIcon} from "./players/PlayerIcon.tsx";
-import {useLayoutMeasure} from "../../hooks.ts";
+import {useLayoutMeasure} from "../../common/hooks.ts";
 import {useGameContext} from "../../game/GameContext.ts";
 import {GameController} from "../../game/game_controller/GameController.ts";
 import {LabelMapper} from "../../game/game_rule/LabelMapper.ts";

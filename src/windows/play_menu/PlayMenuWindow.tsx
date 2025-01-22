@@ -1,11 +1,11 @@
 import {GameAndControlPanelContainer} from "./GameAndControlPanelContainer.tsx";
-import GameView from "../../../game/GameView.tsx";
+import GameView from "../../components/game/GameView.tsx";
 import {ControlPanel, OptionCallbacks} from "./control_panel/ControlPanel.tsx";
 import {NavigateFunction} from "react-router";
-import {connect} from "../../../../requests/requests.ts";
-import {logResponseError} from "../../../../requests/util.ts";
-import {DummyGameController} from "../../../../game/game_controller/DummyGameController.ts";
-import {GameContextHolder} from "../../../game/GameContextHolder.tsx";
+import {connect} from "../../requests/requests.ts";
+import {logResponseError} from "../../requests/util.ts";
+import {DummyGameController} from "../../game/game_controller/DummyGameController.ts";
+import {GameContextHolder} from "../../components/game/GameContextHolder.tsx";
 import {LocalGameOption} from "./control_panel/LocalGameOption.tsx";
 
 const options: Map<string, OptionCallbacks> = new Map()

@@ -1,10 +1,10 @@
-import {RuleSet} from "../../../../game/game_rule/RuleSet.ts";
-import {localGameInit} from "../../../../game/game_controller/local/factory.ts";
-import {useFullGameContext} from "../../../../game/GameContext.ts";
+import {RuleSet} from "../../game/game_rule/RuleSet.ts";
+import {useFullGameContext} from "../../game/GameContext.ts";
+import {localGameInit} from "../../game/game_controller/local/factory.ts";
 import {GameAndControlPanelContainer} from "./GameAndControlPanelContainer.tsx";
-import GameView from "../../../game/GameView.tsx";
-import {ControlPanel} from "../../../game/control_panel/ControlPanel.tsx";
-import {GameContextHolder} from "../../../game/GameContextHolder.tsx";
+import GameView from "../../components/game/GameView.tsx";
+import {ControlPanel} from "../../components/game/control_panel/ControlPanel.tsx";
+import {GameContextHolder} from "../../components/game/GameContextHolder.tsx";
 
 interface LocalGameWindowProps<Index, Prop> {
     ruleset: RuleSet<Index, Prop>

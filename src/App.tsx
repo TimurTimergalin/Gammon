@@ -1,13 +1,14 @@
 import {Route, Routes} from "react-router";
-import {AdapterOutlet} from "./components/ui/adapt/Adapter.tsx";
-import {SideBarPageOutlet} from "./components/ui/windows/base/SideBarPage.tsx";
-import {PlayMenuWindow} from "./components/ui/windows/play_menu/PlayMenuWindow.tsx";
-import {AuthPageOutlet} from "./components/ui/windows/base/AuthPage.tsx";
-import {LoginForm} from "./components/ui/windows/auth/LoginForm.tsx";
-import {LocalGameWindow} from "./components/ui/windows/game/LocalGameWindow.tsx";
-import {backgammonRuleSet} from "./game/game_rule/backgammon/RuleSet.ts";
-import {RemoteGameWindow} from "./components/ui/windows/game/RemoteGameWindow.tsx";
+import {AdapterOutlet} from "./components/adapt/Adapter.tsx";
+
 import {backgammonRemoteSetV1} from "./game/game_rule/backgammon/remote_v1/RemoteSet.ts";
+import {SideBarPageOutlet} from "./windows/base/SideBarPage.tsx";
+import {PlayMenuWindow} from "./windows/play_menu/PlayMenuWindow.tsx";
+import {LocalGameWindow} from "./windows/game/LocalGameWindow.tsx";
+import {backgammonRuleSet} from "./game/game_rule/backgammon/RuleSet.ts";
+import {RemoteGameWindow} from "./windows/game/RemoteGameWindow.tsx";
+import {AuthPageOutlet} from "./windows/base/AuthPage.tsx";
+import {LoginForm} from "./windows/auth/LoginForm.tsx";
 
 export default function App() {
     return (

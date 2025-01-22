@@ -1,8 +1,8 @@
 import {CSSProperties, ReactNode} from "react";
 import {GameViewAdapter} from "./GameViewAdapter.tsx";
 import {ControlPanelAdapter} from "./ControlPanelAdapter.tsx";
-import {useScreenSpecs} from "../../adapt/ScreenSpecs.ts";
 import {observer} from "mobx-react-lite";
+import {useScreenSpecs} from "../../components/adapt/ScreenSpecs.ts";
 
 export const GameAndControlPanelContainer = observer(function GameAndControlPanelContainer({children}: {
     children: [ReactNode, ReactNode]
