@@ -10,6 +10,7 @@ import {GameAndControlPanelContainer} from "./GameAndControlPanelContainer.tsx";
 import GameView from "../../components/game/GameView.tsx";
 import {ControlPanel} from "../../components/game/control_panel/ControlPanel.tsx";
 import {GameContextHolder} from "../../components/game/GameContextHolder.tsx";
+import {GamePart} from "../../parts/GamePart.tsx";
 
 
 interface RemoteGameWindowProps<RemoteConfig, Index, Prop, RemoteMove> {
@@ -21,14 +22,14 @@ const InnerRemoteGameWindow = <RemoteConfig, Index, Prop, RemoteMove>(
     {ruleSet, remoteSet}: RemoteGameWindowProps<RemoteConfig, Index, Prop, RemoteMove>
 ) => {
     const gameContext = useFullGameContext()
-    const { roomId } = useParams()
+    const {roomId} = useParams()
 
     useEffect(() => {
         console.assert(roomId !== undefined)
     }, [roomId]);
-    
+
     const roomIdParsed = parseInt(roomId!)
-    
+
     useEffect(() => {
         console.assert(!isNaN(roomIdParsed))
     }, [roomIdParsed]);
@@ -36,7 +37,7 @@ const InnerRemoteGameWindow = <RemoteConfig, Index, Prop, RemoteMove>(
 
     const [gameController, setGameController] = useState<GameController | undefined>(undefined)
 
-    const [cleanup, setCleanup] = useState<undefined | {cleanup: () => void}>(undefined)
+    const [cleanup, setCleanup] = useState<undefined | { cleanup: () => void }>(undefined)
 
     const labelMapper_ = useRef<LabelMapper | undefined>(undefined)
 
@@ -62,9 +63,11 @@ const InnerRemoteGameWindow = <RemoteConfig, Index, Prop, RemoteMove>(
     return (
         <GameAndControlPanelContainer>
             {gameController !== undefined &&
-                <GameView gameController={gameController} labelMapper={labelMapper_.current}/>
+                <GamePart displayButtons={true}>
+                    <GameView gameController={gameController} labelMapper={labelMapper_.current}/>
+                </GamePart>
             }
-            <ControlPanel />
+            <ControlPanel/>
         </GameAndControlPanelContainer>
     )
 }

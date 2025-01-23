@@ -5,6 +5,7 @@ import {GameAndControlPanelContainer} from "./GameAndControlPanelContainer.tsx";
 import GameView from "../../components/game/GameView.tsx";
 import {ControlPanel} from "../../components/game/control_panel/ControlPanel.tsx";
 import {GameContextHolder} from "../../components/game/GameContextHolder.tsx";
+import {GamePart} from "../../parts/GamePart.tsx";
 
 interface LocalGameWindowProps<Index, Prop> {
     ruleset: RuleSet<Index, Prop>
@@ -22,7 +23,9 @@ const InnerLocalGameWindow = <Index, Prop>({ruleset}: LocalGameWindowProps<Index
 
     return (
         <GameAndControlPanelContainer>
-            <GameView gameController={controller} labelMapper={labelMapper}/>
+            <GamePart displayButtons={true}>
+                <GameView gameController={controller} labelMapper={labelMapper}/>
+            </GamePart>
             <ControlPanel/>
         </GameAndControlPanelContainer>
     )
