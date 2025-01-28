@@ -1,7 +1,7 @@
 import {observer} from "mobx-react-lite";
 import {ComponentProps, useCallback, useEffect, useRef} from "react";
 import {useFormState} from "../../forms/FormState.ts";
-import {ValidityCheckResult} from "./validators.ts";
+import {ValidityCheckResult} from "../../forms/validators.ts";
 import {runInAction} from "mobx";
 
 

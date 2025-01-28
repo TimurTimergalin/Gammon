@@ -1,33 +1,16 @@
 import {css} from "styled-components";
 import {CSSProperties} from "react";
 
-export const formStyle = css`
-    background-color: #252323;
+export const loginFormStyle = css`
     padding: 30px;
     display: flex;
     flex-direction: column;
-    font-size: 20px;
     width: 30%;
-    border-radius: 20px;
 `
 
-export const inputStyle = css`
+export const loginFormInputStyle = css`
     & {
-        background-color: #555555;
-        border: 0;
-        font-size: 22px;
-        color: white;
         margin-bottom: 20px;
-        height: 1.5em;
-        border-radius: 7px;
-    }
-
-    &:focus, &:hover {
-        outline: 2px solid #ff7f2a;
-    }
-
-    &:invalid {
-        outline: 2px solid #cc3333;
     }
 `
 

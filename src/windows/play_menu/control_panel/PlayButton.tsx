@@ -24,5 +24,5 @@ export const PlayButton = observer(function PlayButton({callback}: {
         borderRadius: `5px`
     }
 
-    return <AccentedButton onClick={callback} disabled={false} style={style}>Играть</AccentedButton>
+    return <AccentedButton onClick={callback} disabled={false} style={style} type={"button"}>Играть</AccentedButton>
 })

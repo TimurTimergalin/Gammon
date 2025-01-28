@@ -23,8 +23,8 @@ export const Form = observer(function FormBase(
                 }
                 return
             }
-            onSubmit(navigate)
         }
+        onSubmit(navigate)
     }, [formState, onSubmit])
 
     useEffect(() => {

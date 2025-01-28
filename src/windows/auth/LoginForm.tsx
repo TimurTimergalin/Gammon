@@ -3,17 +3,19 @@ import {NavigateFunction, useNavigate} from "react-router";
 import {observer} from "mobx-react-lite";
 import styled from "styled-components";
 import {FormInput} from "../../components/forms/FormInput.tsx";
-import {buttonStyle, formStyle, inputStyle} from "./common.ts";
+import {buttonStyle, loginFormStyle, loginFormInputStyle} from "./common.ts";
 import {useFormState} from "../../forms/FormState.ts";
 import {Credentials, login} from "../../requests/requests.ts";
 import {Form} from "../../components/forms/Form.tsx";
-import {required} from "../../components/forms/validators.ts";
+import {required} from "../../forms/validators.ts";
 import {AccentedButton} from "../../components/AccentedButton.tsx";
 import {FormStateProvider} from "../../forms/FormStateProvider.tsx";
+import {formBaseStyle, inputBaseStyle} from "../../css/forms.ts";
 
 
 const LoginFormInput = styled(FormInput)`
-    ${() => inputStyle}
+    ${loginFormInputStyle}
+    ${inputBaseStyle}
 `
 
 const LoginFormBase = observer(function LoginFormBase({className}: {className?: string}) {
@@ -50,14 +52,15 @@ const LoginFormBase = observer(function LoginFormBase({className}: {className?: 
             <LoginFormInput validityCheck={required} index={0} name={"name"}/>
             <p>Пароль</p>
             <LoginFormInput validityCheck={required} index={1} type={"password"} name={"password"}/>
-            <AccentedButton onClick={() => formState.onSubmit(navigate)} disabled={false} style={buttonStyle}>Войти</AccentedButton>
+            <AccentedButton onClick={() => formState.onSubmit(navigate)} disabled={false} style={buttonStyle} type="button">Войти</AccentedButton>
             <p>{errorMessage}</p>
         </Form>
     )
 })
 
 const LoginFormStyle = styled(LoginFormBase)`
-    ${() => formStyle}
+    ${loginFormStyle}
+    ${formBaseStyle}
 `
 
 export const LoginForm = () => <FormStateProvider><LoginFormStyle /></FormStateProvider>
