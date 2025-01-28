@@ -16,8 +16,8 @@ export const Form = observer(function FormBase(
     const formRef = useRef<HTMLFormElement | null>(null)
 
     const onSubmitWithValidate = useCallback((navigate: NavigateFunction) => {
-        for (const success of formState.validationSuccess.values()) {
-            if (!success) {
+        for (const success of formState.validity.values()) {
+            if (!success.success) {
                 for (const key of formState.touched.keys()) {
                     formState.touched.set(key, true)
                 }

@@ -1,20 +1,20 @@
 import {observer} from "mobx-react-lite";
 import {ComponentProps, useCallback, useEffect, useRef} from "react";
 import {useFormState} from "../../forms/FormState.ts";
-import {ValidityCheckResult} from "../../forms/validators.ts";
+import {ComplexValidator, SimpleValidator} from "../../forms/validators.ts";
 import {runInAction} from "mobx";
 
 
 export const FormInput = observer(function FormInput(
-    {validityCheck, className, index, ...inputProps}: ComponentProps<"input"> &
-        { validityCheck: (value: string) => ValidityCheckResult, className?: string, index: number }
+    {validityCheck, className, index, complexValidityCheck, ...inputProps}: ComponentProps<"input"> &
+        { validityCheck: SimpleValidator, className?: string, index: number, complexValidityCheck?: ComplexValidator }
 ) {
     const formState = useFormState()
     const inputRef = useRef<HTMLInputElement | null>(null)
 
     useEffect(() => {
         const result = validityCheck(inputRef.current!.value)
-        formState.validationSuccess.set(index, result[0])
+        formState.validity.set(index, result)
         formState.touched.set(index, false)
     }, [formState, index, validityCheck])
 
@@ -22,13 +22,25 @@ export const FormInput = observer(function FormInput(
 
     const checkValidity = useCallback(() => {
         const result = validityCheck(inputRef.current!.value)
-        runInAction(() => formState.validationSuccess.set(index, result[0]))
-        if (!result[0]) {
-            inputRef.current!.setCustomValidity(result[1])
-        } else {
-            inputRef.current!.setCustomValidity("")
+        if (!result.success) {
+            inputRef.current!.setCustomValidity(result.message)
+            runInAction(() => formState.validity.set(index, result))
+            return
         }
-    }, [formState, index, validityCheck])
+        if (complexValidityCheck === undefined) {
+            inputRef.current!.setCustomValidity("")
+            runInAction(() => formState.validity.set(index, result))
+            return;
+        }
+        const result1 = complexValidityCheck(formState.formData!)
+        runInAction(() => formState.validity.set(index, result1))
+        if (result1.success) {
+            inputRef.current!.setCustomValidity("")
+        } else {
+            inputRef.current!.setCustomValidity(result1.message)
+        }
+
+    }, [complexValidityCheck, formState.formData, formState.validity, index, validityCheck])
 
     useEffect(() => {
         if (touched) {

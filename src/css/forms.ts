@@ -2,7 +2,6 @@ import {css} from "styled-components";
 
 export const formBaseStyle = css`
     background-color: #252323;
-    font-size: 20px;
     border-radius: 20px;
 `
 

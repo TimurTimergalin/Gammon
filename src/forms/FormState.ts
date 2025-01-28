@@ -1,6 +1,7 @@
 import {NavigateFunction} from "react-router";
 import {makeAutoObservable} from "mobx";
 import React, {createContext, RefObject, useContext} from "react";
+import {ValidityCheckResult} from "./validators.ts";
 
 export class FormState {
     private _formData: FormData | null = null
@@ -8,7 +9,7 @@ export class FormState {
         return this._formData;
     }
 
-    readonly validationSuccess: Map<number, boolean> = new Map()
+    readonly validity: Map<number, ValidityCheckResult> = new Map()
     readonly touched: Map<number, boolean> = new Map()
     readonly defaultOnSubmit = () => console.error("No onSubmit specified")
     onSubmit: (navigate: NavigateFunction) => void = this.defaultOnSubmit

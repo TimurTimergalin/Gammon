@@ -8,7 +8,8 @@ import {LocalGameWindow} from "./windows/game/LocalGameWindow.tsx";
 import {backgammonRuleSet} from "./game/game_rule/backgammon/RuleSet.ts";
 import {RemoteGameWindow} from "./windows/game/RemoteGameWindow.tsx";
 import {AuthPageOutlet} from "./windows/base/AuthPage.tsx";
-import {LoginForm} from "./windows/auth/LoginForm.tsx";
+import {SignInForm} from "./windows/auth/SignInForm.tsx";
+import {SignUpForm} from "./windows/auth/SignUpForm.tsx";
 
 export default function App() {
     return (
@@ -24,7 +25,8 @@ export default function App() {
                         <RemoteGameWindow ruleSet={backgammonRuleSet} remoteSet={backgammonRemoteSetV1}/>
                     }/>
                     <Route element={<AuthPageOutlet/>}>
-                        <Route path={"/sign-in"} element={<LoginForm />} />
+                        <Route path={"/sign-in"} element={<SignInForm />} />
+                        <Route path={"/sign-up"} element={<SignUpForm />} />
                     </Route>
                 </Route>
             </Route>

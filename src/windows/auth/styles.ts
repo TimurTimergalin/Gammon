@@ -1,20 +1,19 @@
 import {css} from "styled-components";
 import {CSSProperties} from "react";
 
-export const loginFormStyle = css`
+export const authFormStyle = css`
     padding: 30px;
     display: flex;
     flex-direction: column;
     width: 30%;
+    font-size: 15px;
 `
 
-export const loginFormInputStyle = css`
-    & {
-        margin-bottom: 20px;
-    }
+export const authFormInputMessageStyle = css`
+    font-size: 15px;
 `
 
-export const buttonStyle: CSSProperties = {
+export const authButtonStyle: CSSProperties = {
     fontSize: "25px",
     borderRadius: "7px",
     paddingTop: "10px",
