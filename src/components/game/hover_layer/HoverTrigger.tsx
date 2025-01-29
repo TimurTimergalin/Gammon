@@ -26,6 +26,7 @@ export const HoverTrigger = (
             height={height}
             fill={"#ffffff00"}
             ref={rect}
+            aria-label={`HoverTrigger${index}`}
         />
     )
 }

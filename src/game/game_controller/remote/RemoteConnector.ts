@@ -1,4 +1,4 @@
-import {Color} from "../../color.ts";
+import {Color} from "../../../common/color.ts";
 import {finishTurn, subscribeForEvents} from "../../../requests/requests.ts";
 import {logResponseError} from "../../../requests/util.ts";
 import {Move} from "../../board/move.ts";

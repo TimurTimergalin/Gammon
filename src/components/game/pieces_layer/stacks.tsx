@@ -1,4 +1,4 @@
-import {SidePiece, TopDownPiece} from "./pieces.js";
+import {SidePiece, TopDownPiece} from "./pieces.tsx";
 import {Direction} from "./direction.ts";
 import styled, {css, keyframes} from "styled-components";
 

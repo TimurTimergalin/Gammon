@@ -1,5 +1,5 @@
 import {PropMapper} from "../PropMapper.ts";
-import {Color} from "../../color.ts";
+import {Color} from "../../../common/color.ts";
 import {BackgammonProp} from "../../board/backgammon/types.ts";
 
 export class BackgammonPropMapper implements PropMapper<BackgammonProp> {

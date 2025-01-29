@@ -1,9 +1,9 @@
-import {useMousePosition} from "../../../hooks";
+import {useMousePosition} from "../../../common/hooks.ts";
 import {boardHeight, boardWidth, pieceWidth, svgOriginX, svgOriginY} from "../dimensions/board_size_constants.ts";
 import {TopDownPiece} from "./pieces";
 import {useContext} from "react";
 import {SvgClientRectContext} from "../SvgClientRectContext.ts";
-import {Color} from "../../../game/color.ts";
+import {Color} from "../../../common/color.ts";
 import {observer} from "mobx-react-lite";
 import {useGameContext} from "../../../game/GameContext.ts";
 

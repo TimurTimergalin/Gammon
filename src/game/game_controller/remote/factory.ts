@@ -13,7 +13,7 @@ async function getConfigJson(roomId: number) {
     return await resp.json()
 }
 
-export async function remoteGameControllerFactory<RemoteConfig, Index, Prop, RemoteMove>(
+export async function remoteGameInit<RemoteConfig, Index, Prop, RemoteMove>(
     {remoteSet, ruleSet, roomId, gameContext}: {
         remoteSet: RemoteSet<RemoteConfig, Index, Prop, RemoteMove>,
         ruleSet: RuleSet<Index, Prop>,
@@ -44,7 +44,8 @@ export async function remoteGameControllerFactory<RemoteConfig, Index, Prop, Rem
         indexMapper: indexMapper,
         legalMovesTracker: gameContext.legalMovesTracker,
         rules: ruleSet.rules,
-        userPlayer: config.userPlayer
+        userPlayer: config.userPlayer,
+        labelState: gameContext.labelState
     })
 
     gameContext.diceState.dice1 = config.dice[0]
@@ -59,6 +60,7 @@ export async function remoteGameControllerFactory<RemoteConfig, Index, Prop, Rem
 
     return {
         controller: controller,
-        cleanup: connector.unsubscribe
+        cleanup: connector.unsubscribe,
+        labelMapper: ruleSet.labelMapperFactory(config.userPlayer)
     }
 }

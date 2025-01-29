@@ -1,4 +1,4 @@
-import {Color} from "../color.ts";
+import {Color} from "../../common/color.ts";
 import {CompoundMove, Move} from "../board/move.ts";
 import {Board} from "../board/Board.ts";
 

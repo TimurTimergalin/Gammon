@@ -3,7 +3,7 @@ import {PropMapper} from "../../game_rule/PropMapper.ts";
 import {Board} from "../../board/Board.ts";
 import {PiecePlacement, PositionState} from "../../board/physical/types.ts";
 import {PhysicalBoard} from "../../board/physical/PhysicalBoard.ts";
-import {Color} from "../../color.ts";
+import {Color} from "../../../common/color.ts";
 import {Move} from "../../board/move.ts";
 
 export class BoardSynchronizer<Index, Prop> {

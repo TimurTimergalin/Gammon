@@ -2,9 +2,9 @@ import {BoardSynchronizer} from "../rules/BoardSynchronizer.ts";
 import {LocalGameController} from "./LocalGameController.ts";
 import {GameContext} from "../../GameContext.ts";
 import {RuleSet} from "../../game_rule/RuleSet.ts";
-import {Color} from "../../color.ts";
+import {Color} from "../../../common/color.ts";
 
-export function localGameControllerFactory<Index, Prop>(
+export function localGameInit<Index, Prop>(
     {gameContext, ruleSet}: {
         gameContext: GameContext,
         ruleSet: RuleSet<Index, Prop>
@@ -27,9 +27,10 @@ export function localGameControllerFactory<Index, Prop>(
         diceState: gameContext.diceState,
         indexMapper: indexMapper,
         legalMovesTracker: gameContext.legalMovesTracker,
-        rules: rules
+        rules: rules,
+        labelState: gameContext.labelState
     })
 
     controller.newTurn(true)
-    return controller
+    return {controller: controller, labelMapper: ruleSet.labelMapperFactory(Color.WHITE)}
 }

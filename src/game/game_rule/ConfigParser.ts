@@ -1,4 +1,4 @@
-import {Color} from "../color.ts";
+import {Color} from "../../common/color.ts";
 import {DiceStatus} from "../dice_state/DiceStatus.ts";
 import {Board} from "../board/Board.ts";
 

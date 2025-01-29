@@ -6,11 +6,12 @@ import {DiceState} from "../../dice_state/DiceState.ts";
 import {LegalMovesTracker} from "../../LegalMovesTracker.ts";
 import {Rules} from "../../game_rule/Rules.ts";
 import {RemoteConnector} from "./RemoteConnector.ts";
-import {Color, oppositeColor} from "../../color.ts";
+import {Color, oppositeColor} from "../../../common/color.ts";
 import {Move} from "../../board/move.ts";
 import {LayerStatus} from "../../../components/game/dice_layer/LayerStatus.ts";
 import {moveDuration} from "../../../components/game/pieces_layer/constants.ts";
 import {DiceStatus} from "../../dice_state/DiceStatus.ts";
+import {LabelState} from "../../LabelState.ts";
 
 export class RemoteGameController<Index, Prop> extends RulesGameController<Index, Prop> {
     private connector: RemoteConnector<Index>
@@ -59,7 +60,8 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         diceState: DiceState,
         legalMovesTracker: LegalMovesTracker,
         connector: RemoteConnector<Index>,
-        userPlayer: Color
+        userPlayer: Color,
+        labelState: LabelState
     }) {
         const active = player === userPlayer
         super({...base, active: active});

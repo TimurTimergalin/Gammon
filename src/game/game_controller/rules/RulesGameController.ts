@@ -1,17 +1,18 @@
 import {GameController} from "../GameController.ts";
 import {BoardSynchronizer} from "./BoardSynchronizer.ts";
 import {Rules} from "../../game_rule/Rules.ts";
-import {Color} from "../../color.ts";
+import {Color} from "../../../common/color.ts";
 import {ControlButtonsState} from "../../ControlButtonsState.ts";
 import {CompoundMove, invertCompound, mergeMoves} from "../../board/move.ts";
 import {IndexMapper} from "../../game_rule/IndexMapper.ts";
 import {DiceState} from "../../dice_state/DiceState.ts";
 import {LegalMovesTracker} from "../../LegalMovesTracker.ts";
+import {LabelState} from "../../LabelState.ts";
 
 export abstract class RulesGameController<Index, Prop> implements GameController {
     protected board: BoardSynchronizer<Index, Prop>
     protected controlButtonsState: ControlButtonsState
-    protected player!: Color
+    protected _player!: Color
     protected active: boolean
     protected performedMoves: CompoundMove<Index>[] = []
     protected legalMovesTracker: LegalMovesTracker
@@ -20,16 +21,27 @@ export abstract class RulesGameController<Index, Prop> implements GameController
 
     private legalMovesMap: Map<number, CompoundMove<Index>> = new Map()
     private indexMapper: IndexMapper<Index>
+    private labelState: LabelState
+
+    protected get player(): Color {
+        return this._player
+    }
+
+    protected set player(color: Color) {
+        this._player = color
+        this.labelState.color = color
+    }
 
     protected constructor(
-        {board, controlButtonsState, active, rules, indexMapper, diceState, legalMovesTracker}: {
+        {board, controlButtonsState, active, rules, indexMapper, diceState, legalMovesTracker, labelState}: {
             board: BoardSynchronizer<Index, Prop>,
             controlButtonsState: ControlButtonsState,
             active: boolean,
             rules: Rules<Index, Prop>,
             indexMapper: IndexMapper<Index>,
             diceState: DiceState,
-            legalMovesTracker: LegalMovesTracker
+            legalMovesTracker: LegalMovesTracker,
+            labelState: LabelState
         }
     ) {
         this.board = board;
@@ -39,6 +51,7 @@ export abstract class RulesGameController<Index, Prop> implements GameController
         this.indexMapper = indexMapper;
         this.diceState = diceState;
         this.legalMovesTracker = legalMovesTracker
+        this.labelState = labelState
     }
 
     abstract endTurn(): void;
@@ -67,16 +80,19 @@ export abstract class RulesGameController<Index, Prop> implements GameController
         }
     }
 
-    calculateLegalMoves(pi: number): void {
+    calculateLegalMoves(pi: number): number[] {
         console.assert(this.active)
         const li = this.indexMapper.physicalToLogical(pi)
         const legalMoves = this.rules.getLegalMoves(this.board.ruleBoard, li, this.player, this.diceState.toDiceArray())
 
+
+        const res = []
         for (const move of legalMoves) {
-            const fromP = this.indexMapper.logicalToPhysical(move.primaryMove.to)
-            this.legalMovesTracker.add(fromP)
-            this.legalMovesMap.set(fromP, move)
+            const toP = this.indexMapper.logicalToPhysical(move.primaryMove.to)
+            res.push(toP)
+            this.legalMovesMap.set(toP, move)
         }
+        return res
     }
 
     clearLegalMoves(): void {
@@ -114,7 +130,7 @@ export abstract class RulesGameController<Index, Prop> implements GameController
         this.checkTurnComplete()
     }
 
-    quickMove(from: number, color: Color): void {
+    quickMove(from: number): void {
         console.assert(this.active)
         const fromL = this.indexMapper.physicalToLogical(from)
         const diceArray = this.diceState.toDiceArray()
@@ -125,7 +141,6 @@ export abstract class RulesGameController<Index, Prop> implements GameController
                 const move = this.legalMovesMap.get(shiftedP)!
                 move.additionalMoves.forEach(this.board.performMoveLogical)
                 move.dice.forEach(this.diceState.useDice)
-                this.board.putPhysical(from, color)
                 this.board.performMoveLogical(move.primaryMove)
                 this.performedMoves.push(move)
                 this.controlButtonsState.movesMade = true
@@ -133,7 +148,6 @@ export abstract class RulesGameController<Index, Prop> implements GameController
                 return
             }
         }
-        this.board.putPhysical(from, color)
     }
 
     putBack(to: number, color: Color): void {

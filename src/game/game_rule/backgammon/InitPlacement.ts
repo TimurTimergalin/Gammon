@@ -1,4 +1,4 @@
-import {Color} from "../../color.ts";
+import {Color} from "../../../common/color.ts";
 import {BackgammonBoard} from "../../board/backgammon/BackgammonBoard.ts";
 import {Board} from "../../board/Board.ts";
 import {BackgammonIndex, BackgammonPlacement, BackgammonProp} from "../../board/backgammon/types.ts";
@@ -41,9 +41,18 @@ export function backgammonDefaultPlacement(): Board<BackgammonIndex, BackgammonP
 }
 
 export function backgammonDebugPlacement(): Board<BackgammonIndex, BackgammonProp> {
-    const res: BackgammonPlacement = new Map()
+    const placement: BackgammonPlacement = new Map([
+            [1, {color: Color.BLACK, quantity: 1}],
+            [2, {color: Color.WHITE, quantity: 2}],
+            [3, {color: Color.WHITE, quantity: 2}],
+            [6, {color: Color.WHITE, quantity: 6}],
+            [8, {color: Color.WHITE, quantity: 1}],
+            [12, {color: Color.BLACK, quantity: 3}],
+            [13, {color: Color.WHITE, quantity: 3}],
+            [17, {color: Color.BLACK, quantity: 5}],
+            [19, {color: Color.BLACK, quantity: 6}],
+            [24, {color: Color.WHITE, quantity: 2}]
+        ])
 
-    res.set(5, {color: Color.WHITE, quantity: 1})
-
-    return new BackgammonBoard(res)
+    return new BackgammonBoard(placement)
 }

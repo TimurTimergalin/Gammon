@@ -1,5 +1,5 @@
 import {makeAutoObservable} from "mobx";
-import {Color} from "../../color.ts";
+import {Color} from "../../../common/color.ts";
 
 export interface PieceState {
     color: Color,

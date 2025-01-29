@@ -1,4 +1,4 @@
-import {Color, colorFill, colorStroke, oppositeColor} from "../../../game/color.ts";
+import {Color, colorFill, colorStroke, oppositeColor} from "../../../common/color.ts";
 import {borderWidth, diceCornerRadius, diceWidth, dotRadius} from "./dice_size_constants.ts";
 import {LayerStatus} from "./LayerStatus.ts";
 import {observer} from "mobx-react-lite";
@@ -167,7 +167,10 @@ const SwapDiceClickable = observer(function SwapDiceClickable({x, y}: { x: numbe
             height={diceWidth}
             rx={diceCornerRadius}
             fill={"#00000000"}
-            onClick={gameController.swapDice}
+            onClick={() => {
+                console.log("clicked")
+                gameController.swapDice()
+            }}
         />
     )
 })
