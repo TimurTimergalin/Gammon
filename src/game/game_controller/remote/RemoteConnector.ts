@@ -79,10 +79,6 @@ export class RemoteConnectorImpl<RemoteMove, Index> implements RemoteConnector<I
                 console.warn("Ignoring unknown event")
             }
         }
-
-        setInterval(() => {
-
-        })
     }
 
     unsubscribe = () => {
