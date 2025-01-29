@@ -36,7 +36,7 @@ export class BackgammonIndexMapper implements IndexMapper<BackgammonIndex> {
             if (logical <= 12) {
                 return logical - 1
             } else {
-                console.log(logical >= 24)
+                console.assert(logical <= 24)
                 return 36 - logical
             }
         }
