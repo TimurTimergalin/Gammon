@@ -46,7 +46,7 @@ export function useLayoutMeasure(f: EffectCallback, receiver?: RefObject<Element
         return () => {
             observer.disconnect()
             for (const cleanup of cleanups) {
-                if (cleanup !== undefined) {
+                if (typeof cleanup === "function") {
                     cleanup()
                 }
             }

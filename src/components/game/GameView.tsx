@@ -1,7 +1,7 @@
 import {boardHeight, boardWidth, svgOriginX, svgOriginY} from "./dimensions/board_size_constants.ts";
 import {useCallback, useEffect, useRef, useState} from "react";
 import {BoardLayer} from "./board_layer/BoardLayer.tsx";
-import PiecesLayer from "./pieces_layer/PiecesLayer.js";
+import PiecesLayer from "./pieces_layer/PiecesLayer.tsx";
 import {SvgClientRectContext} from "./SvgClientRectContext.ts";
 import DiceLayer from "./dice_layer/DiceLayer.tsx";
 import {HoverLayer} from "./hover_layer/HoverLayer.tsx";
