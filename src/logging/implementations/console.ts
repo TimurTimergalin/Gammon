@@ -10,6 +10,9 @@ class ConsoleLogger implements Logger {
 
     assert(condition: boolean, ...data: unknown[]): void {
         console.assert(condition, `-- ${this.scope} --`, ...data)
+        if (!condition) {
+            console.trace()
+        }
     }
 
     debug(...data: unknown[]): void {
@@ -18,6 +21,7 @@ class ConsoleLogger implements Logger {
 
     error(...data: unknown[]): void {
         console.error(`-- ${this.scope} --`, ...data)
+        console.trace()
     }
 
     log(...data: unknown[]): void {

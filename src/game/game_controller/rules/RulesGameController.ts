@@ -86,11 +86,13 @@ export abstract class RulesGameController<Index, Prop> implements GameController
 
     calculateLegalMoves(pi: number): number[] {
         console.assert(this.active)
+        console.debug("Legal moves calculating from", pi)
         const li = this.indexMapper.physicalToLogical(pi)
         const legalMoves = this.rules.getLegalMoves(this.board.ruleBoard, li, this.player, this.diceState.toDiceArray())
-
+        console.debug(legalMoves)
 
         const res = []
+        this.legalMovesMap.clear()
         for (const move of legalMoves) {
             const toP = this.indexMapper.logicalToPhysical(move.primaryMove.to)
             res.push(toP)
@@ -136,6 +138,7 @@ export abstract class RulesGameController<Index, Prop> implements GameController
 
     quickMove(from: number): void {
         console.assert(this.active)
+        console.debug(this.legalMovesMap)
         const fromL = this.indexMapper.physicalToLogical(from)
         const diceArray = this.diceState.toDiceArray()
         for (const dice of diceArray) {
@@ -143,6 +146,7 @@ export abstract class RulesGameController<Index, Prop> implements GameController
             const shiftedP = this.indexMapper.logicalToPhysical(shifted)
             if (this.legalMovesMap.has(shiftedP)) {
                 const move = this.legalMovesMap.get(shiftedP)!
+                console.assert(move.primaryMove.from === fromL)
                 move.additionalMoves.forEach(this.board.performMoveLogical)
                 move.dice.forEach(this.diceState.useDice)
                 this.board.performMoveLogical(move.primaryMove)
