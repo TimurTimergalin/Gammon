@@ -12,6 +12,9 @@ import {LayerStatus} from "../../../components/game/dice_layer/LayerStatus.ts";
 import {moveDuration} from "../../../components/game/pieces_layer/constants.ts";
 import {DiceStatus} from "../../dice_state/DiceStatus.ts";
 import {LabelState} from "../../LabelState.ts";
+import {logger} from "../../../logging/main.ts";
+
+const console = logger("game/game_controller/remote")
 
 export class RemoteGameController<Index, Prop> extends RulesGameController<Index, Prop> {
     private connector: RemoteConnector<Index>

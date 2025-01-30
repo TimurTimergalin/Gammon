@@ -3,6 +3,9 @@ import {finishTurn, subscribeForEvents} from "../../../requests/requests.ts";
 import {logResponseError} from "../../../requests/util.ts";
 import {Move} from "../../board/move.ts";
 import {RemoteMoveMapper} from "../../game_rule/RemoteMoveMapper.ts";
+import {logger} from "../../../logging/main.ts";
+
+const console = logger("game/game_controller/remote")
 
 export interface RemoteConnector<Index> {
     subscribe(): void

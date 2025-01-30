@@ -1,4 +1,7 @@
 import {GameController} from "./GameController.ts";
+import {logger} from "../../logging/main.ts";
+
+const console = logger("game/game_controller/dummy")
 
 export class DummyGameController implements GameController {
     calculateLegalMoves(): never {

@@ -8,6 +8,9 @@ import {DummyGameController} from "../../game/game_controller/DummyGameControlle
 import {GameContextHolder} from "../../components/game/GameContextHolder.tsx";
 import {LocalGameOption} from "./control_panel/LocalGameOption.tsx";
 import {GamePart} from "../../parts/GamePart.tsx";
+import {logger} from "../../logging/main.ts";
+
+const console = logger("windows/play_menu")
 
 const options: Map<string, OptionCallbacks> = new Map()
 options.set("Игра по сети", {

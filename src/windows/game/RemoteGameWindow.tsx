@@ -11,7 +11,9 @@ import GameView from "../../components/game/GameView.tsx";
 import {ControlPanel} from "../../components/game/control_panel/ControlPanel.tsx";
 import {GameContextHolder} from "../../components/game/GameContextHolder.tsx";
 import {GamePart} from "../../parts/GamePart.tsx";
+import {logger} from "../../logging/main.ts";
 
+const console = logger("windows/game")
 
 interface RemoteGameWindowProps<RemoteConfig, Index, Prop, RemoteMove> {
     ruleSet: RuleSet<Index, Prop>,

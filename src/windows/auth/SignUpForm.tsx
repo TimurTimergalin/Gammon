@@ -11,6 +11,9 @@ import {authButtonStyle, authFormStyle} from "./styles.ts";
 import styled from "styled-components";
 import {formBaseStyle} from "../../css/forms.ts";
 import {FormStateProvider} from "../../forms/FormStateProvider.tsx";
+import {logger} from "../../logging/main.ts";
+
+const console = logger("windows/auth")
 
 const passwordRepeat: ComplexValidator = (formData) => {
     const first = formData.get("password")

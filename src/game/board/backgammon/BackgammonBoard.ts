@@ -1,6 +1,9 @@
 import {BackgammonPlacement, BackgammonIndex, BackgammonProp} from "./types.ts";
 import {Color} from "../../../common/color.ts";
 import {Board} from "../Board.ts";
+import {logger} from "../../../logging/main.ts";
+
+const console = logger("game/board/backgammon")
 
 export class BackgammonBoard implements Board<BackgammonIndex, BackgammonProp>{
     constructor(board: BackgammonPlacement) {

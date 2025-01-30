@@ -9,6 +9,10 @@ import {DiceState} from "../../dice_state/DiceState.ts";
 import {LegalMovesTracker} from "../../LegalMovesTracker.ts";
 import {Rules} from "../../game_rule/Rules.ts";
 import {LabelState} from "../../LabelState.ts";
+import {logger} from "../../../logging/main.ts";
+
+const console = logger("game/game_controller/local")
+
 
 export class LocalGameController<Index, Prop> extends RulesGameController<Index, Prop> {
 

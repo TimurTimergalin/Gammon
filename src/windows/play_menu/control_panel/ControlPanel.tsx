@@ -3,7 +3,9 @@ import {observer} from "mobx-react-lite";
 import {useScreenSpecs} from "../../../components/adapt/ScreenSpecs.ts";
 import {PlayButton} from "./PlayButton.tsx";
 import {NavigateFunction, useNavigate} from "react-router";
+import {logger} from "../../../logging/main.ts";
 
+const console = logger("windows/play_menu/control_panel")
 
 const defaultColor = "#ffffff"
 const unfocusedColor = "#bbbbbb"

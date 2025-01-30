@@ -6,6 +6,9 @@ import {Config, ConfigParser} from "../../ConfigParser.ts";
 import {BackgammonRemoteConfig} from "./types.ts";
 import {BackgammonIndex, BackgammonProp} from "../../../board/backgammon/types.ts";
 import {BackgammonBoard} from "../../../board/backgammon/BackgammonBoard.ts";
+import {logger} from "../../../../logging/main.ts";
+
+const console = logger("game/game_rule/backgammon/remote_v1")
 
 export class BackgammonConfigParser implements ConfigParser<BackgammonRemoteConfig, BackgammonIndex, BackgammonProp> {
     mapConfig(config: BackgammonRemoteConfig): Config<BackgammonIndex, BackgammonProp> {

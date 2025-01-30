@@ -1,5 +1,9 @@
 import {LabelMapper, Labels} from "../LabelMapper.ts";
 import {Color, oppositeColor} from "../../../common/color.ts";
+import {logger} from "../../../logging/main.ts";
+
+const console = logger("game/game_rule/backgammon")
+
 
 export class BackgammonLabelMapper implements LabelMapper{
     private readonly player: Color

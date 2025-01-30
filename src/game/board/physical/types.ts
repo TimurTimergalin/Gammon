@@ -1,5 +1,8 @@
 import {makeAutoObservable} from "mobx";
 import {Color} from "../../../common/color.ts";
+import {logger} from "../../../logging/main.ts";
+
+const console = logger("game/board/physical")
 
 export interface PieceState {
     color: Color,

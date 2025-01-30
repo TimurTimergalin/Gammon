@@ -2,6 +2,9 @@ import {BackgammonIndex, isStore} from "../../../board/backgammon/types.ts";
 import {BackgammonRemoteMove} from "./types.ts";
 import {RemoteMoveMapper} from "../../RemoteMoveMapper.ts";
 import {Move} from "../../../board/move.ts";
+import {logger} from "../../../../logging/main.ts";
+
+const console = logger("game/game_rule/backgammon/remote_v1")
 
 export class BackgammonRemoteMoveMapper implements RemoteMoveMapper<BackgammonRemoteMove, BackgammonIndex> {
     toRemote = (indices: Move<BackgammonIndex>): BackgammonRemoteMove => {

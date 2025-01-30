@@ -8,6 +8,10 @@ import {IndexMapper} from "../../game_rule/IndexMapper.ts";
 import {DiceState} from "../../dice_state/DiceState.ts";
 import {LegalMovesTracker} from "../../LegalMovesTracker.ts";
 import {LabelState} from "../../LabelState.ts";
+import {logger} from "../../../logging/main.ts";
+
+const console = logger("game/game_controller/rules")
+
 
 export abstract class RulesGameController<Index, Prop> implements GameController {
     protected board: BoardSynchronizer<Index, Prop>

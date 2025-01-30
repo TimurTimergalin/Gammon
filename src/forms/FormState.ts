@@ -2,6 +2,9 @@ import {NavigateFunction} from "react-router";
 import {makeAutoObservable} from "mobx";
 import React, {createContext, RefObject, useContext} from "react";
 import {ValidityCheckResult} from "./validators.ts";
+import {logger} from "../logging/main.ts";
+
+const console = logger("forms")
 
 export class FormState {
     private _formData: FormData | null = null

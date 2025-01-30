@@ -1,6 +1,9 @@
 import {observer} from "mobx-react-lite";
 import {ComponentProps} from "react";
 import {useFormState} from "../../forms/FormState.ts";
+import {logger} from "../../logging/main.ts";
+
+const console = logger("components/forms")
 
 export const FormInputMessage = observer(function FormInputMessage(
     {index, className, ...elementProps}: {

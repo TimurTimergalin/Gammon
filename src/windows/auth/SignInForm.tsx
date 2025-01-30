@@ -11,7 +11,9 @@ import {AccentedButton} from "../../components/AccentedButton.tsx";
 import {FormStateProvider} from "../../forms/FormStateProvider.tsx";
 import {formBaseStyle} from "../../css/forms.ts";
 import {AuthFormInput, AuthFormInputMessage} from "./common.tsx";
+import {logger} from "../../logging/main.ts";
 
+const console = logger("windows/auth")
 
 const PlainSignInForm = observer(function LoginFormBase({className}: {className?: string}) {
     const formState = useFormState()

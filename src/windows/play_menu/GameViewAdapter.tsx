@@ -1,6 +1,9 @@
 import {observer} from "mobx-react-lite";
 import {CSSProperties, ReactNode} from "react";
 import {useScreenSpecs} from "../../components/adapt/ScreenSpecs.ts";
+import {logger} from "../../logging/main.ts";
+
+const console = logger("windows/play_menu")
 
 export const GameViewAdapter = observer(function GameViewAdapter({children}: {
     children: ReactNode

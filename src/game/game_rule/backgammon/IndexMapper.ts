@@ -1,6 +1,9 @@
 import {IndexMapper} from "../IndexMapper.ts";
 import {Color, oppositeColor} from "../../../common/color.ts";
 import {BackgammonIndex} from "../../board/backgammon/types.ts";
+import {logger} from "../../../logging/main.ts";
+
+const console = logger("game/game_rule/backgammon")
 
 export class BackgammonIndexMapper implements IndexMapper<BackgammonIndex> {
     private readonly color: Color

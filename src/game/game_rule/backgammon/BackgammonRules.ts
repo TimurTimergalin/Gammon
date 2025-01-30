@@ -14,6 +14,10 @@ import {Color, oppositeColor} from "../../../common/color.ts";
 import {BackgammonBoard} from "../../board/backgammon/BackgammonBoard.ts";
 import {Rules} from "../Rules.ts";
 import {Move} from "../../board/move.ts";
+import {logger} from "../../../logging/main.ts";
+
+const console = logger("game/game_rule/backgammon")
+
 
 export class BackgammonRules implements Rules<BackgammonIndex, BackgammonProp> {
     owns(board: BackgammonBoard, player: Color, position: BackgammonIndex) {

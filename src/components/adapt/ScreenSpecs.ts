@@ -1,5 +1,8 @@
 import {makeAutoObservable} from "mobx";
 import {createContext, useContext} from "react";
+import {logger} from "../../logging/main.ts";
+
+const console = logger("components/adapt")
 
 export type LayoutMode = "Free" | "Tight" | "Shrinking" | "Collapsed"
 export type ScaleMode = "Normal" | "Minimized" | "Micro"

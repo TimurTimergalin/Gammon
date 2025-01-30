@@ -5,6 +5,10 @@ import {PiecePlacement, PositionState} from "../../board/physical/types.ts";
 import {PhysicalBoard} from "../../board/physical/PhysicalBoard.ts";
 import {Color} from "../../../common/color.ts";
 import {Move} from "../../board/move.ts";
+import {logger} from "../../../logging/main.ts";
+
+const console = logger("game/game_controller/rules")
+
 
 export class BoardSynchronizer<Index, Prop> {
     get ruleBoard(): Board<Index, Prop> {
