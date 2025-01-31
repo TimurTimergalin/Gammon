@@ -1,4 +1,4 @@
-import {OptionCallbacks} from "./ControlPanel.tsx";
+import {OptionCallbacks} from "./ControlPanel";
 import {NavigateFunction} from "react-router";
 import {useRef} from "react";
 

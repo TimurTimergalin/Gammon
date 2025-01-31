@@ -1,8 +1,8 @@
 import {NavigateFunction} from "react-router";
 import {makeAutoObservable} from "mobx";
 import React, {createContext, RefObject, useContext} from "react";
-import {ValidityCheckResult} from "./validators.ts";
-import {logger} from "../logging/main.ts";
+import {ValidityCheckResult} from "./validators";
+import {logger} from "../logging/main";
 
 const console = logger("forms")
 

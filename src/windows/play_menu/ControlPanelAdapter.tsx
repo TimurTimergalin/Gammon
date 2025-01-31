@@ -1,6 +1,6 @@
 import {observer} from "mobx-react-lite";
 import {CSSProperties, ReactNode} from "react";
-import {useScreenSpecs} from "../../components/adapt/ScreenSpecs.ts";
+import {useScreenSpecs} from "../../components/adapt/ScreenSpecs";
 
 export const ControlPanelAdapter = observer(function ControlPanelAdapter({children}: {
     children: ReactNode

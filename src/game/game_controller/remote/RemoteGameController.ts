@@ -1,18 +1,18 @@
-import {RulesGameController} from "../rules/RulesGameController.ts";
-import {BoardSynchronizer} from "../rules/BoardSynchronizer.ts";
-import {ControlButtonsState} from "../../ControlButtonsState.ts";
-import {IndexMapper} from "../../game_rule/IndexMapper.ts";
-import {DiceState} from "../../dice_state/DiceState.ts";
-import {LegalMovesTracker} from "../../LegalMovesTracker.ts";
-import {Rules} from "../../game_rule/Rules.ts";
-import {RemoteConnector} from "./RemoteConnector.ts";
-import {Color, oppositeColor} from "../../../common/color.ts";
-import {Move} from "../../board/move.ts";
-import {LayerStatus} from "../../../components/game/dice_layer/LayerStatus.ts";
-import {moveDuration} from "../../../components/game/pieces_layer/constants.ts";
-import {DiceStatus} from "../../dice_state/DiceStatus.ts";
-import {LabelState} from "../../LabelState.ts";
-import {logger} from "../../../logging/main.ts";
+import {RulesGameController} from "../rules/RulesGameController";
+import {BoardSynchronizer} from "../rules/BoardSynchronizer";
+import {ControlButtonsState} from "../../ControlButtonsState";
+import {IndexMapper} from "../../game_rule/IndexMapper";
+import {DiceState} from "../../dice_state/DiceState";
+import {LegalMovesTracker} from "../../LegalMovesTracker";
+import {Rules} from "../../game_rule/Rules";
+import {RemoteConnector} from "./RemoteConnector";
+import {Color, oppositeColor} from "../../../common/color";
+import {Move} from "../../board/move";
+import {LayerStatus} from "../../../components/game/dice_layer/LayerStatus";
+import {moveDuration} from "../../../components/game/pieces_layer/constants";
+import {DiceStatus} from "../../dice_state/DiceStatus";
+import {LabelState} from "../../LabelState";
+import {logger} from "../../../logging/main";
 
 const console = logger("game/game_controller/remote")
 

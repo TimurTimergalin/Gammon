@@ -1,4 +1,4 @@
-import {Move} from "../board/move.ts";
+import {Move} from "../board/move";
 
 export interface RemoteMoveMapper<RemoteMove, Index> {
     toRemote(indices: Move<Index>): RemoteMove

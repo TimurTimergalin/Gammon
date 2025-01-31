@@ -1,5 +1,5 @@
-import {Logger} from "../Logger.ts";
-import {LoggerProvider} from "../LoggerProvider.ts";
+import {Logger} from "../Logger";
+import {LoggerProvider} from "../LoggerProvider";
 
 class ConsoleLogger implements Logger {
     private scope: string

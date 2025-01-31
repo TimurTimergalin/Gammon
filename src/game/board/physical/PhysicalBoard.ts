@@ -1,8 +1,8 @@
-import {Board} from "../Board.ts";
-import {PositionState, stillPiece} from "./types.ts";
-import {Color} from "../../../common/color.ts";
+import {Board} from "../Board";
+import {PositionState, stillPiece} from "./types";
+import {Color} from "../../../common/color";
 import {makeAutoObservable} from "mobx";
-import {logger} from "../../../logging/main.ts";
+import {logger} from "../../../logging/main";
 
 const console = logger("game/board/physical")
 

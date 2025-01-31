@@ -6,6 +6,5 @@
   ],
   "compilerOptions": {
     "jsx": "react-jsx",
-    "allowImportingTsExtensions": true
   }
 }

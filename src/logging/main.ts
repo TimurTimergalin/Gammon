@@ -1,4 +1,4 @@
-import {ConsoleLoggerProvider} from "./implementations/console.ts";
+import {ConsoleLoggerProvider} from "./implementations/console";
 
 const loggerProvider = new ConsoleLoggerProvider()
 

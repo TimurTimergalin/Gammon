@@ -1,15 +1,15 @@
-import {useFactoryRef} from "../../common/hooks.ts";
-import {ControlButtonsState} from "../../game/ControlButtonsState.ts";
-import {HoverTracker} from "../../game/HoverTracker.ts";
+import {useFactoryRef} from "../../common/hooks";
+import {ControlButtonsState} from "../../game/ControlButtonsState";
+import {HoverTracker} from "../../game/HoverTracker";
 import {ReactNode} from "react";
-import {PlayersInfo} from "../../game/player_info/PlayersInfo.ts";
-import {DragState} from "../../game/drag_state/DragState.ts";
-import {DiceState} from "../../game/dice_state/DiceState.ts";
-import {PhysicalBoard} from "../../game/board/physical/PhysicalBoard.ts";
-import {LegalMovesTracker} from "../../game/LegalMovesTracker.ts";
-import {GameContext, GameContextProvider} from "../../game/GameContext.ts";
-import {DummyGameController} from "../../game/game_controller/DummyGameController.ts";
-import {LabelState} from "../../game/LabelState.ts";
+import {PlayersInfo} from "../../game/player_info/PlayersInfo";
+import {DragState} from "../../game/drag_state/DragState";
+import {DiceState} from "../../game/dice_state/DiceState";
+import {PhysicalBoard} from "../../game/board/physical/PhysicalBoard";
+import {LegalMovesTracker} from "../../game/LegalMovesTracker";
+import {GameContext, GameContextProvider} from "../../game/GameContext";
+import {DummyGameController} from "../../game/game_controller/DummyGameController";
+import {LabelState} from "../../game/LabelState";
 
 export const GameContextHolder = ({children}: { children: ReactNode | ReactNode[] }) => {
     const controlButtonsState = useFactoryRef(() => new ControlButtonsState())

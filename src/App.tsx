@@ -1,15 +1,15 @@
 import {Route, Routes} from "react-router";
-import {AdapterOutlet} from "./components/adapt/Adapter.tsx";
+import {AdapterOutlet} from "./components/adapt/Adapter";
 
-import {backgammonRemoteSetV1} from "./game/game_rule/backgammon/remote_v1/RemoteSet.ts";
-import {SideBarPageOutlet} from "./windows/base/SideBarPage.tsx";
-import {PlayMenuWindow} from "./windows/play_menu/PlayMenuWindow.tsx";
-import {LocalGameWindow} from "./windows/game/LocalGameWindow.tsx";
-import {backgammonRuleSet} from "./game/game_rule/backgammon/RuleSet.ts";
-import {RemoteGameWindow} from "./windows/game/RemoteGameWindow.tsx";
-import {AuthPageOutlet} from "./windows/base/AuthPage.tsx";
-import {SignInForm} from "./windows/auth/SignInForm.tsx";
-import {SignUpForm} from "./windows/auth/SignUpForm.tsx";
+import {backgammonRemoteSetV1} from "./game/game_rule/backgammon/remote_v1/RemoteSet";
+import {SideBarPageOutlet} from "./windows/base/SideBarPage";
+import {PlayMenuWindow} from "./windows/play_menu/PlayMenuWindow";
+import {LocalGameWindow} from "./windows/game/LocalGameWindow";
+import {backgammonRuleSet} from "./game/game_rule/backgammon/RuleSet";
+import {RemoteGameWindow} from "./windows/game/RemoteGameWindow";
+import {AuthPageOutlet} from "./windows/base/AuthPage";
+import {SignInForm} from "./windows/auth/SignInForm";
+import {SignUpForm} from "./windows/auth/SignUpForm";
 
 export default function App() {
     return (

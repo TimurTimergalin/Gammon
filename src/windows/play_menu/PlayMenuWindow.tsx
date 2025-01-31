@@ -1,14 +1,14 @@
-import {GameAndControlPanelContainer} from "./GameAndControlPanelContainer.tsx";
-import GameView from "../../components/game/GameView.tsx";
-import {ControlPanel, OptionCallbacks} from "./control_panel/ControlPanel.tsx";
+import {GameAndControlPanelContainer} from "./GameAndControlPanelContainer";
+import GameView from "../../components/game/GameView";
+import {ControlPanel, OptionCallbacks} from "./control_panel/ControlPanel";
 import {NavigateFunction} from "react-router";
-import {connect} from "../../requests/requests.ts";
-import {logResponseError} from "../../requests/util.ts";
-import {DummyGameController} from "../../game/game_controller/DummyGameController.ts";
-import {GameContextHolder} from "../../components/game/GameContextHolder.tsx";
-import {LocalGameOption} from "./control_panel/LocalGameOption.tsx";
-import {GamePart} from "../../parts/GamePart.tsx";
-import {logger} from "../../logging/main.ts";
+import {connect} from "../../requests/requests";
+import {logResponseError} from "../../requests/util";
+import {DummyGameController} from "../../game/game_controller/DummyGameController";
+import {GameContextHolder} from "../../components/game/GameContextHolder";
+import {LocalGameOption} from "./control_panel/LocalGameOption";
+import {GamePart} from "../../parts/GamePart";
+import {logger} from "../../logging/main";
 
 const console = logger("windows/play_menu")
 

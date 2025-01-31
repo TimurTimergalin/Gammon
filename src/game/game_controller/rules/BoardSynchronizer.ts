@@ -1,11 +1,11 @@
-import {IndexMapper} from "../../game_rule/IndexMapper.ts";
-import {PropMapper} from "../../game_rule/PropMapper.ts";
-import {Board} from "../../board/Board.ts";
-import {PiecePlacement, PositionState} from "../../board/physical/types.ts";
-import {PhysicalBoard} from "../../board/physical/PhysicalBoard.ts";
-import {Color} from "../../../common/color.ts";
-import {Move} from "../../board/move.ts";
-import {logger} from "../../../logging/main.ts";
+import {IndexMapper} from "../../game_rule/IndexMapper";
+import {PropMapper} from "../../game_rule/PropMapper";
+import {Board} from "../../board/Board";
+import {PiecePlacement, PositionState} from "../../board/physical/types";
+import {PhysicalBoard} from "../../board/physical/PhysicalBoard";
+import {Color} from "../../../common/color";
+import {Move} from "../../board/move";
+import {logger} from "../../../logging/main";
 
 const console = logger("game/game_controller/rules")
 

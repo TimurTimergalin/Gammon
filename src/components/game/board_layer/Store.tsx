@@ -5,10 +5,10 @@ import {
     sideWidth,
     standHeight,
     storeHeight
-} from "../dimensions/board_size_constants.ts";
-import {boardColor, focusedColor, sideColor, standColor} from "./color_constants.ts";
+} from "../dimensions/board_size_constants";
+import {boardColor, focusedColor, sideColor, standColor} from "./color_constants";
 import {observer} from "mobx-react-lite";
-import {useGameContext} from "../../../game/GameContext.ts";
+import {useGameContext} from "../../../game/GameContext";
 
 const FocusableStore = observer(function FocusableStore({x, y, index}: { x: number, y: number, index: number }) {
     const dragState = useGameContext("dragState")

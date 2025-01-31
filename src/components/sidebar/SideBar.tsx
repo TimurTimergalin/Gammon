@@ -1,11 +1,11 @@
 import {CSSProperties, useCallback, useState} from "react";
-import {Logo} from "./Logo.tsx";
-import {TextWithIcon} from "./TextWithIcon.tsx";
-import {useScreenSpecs} from "../adapt/ScreenSpecs.ts";
+import {Logo} from "./Logo";
+import {TextWithIcon} from "./TextWithIcon";
+import {useScreenSpecs} from "../adapt/ScreenSpecs";
 import {observer} from "mobx-react-lite";
-import {Dice} from "../game/dice_layer/dice.tsx";
-import {Color} from "../../common/color.ts";
-import {LayerStatus} from "../game/dice_layer/LayerStatus.ts";
+import {Dice} from "../game/dice_layer/dice";
+import {Color} from "../../common/color";
+import {LayerStatus} from "../game/dice_layer/LayerStatus";
 
 export const SideBar = observer(function SideBar() {
     const screenSpecs = useScreenSpecs();

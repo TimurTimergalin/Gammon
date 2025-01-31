@@ -1,4 +1,4 @@
-import {configUri, connectUri, eventsUri, finishTurnUri, signInUrl, signUpUrl} from "./paths.ts";
+import {configUri, connectUri, eventsUri, finishTurnUri, signInUrl, signUpUrl} from "./paths";
 
 export const getConfig = (id: number) => fetch(configUri(id), {credentials: "include"})
 export const subscribeForEvents = (id: number) => new EventSource(eventsUri(id), {withCredentials: true})

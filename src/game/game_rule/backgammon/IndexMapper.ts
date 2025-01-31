@@ -1,7 +1,7 @@
-import {IndexMapper} from "../IndexMapper.ts";
-import {Color, oppositeColor} from "../../../common/color.ts";
-import {BackgammonIndex} from "../../board/backgammon/types.ts";
-import {logger} from "../../../logging/main.ts";
+import {IndexMapper} from "../IndexMapper";
+import {Color, oppositeColor} from "../../../common/color";
+import {BackgammonIndex} from "../../board/backgammon/types";
+import {logger} from "../../../logging/main";
 
 const console = logger("game/game_rule/backgammon")
 

@@ -1,7 +1,7 @@
-import {Color} from "../../../common/color.ts";
-import {BackgammonBoard} from "../../board/backgammon/BackgammonBoard.ts";
-import {Board} from "../../board/Board.ts";
-import {BackgammonIndex, BackgammonPlacement, BackgammonProp} from "../../board/backgammon/types.ts";
+import {Color} from "../../../common/color";
+import {BackgammonBoard} from "../../board/backgammon/BackgammonBoard";
+import {Board} from "../../board/Board";
+import {BackgammonIndex, BackgammonPlacement, BackgammonProp} from "../../board/backgammon/types";
 
 export function backgammonDefaultPlacement(): Board<BackgammonIndex, BackgammonProp> {
     const res: BackgammonPlacement = new Map()

@@ -1,9 +1,9 @@
-import {gapWidth, middleX, pieceWidth, sideWidth} from "../dimensions/board_size_constants.ts";
-import {Half} from "./Half.tsx";
-import {Store} from "./Store.tsx";
-import {Frame} from "./Frame.tsx";
-import {Triangles} from "./Triangles.tsx";
-import {MiddleLine} from "./MiddleLine.tsx";
+import {gapWidth, middleX, pieceWidth, sideWidth} from "../dimensions/board_size_constants";
+import {Half} from "./Half";
+import {Store} from "./Store";
+import {Frame} from "./Frame";
+import {Triangles} from "./Triangles";
+import {MiddleLine} from "./MiddleLine";
 
 export function BoardLayer() {
     return (

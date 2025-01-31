@@ -1,5 +1,5 @@
 import {useEffect, useRef} from "react";
-import {useGameContext} from "../../../game/GameContext.ts";
+import {useGameContext} from "../../../game/GameContext";
 
 export const HoverTrigger = (
     {originX, originY, width, height, index}: {

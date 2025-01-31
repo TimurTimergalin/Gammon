@@ -1,7 +1,7 @@
 import {observer} from "mobx-react-lite";
-import {boardHeight, gapWidth, middleX} from "../dimensions/board_size_constants.ts";
-import {focusedColor, gapColor} from "./color_constants.ts";
-import {useGameContext} from "../../../game/GameContext.ts";
+import {boardHeight, gapWidth, middleX} from "../dimensions/board_size_constants";
+import {focusedColor, gapColor} from "./color_constants";
+import {useGameContext} from "../../../game/GameContext";
 
 export const MiddleLine = observer(function MiddleLine() {
     const dragState = useGameContext("dragState")

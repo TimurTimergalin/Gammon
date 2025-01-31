@@ -1,9 +1,9 @@
-import {Rules} from "./Rules.ts";
-import {IndexMapper} from "./IndexMapper.ts";
-import {PropMapper} from "./PropMapper.ts";
-import {InitPlacement} from "./InitPlacement.ts";
-import {Color} from "../../common/color.ts";
-import {LabelMapper} from "./LabelMapper.ts";
+import {Rules} from "./Rules";
+import {IndexMapper} from "./IndexMapper";
+import {PropMapper} from "./PropMapper";
+import {InitPlacement} from "./InitPlacement";
+import {Color} from "../../common/color";
+import {LabelMapper} from "./LabelMapper";
 
 export interface RuleSet<Index, Prop> {
     rules: Rules<Index, Prop>,

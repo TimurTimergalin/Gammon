@@ -9,12 +9,12 @@ import {
     isBar,
     isHome,
     isStore
-} from "../../board/backgammon/types.ts";
-import {Color, oppositeColor} from "../../../common/color.ts";
-import {BackgammonBoard} from "../../board/backgammon/BackgammonBoard.ts";
-import {Rules} from "../Rules.ts";
-import {Move} from "../../board/move.ts";
-import {logger} from "../../../logging/main.ts";
+} from "../../board/backgammon/types";
+import {Color, oppositeColor} from "../../../common/color";
+import {BackgammonBoard} from "../../board/backgammon/BackgammonBoard";
+import {Rules} from "../Rules";
+import {Move} from "../../board/move";
+import {logger} from "../../../logging/main";
 
 const console = logger("game/game_rule/backgammon")
 

@@ -1,5 +1,5 @@
-import {Color} from "../../common/color.ts";
-import {LayerStatus} from "../../components/game/dice_layer/LayerStatus.ts";
+import {Color} from "../../common/color";
+import {LayerStatus} from "../../components/game/dice_layer/LayerStatus";
 
 export interface DiceStatus {
     value: number,

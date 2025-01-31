@@ -1,17 +1,17 @@
-import {RuleSet} from "../../game/game_rule/RuleSet.ts";
-import {RemoteSet} from "../../game/game_rule/RemoteSet.ts";
-import {useFullGameContext} from "../../game/GameContext.ts";
+import {RuleSet} from "../../game/game_rule/RuleSet";
+import {RemoteSet} from "../../game/game_rule/RemoteSet";
+import {useFullGameContext} from "../../game/GameContext";
 import {useParams} from "react-router";
 import {useEffect, useRef, useState} from "react";
-import {GameController} from "../../game/game_controller/GameController.ts";
-import {LabelMapper} from "../../game/game_rule/LabelMapper.ts";
-import {remoteGameInit} from "../../game/game_controller/remote/factory.ts";
-import {GameAndControlPanelContainer} from "./GameAndControlPanelContainer.tsx";
-import GameView from "../../components/game/GameView.tsx";
-import {ControlPanel} from "../../components/game/control_panel/ControlPanel.tsx";
-import {GameContextHolder} from "../../components/game/GameContextHolder.tsx";
-import {GamePart} from "../../parts/GamePart.tsx";
-import {logger} from "../../logging/main.ts";
+import {GameController} from "../../game/game_controller/GameController";
+import {LabelMapper} from "../../game/game_rule/LabelMapper";
+import {remoteGameInit} from "../../game/game_controller/remote/factory";
+import {GameAndControlPanelContainer} from "./GameAndControlPanelContainer";
+import GameView from "../../components/game/GameView";
+import {ControlPanel} from "../../components/game/control_panel/ControlPanel";
+import {GameContextHolder} from "../../components/game/GameContextHolder";
+import {GamePart} from "../../parts/GamePart";
+import {logger} from "../../logging/main";
 
 const console = logger("windows/game")
 

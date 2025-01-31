@@ -1,9 +1,9 @@
-import {Color} from "../../../common/color.ts";
-import {finishTurn, subscribeForEvents} from "../../../requests/requests.ts";
-import {logResponseError} from "../../../requests/util.ts";
-import {Move} from "../../board/move.ts";
-import {RemoteMoveMapper} from "../../game_rule/RemoteMoveMapper.ts";
-import {logger} from "../../../logging/main.ts";
+import {Color} from "../../../common/color";
+import {finishTurn, subscribeForEvents} from "../../../requests/requests";
+import {logResponseError} from "../../../requests/util";
+import {Move} from "../../board/move";
+import {RemoteMoveMapper} from "../../game_rule/RemoteMoveMapper";
+import {logger} from "../../../logging/main";
 
 const console = logger("game/game_controller/remote")
 

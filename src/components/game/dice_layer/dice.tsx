@@ -1,9 +1,9 @@
-import {Color, colorFill, colorStroke, oppositeColor} from "../../../common/color.ts";
-import {borderWidth, diceCornerRadius, diceWidth, dotRadius} from "./dice_size_constants.ts";
-import {LayerStatus} from "./LayerStatus.ts";
+import {Color, colorFill, colorStroke, oppositeColor} from "../../../common/color";
+import {borderWidth, diceCornerRadius, diceWidth, dotRadius} from "./dice_size_constants";
+import {LayerStatus} from "./LayerStatus";
 import {observer} from "mobx-react-lite";
-import {useGameContext} from "../../../game/GameContext.ts";
-import {logger} from "../../../logging/main.ts";
+import {useGameContext} from "../../../game/GameContext";
+import {logger} from "../../../logging/main";
 
 const console = logger("components/game/dice_layer")
 

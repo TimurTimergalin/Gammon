@@ -1,5 +1,5 @@
-import {SidePiece, TopDownPiece} from "./pieces.tsx";
-import {Direction} from "./direction.ts";
+import {SidePiece, TopDownPiece} from "./pieces";
+import {Direction} from "./direction";
 import styled, {css, keyframes} from "styled-components";
 
 import {
@@ -8,10 +8,10 @@ import {
     getStackOriginX,
     getStackOriginY,
     getTopDownPieceY
-} from "../dimensions/functions.ts";
+} from "../dimensions/functions";
 import {observer} from "mobx-react-lite";
-import {PieceState} from "../../../game/board/physical/types.ts";
-import {moveDuration} from "./constants.ts";
+import {PieceState} from "../../../game/board/physical/types";
+import {moveDuration} from "./constants";
 
 interface StackProps {
     pieces: PieceState[]

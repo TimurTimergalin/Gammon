@@ -1,4 +1,4 @@
-import {PlayerState} from "./PlayerState.ts";
+import {PlayerState} from "./PlayerState";
 import {makeAutoObservable} from "mobx";
 
 export class PlayersInfo {

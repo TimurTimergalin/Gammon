@@ -1,14 +1,14 @@
-import {ControlButtonsState} from "./ControlButtonsState.ts";
-import {HoverTracker} from "./HoverTracker.ts";
+import {ControlButtonsState} from "./ControlButtonsState";
+import {HoverTracker} from "./HoverTracker";
 import {createContext, MutableRefObject, RefObject, useContext} from "react";
-import {forceType} from "../common/typing.ts";
-import {PlayersInfo} from "./player_info/PlayersInfo.ts";
-import {DragState} from "./drag_state/DragState.ts";
-import {DiceState} from "./dice_state/DiceState.ts";
-import {PhysicalBoard} from "./board/physical/PhysicalBoard.ts";
-import {LegalMovesTracker} from "./LegalMovesTracker.ts";
-import {GameController} from "./game_controller/GameController.ts";
-import {LabelState} from "./LabelState.ts";
+import {forceType} from "../common/typing";
+import {PlayersInfo} from "./player_info/PlayersInfo";
+import {DragState} from "./drag_state/DragState";
+import {DiceState} from "./dice_state/DiceState";
+import {PhysicalBoard} from "./board/physical/PhysicalBoard";
+import {LegalMovesTracker} from "./LegalMovesTracker";
+import {GameController} from "./game_controller/GameController";
+import {LabelState} from "./LabelState";
 
 type Setter<T> = {
     set(_: T): void

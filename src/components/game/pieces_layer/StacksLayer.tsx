@@ -1,5 +1,5 @@
-import {useGameContext} from "../../../game/GameContext.ts";
-import {getStackDirection, getStackOriginX, getStackOriginY, getStackType,} from "../dimensions/functions.ts";
+import {useGameContext} from "../../../game/GameContext";
+import {getStackDirection, getStackOriginX, getStackOriginY, getStackType,} from "../dimensions/functions";
 import {observer} from "mobx-react-lite";
 
 export const StacksLayer = observer(function StacksLayer() {

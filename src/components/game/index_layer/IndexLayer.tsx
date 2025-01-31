@@ -1,6 +1,6 @@
-import {boardHeight, gapWidth, pieceWidth, sideWidth} from "../dimensions/board_size_constants.ts";
-import {labelHeight} from "./common.ts";
-import {Index} from "./Index.tsx";
+import {boardHeight, gapWidth, pieceWidth, sideWidth} from "../dimensions/board_size_constants";
+import {labelHeight} from "./common";
+import {Index} from "./Index";
 
 export const IndexLayer = () => {
     const toAdd = []

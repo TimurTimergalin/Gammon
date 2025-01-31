@@ -1,8 +1,8 @@
-import {boardHeight, pieceWidth, sideWidth, triangleHeight} from "../dimensions/board_size_constants.ts";
-import {useGameContext} from "../../../game/GameContext.ts";
+import {boardHeight, pieceWidth, sideWidth, triangleHeight} from "../dimensions/board_size_constants";
+import {useGameContext} from "../../../game/GameContext";
 import {observer} from "mobx-react-lite";
-import {focusedColor} from "./color_constants.ts";
-import {getTriangleLeft} from "../dimensions/functions.ts";
+import {focusedColor} from "./color_constants";
+import {getTriangleLeft} from "../dimensions/functions";
 
 const PointUpTriangle = ({leftX, color, focused}: { leftX: number, color: string, focused: boolean }) => {
     const d =

@@ -1,12 +1,12 @@
 
-import {Color} from "../../../../common/color.ts";
-import {DiceStatus} from "../../../dice_state/DiceStatus.ts";
-import {LayerStatus} from "../../../../components/game/dice_layer/LayerStatus.ts";
-import {Config, ConfigParser} from "../../ConfigParser.ts";
-import {BackgammonRemoteConfig} from "./types.ts";
-import {BackgammonIndex, BackgammonProp} from "../../../board/backgammon/types.ts";
-import {BackgammonBoard} from "../../../board/backgammon/BackgammonBoard.ts";
-import {logger} from "../../../../logging/main.ts";
+import {Color} from "../../../../common/color";
+import {DiceStatus} from "../../../dice_state/DiceStatus";
+import {LayerStatus} from "../../../../components/game/dice_layer/LayerStatus";
+import {Config, ConfigParser} from "../../ConfigParser";
+import {BackgammonRemoteConfig} from "./types";
+import {BackgammonIndex, BackgammonProp} from "../../../board/backgammon/types";
+import {BackgammonBoard} from "../../../board/backgammon/BackgammonBoard";
+import {logger} from "../../../../logging/main";
 
 const console = logger("game/game_rule/backgammon/remote_v1")
 

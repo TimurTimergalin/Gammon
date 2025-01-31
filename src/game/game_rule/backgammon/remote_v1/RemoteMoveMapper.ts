@@ -1,8 +1,8 @@
-import {BackgammonIndex, isStore} from "../../../board/backgammon/types.ts";
-import {BackgammonRemoteMove} from "./types.ts";
-import {RemoteMoveMapper} from "../../RemoteMoveMapper.ts";
-import {Move} from "../../../board/move.ts";
-import {logger} from "../../../../logging/main.ts";
+import {BackgammonIndex, isStore} from "../../../board/backgammon/types";
+import {BackgammonRemoteMove} from "./types";
+import {RemoteMoveMapper} from "../../RemoteMoveMapper";
+import {Move} from "../../../board/move";
+import {logger} from "../../../../logging/main";
 
 const console = logger("game/game_rule/backgammon/remote_v1")
 

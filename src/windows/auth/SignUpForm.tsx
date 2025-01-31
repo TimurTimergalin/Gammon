@@ -1,17 +1,17 @@
 import {observer} from "mobx-react-lite";
-import {useFormState} from "../../forms/FormState.ts";
+import {useFormState} from "../../forms/FormState";
 import {Link, NavigateFunction, useNavigate} from "react-router";
 import {useCallback, useState} from "react";
-import {signUp, SignUpCredentials} from "../../requests/requests.ts";
-import {Form} from "../../components/forms/Form.tsx";
-import {AuthFormInput, AuthFormInputMessage} from "./common.tsx";
-import {ComplexValidator, required} from "../../forms/validators.ts";
-import {AccentedButton} from "../../components/AccentedButton.tsx";
-import {authButtonStyle, authFormStyle} from "./styles.ts";
+import {signUp, SignUpCredentials} from "../../requests/requests";
+import {Form} from "../../components/forms/Form";
+import {AuthFormInput, AuthFormInputMessage} from "./common";
+import {ComplexValidator, required} from "../../forms/validators";
+import {AccentedButton} from "../../components/AccentedButton";
+import {authButtonStyle, authFormStyle} from "./styles";
 import styled from "styled-components";
-import {formBaseStyle} from "../../css/forms.ts";
-import {FormStateProvider} from "../../forms/FormStateProvider.tsx";
-import {logger} from "../../logging/main.ts";
+import {formBaseStyle} from "../../css/forms";
+import {FormStateProvider} from "../../forms/FormStateProvider";
+import {logger} from "../../logging/main";
 
 const console = logger("windows/auth")
 

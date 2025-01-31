@@ -1,4 +1,4 @@
-import {Logger, loggerComposition} from "./Logger.ts";
+import {Logger, loggerComposition} from "./Logger";
 
 export interface LoggerProvider {
     getLogger(scope: string): Logger

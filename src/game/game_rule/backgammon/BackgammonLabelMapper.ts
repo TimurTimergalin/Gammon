@@ -1,6 +1,6 @@
-import {LabelMapper, Labels} from "../LabelMapper.ts";
-import {Color, oppositeColor} from "../../../common/color.ts";
-import {logger} from "../../../logging/main.ts";
+import {LabelMapper, Labels} from "../LabelMapper";
+import {Color, oppositeColor} from "../../../common/color";
+import {logger} from "../../../logging/main";
 
 const console = logger("game/game_rule/backgammon")
 

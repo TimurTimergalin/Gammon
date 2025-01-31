@@ -1,5 +1,5 @@
-import {UndoMovesButton} from "./UndoMovesButton.tsx";
-import {FinishTurnButton} from "./FinishTurnButton.tsx";
+import {UndoMovesButton} from "./UndoMovesButton";
+import {FinishTurnButton} from "./FinishTurnButton";
 
 export const ButtonPanel = () => {
     return (

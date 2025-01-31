@@ -1,6 +1,6 @@
-import {Color} from "../../common/color.ts";
-import {CompoundMove, Move} from "../board/move.ts";
-import {Board} from "../board/Board.ts";
+import {Color} from "../../common/color";
+import {CompoundMove, Move} from "../board/move";
+import {Board} from "../board/Board";
 
 export interface Rules<Index, Prop> {
     owns(board: Board<Index, Prop>, player: Color, position: Index): boolean;

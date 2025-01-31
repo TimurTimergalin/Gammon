@@ -1,11 +1,11 @@
-import {logResponseError} from "../../../requests/util.ts";
-import {getConfig} from "../../../requests/requests.ts";
-import {RemoteSet} from "../../game_rule/RemoteSet.ts";
-import {GameContext} from "../../GameContext.ts";
-import {RuleSet} from "../../game_rule/RuleSet.ts";
-import {RemoteConnectorImpl} from "./RemoteConnector.ts";
-import {RemoteGameController} from "./RemoteGameController.ts";
-import {BoardSynchronizer} from "../rules/BoardSynchronizer.ts";
+import {logResponseError} from "../../../requests/util";
+import {getConfig} from "../../../requests/requests";
+import {RemoteSet} from "../../game_rule/RemoteSet";
+import {GameContext} from "../../GameContext";
+import {RuleSet} from "../../game_rule/RuleSet";
+import {RemoteConnectorImpl} from "./RemoteConnector";
+import {RemoteGameController} from "./RemoteGameController";
+import {BoardSynchronizer} from "../rules/BoardSynchronizer";
 
 async function getConfigJson(roomId: number) {
     const resp = await getConfig(roomId)

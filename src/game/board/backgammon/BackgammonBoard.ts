@@ -1,7 +1,7 @@
-import {BackgammonPlacement, BackgammonIndex, BackgammonProp} from "./types.ts";
-import {Color} from "../../../common/color.ts";
-import {Board} from "../Board.ts";
-import {logger} from "../../../logging/main.ts";
+import {BackgammonPlacement, BackgammonIndex, BackgammonProp} from "./types";
+import {Color} from "../../../common/color";
+import {Board} from "../Board";
+import {logger} from "../../../logging/main";
 
 const console = logger("game/board/backgammon")
 

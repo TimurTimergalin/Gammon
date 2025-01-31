@@ -1,14 +1,14 @@
-import {GameController} from "../GameController.ts";
-import {BoardSynchronizer} from "./BoardSynchronizer.ts";
-import {Rules} from "../../game_rule/Rules.ts";
-import {Color} from "../../../common/color.ts";
-import {ControlButtonsState} from "../../ControlButtonsState.ts";
-import {CompoundMove, invertCompound, mergeMoves} from "../../board/move.ts";
-import {IndexMapper} from "../../game_rule/IndexMapper.ts";
-import {DiceState} from "../../dice_state/DiceState.ts";
-import {LegalMovesTracker} from "../../LegalMovesTracker.ts";
-import {LabelState} from "../../LabelState.ts";
-import {logger} from "../../../logging/main.ts";
+import {GameController} from "../GameController";
+import {BoardSynchronizer} from "./BoardSynchronizer";
+import {Rules} from "../../game_rule/Rules";
+import {Color} from "../../../common/color";
+import {ControlButtonsState} from "../../ControlButtonsState";
+import {CompoundMove, invertCompound, mergeMoves} from "../../board/move";
+import {IndexMapper} from "../../game_rule/IndexMapper";
+import {DiceState} from "../../dice_state/DiceState";
+import {LegalMovesTracker} from "../../LegalMovesTracker";
+import {LabelState} from "../../LabelState";
+import {logger} from "../../../logging/main";
 
 const console = logger("game/game_controller/rules")
 

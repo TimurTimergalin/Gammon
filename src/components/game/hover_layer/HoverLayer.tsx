@@ -6,12 +6,12 @@ import {
     sideWidth,
     storeHeight,
     triangleTriggerHeight
-} from "../dimensions/board_size_constants.ts";
-import {HoverTrigger} from "./HoverTrigger.tsx";
-import {useGameContext} from "../../../game/GameContext.ts";
-import {getTriangleLeft} from "../dimensions/functions.ts";
+} from "../dimensions/board_size_constants";
+import {HoverTrigger} from "./HoverTrigger";
+import {useGameContext} from "../../../game/GameContext";
+import {getTriangleLeft} from "../dimensions/functions";
 import {useEffect} from "react";
-import {PointEvent, pointX, pointY} from "../../../common/point_event.ts";
+import {PointEvent, pointX, pointY} from "../../../common/point_event";
 
 export function HoverLayer() {
     const hoverTracker = useGameContext("hoverTracker")
