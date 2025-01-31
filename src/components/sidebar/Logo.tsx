@@ -1,6 +1,6 @@
 import {CSSProperties} from "react";
 import {observer} from "mobx-react-lite";
-import {useScreenSpecs} from "../adapt/ScreenSpecs";
+import {useScreenSpecs} from "../../adapt/ScreenSpecs";
 import {useNavigate} from "react-router";
 
 export const Logo = observer(function Logo() {

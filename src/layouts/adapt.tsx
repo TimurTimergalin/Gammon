@@ -1,6 +1,6 @@
 import {ReactNode, useCallback, useRef} from "react";
-import {useLayoutMeasure} from "../../common/hooks";
-import {ScreenSpecs, ScreenSpecsProvider} from "./ScreenSpecs";
+import {useLayoutMeasure} from "../common/hooks";
+import {ScreenSpecs, ScreenSpecsProvider} from "../adapt/ScreenSpecs";
 import {Outlet} from "react-router";
 
 const Adapter = (({children}: {
@@ -29,3 +29,5 @@ export const AdapterOutlet = () => (
         <Outlet/>
     </Adapter>
 )
+
+export default AdapterOutlet

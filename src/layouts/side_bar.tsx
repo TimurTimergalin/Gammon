@@ -1,8 +1,8 @@
 import {ReactNode} from "react";
 
 import {Outlet} from "react-router";
-import {AdaptiveWindow} from "../../components/adapt/AdaptiveWindow";
-import {SideBar} from "../../components/sidebar/SideBar";
+import {AdaptiveWindow} from "../components/adapt/AdaptiveWindow";
+import {SideBar} from "../components/sidebar/SideBar";
 
 const SideBarPage = ({children}: {
     children: ReactNode | ReactNode[]
@@ -18,3 +18,5 @@ export const SideBarPageOutlet = () => (
         <Outlet/>
     </SideBarPage>
 )
+
+export default SideBarPageOutlet

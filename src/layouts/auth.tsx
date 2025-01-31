@@ -17,3 +17,5 @@ const AuthPage = ({children}: {children: ReactNode}) => {
 }
 
 export const AuthPageOutlet = () => <AuthPage><Outlet/></AuthPage>
+
+export default AuthPageOutlet

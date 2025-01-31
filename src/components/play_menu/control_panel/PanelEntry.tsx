@@ -1,6 +1,6 @@
 import {CSSProperties, ReactNode} from "react";
 import {observer} from "mobx-react-lite";
-import {useScreenSpecs} from "../../../components/adapt/ScreenSpecs";
+import {useScreenSpecs} from "../../../adapt/ScreenSpecs";
 
 export const PanelEntry = observer(function PanelEntry({children}: {
     children: ReactNode | ReactNode[]

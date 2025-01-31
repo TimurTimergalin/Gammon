@@ -1,6 +1,6 @@
 import {makeAutoObservable} from "mobx";
 import {createContext, useContext} from "react";
-import {logger} from "../../logging/main";
+import {logger} from "../logging/main";
 
 const console = logger("components/adapt")
 

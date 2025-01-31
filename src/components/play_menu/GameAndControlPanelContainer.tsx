@@ -1,6 +1,6 @@
 import {observer} from "mobx-react-lite";
 import {CSSProperties, ReactNode} from "react";
-import {useScreenSpecs} from "../../components/adapt/ScreenSpecs";
+import {useScreenSpecs} from "../../adapt/ScreenSpecs";
 import {GameViewAdapter} from "./GameViewAdapter";
 import {ControlPanelAdapter} from "./ControlPanelAdapter";
 

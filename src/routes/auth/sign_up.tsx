@@ -4,10 +4,10 @@ import {Link, NavigateFunction, useNavigate} from "react-router";
 import {useCallback, useState} from "react";
 import {signUp, SignUpCredentials} from "../../requests/requests";
 import {Form} from "../../components/forms/Form";
-import {AuthFormInput, AuthFormInputMessage} from "./common";
+import {AuthFormInput, AuthFormInputMessage} from "./_deps/common";
 import {ComplexValidator, required} from "../../forms/validators";
 import {AccentedButton} from "../../components/AccentedButton";
-import {authButtonStyle, authFormStyle} from "./styles";
+import {authButtonStyle, authFormStyle} from "./_deps/styles";
 import styled from "styled-components";
 import {formBaseStyle} from "../../css/forms";
 import {FormStateProvider} from "../../forms/FormStateProvider";
@@ -91,3 +91,4 @@ const SignUpFormStyle = styled(PlainSignUpForm)`
 `
 
 export const SignUpForm = () => <FormStateProvider><SignUpFormStyle /></FormStateProvider>
+export default SignUpForm

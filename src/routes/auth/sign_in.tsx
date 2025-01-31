@@ -2,7 +2,7 @@ import {useCallback, useState} from "react";
 import {Link, NavigateFunction, useNavigate} from "react-router";
 import {observer} from "mobx-react-lite";
 import styled from "styled-components";
-import {authButtonStyle, authFormStyle} from "./styles";
+import {authButtonStyle, authFormStyle} from "./_deps/styles";
 import {useFormState} from "../../forms/FormState";
 import {signIn, SignInCredentials} from "../../requests/requests";
 import {Form} from "../../components/forms/Form";
@@ -10,7 +10,7 @@ import {required} from "../../forms/validators";
 import {AccentedButton} from "../../components/AccentedButton";
 import {FormStateProvider} from "../../forms/FormStateProvider";
 import {formBaseStyle} from "../../css/forms";
-import {AuthFormInput, AuthFormInputMessage} from "./common";
+import {AuthFormInput, AuthFormInputMessage} from "./_deps/common";
 import {logger} from "../../logging/main";
 
 const console = logger("windows/auth")
@@ -68,3 +68,5 @@ const SignInFormStyle = styled(PlainSignInForm)`
 `
 
 export const SignInForm = () => <FormStateProvider><SignInFormStyle /></FormStateProvider>
+
+export default SignInForm
