@@ -9,12 +9,15 @@ export function Layout(
             <head>
                 <meta charSet="utf-8"/>
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <link href={"/index.css"} rel={"stylesheet"}/>
                 <title>Backgammon</title>
                 <Meta/>
                 <Links/>
             </head>
             <body>
-            {children}
+            <div id={"root"}>
+                {children}
+            </div>
             <ScrollRestoration/>
             <Scripts/>
             </body>

@@ -6,5 +6,8 @@ export default defineConfig({
   plugins: [reactRouter()],
   preview: {
     port: 1026
+  },
+  ssr: {
+    noExternal: "styled-components"
   }
 } satisfies UserConfig)
