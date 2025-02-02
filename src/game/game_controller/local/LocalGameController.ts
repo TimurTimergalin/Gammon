@@ -2,7 +2,6 @@ import {RulesGameController} from "../rules/RulesGameController";
 import {Color, oppositeColor} from "../../../common/color";
 import {DiceStatus} from "../../dice_state/DiceStatus";
 import {LayerStatus} from "../../../components/game/dice_layer/LayerStatus";
-import {BoardSynchronizer} from "../rules/BoardSynchronizer";
 import {ControlButtonsState} from "../../ControlButtonsState";
 import {IndexMapper} from "../../game_rule/IndexMapper";
 import {DiceState} from "../../dice_state/DiceState";
@@ -10,6 +9,7 @@ import {LegalMovesTracker} from "../../LegalMovesTracker";
 import {Rules} from "../../game_rule/Rules";
 import {LabelState} from "../../LabelState";
 import {logger} from "../../../logging/main";
+import {BoardSynchronizer} from "../../board/BoardSynchronizer";
 
 const console = logger("game/game_controller/local")
 

@@ -3,7 +3,7 @@ import {useEffect} from "react";
 import {BackgammonPlacement} from "../src/game/board/backgammon/types";
 import {Color} from "../src/common/color";
 import {backgammonRuleSet} from "../src/game/game_rule/backgammon/RuleSet";
-import {BoardSynchronizer} from "../src/game/game_controller/rules/BoardSynchronizer";
+import {BoardSynchronizer} from "../src/game/board/BoardSynchronizer";
 import {LocalGameController} from "../src/game/game_controller/local/LocalGameController";
 import {LayerStatus} from "../src/components/game/dice_layer/LayerStatus";
 import {BackgammonBoard} from "../src/game/board/backgammon/BackgammonBoard";

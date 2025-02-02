@@ -1,5 +1,4 @@
 import {GameController} from "../GameController";
-import {BoardSynchronizer} from "./BoardSynchronizer";
 import {Rules} from "../../game_rule/Rules";
 import {Color} from "../../../common/color";
 import {ControlButtonsState} from "../../ControlButtonsState";
@@ -9,6 +8,7 @@ import {DiceState} from "../../dice_state/DiceState";
 import {LegalMovesTracker} from "../../LegalMovesTracker";
 import {LabelState} from "../../LabelState";
 import {logger} from "../../../logging/main";
+import {BoardSynchronizer} from "../../board/BoardSynchronizer";
 
 const console = logger("game/game_controller/rules")
 

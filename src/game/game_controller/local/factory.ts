@@ -1,8 +1,8 @@
-import {BoardSynchronizer} from "../rules/BoardSynchronizer";
 import {LocalGameController} from "./LocalGameController";
 import {GameContext} from "../../GameContext";
 import {RuleSet} from "../../game_rule/RuleSet";
 import {Color} from "../../../common/color";
+import {BoardSynchronizer} from "../../board/BoardSynchronizer";
 
 export function localGameInit<Index, Prop>(
     {gameContext, ruleSet}: {

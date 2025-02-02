@@ -1,11 +1,11 @@
-import {IndexMapper} from "../../game_rule/IndexMapper";
-import {PropMapper} from "../../game_rule/PropMapper";
-import {Board} from "../../board/Board";
-import {PiecePlacement, PositionState} from "../../board/physical/types";
-import {PhysicalBoard} from "../../board/physical/PhysicalBoard";
-import {Color} from "../../../common/color";
-import {Move} from "../../board/move";
-import {logger} from "../../../logging/main";
+import {IndexMapper} from "../game_rule/IndexMapper";
+import {PropMapper} from "../game_rule/PropMapper";
+import {Board} from "./Board";
+import {PiecePlacement, PositionState} from "./physical/types";
+import {PhysicalBoard} from "./physical/PhysicalBoard";
+import {Color} from "../../common/color";
+import {Move} from "./move";
+import {logger} from "../../logging/main";
 
 const console = logger("game/game_controller/rules")
 
@@ -94,4 +94,50 @@ export class BoardSynchronizer<Index, Prop> {
     performMoveLogical = (moveL: Move<Index>) => {
         this.moveLogical(moveL.from, moveL.to)
     };
+
+    physicalBoardProxy = (): Board<number, PositionState> => {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        const outer = this
+
+        return {
+            get(i: number): PositionState {
+                return outer.physicalBoard.get(i)
+            },
+            put(i: number, color: Color) {
+                return outer.putPhysical(i, color)
+            },
+            remove(i: number): Color {
+                return outer.removePhysical(i)
+            },
+            move(from: number, to: number) {
+                return outer.movePhysical(from, to)
+            },
+            [Symbol.iterator]() {
+                return outer.physicalBoard[Symbol.iterator]()
+            }
+        }
+    }
+
+    logicalBoardProxy = (): Board<Index, Prop> => {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        const outer = this
+
+        return {
+            get(i: Index): Prop {
+                return outer._ruleBoard.get(i)
+            },
+            put(i: Index, color: Color) {
+                return outer.putLogical(i, color)
+            },
+            remove(i: Index): Color {
+                return outer.removeLogical(i)
+            },
+            move(from: Index, to: Index) {
+                return outer.moveLogical(from, to)
+            },
+            [Symbol.iterator]() {
+                return outer._ruleBoard[Symbol.iterator]()
+            }
+        }
+    }
 }

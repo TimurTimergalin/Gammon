@@ -5,7 +5,7 @@ import {GameContext} from "../../GameContext";
 import {RuleSet} from "../../game_rule/RuleSet";
 import {RemoteConnectorImpl} from "./RemoteConnector";
 import {RemoteGameController} from "./RemoteGameController";
-import {BoardSynchronizer} from "../rules/BoardSynchronizer";
+import {BoardSynchronizer} from "../../board/BoardSynchronizer";
 
 async function getConfigJson(roomId: number) {
     const resp = await getConfig(roomId)

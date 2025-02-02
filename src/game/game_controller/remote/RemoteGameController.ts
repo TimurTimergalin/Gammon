@@ -1,5 +1,4 @@
 import {RulesGameController} from "../rules/RulesGameController";
-import {BoardSynchronizer} from "../rules/BoardSynchronizer";
 import {ControlButtonsState} from "../../ControlButtonsState";
 import {IndexMapper} from "../../game_rule/IndexMapper";
 import {DiceState} from "../../dice_state/DiceState";
@@ -13,6 +12,7 @@ import {moveDuration} from "../../../components/game/pieces_layer/constants";
 import {DiceStatus} from "../../dice_state/DiceStatus";
 import {LabelState} from "../../LabelState";
 import {logger} from "../../../logging/main";
+import {BoardSynchronizer} from "../../board/BoardSynchronizer";
 
 const console = logger("game/game_controller/remote")
 
