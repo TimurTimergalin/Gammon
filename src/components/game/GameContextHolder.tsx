@@ -10,6 +10,7 @@ import {LegalMovesTracker} from "../../game/LegalMovesTracker";
 import {GameContext, GameContextProvider} from "../../game/GameContext";
 import {DummyGameController} from "../../game/game_controller/DummyGameController";
 import {LabelState} from "../../game/LabelState";
+import {EndWindowState} from "../../game/EndWindowState";
 
 export const GameContextHolder = ({children}: { children: ReactNode | ReactNode[] }) => {
     const controlButtonsState = useFactoryRef(() => new ControlButtonsState())
@@ -32,6 +33,7 @@ export const GameContextHolder = ({children}: { children: ReactNode | ReactNode[
     const boardState = useFactoryRef(() => new PhysicalBoard())
     const legalMovesTracker = useFactoryRef(() => new LegalMovesTracker())
     const labelMapperHolder = useFactoryRef(() => new LabelState())
+    const endWindowState = useFactoryRef(() => new EndWindowState())
 
     const gameContext = useFactoryRef(() => new GameContext({
         controlButtonsState: controlButtonsState,
@@ -42,7 +44,8 @@ export const GameContextHolder = ({children}: { children: ReactNode | ReactNode[
         gameController: gameControllerRef,
         legalMovesTracker: legalMovesTracker,
         playersInfo: playersInfo,
-        labelMapperHolder: labelMapperHolder
+        labelMapperHolder: labelMapperHolder,
+        endWindowState: endWindowState
     }))
 
     return (

@@ -7,7 +7,7 @@ import {logResponseError} from "../requests/util";
 import {DummyGameController} from "../game/game_controller/DummyGameController";
 import {GameContextHolder} from "../components/game/GameContextHolder";
 import {LocalGameOption} from "../components/play_menu/control_panel/LocalGameOption";
-import {GamePart} from "../parts/GamePart";
+import {GamePart} from "../components/game_page/GamePart";
 import {logger} from "../logging/main";
 
 const console = logger("windows/play_menu")

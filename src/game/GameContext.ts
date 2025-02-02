@@ -9,15 +9,21 @@ import {PhysicalBoard} from "./board/physical/PhysicalBoard";
 import {LegalMovesTracker} from "./LegalMovesTracker";
 import {GameController} from "./game_controller/GameController";
 import {LabelState} from "./LabelState";
+import {EndWindowState} from "./EndWindowState";
 
 type Setter<T> = {
     set(_: T): void
 }
 
 export class GameContext {
+    get endWindowState(): EndWindowState {
+        return this._endWindowState.current!;
+    }
+
     get labelState(): LabelState {
         return this._labelState.current!;
     }
+
     get legalMovesTracker(): LegalMovesTracker {
         return this._legalMovesTracker.current!;
     }
@@ -62,6 +68,7 @@ export class GameContext {
     private _diceState: RefObject<DiceState>
     private _boardState: RefObject<PhysicalBoard>
     private _legalMovesTracker: RefObject<LegalMovesTracker>
+    private _endWindowState: RefObject<EndWindowState>
 
     private _gameController: MutableRefObject<GameController>
     private readonly _gameControllerSetter: Setter<GameController>
@@ -75,7 +82,8 @@ export class GameContext {
                     diceState,
                     boardState,
                     legalMovesTracker,
-                    labelMapperHolder
+                    labelMapperHolder,
+                    endWindowState
                 }: {
                     controlButtonsState: RefObject<ControlButtonsState>,
                     hoverTracker: RefObject<HoverTracker>,
@@ -85,7 +93,8 @@ export class GameContext {
                     diceState: RefObject<DiceState>,
                     boardState: RefObject<PhysicalBoard>,
                     legalMovesTracker: RefObject<LegalMovesTracker>,
-                    labelMapperHolder: RefObject<LabelState>
+                    labelMapperHolder: RefObject<LabelState>,
+                    endWindowState: RefObject<EndWindowState>
                 }
     ) {
         this._controlButtonsState = controlButtonsState;
@@ -97,6 +106,7 @@ export class GameContext {
         this._diceState = diceState
         this._boardState = boardState
         this._legalMovesTracker = legalMovesTracker
+        this._endWindowState = endWindowState
 
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const outer = this

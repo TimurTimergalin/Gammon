@@ -1,8 +1,8 @@
-import {PlayerState} from "../game/player_info/PlayerState";
-import {useGameContext} from "../game/GameContext";
+import {PlayerState} from "../../game/player_info/PlayerState";
+import {useGameContext} from "../../game/GameContext";
 import {ReactNode, useEffect} from "react";
-import {PlayerIcon} from "../components/game/players/PlayerIcon";
-import {ButtonPanel} from "../components/game/buttons/ButtonPanel";
+import {PlayerIcon} from "../game/players/PlayerIcon";
+import {ButtonPanel} from "../game/buttons/ButtonPanel";
 
 export const GamePart = ({player1, player2, children, displayButtons = false}: {
     player1?: PlayerState,

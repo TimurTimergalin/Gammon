@@ -9,7 +9,7 @@ import {GameAndControlPanelContainer} from "../components/game_page/GameAndContr
 import GameView from "../components/game/GameView";
 import {ControlPanel} from "../components/game/control_panel/ControlPanel";
 import {GameContextHolder} from "../components/game/GameContextHolder";
-import {GamePart} from "../parts/GamePart";
+import {GamePart} from "../components/game_page/GamePart";
 import {logger} from "../logging/main";
 import {backgammonRuleSet} from "../game/game_rule/backgammon/RuleSet";
 import {backgammonRemoteSetV1} from "../game/game_rule/backgammon/remote_v1/RemoteSet";
