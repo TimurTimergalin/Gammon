@@ -36,7 +36,8 @@ const PlainEndWindow = ({className, title, children}: {
         bottom: 0,
         display: "flex",
         flexDirection: "column",
-        alignContent: "center"
+        alignContent: "center",
+        pointerEvents: "none"
     }
 
     return (

@@ -65,7 +65,7 @@ export class PhysicalBoard implements Board<number, PositionState> {
         const color = this.remove(from)
 
         const toProps = this.get(to)
-        toProps.add({color: color, from: {index: from, order: fromTotal - 1}})
+        toProps.add({color: color, from: {index: from, order: fromTotal - 1, total: fromTotal}})
         this.board.set(to, toProps)
     };
 

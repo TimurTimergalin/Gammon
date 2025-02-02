@@ -8,7 +8,8 @@ export interface PieceState {
     color: Color,
     from?: {
         index: number,
-        order: number
+        order: number,
+        total: number
     }
 }
 
