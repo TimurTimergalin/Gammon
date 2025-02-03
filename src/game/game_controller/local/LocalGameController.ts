@@ -62,7 +62,7 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         }
 
         let value2 = this.randomDice()
-        while (value2 === value1) {
+        while (value2 === value1 && color1 !== color2) {
             value2 = this.randomDice()
         }
 
