@@ -11,6 +11,7 @@ import {GameContext, GameContextProvider} from "../../game/GameContext";
 import {DummyGameController} from "../../game/game_controller/DummyGameController";
 import {LabelState} from "../../game/LabelState";
 import {EndWindowState} from "../../game/EndWindowState";
+import {BoardAnimationSwitch} from "../../game/BoardAnimationSwitch";
 
 export const GameContextHolder = ({children}: { children: ReactNode | ReactNode[] }) => {
     const controlButtonsState = useFactoryRef(() => new ControlButtonsState())
@@ -34,6 +35,7 @@ export const GameContextHolder = ({children}: { children: ReactNode | ReactNode[
     const legalMovesTracker = useFactoryRef(() => new LegalMovesTracker())
     const labelMapperHolder = useFactoryRef(() => new LabelState())
     const endWindowState = useFactoryRef(() => new EndWindowState())
+    const boardAnimationSwitch = useFactoryRef(() => new BoardAnimationSwitch(true))
 
     const gameContext = useFactoryRef(() => new GameContext({
         controlButtonsState: controlButtonsState,
@@ -45,7 +47,8 @@ export const GameContextHolder = ({children}: { children: ReactNode | ReactNode[
         legalMovesTracker: legalMovesTracker,
         playersInfo: playersInfo,
         labelMapperHolder: labelMapperHolder,
-        endWindowState: endWindowState
+        endWindowState: endWindowState,
+        boardAnimationSwitch: boardAnimationSwitch
     }))
 
     return (

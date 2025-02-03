@@ -14,4 +14,6 @@ export interface Rules<Index, Prop> {
     noMovesLeft(board: Board<Index, Prop>, player: Color): boolean
 
     squashMoves(moves: Move<Index>[]): Move<Index>[][]
+
+    calculatePoints(board: Board<Index, Prop>, winner: Color): number
 }

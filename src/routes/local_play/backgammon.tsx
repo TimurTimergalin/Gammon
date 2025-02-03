@@ -9,6 +9,7 @@ import {backgammonRuleSet} from "../../game/game_rule/backgammon/RuleSet";
 import GameView from "../../components/game/GameView";
 import {EndWindow} from "../../components/game/end_window/EndWindow";
 import {EndWindowContent} from "./_deps/EndWindowContent";
+import {useSearchParams} from "react-router";
 
 interface LocalGameWindowProps<Index, Prop> {
     ruleset: RuleSet<Index, Prop>
@@ -16,11 +17,16 @@ interface LocalGameWindowProps<Index, Prop> {
 
 const InnerLocalGamePage = <Index, Prop>({ruleset}: LocalGameWindowProps<Index, Prop>) => {
     const gameContext = useFullGameContext()
+    const [searchParams] = useSearchParams([["pointsUntil", "1"]])
+
+    const pointsUntilParsed = parseInt(searchParams.get("pointsUntil") || "1")
+    const pointsUntil = !isNaN(pointsUntilParsed) && pointsUntilParsed >= 1 ? pointsUntilParsed : 1
 
     const {controller, labelMapper} = localGameInit(
         {
             gameContext: gameContext,
-            ruleSet: ruleset
+            ruleSet: ruleset,
+            pointsUntil: pointsUntil
         }
     )
 
@@ -31,7 +37,7 @@ const InnerLocalGamePage = <Index, Prop>({ruleset}: LocalGameWindowProps<Index, 
                     <GameView gameController={controller} labelMapper={labelMapper}/>
                 </GamePart>
                 <EndWindow>
-                    <EndWindowContent />
+                    <EndWindowContent/>
                 </EndWindow>
             </div>
             <ControlPanel/>

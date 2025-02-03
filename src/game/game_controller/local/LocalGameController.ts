@@ -11,16 +11,23 @@ import {LabelState} from "../../LabelState";
 import {logger} from "../../../logging/main";
 import {BoardSynchronizer} from "../../board/BoardSynchronizer";
 import {EndWindowState} from "../../EndWindowState";
+import {InitPlacement} from "../../game_rule/InitPlacement";
+import {BoardAnimationSwitch} from "../../BoardAnimationSwitch";
 
 const console = logger("game/game_controller/local")
 
 
 export class LocalGameController<Index, Prop> extends RulesGameController<Index, Prop> {
     private endWindowState: EndWindowState
-    private firstToMove!: Color
-    private lastMove = false
+    private readonly initPlacement: InitPlacement<Index, Prop>
+    private readonly pointsUntil: number
+    private points = {
+        white: 0,
+        black: 0
+    }
+    private boardAnimationSwitch: BoardAnimationSwitch
 
-    constructor({endWindowState, ...args}: {
+    constructor({endWindowState, initPlacement, pointsUntil, boardAnimationSwitch, ...args}: {
         board: BoardSynchronizer<Index, Prop>,
         controlButtonsState: ControlButtonsState,
         active: boolean,
@@ -29,10 +36,16 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         diceState: DiceState,
         legalMovesTracker: LegalMovesTracker,
         labelState: LabelState,
-        endWindowState: EndWindowState
+        endWindowState: EndWindowState,
+        initPlacement: InitPlacement<Index, Prop>,
+        pointsUntil: number,
+        boardAnimationSwitch: BoardAnimationSwitch
     }) {
         super(args);
         this.endWindowState = endWindowState
+        this.initPlacement = initPlacement
+        this.pointsUntil = pointsUntil
+        this.boardAnimationSwitch = boardAnimationSwitch
     }
 
     private randomDice() {
@@ -84,7 +97,6 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         if (first) {
             this.rollDice(Color.WHITE, Color.BLACK)
             this.inferCurrentPlayer()
-            this.firstToMove = this.player
         } else {
             this.rollDice(this.player, this.player)
         }
@@ -92,24 +104,34 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         this.calculateDice()
     }
 
-    checkGameComplete(): {winner: Color | null} | undefined {
-        if (this.lastMove) {
-            if (!this.rules.noMovesLeft(this.board.ruleBoard, this.player)) {
-                return {winner: oppositeColor(this.player)}
-            } else {
-                return {winner: null}
-            }
-        }
+    checkGameComplete(): { winner: Color } | undefined {
         if (!this.rules.noMovesLeft(this.board.ruleBoard, this.player)) {
             return undefined
         }
 
-        if (this.player === this.firstToMove) {
-            this.lastMove = true
-            return undefined
-        }
 
         return {winner: this.player}
+    }
+
+    checkMatchComplete(): { winner: Color } | undefined {
+        if (this.points.white >= this.pointsUntil) {
+            return {winner: Color.WHITE}
+        }
+
+        if (this.points.black >= this.pointsUntil) {
+            return {winner: Color.BLACK}
+        }
+
+        return undefined
+    }
+
+    newGame() {
+        this.boardAnimationSwitch.withTurnedOff(() => {
+                this.board.updateLogical(this.initPlacement())
+                this.active = true
+                this.newTurn(true)
+            }
+        )
     }
 
     endTurn(): void {
@@ -121,12 +143,28 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
             this.controlButtonsState.turnComplete = false
             this.active = false
 
-            this.endWindowState.title = gameComplete.winner === Color.WHITE ? "Белые выиграли" :
-                gameComplete.winner === Color.BLACK ? "Черные выиграли" :
-                    "Ничья"
+            const points = this.rules.calculatePoints(this.board.ruleBoard, gameComplete.winner)
+            if (gameComplete.winner === Color.WHITE) {
+                this.points.white += points
+            } else {
+                this.points.black += points
+            }
 
-            this.diceState.dice1 = null
-            this.diceState.dice2 = null
+            const matchComplete = this.checkMatchComplete()
+
+            if (matchComplete !== undefined) {
+                this.endWindowState.title = matchComplete.winner === Color.WHITE ? "Белые выиграли" : "Черные выиграли"
+
+                this.diceState.dice1 = null
+                this.diceState.dice2 = null
+                return
+            }
+
+            console.log(`Победитель: ${gameComplete.winner === Color.WHITE ? "Белые" : "Черные"}}`)  // TODO: заменить
+            setTimeout(
+                () => this.newGame(),
+                500
+            )
             return
         }
         this.player = oppositeColor(this.player)

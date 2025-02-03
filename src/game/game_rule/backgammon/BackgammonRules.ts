@@ -370,4 +370,23 @@ export class BackgammonRules implements Rules<BackgammonIndex, BackgammonProp> {
 
         return res
     }
+
+    calculatePoints(board: BackgammonBoard, winner: Color): number {
+        console.assert(this.noMovesLeft(board, winner))
+
+        const loser = oppositeColor(winner)
+        const store = board.get(getStore(loser))
+        if (store !== undefined) {
+            console.assert(store.quantity > 0)
+            return 1
+        }
+
+        const bar = board.get(getBar(loser))
+        if (bar !== undefined) {
+            console.assert(bar.quantity > 0)
+            return 3  // Кокс
+        }
+
+        return 2 // Марс
+    }
 }

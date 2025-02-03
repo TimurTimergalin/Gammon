@@ -5,9 +5,10 @@ import {Color} from "../../../common/color";
 import {BoardSynchronizer} from "../../board/BoardSynchronizer";
 
 export function localGameInit<Index, Prop>(
-    {gameContext, ruleSet}: {
+    {gameContext, ruleSet, pointsUntil}: {
         gameContext: GameContext,
-        ruleSet: RuleSet<Index, Prop>
+        ruleSet: RuleSet<Index, Prop>,
+        pointsUntil: number
     }
 ) {
     const {rules, initPlacement, indexMapperFactory, propMapper} = ruleSet
@@ -29,7 +30,10 @@ export function localGameInit<Index, Prop>(
         legalMovesTracker: gameContext.legalMovesTracker,
         rules: rules,
         labelState: gameContext.labelState,
-        endWindowState: gameContext.endWindowState
+        endWindowState: gameContext.endWindowState,
+        boardAnimationSwitch: gameContext.boardAnimationSwitch,
+        initPlacement: initPlacement,
+        pointsUntil: pointsUntil
     })
 
     controller.newTurn(true)
