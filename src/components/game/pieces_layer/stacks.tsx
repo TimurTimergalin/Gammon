@@ -87,7 +87,7 @@ export const TopDownStack = observer(function TopDownStack({pieces, direction, o
         if (piece.from !== undefined) {
             const from = piece.from.index
             const fromX = getStackOriginX(from)
-            const fromY = getTopDownPieceY(getStackOriginY(from), getStackDirection(from), piece.from.order, quantity)
+            const fromY = getTopDownPieceY(getStackOriginY(from), getStackDirection(from), piece.from.order, piece.from.total)
             finalPieces.push(
                 <HomingTopDownPiece color={piece.color} cx={toX} cy={toY} fromX={fromX} fromY={fromY}
                                     key={i}/>
