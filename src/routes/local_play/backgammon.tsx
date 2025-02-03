@@ -8,6 +8,7 @@ import {GamePart} from "../../components/game_page/GamePart";
 import {backgammonRuleSet} from "../../game/game_rule/backgammon/RuleSet";
 import GameView from "../../components/game/GameView";
 import {EndWindow} from "../../components/game/end_window/EndWindow";
+import {EndWindowContent} from "./_deps/EndWindowContent";
 
 interface LocalGameWindowProps<Index, Prop> {
     ruleset: RuleSet<Index, Prop>
@@ -29,7 +30,9 @@ const InnerLocalGamePage = <Index, Prop>({ruleset}: LocalGameWindowProps<Index, 
                 <GamePart displayButtons={true}>
                     <GameView gameController={controller} labelMapper={labelMapper}/>
                 </GamePart>
-                <EndWindow/>
+                <EndWindow>
+                    <EndWindowContent />
+                </EndWindow>
             </div>
             <ControlPanel/>
         </GameAndControlPanelContainer>

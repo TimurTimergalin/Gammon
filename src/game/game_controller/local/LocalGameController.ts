@@ -10,14 +10,17 @@ import {Rules} from "../../game_rule/Rules";
 import {LabelState} from "../../LabelState";
 import {logger} from "../../../logging/main";
 import {BoardSynchronizer} from "../../board/BoardSynchronizer";
+import {EndWindowState} from "../../EndWindowState";
 
 const console = logger("game/game_controller/local")
 
 
 export class LocalGameController<Index, Prop> extends RulesGameController<Index, Prop> {
+    private endWindowState: EndWindowState
+    private firstToMove!: Color
+    private lastMove = false
 
-
-    constructor(args: {
+    constructor({endWindowState, ...args}: {
         board: BoardSynchronizer<Index, Prop>,
         controlButtonsState: ControlButtonsState,
         active: boolean,
@@ -25,9 +28,11 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         indexMapper: IndexMapper<Index>,
         diceState: DiceState,
         legalMovesTracker: LegalMovesTracker,
-        labelState: LabelState
+        labelState: LabelState,
+        endWindowState: EndWindowState
     }) {
         super(args);
+        this.endWindowState = endWindowState
     }
 
     private randomDice() {
@@ -73,13 +78,13 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
             return
         }
         this.player = this.diceState.dice2!.color
-        return
     }
 
     newTurn(first: boolean) {
         if (first) {
             this.rollDice(Color.WHITE, Color.BLACK)
             this.inferCurrentPlayer()
+            this.firstToMove = this.player
         } else {
             this.rollDice(this.player, this.player)
         }
@@ -87,8 +92,43 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         this.calculateDice()
     }
 
+    checkGameComplete(): {winner: Color | null} | undefined {
+        if (this.lastMove) {
+            if (!this.rules.noMovesLeft(this.board.ruleBoard, this.player)) {
+                return {winner: oppositeColor(this.player)}
+            } else {
+                return {winner: null}
+            }
+        }
+        if (!this.rules.noMovesLeft(this.board.ruleBoard, this.player)) {
+            return undefined
+        }
+
+        if (this.player === this.firstToMove) {
+            this.lastMove = true
+            return undefined
+        }
+
+        return {winner: this.player}
+    }
+
     endTurn(): void {
         this.performedMoves = []
+
+        const gameComplete = this.checkGameComplete()
+        if (gameComplete !== undefined) {
+            this.controlButtonsState.movesMade = false
+            this.controlButtonsState.turnComplete = false
+            this.active = false
+
+            this.endWindowState.title = gameComplete.winner === Color.WHITE ? "Белые выиграли" :
+                gameComplete.winner === Color.BLACK ? "Черные выиграли" :
+                    "Ничья"
+
+            this.diceState.dice1 = null
+            this.diceState.dice2 = null
+            return
+        }
         this.player = oppositeColor(this.player)
         this.newTurn(false)
     }

@@ -28,7 +28,8 @@ export function localGameInit<Index, Prop>(
         indexMapper: indexMapper,
         legalMovesTracker: gameContext.legalMovesTracker,
         rules: rules,
-        labelState: gameContext.labelState
+        labelState: gameContext.labelState,
+        endWindowState: gameContext.endWindowState
     })
 
     controller.newTurn(true)

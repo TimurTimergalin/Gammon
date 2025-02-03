@@ -19,6 +19,9 @@ const EndWindowTitle = styled(PlainEndWindowTitle)`
     display: flex;
     justify-content: center;
     align-items: center;
+    color: #2f2e2d;
+    font-weight: 600;
+    font-size: 20px;
 `
 
 const PlainEndWindow = ({className, title, children}: {
@@ -76,6 +79,7 @@ const EndWindowStyle = styled(PlainEndWindow)`
     border-radius: 20px;
     background-color: white;
     animation: ${windowAppearanceAnimation} 0.3s ease-out;
+    pointer-events: auto;
 `
 
 export const EndWindow = observer(function EndWindow({children}: {children?: ReactNode | ReactNode[]}) {

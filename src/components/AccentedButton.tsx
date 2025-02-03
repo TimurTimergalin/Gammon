@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import {fontFamily} from "../common/font";
 
 export const AccentedButton = styled.button`
     & {
@@ -7,7 +8,7 @@ export const AccentedButton = styled.button`
         user-select: none;
         background-color: #ff7f2a;
         border: 0;
-        font-family: Comfortaa, sans-serif;
+        font-family: ${fontFamily}, sans-serif;
         color: white;
     }
 

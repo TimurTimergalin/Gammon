@@ -10,7 +10,7 @@ export class DiceState {
         return this._dice1;
     }
 
-    set dice1(value: DiceStatus) {
+    set dice1(value: DiceStatus | null) {
         this._dice1 = value;
     }
 
@@ -18,7 +18,7 @@ export class DiceState {
         return this._dice2;
     }
 
-    set dice2(value: DiceStatus) {
+    set dice2(value: DiceStatus | null) {
         this._dice2 = value;
     }
 
