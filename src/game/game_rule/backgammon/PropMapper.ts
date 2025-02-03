@@ -14,7 +14,7 @@ export class BackgammonPropMapper implements PropMapper<BackgammonProp> {
         return res
     };
 
-    PhysicalToLogical = (arr: Color[]): BackgammonProp => {
+    physicalToLogical = (arr: Color[]): BackgammonProp => {
         if (arr.length === 0) {
             return undefined
         }

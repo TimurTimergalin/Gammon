@@ -59,7 +59,6 @@ export class PhysicalBoard implements Board<number, PositionState> {
     }
 
     move = (from: number, to: number): void => {
-        // TODO: вынести вычисление координат на уровень компонентов
         const fromProps = this.get(from)
         const fromTotal = fromProps.quantity
         const color = this.remove(from)
@@ -75,7 +74,7 @@ export class PhysicalBoard implements Board<number, PositionState> {
         }
     };
 
-    update = (map: Map<number, PositionState>) => {
+    update = (map: Iterable<[number, PositionState]>) => {
         this.board = new Map(map)
     };
 }

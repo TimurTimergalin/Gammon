@@ -1,11 +1,12 @@
 import {IndexMapper} from "../game_rule/IndexMapper";
 import {PropMapper} from "../game_rule/PropMapper";
 import {Board} from "./Board";
-import {PiecePlacement, PositionState} from "./physical/types";
+import {PositionState} from "./physical/types";
 import {PhysicalBoard} from "./physical/PhysicalBoard";
 import {Color} from "../../common/color";
 import {Move} from "./move";
 import {logger} from "../../logging/main";
+import {logicalToPhysical, physicalToLogical} from "../game_rule/functions";
 
 const console = logger("game/game_controller/rules")
 
@@ -14,6 +15,7 @@ export class BoardSynchronizer<Index, Prop> {
     get ruleBoard(): Board<Index, Prop> {
         return this._ruleBoard;
     }
+
     private readonly physicalBoard: PhysicalBoard
     private readonly _ruleBoard: Board<Index, Prop>
     private readonly indexMapper: IndexMapper<Index>
@@ -30,19 +32,17 @@ export class BoardSynchronizer<Index, Prop> {
         this.indexMapper = indexMapper;
         this.propMapper = propMapper
 
-        this.physicalBoard.update(this.logicalToPhysical())
+        this.physicalBoard.update(logicalToPhysical(ruleBoard, indexMapper, propMapper))
     }
 
-    private logicalToPhysical() {
-        const physical: PiecePlacement = new Map()
-        for (const [ind, val] of this._ruleBoard) {
-            const physicalInd = this.indexMapper.logicalToPhysical(ind)
-            const physicalProp = new PositionState(
-                this.propMapper.logicalToPhysical(val).map(color => ({color: color}))
-            )
-            physical.set(physicalInd, physicalProp)
-        }
-        return physical
+    updatePhysical(board: Iterable<[number, PositionState]>) {
+        this.physicalBoard.update(board)
+        this._ruleBoard.update(physicalToLogical(board, this.indexMapper, this.propMapper))
+    }
+
+    updateLogical(board: Iterable<[Index, Prop]>) {
+        this._ruleBoard.update(board)
+        this.physicalBoard.update(logicalToPhysical(board, this.indexMapper, this.propMapper))
     }
 
     putPhysical = (pi: number, color: Color) => {
@@ -72,25 +72,25 @@ export class BoardSynchronizer<Index, Prop> {
         console.assert(pr === lr)
         return pr
     };
-    
+
     movePhysical = (fromP: number, toP: number) => {
         this.physicalBoard.move(fromP, toP)
         const fromL = this.indexMapper.physicalToLogical(fromP)
         const toL = this.indexMapper.physicalToLogical(toP)
         this._ruleBoard.move(fromL, toL)
     };
-    
+
     moveLogical = (fromL: Index, toL: Index) => {
         this._ruleBoard.move(fromL, toL)
         const fromP = this.indexMapper.logicalToPhysical(fromL)
         const toP = this.indexMapper.logicalToPhysical(toL)
         this.physicalBoard.move(fromP, toP)
     };
-    
+
     performMovePhysical = (moveP: Move<number>) => {
         this.movePhysical(moveP.from, moveP.to)
     };
-    
+
     performMoveLogical = (moveL: Move<Index>) => {
         this.moveLogical(moveL.from, moveL.to)
     };
@@ -114,6 +114,9 @@ export class BoardSynchronizer<Index, Prop> {
             },
             [Symbol.iterator]() {
                 return outer.physicalBoard[Symbol.iterator]()
+            },
+            update(src: Iterable<[number, PositionState]>) {
+                outer.updatePhysical(src)
             }
         }
     }
@@ -137,6 +140,9 @@ export class BoardSynchronizer<Index, Prop> {
             },
             [Symbol.iterator]() {
                 return outer._ruleBoard[Symbol.iterator]()
+            },
+            update(src: Iterable<[Index, Prop]>) {
+                outer.updateLogical(src)
             }
         }
     }

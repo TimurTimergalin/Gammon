@@ -10,4 +10,6 @@ export interface Board<Index, Prop> {
     [Symbol.iterator](): Iterator<[Index, Prop]>
 
     move(from: Index, to: Index): void
+
+    update(src: Iterable<[Index, Prop]>): void
 }

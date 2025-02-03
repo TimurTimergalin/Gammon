@@ -20,7 +20,7 @@ export class BackgammonBoard implements Board<BackgammonIndex, BackgammonProp>{
         }
     }
 
-    private readonly board: BackgammonPlacement
+    private board: BackgammonPlacement
 
     get = (i: BackgammonIndex) => this.board.get(i);
 
@@ -62,5 +62,9 @@ export class BackgammonBoard implements Board<BackgammonIndex, BackgammonProp>{
 
     [Symbol.iterator](): Iterator<[BackgammonIndex, BackgammonProp]> {
         return this.board[Symbol.iterator]()
+    }
+
+    update(src: Iterable<[BackgammonIndex, BackgammonProp]>): void {
+        this.board = new Map(src)
     }
 }

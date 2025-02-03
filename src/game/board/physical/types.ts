@@ -45,6 +45,10 @@ export class PositionState {
             st.from = undefined
         }
     }
+
+    pieceArray(): Color[] {
+        return this.pieces.map(ps => ps.color)
+    }
 }
 
 export type PiecePlacement = Map<number, PositionState>
