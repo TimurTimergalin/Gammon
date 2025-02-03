@@ -75,6 +75,10 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
 
         this.diceState.dice1 = dice1
         this.diceState.dice2 = dice2
+
+        if (dice1.value < dice2.value) {
+            this.diceState.swapDice()
+        }
     }
 
     inferCurrentPlayer() {  // Может понадобиться вынести в отдельный класс

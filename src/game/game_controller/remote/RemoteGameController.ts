@@ -31,6 +31,10 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
             console.assert(this.diceToSet.length === 2)
             this.diceState.dice1 = this.diceToSet[0]
             this.diceState.dice2 = this.diceToSet[1]
+            if (this.diceToSet[0].value < this.diceToSet[1].value) {
+                this.diceState.swapDice()
+            }
+
             this.diceToSet.splice(0, 2)
             this.calculateDice()
         }
@@ -160,6 +164,9 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         } else {
             this.diceState.dice1 = dice1
             this.diceState.dice2 = dice2
+            if (dice1.value < dice2.value) {
+                this.diceState.swapDice()
+            }
             this.calculateDice()
         }
     };
