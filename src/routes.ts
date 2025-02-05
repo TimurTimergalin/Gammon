@@ -5,8 +5,8 @@ export default [
         layout("./layouts/side_bar.tsx", [
             index("./routes/index.tsx"),
             route("/play", "./routes/play_menu.tsx"),
-            route("/local-play/backgammon", "./routes/local_play/backgammon.tsx"),
-            route("/play/:roomId", "./routes/play.tsx"),
+            route("/local-play/backgammon", "./routes/play/local/backgammon.tsx"),
+            route("/play/:roomId", "./routes/play/remote/play.tsx"),
             route("*?", "./catchall.tsx"),
             layout("./layouts/auth.tsx", [
                 route("/sign-in", "./routes/auth/sign_in.tsx"),

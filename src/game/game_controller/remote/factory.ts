@@ -21,9 +21,12 @@ export async function remoteGameInit<RemoteConfig, Index, Prop, RemoteMove>(
         gameContext: GameContext
     }
 ) {
-    const configJson = await getConfigJson(roomId) as RemoteConfig
-    const config = remoteSet.configParser.mapConfig(configJson)
+    const configGetter = async (roomId: number) => {
+        const remoteConfig = await getConfigJson(roomId) as RemoteConfig
+        return remoteSet.configParser.mapConfig(remoteConfig)
+    }
 
+    const config = await configGetter(roomId)
 
     const indexMapper = ruleSet.indexMapperFactory(config.userPlayer)
 
@@ -33,7 +36,11 @@ export async function remoteGameInit<RemoteConfig, Index, Prop, RemoteMove>(
         indexMapper,
         ruleSet.propMapper
     )
-    const connector = new RemoteConnectorImpl(remoteSet.remoteMoveMapper, roomId)
+    const connector = new RemoteConnectorImpl({
+        moveMapper: remoteSet.remoteMoveMapper,
+        roomId: roomId,
+        configGetter: configGetter
+    })
 
     const controller = new RemoteGameController({
         board: board,
@@ -45,12 +52,12 @@ export async function remoteGameInit<RemoteConfig, Index, Prop, RemoteMove>(
         legalMovesTracker: gameContext.legalMovesTracker,
         rules: ruleSet.rules,
         userPlayer: config.userPlayer,
-        labelState: gameContext.labelState
+        labelState: gameContext.labelState,
+        endWindowState: gameContext.endWindowState,
+        boardAnimationSwitch: gameContext.boardAnimationSwitch
     })
 
-    gameContext.diceState.dice1 = config.dice[0]
-    gameContext.diceState.dice2 = config.dice[1]
-    controller.calculateDice()
+    controller.init(config)
 
     connector.onMovesMade = controller.onMovesMade
     connector.onNewDice = controller.onNewDice

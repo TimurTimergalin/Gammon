@@ -1,8 +1,8 @@
 import {useNavigate} from "react-router";
 import {ComponentProps} from "react";
-import styled, {css} from "styled-components";
-import {AccentedButton} from "../../../components/AccentedButton";
-import {fontFamily} from "../../../common/font";
+import styled from "styled-components";
+import {AccentedButton} from "../../../../components/AccentedButton";
+import {endWindowButtonStyle, endWindowContentStyle, returnToMenuButtonStyle} from "../../_deps/styles";
 
 const ReturnToMenuButton = (props: ComponentProps<"button">) => {
     const navigate = useNavigate()
@@ -20,38 +20,22 @@ const NewGameButton = (props: ComponentProps<"button">) => {
     )
 }
 
-const endWindowButtonStyle = css`
-    width: 40%;
-    height: 50px;
-    border-radius: 5px;
-    border: 0;
-    font-size: 15px;
-`
-
 const StyledReturnToMenuButton = styled(ReturnToMenuButton)`
-    & {
-        ${endWindowButtonStyle};
-        background-color: lightgray;
-        font-family: ${fontFamily}, sans-serif;
-    }
-    
-    &:active {
-        background-color: #bbbbbb;
-    }
-    
-    &:hover {
-        background-color: #dddddd;
-    }
+    ${returnToMenuButtonStyle}
 `
 const StyledNewGameButton = styled(NewGameButton)`${endWindowButtonStyle}`
 
-export const EndWindowContent = () => {
+const PlainLocalPlayEndWindowContent = ({className}: {className?: string}) => {
     return (
         <div style={{display: "flex", flexDirection: "column"}}>
-            <div style={{display: "flex", justifyContent: "space-evenly", marginTop: 20}}>
+            <div className={className}>
                 <StyledNewGameButton />
                 <StyledReturnToMenuButton />
             </div>
         </div>
     )
 }
+
+export const LocalPlayEndWindowContent = styled(PlainLocalPlayEndWindowContent)`
+    ${endWindowContentStyle}
+`

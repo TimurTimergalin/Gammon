@@ -13,11 +13,16 @@ import {DiceStatus} from "../../dice_state/DiceStatus";
 import {LabelState} from "../../LabelState";
 import {logger} from "../../../logging/main";
 import {BoardSynchronizer} from "../../board/BoardSynchronizer";
+import {Config} from "../../game_rule/ConfigParser";
+import {EndWindowState} from "../../EndWindowState";
+import {BoardAnimationSwitch} from "../../BoardAnimationSwitch";
 
 const console = logger("game/game_controller/remote")
 
 export class RemoteGameController<Index, Prop> extends RulesGameController<Index, Prop> {
-    private connector: RemoteConnector<Index>
+    private connector: RemoteConnector<Index, Prop>
+    private endWindowState: EndWindowState
+    private boardAnimationSwitch: BoardAnimationSwitch
     private readonly userPlayer: Color
 
     private _userDiceReceived: boolean
@@ -58,7 +63,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         this.updateActivity()
     }
 
-    constructor({connector, userPlayer, player, ...base}: {
+    constructor({connector, userPlayer, player, endWindowState, boardAnimationSwitch, ...base}: {
         board: BoardSynchronizer<Index, Prop>,
         controlButtonsState: ControlButtonsState,
         player: Color,
@@ -66,9 +71,11 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         indexMapper: IndexMapper<Index>,
         diceState: DiceState,
         legalMovesTracker: LegalMovesTracker,
-        connector: RemoteConnector<Index>,
+        connector: RemoteConnector<Index, Prop>,
         userPlayer: Color,
-        labelState: LabelState
+        labelState: LabelState,
+        endWindowState: EndWindowState,
+        boardAnimationSwitch: BoardAnimationSwitch
     }) {
         const active = player === userPlayer
         super({...base, active: active});
@@ -77,6 +84,17 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         this.userPlayer = userPlayer
         this._opponentTurnDisplayed = active
         this._userDiceReceived = active
+        this.endWindowState = endWindowState
+        this.boardAnimationSwitch = boardAnimationSwitch
+    }
+
+    init(config: Config<Index, Prop>) {
+        this.diceState.dice1 = config.dice[0]
+        this.diceState.dice2 = config.dice[1]
+        if (config.dice[0].value < config.dice[1].value) {
+            this.diceState.swapDice()
+        }
+        this.calculateDice()
     }
 
     private splitMove(move: Move<Index>, diceUsed: number[], player: Color): Move<Index>[] {
@@ -171,7 +189,22 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         }
     };
 
-    onEnd = (winner: Color) => {
-        console.log("The game has ended with the winner: " + winner)
+    onEnd = (winner: Color, newConfig: Config<Index, Prop> | undefined) => {
+        this.active = false
+        if (newConfig === undefined) {
+            this.endWindowState.title = winner === Color.WHITE ? "Белые выиграли" : "Черные выиграли"
+            this.diceState.dice1 = null
+            this.diceState.dice2 = null
+            return
+        }
+
+        setTimeout(() => {
+            this.boardAnimationSwitch.withTurnedOff(() => {
+                this.board.updateLogical(newConfig.placement)
+                this.player = newConfig.player
+                this.active = this.player === this.userPlayer
+                this.init(newConfig)
+            })
+        }, 500)
     };
 }

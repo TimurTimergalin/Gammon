@@ -30,7 +30,7 @@ export class BackgammonLabelMapper implements LabelMapper{
         if (pi <= 11) {
             return {
                 black: 24 - pi,
-                white: 13 + pi
+                white: 1 + pi
             }
         } else {
             return {

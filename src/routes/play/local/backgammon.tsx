@@ -1,14 +1,14 @@
-import {RuleSet} from "../../game/game_rule/RuleSet";
-import {useFullGameContext} from "../../game/GameContext";
-import {localGameInit} from "../../game/game_controller/local/factory";
-import {GameAndControlPanelContainer} from "../../components/game_page/GameAndControlPanelContainer";
-import {ControlPanel} from "../../components/game/control_panel/ControlPanel";
-import {GameContextHolder} from "../../components/game/GameContextHolder";
-import {GamePart} from "../../components/game_page/GamePart";
-import {backgammonRuleSet} from "../../game/game_rule/backgammon/RuleSet";
-import GameView from "../../components/game/GameView";
-import {EndWindow} from "../../components/game/end_window/EndWindow";
-import {EndWindowContent} from "./_deps/EndWindowContent";
+import {RuleSet} from "../../../game/game_rule/RuleSet";
+import {useFullGameContext} from "../../../game/GameContext";
+import {localGameInit} from "../../../game/game_controller/local/factory";
+import {GameAndControlPanelContainer} from "../../../components/game_page/GameAndControlPanelContainer";
+import {ControlPanel} from "../../../components/game/control_panel/ControlPanel";
+import {GameContextHolder} from "../../../components/game/GameContextHolder";
+import {GamePart} from "../../../components/game_page/GamePart";
+import {backgammonRuleSet} from "../../../game/game_rule/backgammon/RuleSet";
+import GameView from "../../../components/game/GameView";
+import {EndWindow} from "../../../components/game/end_window/EndWindow";
+import {LocalPlayEndWindowContent} from "./_deps/LocalPlayEndWindowContent";
 import {useSearchParams} from "react-router";
 
 interface LocalGameWindowProps<Index, Prop> {
@@ -37,7 +37,7 @@ const InnerLocalGamePage = <Index, Prop>({ruleset}: LocalGameWindowProps<Index, 
                     <GameView gameController={controller} labelMapper={labelMapper}/>
                 </GamePart>
                 <EndWindow>
-                    <EndWindowContent/>
+                    <LocalPlayEndWindowContent/>
                 </EndWindow>
             </div>
             <ControlPanel/>

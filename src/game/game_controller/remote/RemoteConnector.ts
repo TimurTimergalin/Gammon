@@ -4,31 +4,38 @@ import {logResponseError} from "../../../requests/util";
 import {Move} from "../../board/move";
 import {RemoteMoveMapper} from "../../game_rule/RemoteMoveMapper";
 import {logger} from "../../../logging/main";
+import {Config} from "../../game_rule/ConfigParser";
 
 const console = logger("game/game_controller/remote")
 
-export interface RemoteConnector<Index> {
+export interface RemoteConnector<Index, Prop> {
     subscribe(): void
 
     set onMovesMade(value: (moves: Move<Index>[]) => void)
 
     set onNewDice(value: (dice: [number, number], player: Color) => void)
 
-    set onEnd(value: (winner: Color) => void)
+    set onEnd(value: (winner: Color, next_game: Config<Index, Prop> | undefined) => void)
 
     makeMove(moves: Move<Index>[]): void
 
     unsubscribe(): void
 }
 
-export class RemoteConnectorImpl<RemoteMove, Index> implements RemoteConnector<Index> {
+export class RemoteConnectorImpl<RemoteMove, Index, Prop> implements RemoteConnector<Index, Prop> {
     private readonly moveMapper: RemoteMoveMapper<RemoteMove, Index>
     private readonly roomId: number
+    private readonly configGetter: (roomId: number) => Promise<Config<Index, Prop>>
 
-    constructor(moveMapper: RemoteMoveMapper<RemoteMove, Index>,
-                roomId: number) {
+    constructor({moveMapper, roomId, configGetter}: {
+                    moveMapper: RemoteMoveMapper<RemoteMove, Index>,
+                    roomId: number,
+                    configGetter: (roomId: number) => Promise<Config<Index, Prop>>
+                }
+    ) {
         this.moveMapper = moveMapper;
         this.roomId = roomId
+        this.configGetter = configGetter
     }
 
     makeMove = (moves: Move<Index>[]): void => {
@@ -46,8 +53,8 @@ export class RemoteConnectorImpl<RemoteMove, Index> implements RemoteConnector<I
         this._onNewDice = value;
     }
 
-    private _onEnd: (winner: Color) => void = () => console.warn("No onEnd set")
-    set onEnd(value: (winner: Color) => void) {
+    private _onEnd: (winner: Color, next_game: Config<Index, Prop> | undefined) => void = () => console.warn("No onEnd set")
+    set onEnd(value: (winner: Color, next_game: Config<Index, Prop> | undefined) => void) {
         this._onEnd = value
     }
 
@@ -55,29 +62,36 @@ export class RemoteConnectorImpl<RemoteMove, Index> implements RemoteConnector<I
 
     subscribe = () => {
         this.eventSource = subscribeForEvents(this.roomId)
-        console.log("Subscription initiated")
+        console.debug("Subscription initiated")
         this.eventSource.addEventListener("error", (ev) => {
-            console.log("error, ", ev)
+            console.error(ev)
         })
         this.eventSource.addEventListener("open", () => {
-            console.log("Stream opened")
+            console.debug("Stream opened")
         })
         this.eventSource.onmessage = (ev) => {
-            console.log(ev)
+            console.debug(ev)
             const data = JSON.parse(ev.data)
             if (data.type === undefined) {
                 console.warn("Event without a type encountered: ", ev)
             } else if (data.type === "MOVE_EVENT") {
-                console.log("move event encountered")
+                console.debug("move event encountered")
                 const moves = data.moves as RemoteMove[]
                 this._onMovesMade(moves.map(this.moveMapper.fromRemote))
             } else if (data.type === "TOSS_ZAR_EVENT") {
-                console.log("dice event encountered")
+                console.debug("dice event encountered")
                 const [d1, d2] = data.value
                 const color = data.tossedBy === "WHITE" ? Color.WHITE : Color.BLACK
                 this._onNewDice([d1, d2], color)
-            } else if (data.type === "END_EVENT") {
-                this._onEnd(data.win === "WHITE" ? Color.WHITE: Color.BLACK)
+            } else if (data.type === "END_GAME_EVENT") {
+                const winner = data.win === "WHITE" ? Color.WHITE : Color.BLACK
+                const matchEnd = data.isMatchEnd
+
+                if (matchEnd) {
+                    this._onEnd(winner, undefined)
+                } else {
+                    this.configGetter(this.roomId).then(conf => this._onEnd(winner, conf))
+                }
             } else {
                 console.warn("Ignoring unknown event")
             }

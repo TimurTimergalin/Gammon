@@ -11,7 +11,8 @@ import {logger} from "../../../../logging/main";
 const console = logger("game/game_rule/backgammon/remote_v1")
 
 export class BackgammonConfigParser implements ConfigParser<BackgammonRemoteConfig, BackgammonIndex, BackgammonProp> {
-    mapConfig(config: BackgammonRemoteConfig): Config<BackgammonIndex, BackgammonProp> {
+    mapConfig({gameData}: BackgammonRemoteConfig): Config<BackgammonIndex, BackgammonProp> {
+        const config = gameData
         const toColor = (name: "WHITE" | "BLACK") => name === "WHITE" ? Color.WHITE : Color.BLACK
         const player = toColor(config.turn)
         const userPlayer = toColor(config.color)

@@ -1,20 +1,22 @@
-import {RuleSet} from "../game/game_rule/RuleSet";
-import {RemoteSet} from "../game/game_rule/RemoteSet";
-import {useFullGameContext} from "../game/GameContext";
+import {RuleSet} from "../../../game/game_rule/RuleSet";
+import {RemoteSet} from "../../../game/game_rule/RemoteSet";
+import {useFullGameContext} from "../../../game/GameContext";
 import {useEffect, useRef, useState} from "react";
-import {GameController} from "../game/game_controller/GameController";
-import {LabelMapper} from "../game/game_rule/LabelMapper";
-import {remoteGameInit} from "../game/game_controller/remote/factory";
-import {GameAndControlPanelContainer} from "../components/game_page/GameAndControlPanelContainer";
-import GameView from "../components/game/GameView";
-import {ControlPanel} from "../components/game/control_panel/ControlPanel";
-import {GameContextHolder} from "../components/game/GameContextHolder";
-import {GamePart} from "../components/game_page/GamePart";
-import {logger} from "../logging/main";
-import {backgammonRuleSet} from "../game/game_rule/backgammon/RuleSet";
-import {backgammonRemoteSetV1} from "../game/game_rule/backgammon/remote_v1/RemoteSet";
+import {GameController} from "../../../game/game_controller/GameController";
+import {LabelMapper} from "../../../game/game_rule/LabelMapper";
+import {remoteGameInit} from "../../../game/game_controller/remote/factory";
+import {GameAndControlPanelContainer} from "../../../components/game_page/GameAndControlPanelContainer";
+import GameView from "../../../components/game/GameView";
+import {ControlPanel} from "../../../components/game/control_panel/ControlPanel";
+import {GameContextHolder} from "../../../components/game/GameContextHolder";
+import {GamePart} from "../../../components/game_page/GamePart";
+import {logger} from "../../../logging/main";
+import {backgammonRuleSet} from "../../../game/game_rule/backgammon/RuleSet";
+import {backgammonRemoteSetV1} from "../../../game/game_rule/backgammon/remote_v1/RemoteSet";
 
-import type {Route} from "./+types/play";
+import type {Route} from "../../../../.react-router/types/src/routes/+types";
+import {EndWindow} from "../../../components/game/end_window/EndWindow";
+import {RemotePlayWindowContent} from "./_deps/RemotePlayEndWindowContent";
 
 const console = logger("windows/game")
 
@@ -67,11 +69,16 @@ const InnerRemoteGameWindow = <RemoteConfig, Index, Prop, RemoteMove>(
 
     return (
         <GameAndControlPanelContainer>
-            {gameController !== undefined &&
-                <GamePart displayButtons={true}>
-                    <GameView gameController={gameController} labelMapper={labelMapper_.current}/>
-                </GamePart>
-            }
+            <div style={{width: "100%", height: "100%", position: "relative"}}>
+                {gameController !== undefined &&
+                    <GamePart displayButtons={true}>
+                        <GameView gameController={gameController} labelMapper={labelMapper_.current}/>
+                    </GamePart>
+                }
+                <EndWindow>
+                    <RemotePlayWindowContent/>
+                </EndWindow>
+            </div>
             <ControlPanel/>
         </GameAndControlPanelContainer>
     )

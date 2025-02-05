@@ -4,9 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "react-router dev",
+    "dev": "tsc -b && react-router dev",
     "build": "react-router typegen && tsc -b && react-router build",
     "typegen": "react-router typegen",
+    "typecheck": "tsc -b",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "jest"
