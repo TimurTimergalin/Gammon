@@ -1,8 +1,8 @@
 import {observer} from "mobx-react-lite";
-import {useGameContext} from "../../../game/GameContext.ts";
-import {additionalStyle, imagStyle} from "./common.tsx";
-import {AccentedButton} from "../../AccentedButton.tsx";
-// import {useScreenSpecs} from "../../ui/adapt/ScreenSpecs.ts";
+import {useGameContext} from "../../../game/GameContext";
+import {additionalStyle, imagStyle} from "./common";
+import {AccentedButton} from "../../AccentedButton";
+// import {useScreenSpecs} from "../../ui/adapt/ScreenSpecs";
 
 export const UndoMovesButton = observer(function UndoMovesButton() {
     const gameState = useGameContext("controlButtonsState")

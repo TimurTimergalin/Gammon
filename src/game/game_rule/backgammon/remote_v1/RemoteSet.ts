@@ -1,8 +1,8 @@
-import {RemoteSet} from "../../RemoteSet.ts";
-import {BackgammonRemoteConfig, BackgammonRemoteMove} from "./types.ts";
-import {BackgammonIndex, BackgammonProp} from "../../../board/backgammon/types.ts";
-import {BackgammonConfigParser} from "./ConfigParser.ts";
-import {BackgammonRemoteMoveMapper} from "./RemoteMoveMapper.ts";
+import {RemoteSet} from "../../RemoteSet";
+import {BackgammonRemoteConfig, BackgammonRemoteMove} from "./types";
+import {BackgammonIndex, BackgammonProp} from "../../../board/backgammon/types";
+import {BackgammonConfigParser} from "./ConfigParser";
+import {BackgammonRemoteMoveMapper} from "./RemoteMoveMapper";
 
 export const backgammonRemoteSetV1: RemoteSet<BackgammonRemoteConfig, BackgammonIndex, BackgammonProp, BackgammonRemoteMove> = {
     configParser: new BackgammonConfigParser(),

@@ -1,9 +1,9 @@
 import {useEffect, useRef} from "react";
 import {observer} from "mobx-react-lite";
-import {StacksLayer} from "./StacksLayer.tsx";
-import {useGameContext} from "../../../game/GameContext.ts";
-import {isPrimary, PointEvent, pointX, pointY} from "../../../common/point_event.ts";
-import {useMousePositionRef} from "../../../common/hooks.ts";
+import {StacksLayer} from "./StacksLayer";
+import {useGameContext} from "../../../game/GameContext";
+import {isPrimary, PointEvent, pointX, pointY} from "../../../common/point_event";
+import {useMousePositionRef} from "../../../common/hooks";
 
 
 const PiecesLayer = observer(function PiecesLayer() {

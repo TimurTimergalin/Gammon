@@ -1,9 +1,10 @@
 import {CSSProperties, ReactNode} from "react";
-import {textHeight} from "./size_constants.ts";
-import {useScreenSpecs} from "../adapt/ScreenSpecs.ts";
+import {textHeight} from "./size_constants";
+import {useScreenSpecs} from "../../adapt/ScreenSpecs";
 import {observer} from "mobx-react-lite";
 import styled from "styled-components";
 import {useNavigate} from "react-router";
+import {fontFamily} from "../../common/font";
 
 const PlainTextWithIcon = observer(function TextWithIcon({text, children, className, navigateTo}: {
     text: string,
@@ -37,7 +38,7 @@ const PlainTextWithIcon = observer(function TextWithIcon({text, children, classN
         userSelect: "none",
         color: "white",
         fontSize: `${fontSizeValue}em`,
-        fontFamily: "Comfortaa, serif",
+        fontFamily: `${fontFamily}, sans-serif`,
         fontWeight: 400,
     }
 

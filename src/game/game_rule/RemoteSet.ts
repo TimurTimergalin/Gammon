@@ -1,5 +1,5 @@
-import {ConfigParser} from "./ConfigParser.ts";
-import {RemoteMoveMapper} from "./RemoteMoveMapper.ts";
+import {ConfigParser} from "./ConfigParser";
+import {RemoteMoveMapper} from "./RemoteMoveMapper";
 
 export interface RemoteSet<RemoteConfig, Index, Prop, RemoteMove> {
     configParser: ConfigParser<RemoteConfig, Index, Prop>,

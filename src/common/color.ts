@@ -15,3 +15,11 @@ export function oppositeColor(color: Color) {
     return color === Color.BLACK ? Color.WHITE : Color.BLACK
 }
 
+export const colorDisplayName = (color: Color) => {
+    if (color === Color.WHITE) {
+        return "Белые"
+    }
+
+    return "Черные"
+}
+

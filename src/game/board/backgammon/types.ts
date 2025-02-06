@@ -1,5 +1,5 @@
-import {Color} from "../../../common/color.ts";
-import {CompoundMove, Move} from "../move.ts";
+import {Color} from "../../../common/color";
+import {CompoundMove, Move} from "../move";
 
 export type BackgammonIndex = number | "White Store" | "Black Store" | "White Bar" | "Black Bar"
 export type BackgammonProp = undefined | {color: Color, quantity: number}

@@ -1,11 +1,15 @@
 import {makeAutoObservable} from "mobx";
-import {Color} from "../../../common/color.ts";
+import {Color} from "../../../common/color";
+import {logger} from "../../../logging/main";
+
+const console = logger("game/board/physical")
 
 export interface PieceState {
     color: Color,
     from?: {
         index: number,
-        order: number
+        order: number,
+        total: number
     }
 }
 
@@ -40,6 +44,10 @@ export class PositionState {
         for (const st of this.pieces) {
             st.from = undefined
         }
+    }
+
+    pieceArray(): Color[] {
+        return this.pieces.map(ps => ps.color)
     }
 }
 

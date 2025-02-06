@@ -1,4 +1,4 @@
-import {getTriangleLeft} from "../dimensions/functions.ts";
+import {getTriangleLeft} from "../dimensions/functions";
 import {
     boardHeight,
     boardWidth,
@@ -6,8 +6,8 @@ import {
     sideWidth,
     storeHeight,
     triangleHeight
-} from "../dimensions/board_size_constants.ts";
-import {HintToken} from "./HintToken.tsx";
+} from "../dimensions/board_size_constants";
+import {HintToken} from "./HintToken";
 
 export const MoveHintLayer = () => {
     const tokens = []

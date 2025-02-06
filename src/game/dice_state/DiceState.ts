@@ -1,13 +1,16 @@
-import {DiceStatus} from "./DiceStatus.ts";
+import {DiceStatus} from "./DiceStatus";
 import {makeAutoObservable} from "mobx";
-import {LayerStatus} from "../../components/game/dice_layer/LayerStatus.ts";
+import {LayerStatus} from "../../components/game/dice_layer/LayerStatus";
+import {logger} from "../../logging/main";
+
+const console = logger("game/dice_state")
 
 export class DiceState {
     get dice1(): DiceStatus | null {
         return this._dice1;
     }
 
-    set dice1(value: DiceStatus) {
+    set dice1(value: DiceStatus | null) {
         this._dice1 = value;
     }
 
@@ -15,7 +18,7 @@ export class DiceState {
         return this._dice2;
     }
 
-    set dice2(value: DiceStatus) {
+    set dice2(value: DiceStatus | null) {
         this._dice2 = value;
     }
 

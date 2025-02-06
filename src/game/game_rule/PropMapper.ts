@@ -1,7 +1,7 @@
-import {Color} from "../../common/color.ts";
+import {Color} from "../../common/color";
 
 export interface PropMapper<Prop> {
     logicalToPhysical(prop: Prop): Color[]
 
-    PhysicalToLogical(arr: Color[]): Prop
+    physicalToLogical(arr: Color[]): Prop
 }

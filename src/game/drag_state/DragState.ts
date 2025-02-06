@@ -1,4 +1,4 @@
-import {DragStatus} from "./DragStatus.ts";
+import {DragStatus} from "./DragStatus";
 import {makeAutoObservable} from "mobx";
 
 export class DragState {

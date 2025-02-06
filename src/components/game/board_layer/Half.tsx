@@ -1,5 +1,5 @@
-import {boardHeight, pieceWidth, sideWidth} from "../dimensions/board_size_constants.ts";
-import {boardColor, sideColor} from "./color_constants.ts";
+import {boardHeight, pieceWidth, sideWidth} from "../dimensions/board_size_constants";
+import {boardColor, sideColor} from "./color_constants";
 
 export const Half = ({leftX}: { leftX: number }) => (
     <rect

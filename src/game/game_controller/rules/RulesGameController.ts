@@ -1,13 +1,17 @@
-import {GameController} from "../GameController.ts";
-import {BoardSynchronizer} from "./BoardSynchronizer.ts";
-import {Rules} from "../../game_rule/Rules.ts";
-import {Color} from "../../../common/color.ts";
-import {ControlButtonsState} from "../../ControlButtonsState.ts";
-import {CompoundMove, invertCompound, mergeMoves} from "../../board/move.ts";
-import {IndexMapper} from "../../game_rule/IndexMapper.ts";
-import {DiceState} from "../../dice_state/DiceState.ts";
-import {LegalMovesTracker} from "../../LegalMovesTracker.ts";
-import {LabelState} from "../../LabelState.ts";
+import {GameController} from "../GameController";
+import {Rules} from "../../game_rule/Rules";
+import {Color} from "../../../common/color";
+import {ControlButtonsState} from "../../ControlButtonsState";
+import {CompoundMove, invertCompound, mergeMoves} from "../../board/move";
+import {IndexMapper} from "../../game_rule/IndexMapper";
+import {DiceState} from "../../dice_state/DiceState";
+import {LegalMovesTracker} from "../../LegalMovesTracker";
+import {LabelState} from "../../LabelState";
+import {logger} from "../../../logging/main";
+import {BoardSynchronizer} from "../../board/BoardSynchronizer";
+
+const console = logger("game/game_controller/rules")
+
 
 export abstract class RulesGameController<Index, Prop> implements GameController {
     protected board: BoardSynchronizer<Index, Prop>
@@ -82,11 +86,13 @@ export abstract class RulesGameController<Index, Prop> implements GameController
 
     calculateLegalMoves(pi: number): number[] {
         console.assert(this.active)
+        console.debug("Legal moves calculating from", pi)
         const li = this.indexMapper.physicalToLogical(pi)
         const legalMoves = this.rules.getLegalMoves(this.board.ruleBoard, li, this.player, this.diceState.toDiceArray())
-
+        console.debug(legalMoves)
 
         const res = []
+        this.legalMovesMap.clear()
         for (const move of legalMoves) {
             const toP = this.indexMapper.logicalToPhysical(move.primaryMove.to)
             res.push(toP)
@@ -132,6 +138,7 @@ export abstract class RulesGameController<Index, Prop> implements GameController
 
     quickMove(from: number): void {
         console.assert(this.active)
+        console.debug(this.legalMovesMap)
         const fromL = this.indexMapper.physicalToLogical(from)
         const diceArray = this.diceState.toDiceArray()
         for (const dice of diceArray) {
@@ -139,6 +146,7 @@ export abstract class RulesGameController<Index, Prop> implements GameController
             const shiftedP = this.indexMapper.logicalToPhysical(shifted)
             if (this.legalMovesMap.has(shiftedP)) {
                 const move = this.legalMovesMap.get(shiftedP)!
+                console.assert(move.primaryMove.from === fromL)
                 move.additionalMoves.forEach(this.board.performMoveLogical)
                 move.dice.forEach(this.diceState.useDice)
                 this.board.performMoveLogical(move.primaryMove)

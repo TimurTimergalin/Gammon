@@ -1,7 +1,10 @@
-import {Board} from "../Board.ts";
-import {PositionState, stillPiece} from "./types.ts";
-import {Color} from "../../../common/color.ts";
+import {Board} from "../Board";
+import {PositionState, stillPiece} from "./types";
+import {Color} from "../../../common/color";
 import {makeAutoObservable} from "mobx";
+import {logger} from "../../../logging/main";
+
+const console = logger("game/board/physical")
 
 export class PhysicalBoard implements Board<number, PositionState> {
     constructor() {
@@ -56,13 +59,12 @@ export class PhysicalBoard implements Board<number, PositionState> {
     }
 
     move = (from: number, to: number): void => {
-        // TODO: вынести вычисление координат на уровень компонентов
         const fromProps = this.get(from)
         const fromTotal = fromProps.quantity
         const color = this.remove(from)
 
         const toProps = this.get(to)
-        toProps.add({color: color, from: {index: from, order: fromTotal - 1}})
+        toProps.add({color: color, from: {index: from, order: fromTotal - 1, total: fromTotal}})
         this.board.set(to, toProps)
     };
 
@@ -72,7 +74,7 @@ export class PhysicalBoard implements Board<number, PositionState> {
         }
     };
 
-    update = (map: Map<number, PositionState>) => {
+    update = (map: Iterable<[number, PositionState]>) => {
         this.board = new Map(map)
     };
 }

@@ -1,6 +1,9 @@
-import {BackgammonPlacement, BackgammonIndex, BackgammonProp} from "./types.ts";
-import {Color} from "../../../common/color.ts";
-import {Board} from "../Board.ts";
+import {BackgammonPlacement, BackgammonIndex, BackgammonProp} from "./types";
+import {Color} from "../../../common/color";
+import {Board} from "../Board";
+import {logger} from "../../../logging/main";
+
+const console = logger("game/board/backgammon")
 
 export class BackgammonBoard implements Board<BackgammonIndex, BackgammonProp>{
     constructor(board: BackgammonPlacement) {
@@ -17,7 +20,7 @@ export class BackgammonBoard implements Board<BackgammonIndex, BackgammonProp>{
         }
     }
 
-    private readonly board: BackgammonPlacement
+    private board: BackgammonPlacement
 
     get = (i: BackgammonIndex) => this.board.get(i);
 
@@ -59,5 +62,9 @@ export class BackgammonBoard implements Board<BackgammonIndex, BackgammonProp>{
 
     [Symbol.iterator](): Iterator<[BackgammonIndex, BackgammonProp]> {
         return this.board[Symbol.iterator]()
+    }
+
+    update(src: Iterable<[BackgammonIndex, BackgammonProp]>): void {
+        this.board = new Map(src)
     }
 }

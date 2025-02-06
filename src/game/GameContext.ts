@@ -1,23 +1,33 @@
-import {ControlButtonsState} from "./ControlButtonsState.ts";
-import {HoverTracker} from "./HoverTracker.ts";
+import {ControlButtonsState} from "./ControlButtonsState";
+import {HoverTracker} from "./HoverTracker";
 import {createContext, MutableRefObject, RefObject, useContext} from "react";
-import {forceType} from "../common/typing.ts";
-import {PlayersInfo} from "./player_info/PlayersInfo.ts";
-import {DragState} from "./drag_state/DragState.ts";
-import {DiceState} from "./dice_state/DiceState.ts";
-import {PhysicalBoard} from "./board/physical/PhysicalBoard.ts";
-import {LegalMovesTracker} from "./LegalMovesTracker.ts";
-import {GameController} from "./game_controller/GameController.ts";
-import {LabelState} from "./LabelState.ts";
+import {forceType} from "../common/typing";
+import {PlayersInfo} from "./player_info/PlayersInfo";
+import {DragState} from "./drag_state/DragState";
+import {DiceState} from "./dice_state/DiceState";
+import {PhysicalBoard} from "./board/physical/PhysicalBoard";
+import {LegalMovesTracker} from "./LegalMovesTracker";
+import {GameController} from "./game_controller/GameController";
+import {LabelState} from "./LabelState";
+import {EndWindowState} from "./EndWindowState";
+import {BoardAnimationSwitch} from "./BoardAnimationSwitch";
 
 type Setter<T> = {
     set(_: T): void
 }
 
 export class GameContext {
+    get boardAnimationSwitch(): BoardAnimationSwitch {
+        return this._boardAnimationSwitch.current!;
+    }
+    get endWindowState(): EndWindowState {
+        return this._endWindowState.current!;
+    }
+
     get labelState(): LabelState {
         return this._labelState.current!;
     }
+
     get legalMovesTracker(): LegalMovesTracker {
         return this._legalMovesTracker.current!;
     }
@@ -62,6 +72,8 @@ export class GameContext {
     private _diceState: RefObject<DiceState>
     private _boardState: RefObject<PhysicalBoard>
     private _legalMovesTracker: RefObject<LegalMovesTracker>
+    private _endWindowState: RefObject<EndWindowState>
+    private _boardAnimationSwitch: RefObject<BoardAnimationSwitch>
 
     private _gameController: MutableRefObject<GameController>
     private readonly _gameControllerSetter: Setter<GameController>
@@ -75,7 +87,9 @@ export class GameContext {
                     diceState,
                     boardState,
                     legalMovesTracker,
-                    labelMapperHolder
+                    labelMapperHolder,
+                    endWindowState,
+                    boardAnimationSwitch
                 }: {
                     controlButtonsState: RefObject<ControlButtonsState>,
                     hoverTracker: RefObject<HoverTracker>,
@@ -85,7 +99,9 @@ export class GameContext {
                     diceState: RefObject<DiceState>,
                     boardState: RefObject<PhysicalBoard>,
                     legalMovesTracker: RefObject<LegalMovesTracker>,
-                    labelMapperHolder: RefObject<LabelState>
+                    labelMapperHolder: RefObject<LabelState>,
+                    endWindowState: RefObject<EndWindowState>,
+                    boardAnimationSwitch: RefObject<BoardAnimationSwitch>
                 }
     ) {
         this._controlButtonsState = controlButtonsState;
@@ -97,6 +113,8 @@ export class GameContext {
         this._diceState = diceState
         this._boardState = boardState
         this._legalMovesTracker = legalMovesTracker
+        this._endWindowState = endWindowState
+        this._boardAnimationSwitch = boardAnimationSwitch
 
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const outer = this

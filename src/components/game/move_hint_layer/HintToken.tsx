@@ -1,5 +1,5 @@
 import {observer} from "mobx-react-lite";
-import {useGameContext} from "../../../game/GameContext.ts";
+import {useGameContext} from "../../../game/GameContext";
 
 export const HintToken = observer(function HintToken({cx, cy, index}: {
     cx: number,

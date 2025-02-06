@@ -1,13 +1,14 @@
-import {BoardSynchronizer} from "../rules/BoardSynchronizer.ts";
-import {LocalGameController} from "./LocalGameController.ts";
-import {GameContext} from "../../GameContext.ts";
-import {RuleSet} from "../../game_rule/RuleSet.ts";
-import {Color} from "../../../common/color.ts";
+import {LocalGameController} from "./LocalGameController";
+import {GameContext} from "../../GameContext";
+import {RuleSet} from "../../game_rule/RuleSet";
+import {Color} from "../../../common/color";
+import {BoardSynchronizer} from "../../board/BoardSynchronizer";
 
 export function localGameInit<Index, Prop>(
-    {gameContext, ruleSet}: {
+    {gameContext, ruleSet, pointsUntil}: {
         gameContext: GameContext,
-        ruleSet: RuleSet<Index, Prop>
+        ruleSet: RuleSet<Index, Prop>,
+        pointsUntil: number
     }
 ) {
     const {rules, initPlacement, indexMapperFactory, propMapper} = ruleSet
@@ -28,7 +29,11 @@ export function localGameInit<Index, Prop>(
         indexMapper: indexMapper,
         legalMovesTracker: gameContext.legalMovesTracker,
         rules: rules,
-        labelState: gameContext.labelState
+        labelState: gameContext.labelState,
+        endWindowState: gameContext.endWindowState,
+        boardAnimationSwitch: gameContext.boardAnimationSwitch,
+        initPlacement: initPlacement,
+        pointsUntil: pointsUntil
     })
 
     controller.newTurn(true)

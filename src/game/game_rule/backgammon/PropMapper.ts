@@ -1,6 +1,6 @@
-import {PropMapper} from "../PropMapper.ts";
-import {Color} from "../../../common/color.ts";
-import {BackgammonProp} from "../../board/backgammon/types.ts";
+import {PropMapper} from "../PropMapper";
+import {Color} from "../../../common/color";
+import {BackgammonProp} from "../../board/backgammon/types";
 
 export class BackgammonPropMapper implements PropMapper<BackgammonProp> {
     logicalToPhysical = (prop: BackgammonProp): Color[] => {
@@ -14,7 +14,7 @@ export class BackgammonPropMapper implements PropMapper<BackgammonProp> {
         return res
     };
 
-    PhysicalToLogical = (arr: Color[]): BackgammonProp => {
+    physicalToLogical = (arr: Color[]): BackgammonProp => {
         if (arr.length === 0) {
             return undefined
         }

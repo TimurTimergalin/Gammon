@@ -1,11 +1,11 @@
-import {useMousePosition} from "../../../common/hooks.ts";
-import {boardHeight, boardWidth, pieceWidth, svgOriginX, svgOriginY} from "../dimensions/board_size_constants.ts";
+import {useMousePosition} from "../../../common/hooks";
+import {boardHeight, boardWidth, pieceWidth, svgOriginX, svgOriginY} from "../dimensions/board_size_constants";
 import {TopDownPiece} from "./pieces";
 import {useContext} from "react";
-import {SvgClientRectContext} from "../SvgClientRectContext.ts";
-import {Color} from "../../../common/color.ts";
+import {SvgClientRectContext} from "../SvgClientRectContext";
+import {Color} from "../../../common/color";
 import {observer} from "mobx-react-lite";
-import {useGameContext} from "../../../game/GameContext.ts";
+import {useGameContext} from "../../../game/GameContext";
 
 function clientToSvg(clientX: number, clientY: number, clientRect: DOMRect): [number, number] {
     const svgX = svgOriginX + boardWidth * (clientX - clientRect.left) / (clientRect.width)

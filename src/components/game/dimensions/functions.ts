@@ -8,9 +8,9 @@ import {
     pieceHeight,
     pieceWidth,
     sideWidth
-} from "./board_size_constants.ts";
-import {Direction} from "../pieces_layer/direction.ts";
-import {SideStack, TopDownStack} from "../pieces_layer/stacks.tsx";
+} from "./board_size_constants";
+import {Direction} from "../pieces_layer/direction";
+import {SideStack, TopDownStack} from "../pieces_layer/stacks";
 
 export const getStackDirection = (i: number): Direction => {
     if (i < 12 || i >= 24 && i <= 26) {

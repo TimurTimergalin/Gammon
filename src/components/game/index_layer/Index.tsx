@@ -1,7 +1,7 @@
 import {observer} from "mobx-react-lite";
-import {useGameContext} from "../../../game/GameContext.ts";
-import {Color, colorFill} from "../../../common/color.ts";
-import {pieceWidth} from "../dimensions/board_size_constants.ts";
+import {useGameContext} from "../../../game/GameContext";
+import {Color, colorFill} from "../../../common/color";
+import {pieceWidth} from "../dimensions/board_size_constants";
 
 export const Index = observer(function Index({index, x, y}: { index: number, x: number, y: number }) {
     const labelState = useGameContext("labelState")

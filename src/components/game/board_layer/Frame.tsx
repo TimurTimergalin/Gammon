@@ -1,5 +1,5 @@
-import {boardHeight, frameWidth, sideWidth} from "../dimensions/board_size_constants.ts";
-import {frameColor} from "./color_constants.ts";
+import {boardHeight, frameWidth, sideWidth} from "../dimensions/board_size_constants";
+import {frameColor} from "./color_constants";
 
 export const Frame = ({leftX, width}: { leftX: number, width: number }) => (
     <rect

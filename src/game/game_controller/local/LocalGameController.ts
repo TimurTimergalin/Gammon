@@ -1,19 +1,33 @@
-import {RulesGameController} from "../rules/RulesGameController.ts";
-import {Color, oppositeColor} from "../../../common/color.ts";
-import {DiceStatus} from "../../dice_state/DiceStatus.ts";
-import {LayerStatus} from "../../../components/game/dice_layer/LayerStatus.ts";
-import {BoardSynchronizer} from "../rules/BoardSynchronizer.ts";
-import {ControlButtonsState} from "../../ControlButtonsState.ts";
-import {IndexMapper} from "../../game_rule/IndexMapper.ts";
-import {DiceState} from "../../dice_state/DiceState.ts";
-import {LegalMovesTracker} from "../../LegalMovesTracker.ts";
-import {Rules} from "../../game_rule/Rules.ts";
-import {LabelState} from "../../LabelState.ts";
+import {RulesGameController} from "../rules/RulesGameController";
+import {Color, oppositeColor} from "../../../common/color";
+import {DiceStatus} from "../../dice_state/DiceStatus";
+import {LayerStatus} from "../../../components/game/dice_layer/LayerStatus";
+import {ControlButtonsState} from "../../ControlButtonsState";
+import {IndexMapper} from "../../game_rule/IndexMapper";
+import {DiceState} from "../../dice_state/DiceState";
+import {LegalMovesTracker} from "../../LegalMovesTracker";
+import {Rules} from "../../game_rule/Rules";
+import {LabelState} from "../../LabelState";
+import {logger} from "../../../logging/main";
+import {BoardSynchronizer} from "../../board/BoardSynchronizer";
+import {EndWindowState} from "../../EndWindowState";
+import {InitPlacement} from "../../game_rule/InitPlacement";
+import {BoardAnimationSwitch} from "../../BoardAnimationSwitch";
+
+const console = logger("game/game_controller/local")
+
 
 export class LocalGameController<Index, Prop> extends RulesGameController<Index, Prop> {
+    private endWindowState: EndWindowState
+    private readonly initPlacement: InitPlacement<Index, Prop>
+    private readonly pointsUntil: number
+    private points = {
+        white: 0,
+        black: 0
+    }
+    private boardAnimationSwitch: BoardAnimationSwitch
 
-
-    constructor(args: {
+    constructor({endWindowState, initPlacement, pointsUntil, boardAnimationSwitch, ...args}: {
         board: BoardSynchronizer<Index, Prop>,
         controlButtonsState: ControlButtonsState,
         active: boolean,
@@ -21,9 +35,17 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         indexMapper: IndexMapper<Index>,
         diceState: DiceState,
         legalMovesTracker: LegalMovesTracker,
-        labelState: LabelState
+        labelState: LabelState,
+        endWindowState: EndWindowState,
+        initPlacement: InitPlacement<Index, Prop>,
+        pointsUntil: number,
+        boardAnimationSwitch: BoardAnimationSwitch
     }) {
         super(args);
+        this.endWindowState = endWindowState
+        this.initPlacement = initPlacement
+        this.pointsUntil = pointsUntil
+        this.boardAnimationSwitch = boardAnimationSwitch
     }
 
     private randomDice() {
@@ -40,7 +62,7 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         }
 
         let value2 = this.randomDice()
-        while (value2 === value1) {
+        while (value2 === value1 && color1 !== color2) {
             value2 = this.randomDice()
         }
 
@@ -53,6 +75,10 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
 
         this.diceState.dice1 = dice1
         this.diceState.dice2 = dice2
+
+        if (dice1.value < dice2.value) {
+            this.diceState.swapDice()
+        }
     }
 
     inferCurrentPlayer() {  // Может понадобиться вынести в отдельный класс
@@ -69,7 +95,6 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
             return
         }
         this.player = this.diceState.dice2!.color
-        return
     }
 
     newTurn(first: boolean) {
@@ -83,8 +108,69 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         this.calculateDice()
     }
 
+    checkGameComplete(): { winner: Color } | undefined {
+        if (!this.rules.noMovesLeft(this.board.ruleBoard, this.player)) {
+            return undefined
+        }
+
+
+        return {winner: this.player}
+    }
+
+    checkMatchComplete(): { winner: Color } | undefined {
+        if (this.points.white >= this.pointsUntil) {
+            return {winner: Color.WHITE}
+        }
+
+        if (this.points.black >= this.pointsUntil) {
+            return {winner: Color.BLACK}
+        }
+
+        return undefined
+    }
+
+    newGame() {
+        this.boardAnimationSwitch.withTurnedOff(() => {
+                this.board.updateLogical(this.initPlacement())
+                this.active = true
+                this.newTurn(true)
+            }
+        )
+    }
+
     endTurn(): void {
         this.performedMoves = []
+
+        const gameComplete = this.checkGameComplete()
+        if (gameComplete !== undefined) {
+            this.controlButtonsState.movesMade = false
+            this.controlButtonsState.turnComplete = false
+            this.active = false
+
+            const points = this.rules.calculatePoints(this.board.ruleBoard, gameComplete.winner)
+            if (gameComplete.winner === Color.WHITE) {
+                this.points.white += points
+            } else {
+                this.points.black += points
+            }
+
+            const matchComplete = this.checkMatchComplete()
+
+            if (matchComplete !== undefined) {
+                this.endWindowState.title = matchComplete.winner === Color.WHITE ? "Белые выиграли" : "Черные выиграли"
+
+                this.diceState.dice1 = null
+                this.diceState.dice2 = null
+                return
+            }
+
+            console.log(`Победитель: ${gameComplete.winner === Color.WHITE ? "Белые" : "Черные"}}`)  // TODO: заменить
+            setTimeout(
+                () => this.newGame(),
+                500
+            )
+            return
+        }
         this.player = oppositeColor(this.player)
         this.newTurn(false)
     }

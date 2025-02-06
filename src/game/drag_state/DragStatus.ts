@@ -1,4 +1,4 @@
-import {Color} from "../../common/color.ts";
+import {Color} from "../../common/color";
 
 export interface DragStatus {
     clickX: number

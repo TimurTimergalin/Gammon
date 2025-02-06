@@ -4,17 +4,19 @@ export type BackgammonRemoteMove = {
 }
 
 export interface BackgammonRemoteConfig {
-    color: "BLACK" | "WHITE",
-    turn: "BLACK" | "WHITE",
-    first: boolean,
-    bar: {
-        WHITE: number,
-        BLACK: number
-    },
-    deck: {
+    gameData: {
         color: "BLACK" | "WHITE",
-        count: number,
-        id: number
-    }[],
-    zar: [number, number]
+        turn: "BLACK" | "WHITE",
+        first: boolean,
+        bar: {
+            WHITE: number,
+            BLACK: number
+        },
+        deck: {
+            color: "BLACK" | "WHITE",
+            count: number,
+            id: number
+        }[],
+        zar: [number, number]
+    },
 }
