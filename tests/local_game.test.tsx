@@ -11,7 +11,7 @@ import GameView from "../src/components/game/GameView";
 import {GameController} from "../src/game/game_controller/GameController";
 import {LabelMapper} from "../src/game/game_rule/LabelMapper";
 import {GameContextHolder} from "../src/components/game/GameContextHolder";
-import {render} from "@testing-library/react";
+import {act, render} from "@testing-library/react";
 
 beforeEach(() => {
         window.ResizeObserver = window.ResizeObserver || jest.fn().mockImplementation(() => ({
@@ -55,7 +55,11 @@ const initBackgammonPosition = (gc: GameContext, placement: BackgammonPlacement,
         indexMapper: backgammonRuleSet.indexMapperFactory(Color.WHITE),
         legalMovesTracker: gc.legalMovesTracker,
         rules: backgammonRuleSet.rules,
-        labelState: gc.labelState
+        labelState: gc.labelState,
+        boardAnimationSwitch: gc.boardAnimationSwitch,
+        endWindowState: gc.endWindowState,
+        initPlacement: backgammonRuleSet.initPlacement,
+        pointsUntil: 1
     })
 
     gc.diceState.dice1 = {
@@ -132,13 +136,17 @@ describe("Quick moves", () => {
         let gameContext: GameContext
 
         render(
-            <SetUpBackgammonGame retrieval={(gc) => gameContext = gc} placement={placement} dice={[1, 6]} player={Color.BLACK} />,
-            {
-            }
+            <SetUpBackgammonGame retrieval={(gc) => gameContext = gc} placement={placement} dice={[1, 6]}
+                                 player={Color.BLACK}/>,
+            {}
         )
 
-        gameContext!.gameController.calculateLegalMoves(23)
-        gameContext!.gameController.quickMove(23)
+        act(
+            () => {
+                gameContext!.gameController.calculateLegalMoves(23)
+                gameContext!.gameController.quickMove(23)
+            }
+        )
         expect(gameContext!.boardState.get(17).quantity).toEqual(1)
     })
 })
