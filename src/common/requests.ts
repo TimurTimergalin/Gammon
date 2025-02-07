@@ -1,0 +1,1 @@
+export type FetchType = (input: string | URL | Request, init?: RequestInit) => Promise<Response>

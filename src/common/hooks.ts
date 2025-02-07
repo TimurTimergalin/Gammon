@@ -1,5 +1,15 @@
-import {EffectCallback, MutableRefObject, RefObject, useEffect, useLayoutEffect, useRef, useState} from "react";
-import {pointX, pointY, PointEvent} from "./point_event";
+import {
+    EffectCallback,
+    MutableRefObject,
+    RefObject,
+    useCallback,
+    useEffect,
+    useLayoutEffect,
+    useRef,
+    useState
+} from "react";
+import {PointEvent, pointX, pointY} from "./point_event";
+import {FetchType} from "./requests";
 
 export function useMousePosition(initX: number, initY: number) {
     const [mousePos, setMousePosition] = useState([initX, initY])
@@ -61,4 +71,22 @@ export function useFactoryRef<T>(factory: () => T) {
     }
 
     return ref as MutableRefObject<T>
+}
+
+export function useFetch(): FetchType {
+    const abortControllerRef = useRef(new AbortController())
+
+    useEffect(() => {
+        const abortController = abortControllerRef.current
+        return () => abortController.abort()
+    }, []);
+
+    return useCallback<FetchType>(
+        (input, init) => {
+            if (init?.signal === undefined) {
+                init = {signal: abortControllerRef.current.signal, ...(init || {})}
+            }
+            return fetch(input, init)
+        }, []
+    )
 }

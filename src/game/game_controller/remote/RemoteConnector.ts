@@ -5,6 +5,7 @@ import {Move} from "../../board/move";
 import {RemoteMoveMapper} from "../../game_rule/RemoteMoveMapper";
 import {logger} from "../../../logging/main";
 import {Config} from "../../game_rule/ConfigParser";
+import {FetchType} from "../../../common/requests";
 
 const console = logger("game/game_controller/remote")
 
@@ -29,22 +30,25 @@ export class RemoteConnectorImpl<RemoteMove, Index, Prop> implements RemoteConne
     private readonly moveMapper: RemoteMoveMapper<RemoteMove, Index>
     private readonly roomId: number
     private readonly configGetter: (roomId: number) => Promise<Config<Index, Prop>>
+    private readonly fetch: FetchType
 
     blocked: boolean = false
 
-    constructor({moveMapper, roomId, configGetter}: {
+    constructor({moveMapper, roomId, configGetter, fetch}: {
                     moveMapper: RemoteMoveMapper<RemoteMove, Index>,
                     roomId: number,
-                    configGetter: (roomId: number) => Promise<Config<Index, Prop>>
+                    configGetter: (roomId: number) => Promise<Config<Index, Prop>>,
+                    fetch: FetchType
                 }
     ) {
         this.moveMapper = moveMapper;
         this.roomId = roomId
         this.configGetter = configGetter
+        this.fetch = fetch
     }
 
     makeMove = (moves: Move<Index>[]): void => {
-        finishTurn(this.roomId, moves.map(this.moveMapper.toRemote))
+        finishTurn(this.fetch, this.roomId, moves.map(this.moveMapper.toRemote))
             .then(resp => logResponseError(resp, "making a move"))
     }
 

@@ -1,9 +1,10 @@
 import {configUri, connectUri, eventsUri, finishTurnUri, signInUrl, signUpUrl} from "./paths";
+import {FetchType} from "../common/requests";
 
-export const getConfig = (id: number) => fetch(configUri(id), {credentials: "include"})
+export const getConfig = (fetch: FetchType, id: number) => fetch(configUri(id), {credentials: "include"})
 export const subscribeForEvents = (id: number) => new EventSource(eventsUri(id), {withCredentials: true})
 
-export async function finishTurn<RemoteMoveType>(id: number, moves: RemoteMoveType[]) {
+export async function finishTurn<RemoteMoveType>(fetch: FetchType, id: number, moves: RemoteMoveType[]) {
     return await fetch(
         finishTurnUri(id),
         {
@@ -19,7 +20,7 @@ export async function finishTurn<RemoteMoveType>(id: number, moves: RemoteMoveTy
     )
 }
 
-export const connect = (gameType: string) => fetch(connectUri, {
+export const connect = (fetch: FetchType, gameType: string) => fetch(connectUri, {
     credentials: "include",
     method: "POST",
     body: JSON.stringify({
@@ -35,7 +36,7 @@ export interface SignInCredentials {
     password: string
 }
 
-export const signIn = (credentials: SignInCredentials) => fetch(signInUrl, {
+export const signIn = (fetch: FetchType, credentials: SignInCredentials) => fetch(signInUrl, {
     method: "POST",
     credentials: "include",
     body: JSON.stringify(credentials),
@@ -50,7 +51,7 @@ export interface SignUpCredentials {
     password: string
 }
 
-export const signUp = (credentials: SignUpCredentials) => fetch(signUpUrl, {
+export const signUp = (fetch: FetchType, credentials: SignUpCredentials) => fetch(signUpUrl, {
     method: "POST",
     body: JSON.stringify(credentials),
     headers: {

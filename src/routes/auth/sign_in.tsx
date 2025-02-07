@@ -12,6 +12,7 @@ import {FormStateProvider} from "../../forms/FormStateProvider";
 import {formBaseStyle} from "../../css/forms";
 import {AuthFormInput, AuthFormInputMessage} from "./_deps/common";
 import {logger} from "../../logging/main";
+import {useFetch} from "../../common/hooks";
 
 const console = logger("windows/auth")
 
@@ -20,6 +21,8 @@ const PlainSignInForm = observer(function LoginFormBase({className}: {className?
     const navigate = useNavigate()
 
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
+    
+    const fetch = useFetch()
 
     const onSubmit = useCallback((navigate: NavigateFunction) => {
         formState.enabled = false
@@ -32,7 +35,7 @@ const PlainSignInForm = observer(function LoginFormBase({className}: {className?
         console.assert(typeof credentials.login === "string" && credentials.login !== "")
         console.assert(typeof credentials.password === "string" && credentials.password !== "")
 
-        signIn(credentials as SignInCredentials).then(resp => {
+        signIn(fetch, credentials as SignInCredentials).then(resp => {
             if (!resp.ok) {
                 return resp.text().then(t => `${resp.status}` + (t !== "" ? `: ${t}` : ""))
             }
@@ -45,7 +48,7 @@ const PlainSignInForm = observer(function LoginFormBase({className}: {className?
             setErrorMessage(error.message)
             formState.enabled = true
         })
-    }, [formState])
+    }, [fetch, formState])
 
     return (
         <Form onSubmit={onSubmit} className={className}>

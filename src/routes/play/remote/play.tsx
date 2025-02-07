@@ -17,6 +17,7 @@ import {backgammonRemoteSetV1} from "../../../game/game_rule/backgammon/remote_v
 import type {Route} from "../../../../.react-router/types/src/routes/+types";
 import {EndWindow} from "../../../components/game/end_window/EndWindow";
 import {RemotePlayWindowContent} from "./_deps/RemotePlayEndWindowContent";
+import {useFetch} from "../../../common/hooks";
 
 const console = logger("windows/game")
 
@@ -54,18 +55,21 @@ const InnerRemoteGameWindow = <RemoteConfig, Index, Prop, RemoteMove>(
         }
     }, [cleanup])
 
+    const fetch = useFetch()
+
     useEffect(() => {
         remoteGameInit({
             gameContext: gameContext,
             remoteSet: remoteSet,
             roomId: roomIdParsed,
-            ruleSet: ruleSet
+            ruleSet: ruleSet,
+            fetch: fetch
         }).then(({controller, cleanup, labelMapper}) => {
             setGameController(controller)
             setCleanup({cleanup: cleanup})
             labelMapper_.current = labelMapper
         })
-    }, [gameContext, remoteSet, roomIdParsed, ruleSet]);
+    }, [fetch, gameContext, remoteSet, roomIdParsed, ruleSet]);
 
     return (
         <GameAndControlPanelContainer>

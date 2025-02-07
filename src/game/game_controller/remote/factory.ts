@@ -6,23 +6,25 @@ import {RuleSet} from "../../game_rule/RuleSet";
 import {RemoteConnectorImpl} from "./RemoteConnector";
 import {RemoteGameController} from "./RemoteGameController";
 import {BoardSynchronizer} from "../../board/BoardSynchronizer";
+import {FetchType} from "../../../common/requests";
 
-async function getConfigJson(roomId: number) {
-    const resp = await getConfig(roomId)
+async function getConfigJson(fetch: FetchType, roomId: number) {
+    const resp = await getConfig(fetch, roomId)
     logResponseError(resp, "getting config")
     return await resp.json()
 }
 
 export async function remoteGameInit<RemoteConfig, Index, Prop, RemoteMove>(
-    {remoteSet, ruleSet, roomId, gameContext}: {
+    {remoteSet, ruleSet, roomId, gameContext, fetch}: {
         remoteSet: RemoteSet<RemoteConfig, Index, Prop, RemoteMove>,
         ruleSet: RuleSet<Index, Prop>,
         roomId: number,
-        gameContext: GameContext
+        gameContext: GameContext,
+        fetch: FetchType
     }
 ) {
     const configGetter = async (roomId: number) => {
-        const remoteConfig = await getConfigJson(roomId) as RemoteConfig
+        const remoteConfig = await getConfigJson(fetch, roomId) as RemoteConfig
         return remoteSet.configParser.mapConfig(remoteConfig)
     }
 
@@ -39,7 +41,8 @@ export async function remoteGameInit<RemoteConfig, Index, Prop, RemoteMove>(
     const connector = new RemoteConnectorImpl({
         moveMapper: remoteSet.remoteMoveMapper,
         roomId: roomId,
-        configGetter: configGetter
+        configGetter: configGetter,
+        fetch: fetch
     })
 
     const controller = new RemoteGameController({
