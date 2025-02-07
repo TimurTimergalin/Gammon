@@ -198,12 +198,18 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
             return
         }
 
+        this.connector.blocked = true
         setTimeout(() => {
             this.boardAnimationSwitch.withTurnedOff(() => {
                 this.board.updateLogical(newConfig.placement)
                 this.player = newConfig.player
+
                 this.active = this.player === this.userPlayer
+                this._opponentTurnDisplayed = this.active  // Не-property версии использованы специально
+                this._userDiceReceived = this.active
+
                 this.init(newConfig)
+                this.connector.blocked = false
             })
         }, 500)
     };

@@ -20,12 +20,17 @@ export interface RemoteConnector<Index, Prop> {
     makeMove(moves: Move<Index>[]): void
 
     unsubscribe(): void
+
+    get blocked(): boolean
+    set blocked(val: boolean)
 }
 
 export class RemoteConnectorImpl<RemoteMove, Index, Prop> implements RemoteConnector<Index, Prop> {
     private readonly moveMapper: RemoteMoveMapper<RemoteMove, Index>
     private readonly roomId: number
     private readonly configGetter: (roomId: number) => Promise<Config<Index, Prop>>
+
+    blocked: boolean = false
 
     constructor({moveMapper, roomId, configGetter}: {
                     moveMapper: RemoteMoveMapper<RemoteMove, Index>,
@@ -96,6 +101,12 @@ export class RemoteConnectorImpl<RemoteMove, Index, Prop> implements RemoteConne
                 console.warn("Ignoring unknown event")
             }
         }
+
+        this.eventSource?.addEventListener("message", () => {
+            if (this.blocked) {
+                console.error("Race condition")
+            }
+        })
     }
 
     unsubscribe = () => {

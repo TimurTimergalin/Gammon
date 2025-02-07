@@ -127,6 +127,7 @@ export const GameContextProvider = Context.Provider
 
 export function useGameContext<T extends keyof GameContext>(member: T): GameContext[T] {
     const res = useContext(Context)!
+    console.assert(res !== undefined)
     return new Proxy(res, {
         get(target, prop) {
             if (prop in target[member]) {
