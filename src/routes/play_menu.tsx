@@ -1,6 +1,6 @@
 import {GameAndControlPanelContainer} from "../components/play_menu/GameAndControlPanelContainer";
 import GameView from "../components/game/GameView";
-import {ControlPanel, OptionCallbacks} from "../components/play_menu/control_panel/ControlPanel";
+import {OptionCallbacks} from "../components/play_menu/control_panel/ControlPanel";
 import {NavigateFunction} from "react-router";
 import {connect} from "../requests/requests";
 import {logResponseError} from "../requests/util";
@@ -10,6 +10,9 @@ import {LocalGameOption} from "../components/play_menu/control_panel/LocalGameOp
 import {GamePart} from "../components/game_page/GamePart";
 import {logger} from "../logging/main";
 import {FetchType} from "../common/requests";
+import {ControlPanel} from "../components/play_menu/new_control_panel/ControlPanel";
+import {RemoteGameTab} from "../components/play_menu/new_control_panel/RemoteGameTab";
+import {LocalGameTab} from "../components/play_menu/new_control_panel/LocalGameTab";
 
 const console = logger("windows/play_menu")
 
@@ -43,7 +46,10 @@ export const PlayMenuPage = () => {
                     }}>
                     <GameView gameController={new DummyGameController()}/>
                 </GamePart>
-                <ControlPanel options={options}/>
+                <ControlPanel options={["Игра по сети", "Локальная игра"]}>
+                    <RemoteGameTab />
+                    <LocalGameTab />
+                </ControlPanel>
             </GameAndControlPanelContainer>
         </GameContextHolder>
     )

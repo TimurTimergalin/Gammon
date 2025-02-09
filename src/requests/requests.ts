@@ -1,4 +1,4 @@
-import {configUri, connectUri, eventsUri, finishTurnUri, signInUrl, signUpUrl} from "./paths";
+import {configUri, connectUri, disconnectUri, eventsUri, finishTurnUri, signInUrl, signUpUrl} from "./paths";
 import {FetchType} from "../common/requests";
 
 export const getConfig = (fetch: FetchType, id: number) => fetch(configUri(id), {credentials: "include"})
@@ -29,6 +29,11 @@ export const connect = (fetch: FetchType, gameType: string) => fetch(connectUri,
     headers: {
         "Content-Type": "application/json"
     }
+})
+
+export const disconnect = (fetch: FetchType) => fetch(disconnectUri, {
+    credentials: "include",
+    method: "POST"
 })
 
 export interface SignInCredentials {
