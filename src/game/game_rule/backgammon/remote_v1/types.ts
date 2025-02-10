@@ -20,5 +20,6 @@ export interface BackgammonRemoteConfig {
         zar: [number, number]
     },
     blackPoints: number,
-    whitePoints: number
+    whitePoints: number,
+    threshold: number
 }

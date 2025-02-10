@@ -73,20 +73,26 @@ export function useFactoryRef<T>(factory: () => T) {
     return ref as MutableRefObject<T>
 }
 
-export function useFetch(): FetchType {
+export function useFetch(): [FetchType, (() => Promise<void>)[]] {
     const abortControllerRef = useRef(new AbortController())
+    const cleanupsRef = useRef<(() => Promise<void>)[]>([])
 
     useEffect(() => {
         const abortController = abortControllerRef.current
-        return () => abortController.abort()
+        const cleanups = cleanupsRef.current
+        return () => {
+            Promise.all(cleanups.map(cleanup => cleanup())).then(
+                () => abortController.abort("Component de-render")
+            )
+        }
     }, []);
 
-    return useCallback<FetchType>(
+    return [useCallback<FetchType>(
         (input, init) => {
             if (init?.signal === undefined) {
                 init = {signal: abortControllerRef.current.signal, ...(init || {})}
             }
             return fetch(input, init)
         }, []
-    )
+    ), cleanupsRef.current]
 }

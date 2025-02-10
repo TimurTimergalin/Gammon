@@ -59,8 +59,7 @@ const initBackgammonPosition = (gc: GameContext, placement: BackgammonPlacement,
         boardAnimationSwitch: gc.boardAnimationSwitch,
         endWindowState: gc.endWindowState,
         scoreState: gc.scoreState,
-        initPlacement: backgammonRuleSet.initPlacement,
-        pointsUntil: 1
+        initPlacement: backgammonRuleSet.initPlacement
     })
 
     gc.diceState.dice1 = {

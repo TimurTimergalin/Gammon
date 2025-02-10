@@ -9,7 +9,8 @@ export interface Config<Index, Prop> {
     userPlayer: Color  // Цвет пользователя,
     points: {
         white: number,
-        black: number
+        black: number,
+        total: number
     }
 }
 

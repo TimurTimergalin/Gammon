@@ -20,16 +20,18 @@ export async function finishTurn<RemoteMoveType>(fetch: FetchType, id: number, m
     )
 }
 
-export const connect = (fetch: FetchType, gameType: string) => fetch(connectUri, {
-    credentials: "include",
-    method: "POST",
-    body: JSON.stringify({
-        type: gameType
-    }),
-    headers: {
-        "Content-Type": "application/json"
-    }
-})
+export const connect = (fetch: FetchType, gameType: string, points: number) =>
+    fetch(connectUri, {
+        credentials: "include",
+        method: "POST",
+        body: JSON.stringify({
+            type: gameType,
+            points: points
+        }),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
 
 export const disconnect = (fetch: FetchType) => fetch(disconnectUri, {
     credentials: "include",

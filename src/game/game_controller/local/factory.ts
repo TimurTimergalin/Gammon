@@ -33,10 +33,10 @@ export function localGameInit<Index, Prop>(
         endWindowState: gameContext.endWindowState,
         boardAnimationSwitch: gameContext.boardAnimationSwitch,
         initPlacement: initPlacement,
-        pointsUntil: pointsUntil,
         scoreState: gameContext.scoreState
     })
 
+    gameContext.scoreState.total = pointsUntil
     controller.newTurn(true)
     return {controller: controller, labelMapper: ruleSet.labelMapperFactory(Color.WHITE)}
 }

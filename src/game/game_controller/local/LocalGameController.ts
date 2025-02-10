@@ -25,7 +25,7 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
     private points: ScoreState
     private boardAnimationSwitch: BoardAnimationSwitch
 
-    constructor({endWindowState, initPlacement, pointsUntil, boardAnimationSwitch, scoreState, ...args}: {
+    constructor({endWindowState, initPlacement, boardAnimationSwitch, scoreState, ...args}: {
         board: BoardSynchronizer<Index, Prop>,
         controlButtonsState: ControlButtonsState,
         active: boolean,
@@ -36,14 +36,13 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         labelState: LabelState,
         endWindowState: EndWindowState,
         initPlacement: InitPlacement<Index, Prop>,
-        pointsUntil: number,
         boardAnimationSwitch: BoardAnimationSwitch,
         scoreState: ScoreState
     }) {
         super(args);
         this.endWindowState = endWindowState
         this.initPlacement = initPlacement
-        this.pointsUntil = pointsUntil
+        this.pointsUntil = scoreState.total
         this.boardAnimationSwitch = boardAnimationSwitch
         this.points = scoreState
     }

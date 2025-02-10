@@ -22,7 +22,7 @@ const PlainSignInForm = observer(function LoginFormBase({className}: {className?
 
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
     
-    const fetch = useFetch()
+    const [fetch] = useFetch()
 
     const onSubmit = useCallback((navigate: NavigateFunction) => {
         formState.enabled = false

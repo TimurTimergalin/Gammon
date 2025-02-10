@@ -37,7 +37,7 @@ export const GameContextHolder = ({children}: { children: ReactNode | ReactNode[
     const labelMapperHolder = useFactoryRef(() => new LabelState())
     const endWindowState = useFactoryRef(() => new EndWindowState())
     const boardAnimationSwitch = useFactoryRef(() => new BoardAnimationSwitch(true))
-    const scoreState = useFactoryRef(() => new ScoreState({white: 0, black: 0}))
+    const scoreState = useFactoryRef(() => new ScoreState({white: 0, black: 0, total: 0}))
 
     const gameContext = useFactoryRef(() => new GameContext({
         controlButtonsState: controlButtonsState,

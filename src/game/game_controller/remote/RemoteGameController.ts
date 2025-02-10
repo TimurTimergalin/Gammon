@@ -102,6 +102,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         this.calculateDice()
         this.scoreState.white = config.points.white
         this.scoreState.black = config.points.black
+        this.scoreState.total = config.points.total
     }
 
     private splitMove(move: Move<Index>, diceUsed: number[], player: Color): Move<Index>[] {
