@@ -57,7 +57,8 @@ export async function remoteGameInit<RemoteConfig, Index, Prop, RemoteMove>(
         userPlayer: config.userPlayer,
         labelState: gameContext.labelState,
         endWindowState: gameContext.endWindowState,
-        boardAnimationSwitch: gameContext.boardAnimationSwitch
+        boardAnimationSwitch: gameContext.boardAnimationSwitch,
+        scoreState: gameContext.scoreState
     })
 
     controller.init(config)

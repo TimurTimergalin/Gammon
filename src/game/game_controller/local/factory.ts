@@ -33,7 +33,8 @@ export function localGameInit<Index, Prop>(
         endWindowState: gameContext.endWindowState,
         boardAnimationSwitch: gameContext.boardAnimationSwitch,
         initPlacement: initPlacement,
-        pointsUntil: pointsUntil
+        pointsUntil: pointsUntil,
+        scoreState: gameContext.scoreState
     })
 
     controller.newTurn(true)

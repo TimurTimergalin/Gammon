@@ -12,6 +12,7 @@ import {DummyGameController} from "../../game/game_controller/DummyGameControlle
 import {LabelState} from "../../game/LabelState";
 import {EndWindowState} from "../../game/EndWindowState";
 import {BoardAnimationSwitch} from "../../game/BoardAnimationSwitch";
+import {ScoreState} from "../../game/ScoreState";
 
 export const GameContextHolder = ({children}: { children: ReactNode | ReactNode[] }) => {
     const controlButtonsState = useFactoryRef(() => new ControlButtonsState())
@@ -36,6 +37,7 @@ export const GameContextHolder = ({children}: { children: ReactNode | ReactNode[
     const labelMapperHolder = useFactoryRef(() => new LabelState())
     const endWindowState = useFactoryRef(() => new EndWindowState())
     const boardAnimationSwitch = useFactoryRef(() => new BoardAnimationSwitch(true))
+    const scoreState = useFactoryRef(() => new ScoreState({white: 0, black: 0}))
 
     const gameContext = useFactoryRef(() => new GameContext({
         controlButtonsState: controlButtonsState,
@@ -48,7 +50,8 @@ export const GameContextHolder = ({children}: { children: ReactNode | ReactNode[
         playersInfo: playersInfo,
         labelMapperHolder: labelMapperHolder,
         endWindowState: endWindowState,
-        boardAnimationSwitch: boardAnimationSwitch
+        boardAnimationSwitch: boardAnimationSwitch,
+        scoreState: scoreState
     }))
 
     return (

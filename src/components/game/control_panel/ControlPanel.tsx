@@ -1,9 +1,14 @@
-export const ControlPanel = () => {
+import {observer} from "mobx-react-lite";
+import {useGameContext} from "../../../game/GameContext";
+
+export const ControlPanel = observer(function ControlPanel() {
+    const scoreState = useGameContext("scoreState")
+
     return (
         <div style={{
             backgroundColor: "white", flex: 1, textAlign: "center", color: "black"
         }}>
-            Во время игры здесь будет история ходов. В главном меню здесь будет выбор режима
+            {scoreState.white} : {scoreState.black}
         </div>
     )
-}
+})

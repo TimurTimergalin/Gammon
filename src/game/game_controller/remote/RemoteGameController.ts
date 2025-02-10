@@ -16,6 +16,7 @@ import {BoardSynchronizer} from "../../board/BoardSynchronizer";
 import {Config} from "../../game_rule/ConfigParser";
 import {EndWindowState} from "../../EndWindowState";
 import {BoardAnimationSwitch} from "../../BoardAnimationSwitch";
+import {ScoreState} from "../../ScoreState";
 
 const console = logger("game/game_controller/remote")
 
@@ -63,7 +64,9 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         this.updateActivity()
     }
 
-    constructor({connector, userPlayer, player, endWindowState, boardAnimationSwitch, ...base}: {
+    private scoreState: ScoreState
+
+    constructor({connector, userPlayer, player, endWindowState, boardAnimationSwitch, scoreState, ...base}: {
         board: BoardSynchronizer<Index, Prop>,
         controlButtonsState: ControlButtonsState,
         player: Color,
@@ -75,7 +78,8 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         userPlayer: Color,
         labelState: LabelState,
         endWindowState: EndWindowState,
-        boardAnimationSwitch: BoardAnimationSwitch
+        boardAnimationSwitch: BoardAnimationSwitch,
+        scoreState: ScoreState
     }) {
         const active = player === userPlayer
         super({...base, active: active});
@@ -86,6 +90,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         this._userDiceReceived = active
         this.endWindowState = endWindowState
         this.boardAnimationSwitch = boardAnimationSwitch
+        this.scoreState = scoreState
     }
 
     init(config: Config<Index, Prop>) {
@@ -95,6 +100,8 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
             this.diceState.swapDice()
         }
         this.calculateDice()
+        this.scoreState.white = config.points.white
+        this.scoreState.black = config.points.black
     }
 
     private splitMove(move: Move<Index>, diceUsed: number[], player: Color): Move<Index>[] {
