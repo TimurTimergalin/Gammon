@@ -1,6 +1,6 @@
 import {ReactNode, useCallback, useRef} from "react";
 import {useLayoutMeasure} from "../common/hooks";
-import {ScreenSpecs, ScreenSpecsProvider} from "../adapt/ScreenSpecs";
+import {ScreenSpecs, ScreenSpecsProvider} from "../controller/adapt/ScreenSpecs";
 import {Outlet} from "react-router";
 
 const Adapter = (({children}: {

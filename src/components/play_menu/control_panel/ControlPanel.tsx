@@ -1,6 +1,6 @@
 import {CSSProperties, ReactNode, useState} from "react";
 import {observer} from "mobx-react-lite";
-import {useScreenSpecs} from "../../../adapt/ScreenSpecs";
+import {useScreenSpecs} from "../../../controller/adapt/ScreenSpecs";
 import {PlayButton} from "./PlayButton";
 import {NavigateFunction, useNavigate} from "react-router";
 import {logger} from "../../../logging/main";

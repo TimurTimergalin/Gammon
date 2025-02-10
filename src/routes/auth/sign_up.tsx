@@ -1,16 +1,16 @@
 import {observer} from "mobx-react-lite";
-import {useFormState} from "../../forms/FormState";
+import {useFormState} from "../../controller/forms/FormState";
 import {Link, NavigateFunction, useNavigate} from "react-router";
 import {useCallback, useState} from "react";
 import {signUp, SignUpCredentials} from "../../requests/requests";
 import {Form} from "../../components/forms/Form";
 import {AuthFormInput, AuthFormInputMessage} from "./_deps/common";
-import {ComplexValidator, required} from "../../forms/validators";
+import {ComplexValidator, required} from "../../controller/forms/validators";
 import {AccentedButton} from "../../components/AccentedButton";
 import {authButtonStyle, authFormStyle} from "./_deps/styles";
 import styled from "styled-components";
 import {formBaseStyle} from "../../css/forms";
-import {FormStateProvider} from "../../forms/FormStateProvider";
+import {FormStateProvider} from "../../controller/forms/FormStateProvider";
 import {logger} from "../../logging/main";
 import {useFetch} from "../../common/hooks";
 

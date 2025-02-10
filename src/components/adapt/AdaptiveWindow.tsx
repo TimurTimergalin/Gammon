@@ -1,5 +1,5 @@
 import {ReactNode} from "react";
-import {useScreenSpecs} from "../../adapt/ScreenSpecs";
+import {useScreenSpecs} from "../../controller/adapt/ScreenSpecs";
 import {observer} from "mobx-react-lite";
 
 export const AdaptiveWindow = observer(function AdaptiveWindow({children}: {
