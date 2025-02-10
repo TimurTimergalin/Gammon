@@ -1,9 +1,11 @@
 import {CSSProperties, ReactNode, useState} from "react";
 import {observer} from "mobx-react-lite";
-import {useScreenSpecs} from "../../../adapt/ScreenSpecs";
+import {useScreenSpecs} from "../../../controller/adapt/ScreenSpecs";
 import {PlayButton} from "./PlayButton";
 import {NavigateFunction, useNavigate} from "react-router";
 import {logger} from "../../../logging/main";
+import {FetchType} from "../../../common/requests";
+import {useFetch} from "../../../common/hooks";
 
 const console = logger("windows/play_menu/control_panel")
 
@@ -39,7 +41,7 @@ const OptionTab = observer(function OptionTab({chosen, position, callback, name}
 
 export interface OptionCallbacks {
     element: () => ReactNode,
-    playCallback: (navigate: NavigateFunction) => void
+    playCallback: (navigate: NavigateFunction, fetch: FetchType) => void
 }
 
 export const ControlPanel = observer(function ControlPanel({options}: {
@@ -83,6 +85,7 @@ export const ControlPanel = observer(function ControlPanel({options}: {
     }
 
     const TabPage = options.get(chosenOption)!.element
+    const fetch = useFetch()
 
     return (
         <div style={{
@@ -114,7 +117,7 @@ export const ControlPanel = observer(function ControlPanel({options}: {
                 flexDirection: "row",
                 justifyContent: "center"
             }}>
-                <PlayButton callback={() => options.get(chosenOption)!.playCallback(navigate)}/>
+                <PlayButton callback={() => options.get(chosenOption)!.playCallback(navigate, fetch)}/>
             </div>
         </div>
     )

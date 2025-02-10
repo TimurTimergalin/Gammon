@@ -1,6 +1,6 @@
 import {observer} from "mobx-react-lite";
 import {CSSProperties, ReactNode} from "react";
-import {useScreenSpecs} from "../../adapt/ScreenSpecs";
+import {useScreenSpecs} from "../../controller/adapt/ScreenSpecs";
 import {logger} from "../../logging/main";
 
 const console = logger("windows/play_menu")

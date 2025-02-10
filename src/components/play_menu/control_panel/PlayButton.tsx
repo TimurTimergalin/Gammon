@@ -1,6 +1,6 @@
 import {CSSProperties} from "react";
 import {observer} from "mobx-react-lite";
-import {useScreenSpecs} from "../../../adapt/ScreenSpecs";
+import {useScreenSpecs} from "../../../controller/adapt/ScreenSpecs";
 import {AccentedButton} from "../../AccentedButton";
 
 export const PlayButton = observer(function PlayButton({callback}: {

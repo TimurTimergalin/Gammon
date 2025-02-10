@@ -6,6 +6,7 @@ import {AccentedButton} from "../../../../components/AccentedButton";
 import {endWindowButtonStyle, endWindowContentStyle, returnToMenuButtonStyle} from "../../_deps/styles";
 import styled from "styled-components";
 import {useGameContext} from "../../../../game/GameContext";
+import {useFetch} from "../../../../common/hooks";
 
 const ReturnToMenuButton = (props: ComponentProps<"button">) => {
     const navigate = useNavigate()
@@ -20,9 +21,11 @@ const NewGameButton = (props: ComponentProps<"button">) => {
     const navigate = useNavigate()
     const endWindowState = useGameContext("endWindowState")
 
+    const fetch = useFetch()
+
     const onClick = () => {
         setDisabled(true)
-        connect("SHORT_BACKGAMMON")
+        connect(fetch, "SHORT_BACKGAMMON")
             .then(resp => {
                 logResponseError(resp, "connecting to a game")
                 return resp.text()

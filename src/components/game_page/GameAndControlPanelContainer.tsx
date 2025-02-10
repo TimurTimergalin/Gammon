@@ -2,7 +2,7 @@ import {CSSProperties, ReactNode} from "react";
 import {GameViewAdapter} from "./GameViewAdapter";
 import {ControlPanelAdapter} from "./ControlPanelAdapter";
 import {observer} from "mobx-react-lite";
-import {useScreenSpecs} from "../../adapt/ScreenSpecs";
+import {useScreenSpecs} from "../../controller/adapt/ScreenSpecs";
 
 export const GameAndControlPanelContainer = observer(function GameAndControlPanelContainer({children}: {
     children: [ReactNode, ReactNode]

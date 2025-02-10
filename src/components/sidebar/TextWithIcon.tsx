@@ -1,6 +1,6 @@
 import {CSSProperties, ReactNode} from "react";
 import {textHeight} from "./size_constants";
-import {useScreenSpecs} from "../../adapt/ScreenSpecs";
+import {useScreenSpecs} from "../../controller/adapt/ScreenSpecs";
 import {observer} from "mobx-react-lite";
 import styled from "styled-components";
 import {useNavigate} from "react-router";

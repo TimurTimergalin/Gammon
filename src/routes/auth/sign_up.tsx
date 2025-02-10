@@ -1,17 +1,18 @@
 import {observer} from "mobx-react-lite";
-import {useFormState} from "../../forms/FormState";
+import {useFormState} from "../../controller/forms/FormState";
 import {Link, NavigateFunction, useNavigate} from "react-router";
 import {useCallback, useState} from "react";
 import {signUp, SignUpCredentials} from "../../requests/requests";
 import {Form} from "../../components/forms/Form";
 import {AuthFormInput, AuthFormInputMessage} from "./_deps/common";
-import {ComplexValidator, required} from "../../forms/validators";
+import {ComplexValidator, required} from "../../controller/forms/validators";
 import {AccentedButton} from "../../components/AccentedButton";
 import {authButtonStyle, authFormStyle} from "./_deps/styles";
 import styled from "styled-components";
 import {formBaseStyle} from "../../css/forms";
-import {FormStateProvider} from "../../forms/FormStateProvider";
+import {FormStateProvider} from "../../controller/forms/FormStateProvider";
 import {logger} from "../../logging/main";
+import {useFetch} from "../../common/hooks";
 
 const console = logger("windows/auth")
 
@@ -35,6 +36,8 @@ const PlainSignUpForm = observer(function SignUpForm({className}: { className?: 
 
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
+    const fetch = useFetch()
+
     const onSubmit = useCallback((navigate: NavigateFunction) => {
         formState.enabled = false
         const data = formState.formData!
@@ -48,7 +51,7 @@ const PlainSignUpForm = observer(function SignUpForm({className}: { className?: 
         console.assert(typeof credentials.username === "string" && credentials.username !== "")
         console.assert(typeof credentials.password === "string" && credentials.password !== "")
 
-        signUp(credentials as SignUpCredentials).then(resp => {
+        signUp(fetch, credentials as SignUpCredentials).then(resp => {
             if (!resp.ok) {
                 return resp.text().then(t => `${resp.status}` + (t !== "" ? `: ${t}` : ""))
             }
@@ -61,7 +64,7 @@ const PlainSignUpForm = observer(function SignUpForm({className}: { className?: 
             setErrorMessage(error.message)
             formState.enabled = true
         })
-    }, [formState])
+    }, [fetch, formState])
 
     return (
         <Form onSubmit={onSubmit} className={className}>

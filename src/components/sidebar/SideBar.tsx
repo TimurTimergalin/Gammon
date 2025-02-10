@@ -1,7 +1,7 @@
 import {CSSProperties, useCallback, useState} from "react";
 import {Logo} from "./Logo";
 import {TextWithIcon} from "./TextWithIcon";
-import {useScreenSpecs} from "../../adapt/ScreenSpecs";
+import {useScreenSpecs} from "../../controller/adapt/ScreenSpecs";
 import {observer} from "mobx-react-lite";
 import {Dice} from "../game/dice_layer/dice";
 import {Color} from "../../common/color";
