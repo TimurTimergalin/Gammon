@@ -36,6 +36,6 @@ export const ControlPanel = styled(PlainControlPanel)`
     
     & > :nth-child(3) {
         width: 100%;
-        height: 30px;
+        height: 38px;
     }
 `
