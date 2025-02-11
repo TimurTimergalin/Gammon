@@ -1,4 +1,5 @@
 import styled, {css} from "styled-components";
+import {useGameContext} from "../../../game/GameContext";
 
 const buttonStyle = css`
     & {
@@ -25,8 +26,9 @@ const buttonStyle = css`
 `
 
 const PlainSwapBoardButton = ({className}: { className?: string }) => {
+    const gameController = useGameContext("gameController")
     return (
-        <button className={className} type={"button"}>
+        <button className={className} type={"button"} onClick={() => gameController.swapBoard()}>
             <img src={"/swap_board.svg"} alt={"Повернуть доску"} title={"Перевернуть доску"} />
         </button>
     )

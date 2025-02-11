@@ -22,4 +22,6 @@ export interface GameController {
     endTurn(): void
 
     swapDice(): void
+
+    swapBoard(): void
 }

@@ -23,9 +23,8 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
     private readonly initPlacement: InitPlacement<Index, Prop>
     private readonly pointsUntil: number
     private points: ScoreState
-    private boardAnimationSwitch: BoardAnimationSwitch
 
-    constructor({endWindowState, initPlacement, boardAnimationSwitch, scoreState, ...args}: {
+    constructor({endWindowState, initPlacement, scoreState, ...args}: {
         board: BoardSynchronizer<Index, Prop>,
         controlButtonsState: ControlButtonsState,
         active: boolean,
@@ -37,13 +36,12 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         endWindowState: EndWindowState,
         initPlacement: InitPlacement<Index, Prop>,
         boardAnimationSwitch: BoardAnimationSwitch,
-        scoreState: ScoreState
+        scoreState: ScoreState,
     }) {
         super(args);
         this.endWindowState = endWindowState
         this.initPlacement = initPlacement
         this.pointsUntil = scoreState.total
-        this.boardAnimationSwitch = boardAnimationSwitch
         this.points = scoreState
     }
 
@@ -172,5 +170,9 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         }
         this.player = oppositeColor(this.player)
         this.newTurn(false)
+    }
+
+    swapBoard(): void {
+        this._swapBoard()
     }
 }

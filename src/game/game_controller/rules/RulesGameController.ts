@@ -9,6 +9,7 @@ import {LegalMovesTracker} from "../../LegalMovesTracker";
 import {LabelState} from "../../LabelState";
 import {logger} from "../../../logging/main";
 import {BoardSynchronizer} from "../../board/BoardSynchronizer";
+import {BoardAnimationSwitch} from "../../BoardAnimationSwitch";
 
 const console = logger("game/game_controller/rules")
 
@@ -22,6 +23,7 @@ export abstract class RulesGameController<Index, Prop> implements GameController
     protected legalMovesTracker: LegalMovesTracker
     protected diceState: DiceState
     protected rules: Rules<Index, Prop>
+    protected boardAnimationSwitch: BoardAnimationSwitch
 
     private legalMovesMap: Map<number, CompoundMove<Index>> = new Map()
     private indexMapper: IndexMapper<Index>
@@ -36,8 +38,28 @@ export abstract class RulesGameController<Index, Prop> implements GameController
         this.labelState.color = color
     }
 
+    protected _swapBoard() {
+        this.boardAnimationSwitch.withTurnedOff(
+            () => {
+                this.labelState.labelMapper = this.labelState.labelMapper?.flipped()
+                this.indexMapper = this.indexMapper.flipped()
+                this.board.swapBoard()
+            }
+        )
+    }
+
     protected constructor(
-        {board, controlButtonsState, active, rules, indexMapper, diceState, legalMovesTracker, labelState}: {
+        {
+            board,
+            controlButtonsState,
+            active,
+            rules,
+            indexMapper,
+            diceState,
+            legalMovesTracker,
+            labelState,
+            boardAnimationSwitch
+        }: {
             board: BoardSynchronizer<Index, Prop>,
             controlButtonsState: ControlButtonsState,
             active: boolean,
@@ -45,7 +67,8 @@ export abstract class RulesGameController<Index, Prop> implements GameController
             indexMapper: IndexMapper<Index>,
             diceState: DiceState,
             legalMovesTracker: LegalMovesTracker,
-            labelState: LabelState
+            labelState: LabelState,
+            boardAnimationSwitch: BoardAnimationSwitch
         }
     ) {
         this.board = board;
@@ -56,9 +79,12 @@ export abstract class RulesGameController<Index, Prop> implements GameController
         this.diceState = diceState;
         this.legalMovesTracker = legalMovesTracker
         this.labelState = labelState
+        this.boardAnimationSwitch = boardAnimationSwitch
     }
 
     abstract endTurn(): void;
+
+    abstract swapBoard(): void;
 
     protected checkTurnComplete() {
         const diceArray = this.diceState.toDiceArray()
