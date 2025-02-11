@@ -3,13 +3,14 @@ import {useGameContext} from "../../game/GameContext";
 import {ReactNode, useEffect} from "react";
 import {PlayerIcon} from "../game/players/PlayerIcon";
 import {ButtonPanel} from "../game/buttons/ButtonPanel";
+import {observer} from "mobx-react-lite";
 
-export const GamePart = ({player1, player2, children, displayButtons = false}: {
+export const GamePart = observer(function GamePart({player1, player2, children, displayButtons = false}: {
     player1?: PlayerState,
     player2?: PlayerState,
     children: ReactNode,
     displayButtons?: boolean
-}) => {
+}) {
     const playersInfo = useGameContext("playersInfo")
 
     useEffect(() => {
@@ -35,4 +36,4 @@ export const GamePart = ({player1, player2, children, displayButtons = false}: {
             </div>
         </>
     )
-}
+})
