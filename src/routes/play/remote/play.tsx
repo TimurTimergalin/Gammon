@@ -55,7 +55,7 @@ const InnerRemoteGameWindow = <RemoteConfig, Index, Prop, RemoteMove>(
         }
     }, [cleanup])
 
-    const fetch = useFetch()
+    const [fetch] = useFetch()
 
     useEffect(() => {
         remoteGameInit({

@@ -8,6 +8,9 @@ import {logResponseError} from "../../../requests/util";
 import {playUri} from "../../../requests/paths";
 import styled from "styled-components";
 import {firstEntryMargin, playButtonStyle, tabEntryStyle} from "./style";
+import {logger} from "../../../logging/main";
+
+const console = logger("components/play_menu/new_control_panel")
 
 const AnimateEllipsis = ({children}: { children: string }) => {
     const [numberOfDots, setNumberOfDots] = useState(3)
@@ -44,7 +47,7 @@ const PlainRemoteGameTab = ({className}: { className?: string }) => {
     const pointsUntil = useRef(0)
     const startedConnection = useRef(false)
     const navigate = useNavigate()
-    const fetch = useFetch()
+    const [fetch, fetchCleanups] = useFetch()
 
     const gameModes = ["Короткие нарды"]
     const pointsOptions = ["1", "3", "5", "7"]
@@ -52,7 +55,11 @@ const PlainRemoteGameTab = ({className}: { className?: string }) => {
     const callback = useCallback(() => {
         startedConnection.current = true
         const gameMode = "SHORT_BACKGAMMON"  // Должен зависеть от gameMode
-        connect(fetch, gameMode)
+        const points =
+            pointsUntil.current === 0 ? 1 :
+                pointsUntil.current === 1 ? 3 :
+                    pointsUntil.current === 2 ? 5 : 7
+        connect(fetch, gameMode, points)
             .then(resp => {
                 startedConnection.current = false
                 return resp
@@ -67,14 +74,19 @@ const PlainRemoteGameTab = ({className}: { className?: string }) => {
     }, [fetch, navigate])
 
     useEffect(() => {
-        return () => {
-            if (startedConnection.current) {
-                disconnect(fetch).then(
-                    () => console.debug("Disconnected")
-                )
+        fetchCleanups.push(
+            async () => {
+                if (startedConnection.current) {
+                    await disconnect(fetch)
+                    console.debug("Disconnected")
+                }
             }
-        }
-    }, [fetch]);
+        )
+    }, [fetch, fetchCleanups]);
+
+    useEffect(() => {
+        return () => console.debug("De-render")
+    }, []);
 
     return (
         <div className={className}>
@@ -86,20 +98,20 @@ const PlainRemoteGameTab = ({className}: { className?: string }) => {
 }
 
 export const RemoteGameTab = styled(PlainRemoteGameTab)`
-    &{
+    & {
         display: flex;
         flex-direction: column;
     }
-    
-    &>:nth-child(-n + 2) {
+
+    & > :nth-child(-n + 2) {
         ${tabEntryStyle}
     }
-    
-    &>:nth-child(1) {
+
+    & > :nth-child(1) {
         ${firstEntryMargin}
     }
-    
-    &>:nth-child(3) {
+
+    & > :nth-child(3) {
         ${playButtonStyle}
     }
 `

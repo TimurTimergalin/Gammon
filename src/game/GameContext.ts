@@ -11,15 +11,21 @@ import {GameController} from "./game_controller/GameController";
 import {LabelState} from "./LabelState";
 import {EndWindowState} from "./EndWindowState";
 import {BoardAnimationSwitch} from "./BoardAnimationSwitch";
+import {ScoreState} from "./ScoreState";
 
 type Setter<T> = {
     set(_: T): void
 }
 
 export class GameContext {
+    get scoreState(): ScoreState {
+        return this._scoreState.current!;
+    }
+
     get boardAnimationSwitch(): BoardAnimationSwitch {
         return this._boardAnimationSwitch.current!;
     }
+
     get endWindowState(): EndWindowState {
         return this._endWindowState.current!;
     }
@@ -74,6 +80,7 @@ export class GameContext {
     private _legalMovesTracker: RefObject<LegalMovesTracker>
     private _endWindowState: RefObject<EndWindowState>
     private _boardAnimationSwitch: RefObject<BoardAnimationSwitch>
+    private _scoreState: RefObject<ScoreState>
 
     private _gameController: MutableRefObject<GameController>
     private readonly _gameControllerSetter: Setter<GameController>
@@ -89,7 +96,8 @@ export class GameContext {
                     legalMovesTracker,
                     labelMapperHolder,
                     endWindowState,
-                    boardAnimationSwitch
+                    boardAnimationSwitch,
+                    scoreState
                 }: {
                     controlButtonsState: RefObject<ControlButtonsState>,
                     hoverTracker: RefObject<HoverTracker>,
@@ -101,7 +109,8 @@ export class GameContext {
                     legalMovesTracker: RefObject<LegalMovesTracker>,
                     labelMapperHolder: RefObject<LabelState>,
                     endWindowState: RefObject<EndWindowState>,
-                    boardAnimationSwitch: RefObject<BoardAnimationSwitch>
+                    boardAnimationSwitch: RefObject<BoardAnimationSwitch>,
+                    scoreState: RefObject<ScoreState>
                 }
     ) {
         this._controlButtonsState = controlButtonsState;
@@ -115,6 +124,7 @@ export class GameContext {
         this._legalMovesTracker = legalMovesTracker
         this._endWindowState = endWindowState
         this._boardAnimationSwitch = boardAnimationSwitch
+        this._scoreState = scoreState
 
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const outer = this

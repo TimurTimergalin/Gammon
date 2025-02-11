@@ -13,6 +13,7 @@ import {BoardSynchronizer} from "../../board/BoardSynchronizer";
 import {EndWindowState} from "../../EndWindowState";
 import {InitPlacement} from "../../game_rule/InitPlacement";
 import {BoardAnimationSwitch} from "../../BoardAnimationSwitch";
+import {ScoreState} from "../../ScoreState";
 
 const console = logger("game/game_controller/local")
 
@@ -21,13 +22,10 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
     private endWindowState: EndWindowState
     private readonly initPlacement: InitPlacement<Index, Prop>
     private readonly pointsUntil: number
-    private points = {
-        white: 0,
-        black: 0
-    }
+    private points: ScoreState
     private boardAnimationSwitch: BoardAnimationSwitch
 
-    constructor({endWindowState, initPlacement, pointsUntil, boardAnimationSwitch, ...args}: {
+    constructor({endWindowState, initPlacement, boardAnimationSwitch, scoreState, ...args}: {
         board: BoardSynchronizer<Index, Prop>,
         controlButtonsState: ControlButtonsState,
         active: boolean,
@@ -38,14 +36,15 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         labelState: LabelState,
         endWindowState: EndWindowState,
         initPlacement: InitPlacement<Index, Prop>,
-        pointsUntil: number,
-        boardAnimationSwitch: BoardAnimationSwitch
+        boardAnimationSwitch: BoardAnimationSwitch,
+        scoreState: ScoreState
     }) {
         super(args);
         this.endWindowState = endWindowState
         this.initPlacement = initPlacement
-        this.pointsUntil = pointsUntil
+        this.pointsUntil = scoreState.total
         this.boardAnimationSwitch = boardAnimationSwitch
+        this.points = scoreState
     }
 
     private randomDice() {
