@@ -80,11 +80,16 @@ export function useFetch(): [FetchType, (() => Promise<void>)[]] {
     useEffect(() => {
         const abortController = abortControllerRef.current
         const cleanups = cleanupsRef.current
-        return () => {
+
+        const cleanup = () => {
+            window.removeEventListener("beforeunload", cleanup)
             Promise.all(cleanups.map(cleanup => cleanup())).then(
                 () => abortController.abort("Component de-render")
             )
         }
+
+        window.addEventListener("beforeunload", cleanup)
+        return cleanup
     }, []);
 
     return [useCallback<FetchType>(

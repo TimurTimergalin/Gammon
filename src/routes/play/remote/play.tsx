@@ -51,7 +51,12 @@ const InnerRemoteGameWindow = <RemoteConfig, Index, Prop, RemoteMove>(
 
     useEffect(() => {
         if (cleanup !== undefined) {
-            return cleanup.cleanup
+            const newCleanup = () => {
+                window.removeEventListener("beforeunload", newCleanup)
+                cleanup.cleanup()
+            }
+            window.addEventListener("beforeunload", newCleanup)
+            return newCleanup
         }
     }, [cleanup])
 
