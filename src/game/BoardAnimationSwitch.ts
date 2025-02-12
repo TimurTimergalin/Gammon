@@ -8,6 +8,7 @@ export class BoardAnimationSwitch {
     set allowed(value: boolean) {
         this._allowed = value;
     }
+
     private _allowed: boolean
 
 
@@ -18,12 +19,12 @@ export class BoardAnimationSwitch {
 
     withTurnedOff(action: () => void) {
         const wasAllowed = this._allowed
-        this._allowed = false
-        setTimeout(() => {
-            action()
-            setTimeout(
-                () => {this._allowed = wasAllowed}, 0
-            )
-        }, 0)
+        this.allowed = false
+        action()
+        setTimeout(
+            () => {
+                this.allowed = wasAllowed
+            }, 0
+        )
     }
 }

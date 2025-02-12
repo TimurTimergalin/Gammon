@@ -23,7 +23,6 @@ const console = logger("game/game_controller/remote")
 export class RemoteGameController<Index, Prop> extends RulesGameController<Index, Prop> {
     private connector: RemoteConnector<Index, Prop>
     private endWindowState: EndWindowState
-    private boardAnimationSwitch: BoardAnimationSwitch
     private readonly userPlayer: Color
 
     private _userDiceReceived: boolean
@@ -66,7 +65,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
 
     private scoreState: ScoreState
 
-    constructor({connector, userPlayer, player, endWindowState, boardAnimationSwitch, scoreState, ...base}: {
+    constructor({connector, userPlayer, player, endWindowState, scoreState, ...base}: {
         board: BoardSynchronizer<Index, Prop>,
         controlButtonsState: ControlButtonsState,
         player: Color,
@@ -89,7 +88,6 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         this._opponentTurnDisplayed = active
         this._userDiceReceived = active
         this.endWindowState = endWindowState
-        this.boardAnimationSwitch = boardAnimationSwitch
         this.scoreState = scoreState
     }
 
@@ -221,4 +219,10 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
             })
         }, 500)
     };
+
+    swapBoard(): void {
+        if (this._opponentTurnDisplayed) {
+            this._swapBoard()
+        }
+    }
 }

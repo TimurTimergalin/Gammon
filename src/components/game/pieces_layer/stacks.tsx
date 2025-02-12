@@ -12,6 +12,7 @@ import {
 import {observer} from "mobx-react-lite";
 import {PieceState} from "../../../game/board/physical/types";
 import {moveDuration} from "./constants";
+import {useGameContext} from "../../../game/GameContext";
 
 interface StackProps {
     pieces: PieceState[]
@@ -79,12 +80,17 @@ const HomingSidePiece = styled(SidePiece)<{
 export const TopDownStack = observer(function TopDownStack({pieces, direction, originX, originY}: StackProps) {
     const quantity = pieces.length
     const finalPieces = []
+    const boardAnimationSwitch = useGameContext("boardAnimationSwitch")
 
     let i = 0
     for (const piece of pieces) {
         const toX = originX
         const toY = getTopDownPieceY(originY, direction, i, quantity)
-        if (piece.from !== undefined) {
+        if (!boardAnimationSwitch.allowed) {
+            finalPieces.push(
+                <TopDownPiece cx={toX} cy={toY} color={piece.color} key={i}/>
+            )
+        } else if (piece.from !== undefined) {
             const from = piece.from.index
             const fromX = getStackOriginX(from)
             const fromY = getTopDownPieceY(getStackOriginY(from), getStackDirection(from), piece.from.order, piece.from.total)
@@ -109,11 +115,12 @@ export const TopDownStack = observer(function TopDownStack({pieces, direction, o
 export const SideStack = observer(function SideStack({pieces, direction, originX, originY}: StackProps) {
     const finalPieces = []
     let i = 0
+    const boardAnimationSwitch = useGameContext("boardAnimationSwitch")
 
     for (const piece of pieces) {
         const toX = originX
         const toY = getSidePieceY(originY, direction, i)
-        if (piece.from === undefined) {
+        if (piece.from === undefined || !boardAnimationSwitch.allowed) {
             finalPieces.push(
                 <SidePiece x={toX} y={toY} color={piece.color} key={i}/>
             )

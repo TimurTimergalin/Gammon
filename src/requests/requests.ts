@@ -35,7 +35,8 @@ export const connect = (fetch: FetchType, gameType: string, points: number) =>
 
 export const disconnect = (fetch: FetchType) => fetch(disconnectUri, {
     credentials: "include",
-    method: "POST"
+    method: "POST",
+    keepalive: true
 })
 
 export interface SignInCredentials {

@@ -56,4 +56,8 @@ export class DummyGameController implements GameController {
 
     swapDice(): void {
     }
+
+    swapBoard(): never {
+        return undefined as never
+    }
 }

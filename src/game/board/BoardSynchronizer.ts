@@ -18,7 +18,7 @@ export class BoardSynchronizer<Index, Prop> {
 
     private readonly physicalBoard: PhysicalBoard
     private readonly _ruleBoard: Board<Index, Prop>
-    private readonly indexMapper: IndexMapper<Index>
+    private indexMapper: IndexMapper<Index>
     private readonly propMapper: PropMapper<Prop>
 
     constructor(
@@ -145,5 +145,10 @@ export class BoardSynchronizer<Index, Prop> {
                 outer.updateLogical(src)
             }
         }
+    }
+
+    swapBoard() {
+        this.indexMapper = this.indexMapper.flipped()
+        this.updateLogical(this._ruleBoard)
     }
 }
