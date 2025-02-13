@@ -27,6 +27,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
 
     private _userDiceReceived: boolean
     private _opponentTurnDisplayed: boolean
+    private swapBoardAvailable = true
 
     private diceToSet: DiceStatus[] = []
 
@@ -150,6 +151,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
 
             if (index + 1 === squashedMoves.length) {
                 this.opponentTurnDisplayed = true
+                this.swapBoardAvailable = true
             } else {
                 setTimeout(
                     () => displayMove(index + 1),
@@ -161,6 +163,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         if (squashedMoves.length === 0) {
             this.opponentTurnDisplayed = true
         } else {
+            this.swapBoardAvailable = false
             displayMove(0)
         }
     };
@@ -221,7 +224,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
     };
 
     swapBoard(): void {
-        if (this._opponentTurnDisplayed) {
+        if (this.swapBoardAvailable) {
             this._swapBoard()
         }
     }
