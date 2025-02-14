@@ -16,6 +16,7 @@ export const GamePart = observer(function GamePart({player1, player2, children, 
     useEffect(() => {
         playersInfo.player1 = player1 || playersInfo.player1
         playersInfo.player2 = player2 || playersInfo.player2
+        console.log(player1, player2, playersInfo)
     }, [player1, player2, playersInfo]);
 
     return (

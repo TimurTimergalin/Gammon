@@ -7,6 +7,7 @@ import {RemoteConnectorImpl} from "./RemoteConnector";
 import {RemoteGameController} from "./RemoteGameController";
 import {BoardSynchronizer} from "../../board/BoardSynchronizer";
 import {FetchType} from "../../../common/requests";
+import {Color} from "../../../common/color";
 
 async function getConfigJson(fetch: FetchType, roomId: number) {
     const resp = await getBackgammonConfig(fetch, roomId)
@@ -24,7 +25,8 @@ export async function remoteGameInit<RemoteConfig, Index, Prop, RemoteMove>(
     }
 ) {
     const configGetter = async (roomId: number) => {
-        const remoteConfig = await getConfigJson(fetch, roomId) as RemoteConfig
+        const rawRemoteConfig = await getConfigJson(fetch, roomId)
+        const remoteConfig = await remoteSet.configParser.preprocessConfig(fetch, rawRemoteConfig)
         return remoteSet.configParser.mapConfig(remoteConfig)
     }
 
@@ -72,6 +74,8 @@ export async function remoteGameInit<RemoteConfig, Index, Prop, RemoteMove>(
     return {
         controller: controller,
         cleanup: connector.unsubscribe,
-        labelMapper: ruleSet.labelMapperFactory(config.userPlayer)
+        labelMapper: ruleSet.labelMapperFactory(config.userPlayer),
+        player1: config.userPlayer === Color.WHITE ? config.players.white : config.players.black,
+        player2: config.userPlayer === Color.WHITE ? config.players.black : config.players.white
     }
 }

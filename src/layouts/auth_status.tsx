@@ -16,10 +16,20 @@ export async function clientLoader(): Promise<UserInfo | null> {
         return JSON.parse(sessionStorage.getItem(module + loaderDataPostfix)!)
     }
 
-    const res = await myUserInfo(fetch)
-    sessionStorage.setItem(module + loaderDataPostfix, JSON.stringify(res))
+    const resp = await myUserInfo(fetch)
+    if (!resp.ok) {
+        return null
+    }
 
-    return res || null
+    try {
+        const res = await resp.json()
+        sessionStorage.setItem(module + loaderDataPostfix, JSON.stringify(res))
+
+        return res || null
+    } catch (e) {
+        console.error(e)
+        return null
+    }
     // return
 }
 

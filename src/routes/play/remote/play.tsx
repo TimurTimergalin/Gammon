@@ -19,8 +19,6 @@ import {EndWindow} from "../../../components/game/end_window/EndWindow";
 import {RemotePlayWindowContent} from "./_deps/RemotePlayEndWindowContent";
 import {useFetch} from "../../../common/hooks";
 import {observer} from "mobx-react-lite";
-import {useAuthContext} from "../../../controller/auth_status/context";
-import {imageUri} from "../../../requests/paths";
 import {PlayerState} from "../../../game/player_info/PlayerState";
 
 const console = logger("windows/game")
@@ -34,7 +32,6 @@ const InnerRemoteGameWindow = observer(<RemoteConfig, Index, Prop, RemoteMove>(
     {ruleSet, remoteSet, params}: RemoteGameWindowProps<RemoteConfig, Index, Prop, RemoteMove> & Route.ComponentProps
 ) => {
     const gameContext = useFullGameContext()
-    const authStatus = useAuthContext()
 
     const {roomId} = params
     useEffect(() => {
@@ -51,6 +48,9 @@ const InnerRemoteGameWindow = observer(<RemoteConfig, Index, Prop, RemoteMove>(
     const [gameController, setGameController] = useState<GameController | undefined>(undefined)
 
     const [cleanup, setCleanup] = useState<undefined | { cleanup: () => void }>(undefined)
+
+    const [player1, setPlayer1] = useState<PlayerState | undefined>()
+    const [player2, setPlayer2] = useState<PlayerState | undefined>()
 
     const labelMapper_ = useRef<LabelMapper | undefined>(undefined)
 
@@ -74,23 +74,20 @@ const InnerRemoteGameWindow = observer(<RemoteConfig, Index, Prop, RemoteMove>(
             roomId: roomIdParsed,
             ruleSet: ruleSet,
             fetch: fetch
-        }).then(({controller, cleanup, labelMapper}) => {
+        }).then(({controller, cleanup, labelMapper, player1, player2}) => {
             setGameController(controller)
             setCleanup({cleanup: cleanup})
+            setPlayer1(player1)
+            setPlayer2(player2)
             labelMapper_.current = labelMapper
         })
     }, [fetch, gameContext, remoteSet, roomIdParsed, ruleSet]);
-
-    const player1 = authStatus.id !== null ? ({
-        username: authStatus.username!,
-        iconSrc: imageUri(authStatus.id)
-    } satisfies PlayerState): undefined
 
     return (
         <GameAndControlPanelContainer>
             <div style={{width: "100%", height: "100%", position: "relative"}}>
                 {gameController !== undefined &&
-                    <GamePart displayButtons={true} player1={player1}>
+                    <GamePart displayButtons={true} player1={player1} player2={player2}>
                         <GameView gameController={gameController} labelMapper={labelMapper_.current}/>
                     </GamePart>
                 }

@@ -10,6 +10,8 @@ import GameView from "../../../components/game/GameView";
 import {EndWindow} from "../../../components/game/end_window/EndWindow";
 import {LocalPlayEndWindowContent} from "./_deps/LocalPlayEndWindowContent";
 import {useSearchParams} from "react-router";
+import {useMemo} from "react";
+import {PlayerState} from "../../../game/player_info/PlayerState";
 
 interface LocalGameWindowProps<Index, Prop> {
     ruleset: RuleSet<Index, Prop>
@@ -30,10 +32,20 @@ const InnerLocalGamePage = <Index, Prop>({ruleset}: LocalGameWindowProps<Index, 
         }
     )
 
+    const player1 = useMemo(() => ({
+        username: "Белые",
+        iconSrc: "/user_icon_placeholder.svg"
+    } satisfies PlayerState), [])
+
+    const player2 = useMemo(() => ({
+        username: "Черные",
+        iconSrc: "/user_icon_placeholder.svg"
+    } satisfies PlayerState), [])
+
     return (
         <GameAndControlPanelContainer>
             <div style={{width: "100%", height: "100%", position: "relative"}}>
-                <GamePart displayButtons={true}>
+                <GamePart displayButtons={true} player1={player1} player2={player2}>
                     <GameView gameController={controller} labelMapper={labelMapper}/>
                 </GamePart>
                 <EndWindow>

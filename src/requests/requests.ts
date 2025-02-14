@@ -6,7 +6,7 @@ import {
     backgammonFinishTurnUri,
     myUserInfoUri,
     signInUrl,
-    signUpUrl, backgammonRollDiceUri
+    signUpUrl, backgammonRollDiceUri, usernamesUri
 } from "./paths";
 import {FetchType} from "../common/requests";
 
@@ -92,20 +92,12 @@ export type UserInfo = {
     id: number
 }
 
-export async function myUserInfo(fetch: FetchType): Promise<UserInfo | undefined> {
-    const resp = await fetch(myUserInfoUri, {
+export function myUserInfo(fetch: FetchType) {
+    return fetch(myUserInfoUri, {
         credentials: "include"
     })
+}
 
-    if (!resp.ok) {
-        return
-    }
-
-    try {
-        const body = await resp.json()
-        return body as UserInfo
-    } catch (e) {
-        console.error(e)
-        return
-    }
+export function usernames(fetch: FetchType, ids: number[]) {
+    return fetch(usernamesUri(ids))
 }
