@@ -1,6 +1,5 @@
-import {NavigateFunction} from "react-router";
-import {makeAutoObservable} from "mobx";
-import React, {createContext, RefObject, useContext} from "react";
+import {makeAutoObservable, runInAction} from "mobx";
+import {createContext, FormEvent, useContext} from "react";
 import {ValidityCheckResult} from "./validators";
 import {logger} from "../../logging/main";
 
@@ -15,31 +14,24 @@ export class FormState {
     readonly validity: Map<number, ValidityCheckResult> = new Map()
     readonly touched: Map<number, boolean> = new Map()
     readonly defaultOnSubmit = () => console.error("No onSubmit specified")
-    onSubmit: (navigate: NavigateFunction) => void = this.defaultOnSubmit
 
-    private _enabled = true
-
-    get enabled(): boolean {
-        return this._enabled;
-    }
-    set enabled(value: boolean) {
-        this._enabled = value;
-    }
-
-    private _formRef: RefObject<HTMLFormElement> | null = null
-    get formRef(): React.RefObject<HTMLFormElement> | null {
-        return this._formRef;
-    }
-    set formRef(value: React.RefObject<HTMLFormElement> | null) {
-        this._formRef = value;
+    get onSubmit(): (e: FormEvent) => void {
+        return (e: FormEvent) => {
+            for (const success of this.validity.values()) {
+                if (!success.success) {
+                    for (const key of this.touched.keys()) {
+                        runInAction(() => this.touched.set(key, true))
+                    }
+                    e.preventDefault()
+                    return
+                }
+            }
+            return
+        };
     }
 
     constructor() {
         makeAutoObservable(this)
-    }
-
-    updateFormData() {
-        this._formData = new FormData(this._formRef!.current!)
     }
 }
 

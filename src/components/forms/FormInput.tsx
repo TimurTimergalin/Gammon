@@ -1,13 +1,13 @@
 import {observer} from "mobx-react-lite";
-import {ComponentProps, useCallback, useEffect, useRef} from "react";
+import {ComponentProps, MutableRefObject, useCallback, useEffect, useRef} from "react";
 import {useFormState} from "../../controller/forms/FormState";
-import {ComplexValidator, SimpleValidator} from "../../controller/forms/validators";
+import {SimpleValidator} from "../../controller/forms/validators";
 import {runInAction} from "mobx";
 
 
 export const FormInput = observer(function FormInput(
-    {validityCheck, className, index, complexValidityCheck, ...inputProps}: ComponentProps<"input"> &
-        { validityCheck: SimpleValidator, className?: string, index: number, complexValidityCheck?: ComplexValidator }
+    {validityCheck, className, index, valueRef, ...inputProps}: ComponentProps<"input"> &
+        { validityCheck: SimpleValidator, className?: string, index: number, valueRef?: MutableRefObject<string> }
 ) {
     const formState = useFormState()
     const inputRef = useRef<HTMLInputElement | null>(null)
@@ -27,20 +27,10 @@ export const FormInput = observer(function FormInput(
             runInAction(() => formState.validity.set(index, result))
             return
         }
-        if (complexValidityCheck === undefined) {
-            inputRef.current!.setCustomValidity("")
-            runInAction(() => formState.validity.set(index, result))
-            return;
-        }
-        const result1 = complexValidityCheck(formState.formData!)
-        runInAction(() => formState.validity.set(index, result1))
-        if (result1.success) {
-            inputRef.current!.setCustomValidity("")
-        } else {
-            inputRef.current!.setCustomValidity(result1.message)
-        }
+        inputRef.current!.setCustomValidity("")
+        runInAction(() => formState.validity.set(index, result))
 
-    }, [complexValidityCheck, formState.formData, formState.validity, index, validityCheck])
+    }, [formState.validity, index, validityCheck])
 
     useEffect(() => {
         if (touched) {
@@ -53,8 +43,10 @@ export const FormInput = observer(function FormInput(
             formState.touched.set(index, true)
         })
         checkValidity()
-        formState.updateFormData()
-    }, [checkValidity, formState, index])
+        if (valueRef !== undefined) {
+            valueRef.current = inputRef.current!.value!
+        }
+    }, [checkValidity, formState, index, valueRef])
 
     return (
         <input ref={inputRef} {...inputProps} className={className} onChange={onInputChange} onFocus={onInputChange}/>
