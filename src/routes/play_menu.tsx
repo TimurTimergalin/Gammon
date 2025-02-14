@@ -6,19 +6,23 @@ import {GamePart} from "../components/game_page/GamePart";
 import {ControlPanel} from "../components/play_menu/new_control_panel/ControlPanel";
 import {RemoteGameTab} from "../components/play_menu/new_control_panel/RemoteGameTab";
 import {LocalGameTab} from "../components/play_menu/new_control_panel/LocalGameTab";
-import {useMemo} from "react";
+import {observer} from "mobx-react-lite";
+import {useAuthContext} from "../controller/auth_status/context";
+import {imageUri} from "../requests/paths";
 
 
-export const PlayMenuPage = () => {
-    const player1 = useMemo(() => ({
-                        username: "Вы",
-                        iconSrc: "/user_icon_placeholder.svg"
-                    }), [])
+export const PlayMenuPage = observer(() => {
+    const authStatus = useAuthContext()
 
-    const player2 = useMemo(() => ({
-                        username: "Противник",
-                        iconSrc: "/user_icon_placeholder.svg"
-                    }), [])
+    const player1 = {
+        username: authStatus.username === null ? "Вы" : authStatus.username,
+        iconSrc: authStatus.id === null ? "/user_icon_placeholder.svg" : imageUri(authStatus.id)
+    }
+
+    const player2 = {
+        username: "Противник",
+        iconSrc: "/user_icon_placeholder.svg"
+    }
 
     return (
         <GameContextHolder>
@@ -29,12 +33,12 @@ export const PlayMenuPage = () => {
                     <GameView gameController={new DummyGameController()}/>
                 </GamePart>
                 <ControlPanel options={["Игра по сети", "Локальная игра"]}>
-                    <RemoteGameTab />
-                    <LocalGameTab />
+                    <RemoteGameTab/>
+                    <LocalGameTab/>
                 </ControlPanel>
             </GameAndControlPanelContainer>
         </GameContextHolder>
     )
-}
+})
 
 export default PlayMenuPage
