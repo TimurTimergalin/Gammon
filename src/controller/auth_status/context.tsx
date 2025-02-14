@@ -7,4 +7,5 @@ export function useAuthContext(): AuthStatus {
     return useContext(authContext)!
 }
 
-export const AuthContextProvider = ({value, children}: {value: AuthStatus, children?: ReactNode | ReactNode[]}) => authContext.Provider({value, children})
+export const AuthContextProvider = ({value, children}: {value: AuthStatus, children?: ReactNode | ReactNode[]}) =>
+    <authContext.Provider value={value}>{children}</authContext.Provider>

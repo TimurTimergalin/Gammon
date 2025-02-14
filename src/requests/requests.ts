@@ -90,6 +90,12 @@ export async function myUserInfo(fetch: FetchType): Promise<UserInfo | undefined
         return
     }
 
-    const body = await resp.json()
-    return body as UserInfo
+    try {
+        const body = await resp.json()
+        return body as UserInfo
+    } catch (e) {
+        console.error(e)
+        return
+    }
+
 }
