@@ -1,17 +1,19 @@
-
 import {Color} from "../../../../common/color";
 import {DiceStatus} from "../../../dice_state/DiceStatus";
 import {LayerStatus} from "../../../../components/game/dice_layer/LayerStatus";
 import {Config, ConfigParser} from "../../ConfigParser";
-import {BackgammonRemoteConfig} from "./types";
+import {BackgammonRemoteConfig, BackgammonRemotePlayer} from "./types";
 import {BackgammonIndex, BackgammonProp} from "../../../board/backgammon/types";
 import {BackgammonBoard} from "../../../board/backgammon/BackgammonBoard";
 import {logger} from "../../../../logging/main";
+import {imageUri} from "../../../../requests/paths";
+import {usernames} from "../../../../requests/requests";
+import {FetchType} from "../../../../common/requests";
 
 const console = logger("game/game_rule/backgammon/remote_v1")
 
 export class BackgammonConfigParser implements ConfigParser<BackgammonRemoteConfig, BackgammonIndex, BackgammonProp> {
-    mapConfig({gameData, blackPoints, whitePoints, threshold}: BackgammonRemoteConfig): Config<BackgammonIndex, BackgammonProp> {
+    mapConfig({gameData, blackPoints, whitePoints, threshold, players}: BackgammonRemoteConfig): Config<BackgammonIndex, BackgammonProp> {
         const config = gameData
         const toColor = (name: "WHITE" | "BLACK") => name === "WHITE" ? Color.WHITE : Color.BLACK
         const player = toColor(config.turn)
@@ -29,19 +31,19 @@ export class BackgammonConfigParser implements ConfigParser<BackgammonRemoteConf
             placement.set(toIndex(id), {color: toColor(color), quantity: count})
         }
 
-        const dice: [DiceStatus, DiceStatus] = [
-            {
+        const dice: [DiceStatus | null, DiceStatus | null] = [
+            config.zar[0] ? {
                 value: config.zar[0],
                 color: config.first ? Color.WHITE : toColor(config.turn),
                 usageStatus: LayerStatus.NONE,
                 unavailabilityStatus: LayerStatus.NONE
-            },
-            {
+            } : null,
+            config.zar[1] ? {
                 value: config.zar[1],
                 color: config.first ? Color.BLACK : toColor(config.turn),
                 usageStatus: LayerStatus.NONE,
                 unavailabilityStatus: LayerStatus.NONE
-            }
+            } : null
         ]
 
         return {
@@ -53,7 +55,38 @@ export class BackgammonConfigParser implements ConfigParser<BackgammonRemoteConf
                 white: whitePoints,
                 black: blackPoints,
                 total: threshold
+            },
+            players: {
+                white: {
+                    username: players.WHITE.username,
+                    iconSrc: imageUri(players.WHITE.id)
+                },
+                black: {
+                    username: players.BLACK.username,
+                    iconSrc: imageUri(players.BLACK.id)
+                }
             }
         }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async preprocessConfig(fetch: FetchType, raw: any): Promise<BackgammonRemoteConfig> {
+        const resp = await usernames(fetch, [raw.players.WHITE, raw.players.BLACK])
+        if (!resp.ok) {
+            throw new Error(String(resp))
+        }
+        const _usernames = await resp.json() as string[]
+
+        raw.players.WHITE = {
+            id: raw.players.WHITE,
+            username: _usernames[0]
+        } satisfies BackgammonRemotePlayer
+
+        raw.players.BLACK = {
+            id: raw.players.BLACK,
+            username: _usernames[1]
+        } satisfies BackgammonRemotePlayer
+
+        return raw
     }
 }

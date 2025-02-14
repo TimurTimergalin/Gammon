@@ -6,10 +6,12 @@ import {observer} from "mobx-react-lite";
 import {Dice} from "../game/dice_layer/dice";
 import {Color} from "../../common/color";
 import {LayerStatus} from "../game/dice_layer/LayerStatus";
+import {useAuthContext} from "../../controller/auth_status/context";
 
 export const SideBar = observer(function SideBar() {
     const screenSpecs = useScreenSpecs();
     const layoutMode = screenSpecs.layoutMode
+    const authStatus = useAuthContext()
 
     const [menuOpen, setMenuOpen] = useState(false)
 
@@ -76,8 +78,10 @@ export const SideBar = observer(function SideBar() {
                         />
                     </svg>
                 </TextWithIcon>
-                <TextWithIcon navigateTo={"/sign-in"} text={"Войти"}>
-                    <img src={"/profile_icon.svg"} alt={"Войти"} style={{height: "100%"}}/>
+                <TextWithIcon
+                    navigateTo={authStatus.id === null ? "/sign-in" : "/profile"}
+                    text={authStatus.id === null ? "Войти" : "Профиль"}>
+                    <img src={"/profile_icon.svg"} alt={"Профиль"} style={{height: "100%"}}/>
                 </TextWithIcon>
             </div>
             {layoutMode === "Collapsed" &&

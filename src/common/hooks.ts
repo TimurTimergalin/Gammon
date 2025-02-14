@@ -82,13 +82,13 @@ export function useFetch(): [FetchType, (() => Promise<void>)[]] {
         const cleanups = cleanupsRef.current
 
         const cleanup = () => {
-            window.removeEventListener("beforeunload", cleanup)
+            window.removeEventListener("unload", cleanup)
             Promise.all(cleanups.map(cleanup => cleanup())).then(
                 () => abortController.abort("Component de-render")
             )
         }
 
-        window.addEventListener("beforeunload", cleanup)
+        window.addEventListener("unload", cleanup)
         return cleanup
     }, []);
 

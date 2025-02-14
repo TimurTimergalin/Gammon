@@ -24,4 +24,10 @@ export class PlayersInfo {
         this._player2 = player2
         makeAutoObservable(this)
     }
+
+    swap() {
+        const temp = this._player1
+        this._player1 = this._player2
+        this._player2 = temp
+    }
 }

@@ -12,6 +12,7 @@ import {LabelState} from "./LabelState";
 import {EndWindowState} from "./EndWindowState";
 import {BoardAnimationSwitch} from "./BoardAnimationSwitch";
 import {ScoreState} from "./ScoreState";
+import {useFactoryRef} from "../common/hooks";
 
 type Setter<T> = {
     set(_: T): void
@@ -138,22 +139,26 @@ export const GameContextProvider = Context.Provider
 export function useGameContext<T extends keyof GameContext>(member: T): GameContext[T] {
     const res = useContext(Context)!
     console.assert(res !== undefined)
-    return new Proxy(res, {
-        get(target, prop) {
-            if (prop in target[member]) {
-                forceType<keyof GameContext[T]>(prop)
-                return target[member]![prop];
+    const proxyRef = useFactoryRef(
+        () => new Proxy(res, {
+            get(target, prop) {
+                if (prop in target[member]) {
+                    forceType<keyof GameContext[T]>(prop)
+                    return target[member]![prop];
+                }
+            },
+            set(target, prop, value) {
+                if (prop in target[member]) {
+                    forceType<keyof GameContext[T]>(prop)
+                    target[member]![prop] = value
+                    return true
+                }
+                return false
             }
-        },
-        set(target, prop, value) {
-            if (prop in target[member]) {
-                forceType<keyof GameContext[T]>(prop)
-                target[member]![prop] = value
-                return true
-            }
-            return false
-        }
-    }) as unknown as GameContext[T]
+        }) as unknown as GameContext[T]
+    )
+
+    return proxyRef.current
 }
 
 export function useFullGameContext(): GameContext {

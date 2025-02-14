@@ -49,7 +49,7 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         return Math.ceil(Math.random() * 6 + 5e-324)
     }
 
-    private rollDice(color1: Color, color2: Color) {
+    private _rollDice(color1: Color, color2: Color) {
         const value1 = this.randomDice()
         const dice1: DiceStatus = {
             value: value1,
@@ -96,13 +96,16 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
 
     newTurn(first: boolean) {
         if (first) {
-            this.rollDice(Color.WHITE, Color.BLACK)
+            this._rollDice(Color.WHITE, Color.BLACK)
             this.inferCurrentPlayer()
+            this.calculateDice()
         } else {
-            this.rollDice(this.player, this.player)
+            this.diceState.dice1 = null
+            this.diceState.dice2 = null
+            this.controlButtonsState.turnComplete = false
+            this.controlButtonsState.canRollDice = true
         }
         this.controlButtonsState.movesMade = false
-        this.calculateDice()
     }
 
     checkGameComplete(): { winner: Color } | undefined {
@@ -174,5 +177,11 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
 
     swapBoard(): void {
         this._swapBoard()
+    }
+
+    rollDice(): void {
+        this._rollDice(this.player, this.player)
+        this.calculateDice()
+        this.controlButtonsState.canRollDice = false
     }
 }

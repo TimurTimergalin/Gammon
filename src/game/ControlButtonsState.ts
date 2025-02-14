@@ -25,5 +25,15 @@ export class ControlButtonsState {
     set movesMade(val: boolean) {
         this._movesMade = val
     }
+
+    private _canRollDice: boolean = false
+
+    get canRollDice(): boolean {
+        return this._canRollDice;
+    }
+
+    set canRollDice(value: boolean) {
+        this._canRollDice = value;
+    }
 }
 

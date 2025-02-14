@@ -27,8 +27,12 @@ const buttonStyle = css`
 
 const PlainSwapBoardButton = ({className}: { className?: string }) => {
     const gameController = useGameContext("gameController")
+    const playerInfo = useGameContext("playersInfo")
     return (
-        <button className={className} type={"button"} onClick={() => gameController.swapBoard()}>
+        <button className={className} type={"button"} onClick={() => {
+            gameController.swapBoard()
+            playerInfo.swap()
+        }}>
             <img src={"/swap_board.svg"} alt={"Повернуть доску"} title={"Перевернуть доску"} />
         </button>
     )

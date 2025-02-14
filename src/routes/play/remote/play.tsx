@@ -18,6 +18,8 @@ import type {Route} from "../../../../.react-router/types/src/routes/+types";
 import {EndWindow} from "../../../components/game/end_window/EndWindow";
 import {RemotePlayWindowContent} from "./_deps/RemotePlayEndWindowContent";
 import {useFetch} from "../../../common/hooks";
+import {observer} from "mobx-react-lite";
+import {PlayerState} from "../../../game/player_info/PlayerState";
 
 const console = logger("windows/game")
 
@@ -26,7 +28,7 @@ interface RemoteGameWindowProps<RemoteConfig, Index, Prop, RemoteMove> {
     remoteSet: RemoteSet<RemoteConfig, Index, Prop, RemoteMove>
 }
 
-const InnerRemoteGameWindow = <RemoteConfig, Index, Prop, RemoteMove>(
+const InnerRemoteGameWindow = observer(<RemoteConfig, Index, Prop, RemoteMove>(
     {ruleSet, remoteSet, params}: RemoteGameWindowProps<RemoteConfig, Index, Prop, RemoteMove> & Route.ComponentProps
 ) => {
     const gameContext = useFullGameContext()
@@ -47,15 +49,18 @@ const InnerRemoteGameWindow = <RemoteConfig, Index, Prop, RemoteMove>(
 
     const [cleanup, setCleanup] = useState<undefined | { cleanup: () => void }>(undefined)
 
+    const [player1, setPlayer1] = useState<PlayerState | undefined>()
+    const [player2, setPlayer2] = useState<PlayerState | undefined>()
+
     const labelMapper_ = useRef<LabelMapper | undefined>(undefined)
 
     useEffect(() => {
         if (cleanup !== undefined) {
             const newCleanup = () => {
-                window.removeEventListener("beforeunload", newCleanup)
+                window.removeEventListener("unload", newCleanup)
                 cleanup.cleanup()
             }
-            window.addEventListener("beforeunload", newCleanup)
+            window.addEventListener("unload", newCleanup)
             return newCleanup
         }
     }, [cleanup])
@@ -69,9 +74,11 @@ const InnerRemoteGameWindow = <RemoteConfig, Index, Prop, RemoteMove>(
             roomId: roomIdParsed,
             ruleSet: ruleSet,
             fetch: fetch
-        }).then(({controller, cleanup, labelMapper}) => {
+        }).then(({controller, cleanup, labelMapper, player1, player2}) => {
             setGameController(controller)
             setCleanup({cleanup: cleanup})
+            setPlayer1(player1)
+            setPlayer2(player2)
             labelMapper_.current = labelMapper
         })
     }, [fetch, gameContext, remoteSet, roomIdParsed, ruleSet]);
@@ -80,7 +87,7 @@ const InnerRemoteGameWindow = <RemoteConfig, Index, Prop, RemoteMove>(
         <GameAndControlPanelContainer>
             <div style={{width: "100%", height: "100%", position: "relative"}}>
                 {gameController !== undefined &&
-                    <GamePart displayButtons={true}>
+                    <GamePart displayButtons={true} player1={player1} player2={player2}>
                         <GameView gameController={gameController} labelMapper={labelMapper_.current}/>
                     </GamePart>
                 }
@@ -91,7 +98,7 @@ const InnerRemoteGameWindow = <RemoteConfig, Index, Prop, RemoteMove>(
             <ControlPanel/>
         </GameAndControlPanelContainer>
     )
-}
+})
 
 export const RemoteGamePage = <RemoteConfig, Index, Prop, RemoteMove>(
     props: RemoteGameWindowProps<RemoteConfig, Index, Prop, RemoteMove> & Route.ComponentProps
