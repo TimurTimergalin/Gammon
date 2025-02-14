@@ -7,4 +7,4 @@ export const disconnectUri = "/menu/disconnect"
 export const signInUrl = "/player/login"
 export const signUpUrl = "/player/create-user"
 export const myUserInfoUri = "/player/me"
-export const imageUri = (id: number) => `/player/image` + new URLSearchParams({userId: String(id)})
+export const imageUri = (id: number) => `/player/image?` + new URLSearchParams({userId: String(id)})

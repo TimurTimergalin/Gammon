@@ -6,13 +6,20 @@ import {AuthStatus} from "../controller/auth_status/AuthStatus";
 import {AuthContextProvider} from "../controller/auth_status/context";
 
 const module = "/layouts/auth_status.tsx"
+const shouldRevalidatePostfix = "-shouldRevalidate"
+const loaderDataPostfix = "-loaderData"
 
-export async function clientLoader(): Promise<UserInfo | undefined> {
+
+export async function clientLoader(): Promise<UserInfo | null> {
     // Это обход бага в react-router-е (https://github.com/remix-run/react-router/issues/12607)
-    if (sessionStorage.getItem(module + "-shouldRevalidate") !== "true") {
-        return
+    if (sessionStorage.getItem(module + shouldRevalidatePostfix) !== "true") {
+        return JSON.parse(sessionStorage.getItem(module + loaderDataPostfix)!)
     }
-    return await myUserInfo(fetch)
+
+    const res = await myUserInfo(fetch)
+    sessionStorage.setItem(module + loaderDataPostfix, JSON.stringify(res))
+
+    return res || null
     // return
 }
 
@@ -31,7 +38,7 @@ export function shouldRevalidate({formAction, defaultShouldRevalidate}: ShouldRe
     const res = formAction === "/sign-in" && defaultShouldRevalidate
 
     // Это обход бага в react-router-е (https://github.com/remix-run/react-router/issues/12607)
-    sessionStorage.setItem(module + "-shouldRevalidate", String(res))
+    sessionStorage.setItem(module + shouldRevalidatePostfix, String(res))
 
     return res
 }
