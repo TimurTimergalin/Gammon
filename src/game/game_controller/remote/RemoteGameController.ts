@@ -95,10 +95,15 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
     init(config: Config<Index, Prop>) {
         this.diceState.dice1 = config.dice[0]
         this.diceState.dice2 = config.dice[1]
-        if (config.dice[0].value < config.dice[1].value) {
+        if (config.dice[0] !== null && config.dice[1] !== null && config.dice[0].value < config.dice[1].value) {
             this.diceState.swapDice()
         }
-        this.calculateDice()
+        if (this.diceState.dice1 !== null) {
+            console.assert(this.diceState.dice2 !== null)
+            this.calculateDice()
+        } else if (this.player === this.userPlayer) {
+            this.controlButtonsState.canRollDice = true
+        }
         this.scoreState.white = config.points.white
         this.scoreState.black = config.points.black
         this.scoreState.total = config.points.total
@@ -132,6 +137,8 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         this.opponentTurnDisplayed = false
         this.userDiceReceived = false
         this.player = oppositeColor(this.player)
+        this.diceState.dice1 = null
+        this.diceState.dice2 = null
     };
 
     onMovesMade = (moves: Move<Index>[]) => {
@@ -152,6 +159,9 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
             if (index + 1 === squashedMoves.length) {
                 this.opponentTurnDisplayed = true
                 this.swapBoardAvailable = true
+                this.controlButtonsState.canRollDice = true
+                this.diceState.dice1 = null
+                this.diceState.dice2 = null
             } else {
                 setTimeout(
                     () => displayMove(index + 1),
@@ -162,6 +172,9 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
 
         if (squashedMoves.length === 0) {
             this.opponentTurnDisplayed = true
+            this.controlButtonsState.canRollDice = true
+            this.diceState.dice1 = null
+            this.diceState.dice2 = null
         } else {
             this.swapBoardAvailable = false
             displayMove(0)
@@ -227,5 +240,10 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         if (this.swapBoardAvailable) {
             this._swapBoard()
         }
+    }
+
+    rollDice(): void {
+        this.connector.rollDice()
+        this.controlButtonsState.canRollDice = false
     }
 }

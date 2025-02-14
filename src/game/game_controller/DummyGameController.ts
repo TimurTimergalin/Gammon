@@ -58,6 +58,12 @@ export class DummyGameController implements GameController {
     }
 
     swapBoard(): never {
+        console.error("Called", "swapBoard", "on dummy")
+        return undefined as never
+    }
+
+    rollDice(): never {
+        console.error("Called", "rollDice", "on dummy")
         return undefined as never
     }
 }

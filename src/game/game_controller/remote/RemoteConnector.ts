@@ -1,5 +1,5 @@
 import {Color} from "../../../common/color";
-import {finishTurn, subscribeForEvents} from "../../../requests/requests";
+import {backgammonFinishTurn, backgammonRollDice, subscribeForEvents} from "../../../requests/requests";
 import {logResponseError} from "../../../requests/util";
 import {Move} from "../../board/move";
 import {RemoteMoveMapper} from "../../game_rule/RemoteMoveMapper";
@@ -19,6 +19,8 @@ export interface RemoteConnector<Index, Prop> {
     set onEnd(value: (winner: Color, next_game: Config<Index, Prop> | undefined) => void)
 
     makeMove(moves: Move<Index>[]): void
+
+    rollDice(): void
 
     unsubscribe(): void
 
@@ -48,8 +50,12 @@ export class RemoteConnectorImpl<RemoteMove, Index, Prop> implements RemoteConne
     }
 
     makeMove = (moves: Move<Index>[]): void => {
-        finishTurn(this.fetch, this.roomId, moves.map(this.moveMapper.toRemote))
+        backgammonFinishTurn(this.fetch, this.roomId, moves.map(this.moveMapper.toRemote))
             .then(resp => logResponseError(resp, "making a move"))
+    }
+
+    rollDice(): void {
+        backgammonRollDice(this.fetch, this.roomId).then(resp => logResponseError(resp, "rolling dice"))
     }
 
     private _onMovesMade: (moves: Move<Index>[]) => void = () => console.warn("No onMovesMade set")

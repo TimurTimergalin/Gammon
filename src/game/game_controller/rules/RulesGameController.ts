@@ -82,10 +82,6 @@ export abstract class RulesGameController<Index, Prop> implements GameController
         this.boardAnimationSwitch = boardAnimationSwitch
     }
 
-    abstract endTurn(): void;
-
-    abstract swapBoard(): void;
-
     protected checkTurnComplete() {
         const diceArray = this.diceState.toDiceArray()
         this.controlButtonsState.turnComplete = diceArray.length === 0 || this.rules.noMovesLeft(this.board.ruleBoard, this.player)
@@ -210,4 +206,10 @@ export abstract class RulesGameController<Index, Prop> implements GameController
         }
         this.diceState.swapDice()
     }
+
+    abstract endTurn(): void;
+
+    abstract swapBoard(): void;
+
+    abstract rollDice(): void
 }

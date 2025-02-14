@@ -29,19 +29,19 @@ export class BackgammonConfigParser implements ConfigParser<BackgammonRemoteConf
             placement.set(toIndex(id), {color: toColor(color), quantity: count})
         }
 
-        const dice: [DiceStatus, DiceStatus] = [
-            {
+        const dice: [DiceStatus | null, DiceStatus | null] = [
+            config.zar[0] ? {
                 value: config.zar[0],
                 color: config.first ? Color.WHITE : toColor(config.turn),
                 usageStatus: LayerStatus.NONE,
                 unavailabilityStatus: LayerStatus.NONE
-            },
-            {
+            } : null,
+            config.zar[1] ? {
                 value: config.zar[1],
                 color: config.first ? Color.BLACK : toColor(config.turn),
                 usageStatus: LayerStatus.NONE,
                 unavailabilityStatus: LayerStatus.NONE
-            }
+            } : null
         ]
 
         return {

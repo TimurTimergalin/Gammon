@@ -17,7 +17,7 @@ export interface BackgammonRemoteConfig {
             count: number,
             id: number
         }[],
-        zar: [number, number]
+        zar: [number, number] | []
     },
     blackPoints: number,
     whitePoints: number,

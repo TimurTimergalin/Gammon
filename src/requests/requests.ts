@@ -1,21 +1,21 @@
 import {
-    configUri,
+    backgammonConfigUri,
     connectUri,
     disconnectUri,
     eventsUri,
-    finishTurnUri,
+    backgammonFinishTurnUri,
     myUserInfoUri,
     signInUrl,
-    signUpUrl
+    signUpUrl, backgammonRollDiceUri
 } from "./paths";
 import {FetchType} from "../common/requests";
 
-export const getConfig = (fetch: FetchType, id: number) => fetch(configUri(id), {credentials: "include"})
+export const getBackgammonConfig = (fetch: FetchType, id: number) => fetch(backgammonConfigUri(id), {credentials: "include"})
 export const subscribeForEvents = (id: number) => new EventSource(eventsUri(id), {withCredentials: true})
 
-export async function finishTurn<RemoteMoveType>(fetch: FetchType, id: number, moves: RemoteMoveType[]) {
+export async function backgammonFinishTurn<RemoteMoveType>(fetch: FetchType, id: number, moves: RemoteMoveType[]) {
     return await fetch(
-        finishTurnUri(id),
+        backgammonFinishTurnUri(id),
         {
             credentials: "include",
             method: "POST",
@@ -28,6 +28,17 @@ export async function finishTurn<RemoteMoveType>(fetch: FetchType, id: number, m
         }
     )
 }
+
+export async function backgammonRollDice(fetch: FetchType, id: number) {
+    return await fetch(
+        backgammonRollDiceUri(id),
+        {
+            credentials: "include",
+            method: "post"
+        }
+    )
+}
+
 
 export const connect = (fetch: FetchType, gameType: string, points: number) =>
     fetch(connectUri, {
@@ -97,5 +108,4 @@ export async function myUserInfo(fetch: FetchType): Promise<UserInfo | undefined
         console.error(e)
         return
     }
-
 }

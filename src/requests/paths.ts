@@ -1,6 +1,7 @@
-export const configUri = (id: number) => `/game/backgammon/config/${id}`
+export const backgammonConfigUri = (id: number) => `/game/backgammon/config/${id}`
 export const eventsUri = (id: number) => `/game-events/${id}`
-export const finishTurnUri = (id: number) => `/game/backgammon/move/${id}`
+export const backgammonFinishTurnUri = (id: number) => `/game/backgammon/move/${id}`
+export const backgammonRollDiceUri = (id: number) => `/game/backgammon/zar/${id}`
 export const playUri = (id: number) => `/play/${id}`
 export const connectUri = "/menu/connect"
 export const disconnectUri = "/menu/disconnect"
