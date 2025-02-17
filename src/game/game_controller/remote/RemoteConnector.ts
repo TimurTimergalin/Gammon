@@ -7,6 +7,7 @@ import {logger} from "../../../logging/main";
 import {Config} from "../../game_rule/ConfigParser";
 import {FetchType} from "../../../common/requests";
 
+
 const console = logger("game/game_controller/remote")
 
 export interface RemoteConnector<Index, Prop> {
@@ -16,7 +17,10 @@ export interface RemoteConnector<Index, Prop> {
 
     set onNewDice(value: (dice: [number, number], player: Color) => void)
 
-    set onEnd(value: (winner: Color, next_game: Config<Index, Prop> | undefined) => void)
+    set onEnd(value: (winner: Color, next_game: Config<Index, Prop> | undefined, points: {
+        white: number,
+        black: number
+    }) => void)
 
     makeMove(moves: Move<Index>[]): void
 
@@ -24,17 +28,30 @@ export interface RemoteConnector<Index, Prop> {
 
     unsubscribe(): void
 
-    get blocked(): boolean
     set blocked(val: boolean)
 }
 
 export class RemoteConnectorImpl<RemoteMove, Index, Prop> implements RemoteConnector<Index, Prop> {
+    private queue: MessageEvent[] = []
+
+    set blocked(value: boolean) {
+        console.assert(this.eventSource !== undefined)
+        if (value) {
+            this.eventSource!.onmessage = (e) => this.queue.push(e)
+        } else {
+            this.setOnMessage()
+            for (const ev of this.queue) {
+                this.eventSource!.dispatchEvent(ev)
+            }
+            this.queue = []
+        }
+    }
+
     private readonly moveMapper: RemoteMoveMapper<RemoteMove, Index>
     private readonly roomId: number
     private readonly configGetter: (roomId: number) => Promise<Config<Index, Prop>>
     private readonly fetch: FetchType
 
-    blocked: boolean = false
 
     constructor({moveMapper, roomId, configGetter, fetch}: {
                     moveMapper: RemoteMoveMapper<RemoteMove, Index>,
@@ -68,23 +85,21 @@ export class RemoteConnectorImpl<RemoteMove, Index, Prop> implements RemoteConne
         this._onNewDice = value;
     }
 
-    private _onEnd: (winner: Color, next_game: Config<Index, Prop> | undefined) => void = () => console.warn("No onEnd set")
-    set onEnd(value: (winner: Color, next_game: Config<Index, Prop> | undefined) => void) {
+    private _onEnd: (winner: Color, next_game: Config<Index, Prop> | undefined, points: {
+        white: number,
+        black: number
+    }) => void = () => console.warn("No onEnd set")
+    set onEnd(value: (winner: Color, next_game: Config<Index, Prop> | undefined, points: {
+        white: number,
+        black: number
+    }) => void) {
         this._onEnd = value
     }
 
     private eventSource: EventSource | undefined = undefined
 
-    subscribe = () => {
-        this.eventSource = subscribeForEvents(this.roomId)
-        console.debug("Subscription initiated")
-        this.eventSource.addEventListener("error", (ev) => {
-            console.error(ev)
-        })
-        this.eventSource.addEventListener("open", () => {
-            console.debug("Stream opened")
-        })
-        this.eventSource.onmessage = (ev) => {
+    private setOnMessage() {
+        this.eventSource!.onmessage = (ev) => {
             console.debug(ev)
             const data = JSON.parse(ev.data)
             if (data.type === undefined) {
@@ -100,23 +115,34 @@ export class RemoteConnectorImpl<RemoteMove, Index, Prop> implements RemoteConne
                 this._onNewDice([d1, d2], color)
             } else if (data.type === "END_GAME_EVENT") {
                 const winner = data.win === "WHITE" ? Color.WHITE : Color.BLACK
+                const points = {
+                    white: data.whitePoints,
+                    black: data.blackPoints
+                }
                 const matchEnd = data.isMatchEnd
 
                 if (matchEnd) {
-                    this._onEnd(winner, undefined)
+                    this._onEnd(winner, undefined, points)
                 } else {
-                    this.configGetter(this.roomId).then(conf => this._onEnd(winner, conf))
+                    this.configGetter(this.roomId).then(conf => this._onEnd(winner, conf, points))
                 }
             } else {
                 console.warn("Ignoring unknown event")
             }
         }
 
-        this.eventSource?.addEventListener("message", () => {
-            if (this.blocked) {
-                console.error("Race condition")
-            }
+    }
+
+    subscribe = () => {
+        this.eventSource = subscribeForEvents(this.roomId)
+        console.debug("Subscription initiated")
+        this.eventSource.addEventListener("error", (ev) => {
+            console.error(ev)
         })
+        this.eventSource.addEventListener("open", () => {
+            console.debug("Stream opened")
+        })
+        this.setOnMessage()
     }
 
     unsubscribe = () => {

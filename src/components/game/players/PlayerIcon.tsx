@@ -1,5 +1,6 @@
 import {observer} from "mobx-react-lite";
-import {CSSProperties} from "react";
+import {ComponentProps, CSSProperties, useContext} from "react";
+import {imgCacheContext} from "../img_cache/context";
 
 export const PlayerIcon = observer(function PlayerIcon({username, iconSrc}:{
     username: string,
@@ -21,9 +22,19 @@ export const PlayerIcon = observer(function PlayerIcon({username, iconSrc}:{
         alignSelf: "center"
     }
 
+    const imgCache = useContext(imgCacheContext)
+
+    const imgProps = {
+        src: imgCache === null ? iconSrc : imgCache.get(iconSrc),
+        alt: "Icon",
+        style: {backgroundColor: "#252323", padding: "2px"}
+    } satisfies ComponentProps<"img">
+
+    const img = <img {...imgProps} />
+
     return (
         <div style={containerStyle}>
-            <img src={iconSrc} alt={"Icon"} style={{backgroundColor: "#252323", padding: "2px"}}/>
+            {img}
             <p style={textStyle}>{username}</p>
         </div>
     )
