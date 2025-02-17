@@ -6,7 +6,7 @@ export const playUri = (id: number) => `/play/${id}`
 export const connectUri = "/menu/connect"
 export const disconnectUri = "/menu/disconnect"
 export const signInUrl = "/player/login"
-export const signUpUrl = "/player/create-user"
+export const signUpUrl = "/player/create"
 export const myUserInfoUri = "/player/me"
 export const imageUri = (id: number) => `/player/image?` + new URLSearchParams({userId: String(id)})
 export const usernamesUri = (ids: number[]) => "/player/usernames?" + new URLSearchParams({

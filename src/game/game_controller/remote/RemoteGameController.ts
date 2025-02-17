@@ -162,6 +162,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
                 this.controlButtonsState.canRollDice = true
                 this.diceState.dice1 = null
                 this.diceState.dice2 = null
+                this.connector.blocked = false
             } else {
                 setTimeout(
                     () => displayMove(index + 1),
@@ -177,6 +178,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
             this.diceState.dice2 = null
         } else {
             this.swapBoardAvailable = false
+            this.connector.blocked = true
             displayMove(0)
         }
     };
@@ -211,16 +213,27 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         }
     };
 
-    onEnd = (winner: Color, newConfig: Config<Index, Prop> | undefined) => {
+    onEnd = (winner: Color, newConfig: Config<Index, Prop> | undefined, points: {white: number,black: number}) => {
         this.active = false
+        this.scoreState.white = points.white
+        this.scoreState.black = points.black
         if (newConfig === undefined) {
             this.endWindowState.title = winner === Color.WHITE ? "Белые выиграли" : "Черные выиграли"
             this.diceState.dice1 = null
             this.diceState.dice2 = null
+            this.controlButtonsState.turnComplete = false
+            this.controlButtonsState.canRollDice = false
+            this.controlButtonsState.movesMade = false
+            this._opponentTurnDisplayed = false
+            this._userDiceReceived = false
+            this.active = false
             return
         }
 
         this.connector.blocked = true
+        this.controlButtonsState.turnComplete = false
+        this.controlButtonsState.canRollDice = false
+        this.controlButtonsState.movesMade = false
         setTimeout(() => {
             this.boardAnimationSwitch.withTurnedOff(() => {
                 this.board.updateLogical(newConfig.placement)
