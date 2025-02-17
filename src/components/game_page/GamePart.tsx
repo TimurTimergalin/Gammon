@@ -4,6 +4,7 @@ import {ReactNode, useEffect} from "react";
 import {PlayerIcon} from "../game/players/PlayerIcon";
 import {ButtonPanel} from "../game/buttons/ButtonPanel";
 import {observer} from "mobx-react-lite";
+import {ImgCacheProvider} from "../game/img_cache/provider";
 
 export const GamePart = observer(function GamePart({player1, player2, children, displayButtons = false}: {
     player1?: PlayerState,
@@ -19,7 +20,7 @@ export const GamePart = observer(function GamePart({player1, player2, children, 
     }, [player1, player2, playersInfo]);
 
     return (
-        <>
+        <ImgCacheProvider>
             <div style={{display: "flex"}}>
                 <PlayerIcon {...playersInfo.player2} />
             </div>
@@ -34,6 +35,6 @@ export const GamePart = observer(function GamePart({player1, player2, children, 
                     </>
                 }
             </div>
-        </>
+        </ImgCacheProvider>
     )
 })
