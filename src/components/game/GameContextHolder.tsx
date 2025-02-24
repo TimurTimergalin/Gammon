@@ -13,6 +13,7 @@ import {LabelState} from "../../game/label_state/LabelState";
 import {EndWindowState} from "../../game/end_window_state/EndWindowState";
 import {BoardAnimationSwitch} from "../../game/board_animation_switch/BoardAnimationSwitch";
 import {ScoreState} from "../../game/score_state/ScoreState";
+import {DoubleCubeState} from "../../game/double_cube_state/DoubleCubeState";
 
 export const GameContextHolder = ({children}: { children: ReactNode | ReactNode[] }) => {
     const controlButtonsState = useFactoryRef(() => new ControlButtonsState())
@@ -38,6 +39,7 @@ export const GameContextHolder = ({children}: { children: ReactNode | ReactNode[
     const endWindowState = useFactoryRef(() => new EndWindowState())
     const boardAnimationSwitch = useFactoryRef(() => new BoardAnimationSwitch(true))
     const scoreState = useFactoryRef(() => new ScoreState({white: 0, black: 0, total: 0}))
+    const doubleCubeState = useFactoryRef(() => new DoubleCubeState({}))
 
     const gameContext = useFactoryRef(() => new GameContext({
         controlButtonsState: controlButtonsState,
@@ -51,7 +53,8 @@ export const GameContextHolder = ({children}: { children: ReactNode | ReactNode[
         labelMapperHolder: labelMapperHolder,
         endWindowState: endWindowState,
         boardAnimationSwitch: boardAnimationSwitch,
-        scoreState: scoreState
+        scoreState: scoreState,
+        doubleCubeState: doubleCubeState
     }))
 
     return (

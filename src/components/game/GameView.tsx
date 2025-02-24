@@ -13,15 +13,18 @@ import {GameController} from "../../game/game_controller/GameController";
 import {LabelMapper} from "../../game/game_rule/LabelMapper";
 import {IndexLayer} from "./index_layer/IndexLayer";
 import {DoubleCubeLayer} from "./dice_layer/double_cube/DoubleCubeLayer";
+import {DoubleCubePositionMapper} from "../../game/game_rule/DoubleCubePositionMapper";
 
 
 export default function GameView(
     {
         gameController,
-        labelMapper
+        labelMapper,
+        doubleCubePositionMapper
     }: {
     gameController: GameController
     labelMapper?: LabelMapper,
+    doubleCubePositionMapper?: DoubleCubePositionMapper
 }) {
     const svgRef = useRef<SVGSVGElement | null>(null)
     const [svgRect, setSvgRect] = useState<DOMRect | null>(null)
@@ -31,11 +34,13 @@ export default function GameView(
 
     const gameControllerSetter = useGameContext("gameControllerSetter")
     const labelState = useGameContext("labelState")
+    const doubleCubeState = useGameContext("doubleCubeState")
 
     useEffect(() => {
         gameControllerSetter.set(gameController)
         labelState.labelMapper = labelMapper
-    }, [gameController, gameControllerSetter, labelMapper, labelState]);
+        doubleCubeState.positionMapper = doubleCubePositionMapper
+    }, [doubleCubePositionMapper, doubleCubeState, gameController, gameControllerSetter, labelMapper, labelState]);
 
     return (
         <SvgClientRectContext.Provider value={svgRect}>
