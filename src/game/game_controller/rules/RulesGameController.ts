@@ -1,15 +1,15 @@
 import {GameController} from "../GameController";
 import {Rules} from "../../game_rule/Rules";
 import {Color} from "../../../common/color";
-import {ControlButtonsState} from "../../ControlButtonsState";
+import {ControlButtonsState} from "../../control_buttons_state/ControlButtonsState";
 import {CompoundMove, invertCompound, mergeMoves} from "../../board/move";
 import {IndexMapper} from "../../game_rule/IndexMapper";
 import {DiceState} from "../../dice_state/DiceState";
-import {LegalMovesTracker} from "../../LegalMovesTracker";
-import {LabelState} from "../../LabelState";
+import {LegalMovesTracker} from "../../legal_moves_tracker/LegalMovesTracker";
+import {LabelState} from "../../label_state/LabelState";
 import {logger} from "../../../logging/main";
 import {BoardSynchronizer} from "../../board/BoardSynchronizer";
-import {BoardAnimationSwitch} from "../../BoardAnimationSwitch";
+import {BoardAnimationSwitch} from "../../board_animation_switch/BoardAnimationSwitch";
 
 const console = logger("game/game_controller/rules")
 

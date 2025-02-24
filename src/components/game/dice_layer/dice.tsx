@@ -7,7 +7,7 @@ import {logger} from "../../../logging/main";
 
 const console = logger("components/game/dice_layer")
 
-function DiceBase({x, y, color}: {
+export function DiceBase({x, y, color}: {
     x: number,
     y: number,
     color: Color

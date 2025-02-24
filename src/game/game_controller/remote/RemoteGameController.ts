@@ -1,8 +1,8 @@
 import {RulesGameController} from "../rules/RulesGameController";
-import {ControlButtonsState} from "../../ControlButtonsState";
+import {ControlButtonsState} from "../../control_buttons_state/ControlButtonsState";
 import {IndexMapper} from "../../game_rule/IndexMapper";
 import {DiceState} from "../../dice_state/DiceState";
-import {LegalMovesTracker} from "../../LegalMovesTracker";
+import {LegalMovesTracker} from "../../legal_moves_tracker/LegalMovesTracker";
 import {Rules} from "../../game_rule/Rules";
 import {RemoteConnector} from "./RemoteConnector";
 import {Color, oppositeColor} from "../../../common/color";
@@ -10,13 +10,13 @@ import {Move} from "../../board/move";
 import {LayerStatus} from "../../../components/game/dice_layer/LayerStatus";
 import {moveDuration} from "../../../components/game/pieces_layer/constants";
 import {DiceStatus} from "../../dice_state/DiceStatus";
-import {LabelState} from "../../LabelState";
+import {LabelState} from "../../label_state/LabelState";
 import {logger} from "../../../logging/main";
 import {BoardSynchronizer} from "../../board/BoardSynchronizer";
 import {Config} from "../../game_rule/ConfigParser";
-import {EndWindowState} from "../../EndWindowState";
-import {BoardAnimationSwitch} from "../../BoardAnimationSwitch";
-import {ScoreState} from "../../ScoreState";
+import {EndWindowState} from "../../end_window_state/EndWindowState";
+import {BoardAnimationSwitch} from "../../board_animation_switch/BoardAnimationSwitch";
+import {ScoreState} from "../../score_state/ScoreState";
 
 const console = logger("game/game_controller/remote")
 

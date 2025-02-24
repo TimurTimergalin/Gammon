@@ -1,6 +1,6 @@
-import {LabelMapper} from "./game_rule/LabelMapper";
+import {LabelMapper} from "../game_rule/LabelMapper";
 import {makeAutoObservable} from "mobx";
-import {Color} from "../common/color";
+import {Color} from "../../common/color";
 
 export class LabelState {
     get color(): Color | undefined {

@@ -1,17 +1,17 @@
-import {ControlButtonsState} from "./ControlButtonsState";
-import {HoverTracker} from "./HoverTracker";
+import {ControlButtonsState} from "./control_buttons_state/ControlButtonsState";
+import {HoverTracker} from "./hover_tracker/HoverTracker";
 import {createContext, MutableRefObject, RefObject, useContext} from "react";
 import {forceType} from "../common/typing";
 import {PlayersInfo} from "./player_info/PlayersInfo";
 import {DragState} from "./drag_state/DragState";
 import {DiceState} from "./dice_state/DiceState";
 import {PhysicalBoard} from "./board/physical/PhysicalBoard";
-import {LegalMovesTracker} from "./LegalMovesTracker";
+import {LegalMovesTracker} from "./legal_moves_tracker/LegalMovesTracker";
 import {GameController} from "./game_controller/GameController";
-import {LabelState} from "./LabelState";
-import {EndWindowState} from "./EndWindowState";
-import {BoardAnimationSwitch} from "./BoardAnimationSwitch";
-import {ScoreState} from "./ScoreState";
+import {LabelState} from "./label_state/LabelState";
+import {EndWindowState} from "./end_window_state/EndWindowState";
+import {BoardAnimationSwitch} from "./board_animation_switch/BoardAnimationSwitch";
+import {ScoreState} from "./score_state/ScoreState";
 import {useFactoryRef} from "../common/hooks";
 
 type Setter<T> = {

@@ -2,18 +2,18 @@ import {RulesGameController} from "../rules/RulesGameController";
 import {Color, oppositeColor} from "../../../common/color";
 import {DiceStatus} from "../../dice_state/DiceStatus";
 import {LayerStatus} from "../../../components/game/dice_layer/LayerStatus";
-import {ControlButtonsState} from "../../ControlButtonsState";
+import {ControlButtonsState} from "../../control_buttons_state/ControlButtonsState";
 import {IndexMapper} from "../../game_rule/IndexMapper";
 import {DiceState} from "../../dice_state/DiceState";
-import {LegalMovesTracker} from "../../LegalMovesTracker";
+import {LegalMovesTracker} from "../../legal_moves_tracker/LegalMovesTracker";
 import {Rules} from "../../game_rule/Rules";
-import {LabelState} from "../../LabelState";
+import {LabelState} from "../../label_state/LabelState";
 import {logger} from "../../../logging/main";
 import {BoardSynchronizer} from "../../board/BoardSynchronizer";
-import {EndWindowState} from "../../EndWindowState";
+import {EndWindowState} from "../../end_window_state/EndWindowState";
 import {InitPlacement} from "../../game_rule/InitPlacement";
-import {BoardAnimationSwitch} from "../../BoardAnimationSwitch";
-import {ScoreState} from "../../ScoreState";
+import {BoardAnimationSwitch} from "../../board_animation_switch/BoardAnimationSwitch";
+import {ScoreState} from "../../score_state/ScoreState";
 
 const console = logger("game/game_controller/local")
 

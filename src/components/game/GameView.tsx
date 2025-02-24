@@ -12,6 +12,7 @@ import {useGameContext} from "../../game/GameContext";
 import {GameController} from "../../game/game_controller/GameController";
 import {LabelMapper} from "../../game/game_rule/LabelMapper";
 import {IndexLayer} from "./index_layer/IndexLayer";
+import {DoubleCubeLayer} from "./dice_layer/double_cube/DoubleCubeLayer";
 
 
 export default function GameView(
@@ -48,6 +49,7 @@ export default function GameView(
                 <PiecesLayer/>
                 <MoveHintLayer/>
                 <DiceLayer/>
+                <DoubleCubeLayer />
                 <DragPieceLayer/>
                 <HoverLayer/>
             </svg>
