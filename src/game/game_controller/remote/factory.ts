@@ -60,8 +60,12 @@ export async function remoteGameInit<RemoteConfig, Index, Prop, RemoteMove>(
         labelState: gameContext.labelState,
         endWindowState: gameContext.endWindowState,
         boardAnimationSwitch: gameContext.boardAnimationSwitch,
-        scoreState: gameContext.scoreState
+        scoreState: gameContext.scoreState,
+        doubleCubeState: gameContext.doubleCubeState
     })
+
+    gameContext.labelState.labelMapper = ruleSet.labelMapperFactory(config.userPlayer)
+    gameContext.gameControllerSetter.set(controller)
 
     controller.init(config)
 
@@ -72,9 +76,7 @@ export async function remoteGameInit<RemoteConfig, Index, Prop, RemoteMove>(
     connector.subscribe()
 
     return {
-        controller: controller,
         cleanup: connector.unsubscribe,
-        labelMapper: ruleSet.labelMapperFactory(config.userPlayer),
         player1: config.userPlayer === Color.WHITE ? config.players.white : config.players.black,
         player2: config.userPlayer === Color.WHITE ? config.players.black : config.players.white
     }

@@ -1,13 +1,18 @@
 import {DoubleCubePositionMapper} from "../game_rule/DoubleCubePositionMapper";
+import {makeAutoObservable} from "mobx";
 
-type CubeState = "unavailable" | "free" | "belongs_to_white" | "belongs_to_black" | "offered_to_white" | "offered_to_black"
+export type CubeState = "unavailable" | "free" | "belongs_to_white" | "belongs_to_black" | "offered_to_white" | "offered_to_black"
 
 export class DoubleCubeState {
     get value(): number | undefined {
         return this._value;
     }
 
-    set value(value: number) {
+    get convertedValue(): number {
+        return this._state === "free" || this._state === "unavailable" ? 1 : this._value!
+    }
+
+    set value(value: number | undefined) {
         this._value = value;
     }
     get positionMapper(): DoubleCubePositionMapper | undefined{
@@ -38,5 +43,6 @@ export class DoubleCubeState {
         this._state = state;
         this._positionMapper = positionMapper;
         this._value = value
+        makeAutoObservable(this)
     }
 }

@@ -26,4 +26,6 @@ export interface GameController {
     swapBoard(): void
 
     rollDice(): void
+
+    interactWithDouble(): void
 }

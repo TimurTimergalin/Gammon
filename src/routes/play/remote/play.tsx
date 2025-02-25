@@ -1,9 +1,7 @@
 import {RuleSet} from "../../../game/game_rule/RuleSet";
 import {RemoteSet} from "../../../game/game_rule/RemoteSet";
 import {useFullGameContext} from "../../../game/GameContext";
-import {useEffect, useRef, useState} from "react";
-import {GameController} from "../../../game/game_controller/GameController";
-import {LabelMapper} from "../../../game/game_rule/LabelMapper";
+import {useEffect, useState} from "react";
 import {remoteGameInit} from "../../../game/game_controller/remote/factory";
 import {GameAndControlPanelContainer} from "../../../components/game_page/GameAndControlPanelContainer";
 import GameView from "../../../components/game/GameView";
@@ -44,15 +42,11 @@ const InnerRemoteGameWindow = observer(<RemoteConfig, Index, Prop, RemoteMove>(
         console.assert(!isNaN(roomIdParsed))
     }, [roomIdParsed]);
 
-
-    const [gameController, setGameController] = useState<GameController | undefined>(undefined)
-
     const [cleanup, setCleanup] = useState<undefined | { cleanup: () => void }>(undefined)
+    const [gameLoaded, setGameLoaded] = useState(false)
 
     const [player1, setPlayer1] = useState<PlayerState | undefined>()
     const [player2, setPlayer2] = useState<PlayerState | undefined>()
-
-    const labelMapper_ = useRef<LabelMapper | undefined>(undefined)
 
     useEffect(() => {
         if (cleanup !== undefined) {
@@ -74,21 +68,20 @@ const InnerRemoteGameWindow = observer(<RemoteConfig, Index, Prop, RemoteMove>(
             roomId: roomIdParsed,
             ruleSet: ruleSet,
             fetch: fetch
-        }).then(({controller, cleanup, labelMapper, player1, player2}) => {
-            setGameController(controller)
+        }).then(({cleanup, player1, player2}) => {
+            setGameLoaded(true)
             setCleanup({cleanup: cleanup})
             setPlayer1(player1)
             setPlayer2(player2)
-            labelMapper_.current = labelMapper
         })
     }, [fetch, gameContext, remoteSet, roomIdParsed, ruleSet]);
 
     return (
         <GameAndControlPanelContainer>
             <div style={{width: "100%", height: "100%", position: "relative"}}>
-                {gameController !== undefined &&
+                {gameLoaded &&
                     <GamePart displayButtons={true} player1={player1} player2={player2}>
-                        <GameView gameController={gameController} labelMapper={labelMapper_.current}/>
+                        <GameView/>
                     </GamePart>
                 }
                 <EndWindow>

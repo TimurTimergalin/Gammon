@@ -1,6 +1,5 @@
 import {GameAndControlPanelContainer} from "../components/play_menu/GameAndControlPanelContainer";
 import GameView from "../components/game/GameView";
-import {DummyGameController} from "../game/game_controller/DummyGameController";
 import {GameContextHolder} from "../components/game/GameContextHolder";
 import {GamePart} from "../components/game_page/GamePart";
 import {ControlPanel} from "../components/play_menu/new_control_panel/ControlPanel";
@@ -30,7 +29,7 @@ export const PlayMenuPage = observer(() => {
                 <GamePart
                     player1={player1}
                     player2={player2}>
-                    <GameView gameController={new DummyGameController()}/>
+                    <GameView />
                 </GamePart>
                 <ControlPanel options={["Игра по сети", "Локальная игра"]}>
                     <RemoteGameTab/>

@@ -14,6 +14,7 @@ import {EndWindowState} from "../../end_window_state/EndWindowState";
 import {InitPlacement} from "../../game_rule/InitPlacement";
 import {BoardAnimationSwitch} from "../../board_animation_switch/BoardAnimationSwitch";
 import {ScoreState} from "../../score_state/ScoreState";
+import {DoubleCubeState} from "../../double_cube_state/DoubleCubeState";
 
 const console = logger("game/game_controller/local")
 
@@ -21,8 +22,8 @@ const console = logger("game/game_controller/local")
 export class LocalGameController<Index, Prop> extends RulesGameController<Index, Prop> {
     private endWindowState: EndWindowState
     private readonly initPlacement: InitPlacement<Index, Prop>
-    private readonly pointsUntil: number
     private points: ScoreState
+    private crawfordRule: boolean = false
 
     constructor({endWindowState, initPlacement, scoreState, ...args}: {
         board: BoardSynchronizer<Index, Prop>,
@@ -37,11 +38,11 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         initPlacement: InitPlacement<Index, Prop>,
         boardAnimationSwitch: BoardAnimationSwitch,
         scoreState: ScoreState,
+        doubleCubeState: DoubleCubeState
     }) {
         super(args);
         this.endWindowState = endWindowState
         this.initPlacement = initPlacement
-        this.pointsUntil = scoreState.total
         this.points = scoreState
     }
 
@@ -103,7 +104,16 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
             this.diceState.dice1 = null
             this.diceState.dice2 = null
             this.controlButtonsState.turnComplete = false
-            this.controlButtonsState.canRollDice = true
+            this.previousDoubleState = undefined
+            this.controlButtonsState.canRollDice =
+                this.doubleCubeState.state !== "offered_to_white" && this.doubleCubeState.state !== "offered_to_black"
+            this.canOfferDouble =
+                (
+                    this.doubleCubeState.state === "free" ||
+                    (this.player === Color.WHITE && this.doubleCubeState.state === "belongs_to_white") ||
+                    (this.player === Color.BLACK && this.doubleCubeState.state === "belongs_to_black")
+                ) && this.doubleCubeState.convertedValue !== 64
+
         }
         this.controlButtonsState.movesMade = false
     }
@@ -118,11 +128,11 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
     }
 
     checkMatchComplete(): { winner: Color } | undefined {
-        if (this.points.white >= this.pointsUntil) {
+        if (this.points.white >= this.points.total) {
             return {winner: Color.WHITE}
         }
 
-        if (this.points.black >= this.pointsUntil) {
+        if (this.points.black >= this.points.total) {
             return {winner: Color.BLACK}
         }
 
@@ -133,6 +143,19 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         this.boardAnimationSwitch.withTurnedOff(() => {
                 this.board.updateLogical(this.initPlacement())
                 this.active = true
+                console.assert(this.points.total > Math.max(this.points.white, this.points.black))
+                if (!this.crawfordRule &&
+                    Math.max(
+                        this.points.total - this.points.white,
+                        this.points.total - this.points.black
+                    ) > 1
+                ) {
+                    this.doubleCubeState.value = 64
+                    this.doubleCubeState.state = "free"
+                } else {
+                    this.doubleCubeState.state = "unavailable"
+                    this.doubleCubeState.value = undefined
+                }
                 this.newTurn(true)
             }
         )
@@ -147,11 +170,13 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
             this.controlButtonsState.turnComplete = false
             this.active = false
 
-            const points = this.rules.calculatePoints(this.board.ruleBoard, gameComplete.winner)
+            const points = this.rules.calculatePoints(this.board.ruleBoard, gameComplete.winner) * this.doubleCubeState.convertedValue
             if (gameComplete.winner === Color.WHITE) {
                 this.points.white += points
+                this.crawfordRule = this.points.white === this.points.total - 1
             } else {
                 this.points.black += points
+                this.crawfordRule = this.points.black === this.points.total - 1
             }
 
             const matchComplete = this.checkMatchComplete()
@@ -180,8 +205,45 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
     }
 
     rollDice(): void {
+        this.canOfferDouble = false
         this._rollDice(this.player, this.player)
         this.calculateDice()
         this.controlButtonsState.canRollDice = false
+    }
+
+    offerDouble(): void {
+        console.assert(this.doubleCubeState !== undefined)
+        this.previousDoubleState = {
+            state: this.doubleCubeState.state,
+            value: this.doubleCubeState.value!,
+            canOffer: true
+        }
+        this._offerDouble()
+        this.controlButtonsState.movesMade = true
+        this.controlButtonsState.turnComplete = true
+        this.controlButtonsState.canRollDice = false
+        this.canOfferDouble = false
+    }
+
+    acceptDouble(): void {
+        this.previousDoubleState = {
+            state: this.doubleCubeState.state,
+            value: this.doubleCubeState.value!,
+            canOffer: false
+        }
+        this._acceptDouble()
+        this.controlButtonsState.movesMade = true
+        this.controlButtonsState.turnComplete = true
+    }
+
+    interactWithDouble(): void {
+        if (this.canOfferDouble) {
+            this.offerDouble()
+        } else if (
+            (this.player === Color.WHITE && this.doubleCubeState.state === "offered_to_white") ||
+            (this.player === Color.BLACK && this.doubleCubeState.state === "offered_to_black")
+        ) {
+            this.acceptDouble()
+        }
     }
 }

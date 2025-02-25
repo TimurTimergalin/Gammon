@@ -66,4 +66,9 @@ export class DummyGameController implements GameController {
         console.error("Called", "rollDice", "on dummy")
         return undefined as never
     }
+
+    interactWithDouble(): never {
+        console.error("Called", "interactWithDouble", "on dummy")
+        return undefined as never
+    }
 }

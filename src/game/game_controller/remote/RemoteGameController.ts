@@ -17,6 +17,7 @@ import {Config} from "../../game_rule/ConfigParser";
 import {EndWindowState} from "../../end_window_state/EndWindowState";
 import {BoardAnimationSwitch} from "../../board_animation_switch/BoardAnimationSwitch";
 import {ScoreState} from "../../score_state/ScoreState";
+import {DoubleCubeState} from "../../double_cube_state/DoubleCubeState";
 
 const console = logger("game/game_controller/remote")
 
@@ -79,7 +80,8 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         labelState: LabelState,
         endWindowState: EndWindowState,
         boardAnimationSwitch: BoardAnimationSwitch,
-        scoreState: ScoreState
+        scoreState: ScoreState,
+        doubleCubeState: DoubleCubeState
     }) {
         const active = player === userPlayer
         super({...base, active: active});
@@ -213,7 +215,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         }
     };
 
-    onEnd = (winner: Color, newConfig: Config<Index, Prop> | undefined, points: {white: number,black: number}) => {
+    onEnd = (winner: Color, newConfig: Config<Index, Prop> | undefined, points: { white: number, black: number }) => {
         this.active = false
         this.scoreState.white = points.white
         this.scoreState.black = points.black
@@ -258,5 +260,9 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
     rollDice(): void {
         this.connector.rollDice()
         this.controlButtonsState.canRollDice = false
+    }
+
+    interactWithDouble(): void {
+        throw new Error("NOT IMPLEMENTED")  // TODO
     }
 }

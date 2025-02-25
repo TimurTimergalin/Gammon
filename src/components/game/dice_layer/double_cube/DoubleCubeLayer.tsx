@@ -3,6 +3,7 @@ import {boardHeight, boardWidth, pieceWidth, sideWidth, storeHeight} from "../..
 import {useGameContext} from "../../../../game/GameContext";
 import {Stand, Store} from "../../../../game/game_rule/DoubleCubePositionMapper";
 import {Color} from "../../../../common/color";
+import {observer} from "mobx-react-lite";
 
 const getStorePosition = (store: Store): {cx: number, cy: number} => {
     const dx = sideWidth + pieceWidth / 2
@@ -36,7 +37,7 @@ const getStandPosition = (stand: Stand): {cx: number, cy: number} => {
 }
 
 
-export const DoubleCubeLayer = () => {
+export const DoubleCubeLayer = observer(function DoubleCubeLayer() {
     const doubleCubeState = useGameContext("doubleCubeState")
 
     if (doubleCubeState.state === "unavailable") {
@@ -46,7 +47,7 @@ export const DoubleCubeLayer = () => {
     console.assert(doubleCubeState.value !== undefined)
     console.assert(doubleCubeState.positionMapper !== undefined)
 
-    let position: {cx: number, cy: number}
+    let position: { cx: number, cy: number }
     let rotation: number
     if (doubleCubeState.state === "free") {
         position = getStandPosition(doubleCubeState.positionMapper!.positionFree())
@@ -63,4 +64,4 @@ export const DoubleCubeLayer = () => {
     }
 
     return <DoubleCube value={doubleCubeState.value!} {...position} rotation={rotation}/>
-}
+})
