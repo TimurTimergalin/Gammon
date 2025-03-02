@@ -210,40 +210,4 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         this.calculateDice()
         this.controlButtonsState.canRollDice = false
     }
-
-    offerDouble(): void {
-        console.assert(this.doubleCubeState !== undefined)
-        this.previousDoubleState = {
-            state: this.doubleCubeState.state,
-            value: this.doubleCubeState.value!,
-            canOffer: true
-        }
-        this._offerDouble()
-        this.controlButtonsState.movesMade = true
-        this.controlButtonsState.turnComplete = true
-        this.controlButtonsState.canRollDice = false
-        this.canOfferDouble = false
-    }
-
-    acceptDouble(): void {
-        this.previousDoubleState = {
-            state: this.doubleCubeState.state,
-            value: this.doubleCubeState.value!,
-            canOffer: false
-        }
-        this._acceptDouble()
-        this.controlButtonsState.movesMade = true
-        this.controlButtonsState.turnComplete = true
-    }
-
-    interactWithDouble(): void {
-        if (this.canOfferDouble) {
-            this.offerDouble()
-        } else if (
-            (this.player === Color.WHITE && this.doubleCubeState.state === "offered_to_white") ||
-            (this.player === Color.BLACK && this.doubleCubeState.state === "offered_to_black")
-        ) {
-            this.acceptDouble()
-        }
-    }
 }

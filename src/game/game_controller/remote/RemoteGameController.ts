@@ -128,6 +128,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
     }
 
     endTurn = (): void => {
+        // TODO: обработать куб удвоения
         console.assert(this.player === this.userPlayer)
         console.assert(this.active)
         const splitMoves = this.performedMoves
@@ -260,9 +261,5 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
     rollDice(): void {
         this.connector.rollDice()
         this.controlButtonsState.canRollDice = false
-    }
-
-    interactWithDouble(): void {
-        throw new Error("NOT IMPLEMENTED")  // TODO
     }
 }

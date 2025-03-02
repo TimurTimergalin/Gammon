@@ -49,7 +49,7 @@ const SwapBoardButton = styled(PlainSwapBoardButton)`
 const PlainSurrenderButton = ({className}: { className?: string }) => {
     return (
         <button className={className} type={"button"}>
-            <img src={"/surrender.svg"} alt={"Сдаться"} title={"Сдаться"}/>
+            <img src={"/surrender.svg"} alt={"Сдаться"} title={"Сдать матч (весь!)"}/>
         </button>
     )
 }
