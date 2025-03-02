@@ -242,12 +242,6 @@ export abstract class RulesGameController<Index, Prop> implements GameController
         this.diceState.swapDice()
     }
 
-    abstract endTurn(): void;
-
-    abstract swapBoard(): void;
-
-    abstract rollDice(): void
-
     offerDouble(): void {
         console.assert(this.doubleCubeState !== undefined)
         this.previousDoubleState = {
@@ -283,4 +277,12 @@ export abstract class RulesGameController<Index, Prop> implements GameController
             this.acceptDouble()
         }
     }
+
+    abstract endTurn(): void;
+
+    abstract swapBoard(): void;
+
+    abstract rollDice(): void
+
+    abstract concedeMatch(): void;
 }

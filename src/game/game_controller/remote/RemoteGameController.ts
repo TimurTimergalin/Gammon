@@ -262,4 +262,8 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         this.connector.rollDice()
         this.controlButtonsState.canRollDice = false
     }
+
+    concedeMatch(): never {
+        throw new Error("NOT IMPLEMENTED")  // TODO: implement concedeMatch
+    }
 }

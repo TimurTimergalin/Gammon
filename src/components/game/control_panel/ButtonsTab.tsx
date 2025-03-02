@@ -47,8 +47,9 @@ const SwapBoardButton = styled(PlainSwapBoardButton)`
 `
 
 const PlainSurrenderButton = ({className}: { className?: string }) => {
+    const gameController = useGameContext("gameController")
     return (
-        <button className={className} type={"button"}>
+        <button className={className} type={"button"} onClick={() => gameController.concedeMatch()}>
             <img src={"/surrender.svg"} alt={"Сдаться"} title={"Сдать матч (весь!)"}/>
         </button>
     )

@@ -24,6 +24,7 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
     private readonly initPlacement: InitPlacement<Index, Prop>
     private points: ScoreState
     private crawfordRule: boolean = false
+    private canConcedeMatch = true
 
     constructor({endWindowState, initPlacement, scoreState, ...args}: {
         board: BoardSynchronizer<Index, Prop>,
@@ -161,6 +162,10 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         )
     }
 
+    winnerTitle(color: Color) {
+        return color === Color.WHITE ? "Белые выиграли" : "Черные выиграли"
+    }
+
     endTurn(): void {
         this.performedMoves = []
 
@@ -182,7 +187,7 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
             const matchComplete = this.checkMatchComplete()
 
             if (matchComplete !== undefined) {
-                this.endWindowState.title = matchComplete.winner === Color.WHITE ? "Белые выиграли" : "Черные выиграли"
+                this.endWindowState.title = this.winnerTitle(matchComplete.winner)
 
                 this.diceState.dice1 = null
                 this.diceState.dice2 = null
@@ -209,5 +214,17 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         this._rollDice(this.player, this.player)
         this.calculateDice()
         this.controlButtonsState.canRollDice = false
+    }
+
+    concedeMatch(): void {
+        if (!this.canConcedeMatch) {
+            return
+        }
+        this.active = false
+        this.controlButtonsState.movesMade = false
+        this.controlButtonsState.canRollDice = false
+        this.controlButtonsState.turnComplete = false
+        this.endWindowState.title = this.winnerTitle(oppositeColor(this.player))
+        this.canConcedeMatch = false
     }
 }

@@ -28,4 +28,6 @@ export interface GameController {
     rollDice(): void
 
     interactWithDouble(): void
+
+    concedeMatch(): void
 }
