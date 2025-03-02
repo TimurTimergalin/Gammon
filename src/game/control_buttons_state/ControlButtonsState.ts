@@ -2,6 +2,13 @@ import {makeAutoObservable} from "mobx";
 
 
 export class ControlButtonsState {
+    get canConcedeGame(): boolean {
+        return this._canConcedeGame;
+    }
+
+    set canConcedeGame(value: boolean) {
+        this._canConcedeGame = value;
+    }
     constructor() {
         makeAutoObservable(this)
     }
@@ -35,5 +42,7 @@ export class ControlButtonsState {
     set canRollDice(value: boolean) {
         this._canRollDice = value;
     }
+
+    private _canConcedeGame: boolean = false
 }
 

@@ -68,6 +68,19 @@ export abstract class RulesGameController<Index, Prop> implements GameController
         this.doubleCubeState.state = this.player === Color.WHITE ? "belongs_to_white" : "belongs_to_black"
     }
 
+    protected _canConcedeGame() {
+        return (this.player === Color.WHITE && this.doubleCubeState.state === "offered_to_white") ||
+            (this.player === Color.BLACK && this.doubleCubeState.state === "offered_to_black") ||
+            (this.rules.canConcedePrematurely(this.board.ruleBoard, this.player) &&
+                (
+                    this.player === Color.WHITE && this.doubleCubeState.state === "belongs_to_white" ||
+                    this.player === Color.BLACK && this.doubleCubeState.state === "belongs_to_black" ||
+                    this.doubleCubeState.state === "unavailable"
+                )
+            )
+
+    }
+
     protected constructor(
         {
             board,
@@ -275,6 +288,7 @@ export abstract class RulesGameController<Index, Prop> implements GameController
             (this.player === Color.BLACK && this.doubleCubeState.state === "offered_to_black")
         ) {
             this.acceptDouble()
+            this.controlButtonsState.canConcedeGame = this._canConcedeGame()
         }
     }
 
@@ -285,4 +299,6 @@ export abstract class RulesGameController<Index, Prop> implements GameController
     abstract rollDice(): void
 
     abstract concedeMatch(): void;
+
+    abstract concedeGame(): void;
 }

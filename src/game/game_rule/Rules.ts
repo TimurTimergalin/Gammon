@@ -16,4 +16,6 @@ export interface Rules<Index, Prop> {
     squashMoves(moves: Move<Index>[]): Move<Index>[][]
 
     calculatePoints(board: Board<Index, Prop>, winner: Color): number
+
+    canConcedePrematurely(board: Board<Index, Prop>, player: Color): boolean
 }

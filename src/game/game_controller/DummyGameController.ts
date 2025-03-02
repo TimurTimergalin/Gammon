@@ -76,4 +76,11 @@ export class DummyGameController implements GameController {
         console.error("Called", "concedeMatch", "on dummy")
         return undefined as never
     }
+
+    concedeGame(): never {
+        console.error("Called", "concedeGame", "on dummy")
+        return undefined as never
+    }
+
+
 }

@@ -266,4 +266,10 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
     concedeMatch(): never {
         throw new Error("NOT IMPLEMENTED")  // TODO: implement concedeMatch
     }
+
+    concedeGame(): never {
+        throw new Error("NOT IMPLEMENTED")  // TODO: implement concedeGame
+    }
+
+
 }

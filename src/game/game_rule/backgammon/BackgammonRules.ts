@@ -389,4 +389,8 @@ export class BackgammonRules implements Rules<BackgammonIndex, BackgammonProp> {
 
         return 2 // Марс
     }
+
+    canConcedePrematurely(board: BackgammonBoard, player: Color): boolean {
+        return board.get(getStore(player)) !== undefined
+    }
 }

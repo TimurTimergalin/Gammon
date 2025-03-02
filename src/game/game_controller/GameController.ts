@@ -30,4 +30,6 @@ export interface GameController {
     interactWithDouble(): void
 
     concedeMatch(): void
+
+    concedeGame(): void
 }
