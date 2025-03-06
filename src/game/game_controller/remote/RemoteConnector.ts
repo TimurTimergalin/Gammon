@@ -1,5 +1,11 @@
 import {Color} from "../../../common/color";
-import {backgammonFinishTurn, backgammonRollDice, subscribeForEvents} from "../../../requests/requests";
+import {
+    backgammonAcceptDouble,
+    backgammonFinishTurn,
+    backgammonOfferDouble,
+    backgammonRollDice,
+    subscribeForEvents
+} from "../../../requests/requests";
 import {logResponseError} from "../../../requests/util";
 import {Move} from "../../board/move";
 import {RemoteMoveMapper} from "../../game_rule/RemoteMoveMapper";
@@ -25,6 +31,10 @@ export interface RemoteConnector<Index, Prop> {
     makeMove(moves: Move<Index>[]): void
 
     rollDice(): void
+
+    offerDouble(): void
+
+    acceptDouble(): void
 
     unsubscribe(): void
 
@@ -73,6 +83,14 @@ export class RemoteConnectorImpl<RemoteMove, Index, Prop> implements RemoteConne
 
     rollDice(): void {
         backgammonRollDice(this.fetch, this.roomId).then(resp => logResponseError(resp, "rolling dice"))
+    }
+
+    offerDouble(): void {
+        backgammonOfferDouble(this.fetch, this.roomId).then(resp => logResponseError(resp, "offering double"))
+    }
+
+    acceptDouble(): void {
+        backgammonAcceptDouble(this.fetch, this.roomId).then(resp => logResponseError(resp, "accepting double"))
     }
 
     private _onMovesMade: (moves: Move<Index>[]) => void = () => console.warn("No onMovesMade set")

@@ -2,6 +2,8 @@ export const backgammonConfigUri = (id: number) => `/game/backgammon/config/${id
 export const eventsUri = (id: number) => `/game-events/${id}`
 export const backgammonFinishTurnUri = (id: number) => `/game/backgammon/move/${id}`
 export const backgammonRollDiceUri = (id: number) => `/game/backgammon/zar/${id}`
+export const backgammonOfferDoubleUri = (id: number) => `game/backgammon/double/${id}`
+export const backgammonAcceptDoubleUri = (id: number) => `game/backgammon/double/accept/${id}`
 export const playUri = (id: number) => `/play/${id}`
 export const connectUri = "/menu/connect"
 export const disconnectUri = "/menu/disconnect"

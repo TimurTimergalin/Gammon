@@ -81,6 +81,14 @@ export abstract class RulesGameController<Index, Prop> implements GameController
 
     }
 
+    protected _canOfferDouble() {
+        return (
+            this.doubleCubeState.state === "free" ||
+            (this.player === Color.WHITE && this.doubleCubeState.state === "belongs_to_white") ||
+            (this.player === Color.BLACK && this.doubleCubeState.state === "belongs_to_black")
+        ) && this.doubleCubeState.convertedValue !== 64
+    }
+
     protected constructor(
         {
             board,

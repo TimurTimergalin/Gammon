@@ -9,7 +9,6 @@ import {Color, oppositeColor} from "../../../common/color";
 import {Move} from "../../board/move";
 import {LayerStatus} from "../../../components/game/dice_layer/LayerStatus";
 import {moveDuration} from "../../../components/game/pieces_layer/constants";
-import {DiceStatus} from "../../dice_state/DiceStatus";
 import {LabelState} from "../../label_state/LabelState";
 import {logger} from "../../../logging/main";
 import {BoardSynchronizer} from "../../board/BoardSynchronizer";
@@ -26,34 +25,11 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
     private endWindowState: EndWindowState
     private readonly userPlayer: Color
 
-    private _userDiceReceived: boolean
     private _opponentTurnDisplayed: boolean
     private swapBoardAvailable = true
 
-    private diceToSet: DiceStatus[] = []
-
     private updateActivity() {
-        this.active = this.userDiceReceived && this.opponentTurnDisplayed
-        if (this.active) {
-            console.assert(this.diceToSet.length === 2)
-            this.diceState.dice1 = this.diceToSet[0]
-            this.diceState.dice2 = this.diceToSet[1]
-            if (this.diceToSet[0].value < this.diceToSet[1].value) {
-                this.diceState.swapDice()
-            }
-
-            this.diceToSet.splice(0, 2)
-            this.calculateDice()
-        }
-    }
-
-    private get userDiceReceived(): boolean {
-        return this._userDiceReceived
-    }
-
-    private set userDiceReceived(val: boolean) {
-        this._userDiceReceived = val
-        this.updateActivity()
+        this.active = this.opponentTurnDisplayed || this.canOfferDouble
     }
 
     private get opponentTurnDisplayed(): boolean {
@@ -89,7 +65,6 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         this.player = player
         this.userPlayer = userPlayer
         this._opponentTurnDisplayed = active
-        this._userDiceReceived = active
         this.endWindowState = endWindowState
         this.scoreState = scoreState
     }
@@ -128,20 +103,32 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
     }
 
     endTurn = (): void => {
-        // TODO: обработать куб удвоения
         console.assert(this.player === this.userPlayer)
         console.assert(this.active)
-        const splitMoves = this.performedMoves
-            .flatMap(m => this.splitMove(m.primaryMove, m.dice, this.player))
-        this.connector.makeMove(splitMoves)
-        this.controlButtonsState.turnComplete = false
-        this.controlButtonsState.movesMade = false
-        this.performedMoves = []
+        if (this.previousDoubleState !== undefined) {
+            console.assert(this.performedMoves.length === 0)
+            if (this.doubleCubeState.state === "offered_to_black" || this.doubleCubeState.state === "offered_to_white") {
+                this.connector.offerDouble()
+            } else {
+                console.assert(
+                    (this.doubleCubeState.state === "belongs_to_black" && this.userPlayer === Color.BLACK) ||
+                    (this.doubleCubeState.state === "belongs_to_white" && this.userPlayer === Color.WHITE)
+                )
+                this.connector.acceptDouble()
+            }
+            this.previousDoubleState = undefined
+        } else {
+            const splitMoves = this.performedMoves
+                .flatMap(m => this.splitMove(m.primaryMove, m.dice, this.player))
+            this.connector.makeMove(splitMoves)
+            this.controlButtonsState.turnComplete = false
+            this.controlButtonsState.movesMade = false
+            this.performedMoves = []
+            this.diceState.dice1 = null
+            this.diceState.dice2 = null
+        }
         this.opponentTurnDisplayed = false
-        this.userDiceReceived = false
         this.player = oppositeColor(this.player)
-        this.diceState.dice1 = null
-        this.diceState.dice2 = null
     };
 
     onMovesMade = (moves: Move<Index>[]) => {
@@ -202,18 +189,12 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         }
 
         this.player = player
-        if (player === this.userPlayer) {
-            console.assert(this.diceToSet.length === 0)
-            this.diceToSet.push(dice1, dice2)
-            this.userDiceReceived = true
-        } else {
-            this.diceState.dice1 = dice1
-            this.diceState.dice2 = dice2
-            if (dice1.value < dice2.value) {
-                this.diceState.swapDice()
-            }
-            this.calculateDice()
+        this.diceState.dice1 = dice1
+        this.diceState.dice2 = dice2
+        if (dice1.value < dice2.value) {
+            this.diceState.swapDice()
         }
+        this.calculateDice()
     };
 
     onEnd = (winner: Color, newConfig: Config<Index, Prop> | undefined, points: { white: number, black: number }) => {
@@ -228,7 +209,6 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
             this.controlButtonsState.canRollDice = false
             this.controlButtonsState.movesMade = false
             this._opponentTurnDisplayed = false
-            this._userDiceReceived = false
             this.active = false
             return
         }
@@ -244,7 +224,6 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
 
                 this.active = this.player === this.userPlayer
                 this._opponentTurnDisplayed = this.active  // Не-property версии использованы специально
-                this._userDiceReceived = this.active
 
                 this.init(newConfig)
                 this.connector.blocked = false

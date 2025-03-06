@@ -6,7 +6,7 @@ import {
     backgammonFinishTurnUri,
     myUserInfoUri,
     signInUrl,
-    signUpUrl, backgammonRollDiceUri, usernamesUri
+    signUpUrl, backgammonRollDiceUri, usernamesUri, backgammonOfferDoubleUri, backgammonAcceptDoubleUri
 } from "./paths";
 import {FetchType} from "../common/requests";
 
@@ -32,6 +32,26 @@ export async function backgammonFinishTurn<RemoteMoveType>(fetch: FetchType, id:
 export async function backgammonRollDice(fetch: FetchType, id: number) {
     return await fetch(
         backgammonRollDiceUri(id),
+        {
+            credentials: "include",
+            method: "post"
+        }
+    )
+}
+
+export async function backgammonOfferDouble(fetch: FetchType, id: number) {
+    return await fetch(
+        backgammonOfferDoubleUri(id),
+        {
+            credentials: "include",
+            method: "post"
+        }
+    )
+}
+
+export async function backgammonAcceptDouble(fetch: FetchType, id: number) {
+    return await fetch(
+        backgammonAcceptDoubleUri(id),
         {
             credentials: "include",
             method: "post"
