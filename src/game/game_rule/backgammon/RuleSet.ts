@@ -6,6 +6,7 @@ import {backgammonDefaultPlacement} from "./InitPlacement";
 import {BackgammonRules} from "./BackgammonRules";
 import {BackgammonLabelMapper} from "./BackgammonLabelMapper";
 import {BackgammonDoubleCubePositionMapper} from "./DoubleCubePositionMapper";
+import {BackgammonHistoryEncoder} from "./HistoryEncoder";
 
 export const backgammonRuleSet: RuleSet<BackgammonIndex, BackgammonProp> = {
     indexMapperFactory: (color) => new BackgammonIndexMapper(color),
@@ -13,5 +14,6 @@ export const backgammonRuleSet: RuleSet<BackgammonIndex, BackgammonProp> = {
     propMapper: new BackgammonPropMapper(),
     initPlacement: backgammonDefaultPlacement,
     rules: new BackgammonRules(),
-    doubleCubePositionMapperFactory: (color) => new BackgammonDoubleCubePositionMapper(color)
+    doubleCubePositionMapperFactory: (color) => new BackgammonDoubleCubePositionMapper(color),
+    historyEncoder: new BackgammonHistoryEncoder()
 }

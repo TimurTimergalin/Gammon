@@ -5,6 +5,7 @@ import {InitPlacement} from "./InitPlacement";
 import {Color} from "../../common/color";
 import {LabelMapper} from "./LabelMapper";
 import {DoubleCubePositionMapper} from "./DoubleCubePositionMapper";
+import {HistoryEncoder} from "./HistoryEncoder";
 
 export interface RuleSet<Index, Prop> {
     rules: Rules<Index, Prop>,
@@ -12,5 +13,6 @@ export interface RuleSet<Index, Prop> {
     labelMapperFactory: (player: Color) => LabelMapper
     doubleCubePositionMapperFactory: (player: Color) => DoubleCubePositionMapper
     propMapper: PropMapper<Prop>,
-    initPlacement: InitPlacement<Index, Prop>
+    initPlacement: InitPlacement<Index, Prop>,
+    historyEncoder: HistoryEncoder<Index>
 }

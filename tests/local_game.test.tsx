@@ -59,7 +59,8 @@ const initBackgammonPosition = (gc: GameContext, placement: BackgammonPlacement,
         boardAnimationSwitch: gc.boardAnimationSwitch,
         endWindowState: gc.endWindowState,
         scoreState: gc.scoreState,
-        initPlacement: backgammonRuleSet.initPlacement
+        initPlacement: backgammonRuleSet.initPlacement,
+        doubleCubeState: gc.doubleCubeState
     })
 
     gc.diceState.dice1 = {
@@ -95,10 +96,12 @@ const InnerSetUpBackgammonGame = (
     const gameContext = useFullGameContext()
 
     const [controller, labelMapper] = initBackgammonPosition(gameContext, placement, dice, player)
+    gameContext.labelState.labelMapper = labelMapper
+    gameContext.gameControllerSetter.set(controller)
 
     return (
         <>
-            <GameView gameController={controller} labelMapper={labelMapper}/>
+            <GameView />
             <GameContextExtractor retrieval={retrieval}/>
         </>
     )
