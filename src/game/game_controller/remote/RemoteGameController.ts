@@ -72,14 +72,25 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
     init(config: Config<Index, Prop>) {
         this.diceState.dice1 = config.dice[0]
         this.diceState.dice2 = config.dice[1]
+        this.doubleCubeState.state = config.doubleCube.state
+        this.doubleCubeState.value =
+            config.doubleCube.state === "unavailable" ? undefined :
+                config.doubleCube.state === "free" ? 64 :
+                    config.doubleCube.value
+
         if (config.dice[0] !== null && config.dice[1] !== null && config.dice[0].value < config.dice[1].value) {
             this.diceState.swapDice()
         }
         if (this.diceState.dice1 !== null) {
             console.assert(this.diceState.dice2 !== null)
             this.calculateDice()
-        } else if (this.player === this.userPlayer) {
-            this.controlButtonsState.canRollDice = true
+        } else {
+            this.canOfferDouble = this._canOfferDouble()
+            if (this.player === this.userPlayer) {
+                if (this.doubleCubeState.state !== "offered_to_white" && this.doubleCubeState.state !== "offered_to_black") {
+                    this.controlButtonsState.canRollDice = true
+                }
+            }
         }
         this.scoreState.white = config.points.white
         this.scoreState.black = config.points.black
@@ -121,14 +132,15 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
             const splitMoves = this.performedMoves
                 .flatMap(m => this.splitMove(m.primaryMove, m.dice, this.player))
             this.connector.makeMove(splitMoves)
-            this.controlButtonsState.turnComplete = false
-            this.controlButtonsState.movesMade = false
             this.performedMoves = []
             this.diceState.dice1 = null
             this.diceState.dice2 = null
         }
         this.opponentTurnDisplayed = false
         this.player = oppositeColor(this.player)
+        this.controlButtonsState.turnComplete = false
+        this.controlButtonsState.movesMade = false
+        this.canOfferDouble = false
     };
 
     onMovesMade = (moves: Move<Index>[]) => {
@@ -153,6 +165,8 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
                 this.diceState.dice1 = null
                 this.diceState.dice2 = null
                 this.connector.blocked = false
+                this.player = oppositeColor(this.player)
+                this.canOfferDouble = this._canOfferDouble()
             } else {
                 setTimeout(
                     () => displayMove(index + 1),
@@ -166,6 +180,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
             this.controlButtonsState.canRollDice = true
             this.diceState.dice1 = null
             this.diceState.dice2 = null
+            this.player = oppositeColor(this.player)
         } else {
             this.swapBoardAvailable = false
             this.connector.blocked = true
@@ -229,7 +244,34 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
                 this.connector.blocked = false
             })
         }, 500)
-    };
+    }
+
+    onOfferDouble = (by: Color) => {
+        console.assert(by === oppositeColor(this.userPlayer))
+        if (this.doubleCubeState.convertedValue === 1) {
+            this.doubleCubeState.value = 2
+        } else {
+            console.assert(this.doubleCubeState.value !== undefined)
+            this.doubleCubeState.value! *= 2
+        }
+        if (this.userPlayer === Color.WHITE) {
+            this.doubleCubeState.state = "offered_to_white"
+        } else {
+            this.doubleCubeState.state = "offered_to_black"
+        }
+        this.player = oppositeColor(this.player)
+    }
+
+    onAcceptDouble = (by: Color) => {
+        console.assert(by === oppositeColor(this.userPlayer))
+        if (by === Color.WHITE) {
+            console.assert(this.doubleCubeState.state === "offered_to_white")
+            this.doubleCubeState.state = "belongs_to_white"
+        } else {
+            console.assert(this.doubleCubeState.state === "offered_to_black")
+            this.doubleCubeState.state = "belongs_to_black"
+        }
+    }
 
     swapBoard(): void {
         if (this.swapBoardAvailable) {

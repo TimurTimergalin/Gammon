@@ -30,5 +30,7 @@ export interface BackgammonRemoteConfig {
     players: {
         WHITE: BackgammonRemotePlayer,
         BLACK: BackgammonRemotePlayer
-    }
+    },
+    doubleCubeValue: number | null,
+    doubleCubePosition: "UNAVAILABLE" | "FREE" | "BELONGS_TO_WHITE" | "BELONGS_TO_BLACK" | "OFFERED_TO_WHITE" | "OFFERED_TO_BLACK"
 }

@@ -28,6 +28,9 @@ export interface RemoteConnector<Index, Prop> {
         black: number
     }) => void)
 
+    set onOfferDouble(value: (by: Color) => void)
+    set onAcceptDouble(value: (by: Color) => void)
+
     makeMove(moves: Move<Index>[]): void
 
     rollDice(): void
@@ -51,7 +54,7 @@ export class RemoteConnectorImpl<RemoteMove, Index, Prop> implements RemoteConne
         } else {
             this.setOnMessage()
             for (const ev of this.queue) {
-                this.eventSource!.dispatchEvent(ev)
+                queueMicrotask(() => this.eventSource!.dispatchEvent(ev))
             }
             this.queue = []
         }
@@ -103,6 +106,18 @@ export class RemoteConnectorImpl<RemoteMove, Index, Prop> implements RemoteConne
         this._onNewDice = value;
     }
 
+    private _onOfferDouble: (by: Color) => void = () => console.warn("No onOfferDouble set")
+
+    set onOfferDouble(value: (by: Color) => void) {
+        this._onOfferDouble = value
+    }
+
+    private _onAcceptDouble: (by: Color) => void = () => console.warn("No onAcceptDouble set")
+    set onAcceptDouble(value: (by: Color) => void) {
+        this._onAcceptDouble = value
+    }
+
+
     private _onEnd: (winner: Color, next_game: Config<Index, Prop> | undefined, points: {
         white: number,
         black: number
@@ -144,6 +159,12 @@ export class RemoteConnectorImpl<RemoteMove, Index, Prop> implements RemoteConne
                 } else {
                     this.configGetter(this.roomId).then(conf => this._onEnd(winner, conf, points))
                 }
+            } else if (data.type === "DOUBLE_EVENT") {
+                console.debug("double offered")
+                this._onOfferDouble(data.by === "WHITE" ? Color.WHITE : Color.BLACK)
+            } else if (data.type === "ACCEPT_DOUBLE_EVENT") {
+                console.debug("double accepted")
+                this._onAcceptDouble(data.by === "WHITE" ? Color.WHITE : Color.BLACK)
             } else {
                 console.warn("Ignoring unknown event")
             }

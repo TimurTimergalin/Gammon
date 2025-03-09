@@ -66,12 +66,15 @@ export async function remoteGameInit<RemoteConfig, Index, Prop, RemoteMove>(
 
     gameContext.labelState.labelMapper = ruleSet.labelMapperFactory(config.userPlayer)
     gameContext.gameControllerSetter.set(controller)
+    gameContext.doubleCubeState.positionMapper = ruleSet.doubleCubePositionMapperFactory(config.userPlayer)
 
     controller.init(config)
 
     connector.onMovesMade = controller.onMovesMade
     connector.onNewDice = controller.onNewDice
     connector.onEnd = controller.onEnd
+    connector.onOfferDouble = controller.onOfferDouble
+    connector.onAcceptDouble = controller.onAcceptDouble
 
     connector.subscribe()
 

@@ -1,7 +1,7 @@
 import {Color} from "../../../../common/color";
 import {DiceStatus} from "../../../dice_state/DiceStatus";
 import {LayerStatus} from "../../../../components/game/dice_layer/LayerStatus";
-import {Config, ConfigParser} from "../../ConfigParser";
+import {Config, ConfigParser, DoubleCubeConfig} from "../../ConfigParser";
 import {BackgammonRemoteConfig, BackgammonRemotePlayer} from "./types";
 import {BackgammonIndex, BackgammonProp} from "../../../board/backgammon/types";
 import {BackgammonBoard} from "../../../board/backgammon/BackgammonBoard";
@@ -13,7 +13,7 @@ import {FetchType} from "../../../../common/requests";
 const console = logger("game/game_rule/backgammon/remote_v1")
 
 export class BackgammonConfigParser implements ConfigParser<BackgammonRemoteConfig, BackgammonIndex, BackgammonProp> {
-    mapConfig({gameData, blackPoints, whitePoints, threshold, players}: BackgammonRemoteConfig): Config<BackgammonIndex, BackgammonProp> {
+    mapConfig({gameData, blackPoints, whitePoints, threshold, players, doubleCubePosition, doubleCubeValue}: BackgammonRemoteConfig): Config<BackgammonIndex, BackgammonProp> {
         const config = gameData
         const toColor = (name: "WHITE" | "BLACK") => name === "WHITE" ? Color.WHITE : Color.BLACK
         const player = toColor(config.turn)
@@ -46,6 +46,24 @@ export class BackgammonConfigParser implements ConfigParser<BackgammonRemoteConf
             } : null
         ]
 
+        const doubleCube: DoubleCubeConfig = doubleCubePosition === "UNAVAILABLE" ? {
+            state: "unavailable"
+        } : doubleCubePosition === "FREE" ? {
+            state: "free"
+        } : doubleCubePosition === "BELONGS_TO_WHITE" ? {
+            state: "belongs_to_white",
+            value: doubleCubeValue!
+        } : doubleCubePosition === "BELONGS_TO_BLACK" ? {
+            state: "belongs_to_black",
+            value: doubleCubeValue!
+        } : doubleCubePosition === "OFFERED_TO_WHITE" ? {
+            state: "belongs_to_white",
+            value: doubleCubeValue!
+        } : {
+            state: "belongs_to_black",
+            value: doubleCubeValue!
+        }
+
         return {
             placement: new BackgammonBoard(placement),
             player: player,
@@ -65,7 +83,8 @@ export class BackgammonConfigParser implements ConfigParser<BackgammonRemoteConf
                     username: players.BLACK.username,
                     iconSrc: imageUri(players.BLACK.id)
                 }
-            }
+            },
+            doubleCube: doubleCube
         }
     }
 
