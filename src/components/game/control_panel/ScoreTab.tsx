@@ -3,27 +3,24 @@ import {useGameContext} from "../../../game/GameContext";
 import styled from "styled-components";
 import {Color, colorFill} from "../../../common/color";
 
-const PlainScoreTab = observer(function PlainScoreTab({className}: { className?: string }) {
-    const scoreState = useGameContext("scoreState")
 
+const PlainScoreText = observer(function PlainScore({white, black, className}: {white: number, black: number, className?: string}){
     return (
         <div className={className}>
-            <span>{scoreState.white}</span>
+            <span>{white}</span>
             <span>:</span>
-            <span>{scoreState.black}</span>
+            <span>{black}</span>
         </div>
     )
 })
-export const ScoreTab = styled(PlainScoreTab)`
+
+export const ScoreText = styled(PlainScoreText)`
     & {
         display: flex;
-        border-radius: 20px 20px 0 0;
-        background-color: #a8a8a8;
         justify-content: center;
         font-size: 40px;
         font-weight: 700;
     }
-
     & > :nth-child(1) {
         color: ${colorFill(Color.WHITE)};
     }
@@ -36,5 +33,22 @@ export const ScoreTab = styled(PlainScoreTab)`
 
     & > :nth-child(3) {
         color: ${colorFill(Color.BLACK)};
+    }
+`
+
+
+const PlainScoreTab = observer(function PlainScoreTab({className}: { className?: string }) {
+    const scoreState = useGameContext("scoreState")
+
+    return (
+        <div className={className}>
+            <ScoreText white={scoreState.white} black={scoreState.black} />
+        </div>
+    )
+})
+export const ScoreTab = styled(PlainScoreTab)`
+    & {
+        border-radius: 20px 20px 0 0;
+        background-color: #a8a8a8;
     }
 `

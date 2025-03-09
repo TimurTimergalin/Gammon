@@ -1,0 +1,119 @@
+import {observer} from "mobx-react-lite";
+import {useGameContext} from "../../../../game/GameContext";
+import {GameHistoryEntry} from "../../../../game/game_history_state/GameHistoryState";
+import styled from "styled-components";
+import {Color} from "../../../../common/color";
+import {ScoreText} from "../ScoreTab";
+import {altBackground} from "./common";
+import {CSSProperties} from "react";
+
+const PlainMoveEntry = (
+    {dice, moves, className}:
+        GameHistoryEntry &
+        { type: "move" } &
+        { className?: string }
+) => {
+    const moveDivs = moves.map((s, i) => <div key={i}>{s}</div>)
+    return (
+        <div className={className}>
+            <div>{Math.max(...dice)}{Math.min(...dice)}:</div>
+            <div>{moveDivs}</div>
+        </div>
+    )
+}
+
+const MoveEntry = styled(PlainMoveEntry)`
+    & {
+        display: flex;
+    }
+    
+    & > :nth-child(1) {
+        margin-right: 3px;
+    }
+
+    & > :nth-child(2) {
+        display: flex;
+        flex-wrap: wrap; 
+        > *{
+            margin-right: 5px;
+        }
+    }
+`
+
+const PlainOfferDoubleEntry = ({newValue, className}: GameHistoryEntry & { type: "offer_double" } & {
+    className?: string
+}) => {
+    return <div className={className}>x{newValue}</div>
+}
+
+const OfferDoubleEntry = styled(PlainOfferDoubleEntry)`
+    display: flex
+`
+
+const PlainAcceptDoubleEntry = ({className}: { className?: string }) => <div className={className}>Принят</div>
+const AcceptDoubleEntry = styled(PlainAcceptDoubleEntry)`
+    display: flex;
+`
+
+const PlainGameEndEntry = (
+    {white, black, winner, reason, className}:
+        GameHistoryEntry &
+        { type: "game_end" } &
+        { className?: string }
+) => {
+    return (
+        <div className={className}>
+            <div>Победитель: {winner === Color.WHITE ? "Белые" : "Черные"}</div>
+            <ScoreText white={white} black={black}/>
+            <div>{reason}</div>
+        </div>
+    )
+}
+
+const GameEndEntry = styled(PlainGameEndEntry)`
+    & {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #a8a8a8;
+    }
+
+    & > :nth-child(1) {
+        color: white;
+    }
+
+    & > :nth-child(3) {
+        color: white;
+    }
+`
+
+
+const PlainHistoryEntry = observer(function PlainHistoryEntry({entryIndex, className}: {
+    entryIndex: number,
+    className?: string
+}) {
+    const gameHistoryState = useGameContext("gameHistoryState")
+    const entry = gameHistoryState.moves[entryIndex]
+
+    const additionalStyle: CSSProperties = {
+        paddingRight: entry.type === "game_end" ? 0 : 3,
+        gridColumn: entry.type === "game_end" ? "span 3" : "span 1"
+    }
+
+    return (
+        <div className={className} style={additionalStyle}>
+            {
+                entry.type === "move" ? <MoveEntry {...entry}/> :
+                    entry.type === "offer_double" ? <OfferDoubleEntry {...entry}/> :
+                        entry.type === "accept_double" ? <AcceptDoubleEntry/> :
+                            <GameEndEntry {...entry} />
+            }
+        </div>
+    )
+})
+
+export const HistoryEntry = styled(PlainHistoryEntry)<{ altBg: boolean }>`
+    & {
+        background-color: ${altBackground};
+    }
+`

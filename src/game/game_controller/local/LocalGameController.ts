@@ -15,6 +15,9 @@ import {InitPlacement} from "../../game_rule/InitPlacement";
 import {BoardAnimationSwitch} from "../../board_animation_switch/BoardAnimationSwitch";
 import {ScoreState} from "../../score_state/ScoreState";
 import {DoubleCubeState} from "../../double_cube_state/DoubleCubeState";
+import {GameHistoryEntry, GameHistoryState} from "../../game_history_state/GameHistoryState";
+import {HistoryEncoder} from "../../game_rule/HistoryEncoder";
+import {splitMove} from "../../board/move";
 
 const console = logger("game/game_controller/local")
 
@@ -24,8 +27,11 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
     private readonly initPlacement: InitPlacement<Index, Prop>
     private points: ScoreState
     private crawfordRule: boolean = false
+    private gameHistoryState: GameHistoryState
+    private historyNewGame: { firstToMove: Color } | undefined = undefined
+    private historyEncoder: HistoryEncoder<Index>
 
-    constructor({endWindowState, initPlacement, scoreState, ...args}: {
+    constructor({endWindowState, initPlacement, scoreState, gameHistoryState, historyEncoder, ...args}: {
         board: BoardSynchronizer<Index, Prop>,
         controlButtonsState: ControlButtonsState,
         active: boolean,
@@ -39,11 +45,15 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         boardAnimationSwitch: BoardAnimationSwitch,
         scoreState: ScoreState,
         doubleCubeState: DoubleCubeState
+        gameHistoryState: GameHistoryState
+        historyEncoder: HistoryEncoder<Index>
     }) {
         super(args);
         this.endWindowState = endWindowState
         this.initPlacement = initPlacement
         this.points = scoreState
+        this.gameHistoryState = gameHistoryState
+        this.historyEncoder = historyEncoder
     }
 
     private randomDice() {
@@ -90,9 +100,10 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         console.assert(this.diceState.dice1!.value !== this.diceState.dice2!.value)
         if (this.diceState.dice1!.value > this.diceState.dice2!.value) {
             this.player = this.diceState.dice1!.color
-            return
+        } else {
+            this.player = this.diceState.dice2!.color
         }
-        this.player = this.diceState.dice2!.color
+        this.historyNewGame = {firstToMove: this.player}
     }
 
     newTurn(first: boolean) {
@@ -106,6 +117,7 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
             this.diceState.dice2 = null
             this.controlButtonsState.turnComplete = false
             this.previousDoubleState = undefined
+            this.performedMoves = []
             this.controlButtonsState.canRollDice =
                 this.doubleCubeState.state !== "offered_to_white" && this.doubleCubeState.state !== "offered_to_black"
             this.canOfferDouble =
@@ -166,7 +178,7 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         return color === Color.WHITE ? "Белые выиграли" : "Черные выиграли"
     }
 
-    finishGame(winner: Color, points: number) {
+    finishGame(winner: Color, points: number, reason?: string) {
         this.controlButtonsState.movesMade = false
         this.controlButtonsState.turnComplete = false
         this.controlButtonsState.canConcedeGame = false
@@ -180,6 +192,15 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
             this.points.black += points
             this.crawfordRule = this.points.black === this.points.total - 1
         }
+        const entry: GameHistoryEntry = {
+            type: "game_end",
+            white: this.points.white,
+            black: this.points.black,
+            winner: winner,
+            reason: reason
+        }
+        console.assert(this.historyNewGame === undefined)
+        this.gameHistoryState.add(entry)
 
         const matchComplete = this.checkMatchComplete()
 
@@ -191,7 +212,6 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
             return
         }
 
-        console.log(`Победитель: ${winner === Color.WHITE ? "Белые" : "Черные"}}`)  // TODO: заменить
         setTimeout(
             () => this.newGame(),
             500
@@ -199,7 +219,36 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
     }
 
     endTurn(): void {
-        this.performedMoves = []
+        if (!this.previousDoubleState) {  // Обычный ход
+            console.assert(this.diceState.dice1 !== undefined)
+            console.assert(this.diceState.dice2 !== undefined)
+            const entry: GameHistoryEntry = {
+                type: "move",
+                dice: [
+                    Math.max(this.diceState.dice1!.value, this.diceState.dice2!.value),
+                    Math.min(this.diceState.dice1!.value, this.diceState.dice2!.value)
+                ],
+                moves: this.historyEncoder.encode(this.performedMoves.flatMap(
+                    m => [...splitMove(m.primaryMove, m.dice, this.player, this.rules), ...m.additionalMoves]
+                ), this.player)
+            }
+            this.gameHistoryState.add(entry, this.historyNewGame)
+        } else if (this.previousDoubleState.canOffer) {  // Предложил куб
+            console.assert(this.doubleCubeState.value !== undefined)
+            const entry: GameHistoryEntry = {
+                type: "offer_double",
+                newValue: this.doubleCubeState.value!
+            }
+            console.assert(this.historyNewGame === undefined)
+            this.gameHistoryState.add(entry)
+        } else {  // Принял куб
+            const entry: GameHistoryEntry = {
+                type: "accept_double"
+            }
+            console.assert(this.historyNewGame === undefined)
+            this.gameHistoryState.add(entry)
+        }
+        this.historyNewGame = undefined
 
         const gameComplete = this.checkGameComplete()
         if (gameComplete !== undefined) {
@@ -238,7 +287,9 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
 
     concedeGame(): void {
         this.finishGame(oppositeColor(this.player),
-            this.doubleCubeState.convertedValue === 1 ? 1 : Math.floor(this.doubleCubeState.convertedValue / 2)
-            )
+            this.doubleCubeState.convertedValue === 1 ? 1 :
+                Math.floor(this.doubleCubeState.convertedValue / 2),
+            "Игрок сдался"
+        )
     }
 }

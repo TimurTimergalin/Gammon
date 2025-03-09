@@ -1,3 +1,6 @@
+import {Color} from "../../common/color";
+import {Rules} from "../game_rule/Rules";
+
 export interface Move<T> {
     from: T,
     to: T
@@ -46,4 +49,20 @@ export function mergeMoves<T>(moves: Move<T>[]): Move<T>[] {
     }
 
     return Array.from(res.values()).flatMap(x => x)
+}
+
+export function splitMove<Index>(move: Move<Index>, diceUsed: number[], player: Color, rules: Rules<Index, unknown>) {
+    const res = []
+
+    let from = move.from
+    for (const dice of diceUsed) {
+        const to = rules.movedBy(from, dice, player)
+        res.push({
+            from: from,
+            to: to
+        })
+        from = to
+    }
+    console.assert(from === move.to)
+    return res
 }

@@ -9,7 +9,7 @@ export class BackgammonHistoryEncoder implements HistoryEncoder<BackgammonIndex>
         if (typeof i === "number") {
             return i
         }
-        if (isBar(i)) {
+        if (i == "White Bar" || i == "Black Store") {
             return 25
         }
         return 0
@@ -85,11 +85,20 @@ export class BackgammonHistoryEncoder implements HistoryEncoder<BackgammonIndex>
             }
         }
 
+        countedSequences.sort(
+            ([[[seq1]]], [[[seq2]]]) => {
+                if (player === Color.BLACK) {
+                    return this.moveKey(seq1) - this.moveKey(seq2)
+                }
+                return this.moveKey(seq2) - this.moveKey(seq1)
+            }
+        )
+
         const res: string[] = []
 
         for (const [seq, count] of countedSequences) {
             res.push(
-                seq.map((a) => this.seqItemRepr(a, player)).join("/") + (count > 1 ? ` (${count})` : "")
+                seq.map((a) => this.seqItemRepr(a, player)).join("/") + (count > 1 ? `(${count})` : "")
             )
         }
 

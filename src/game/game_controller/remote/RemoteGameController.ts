@@ -6,7 +6,7 @@ import {LegalMovesTracker} from "../../legal_moves_tracker/LegalMovesTracker";
 import {Rules} from "../../game_rule/Rules";
 import {RemoteConnector} from "./RemoteConnector";
 import {Color, oppositeColor} from "../../../common/color";
-import {Move} from "../../board/move";
+import {Move, splitMove} from "../../board/move";
 import {LayerStatus} from "../../../components/game/dice_layer/LayerStatus";
 import {moveDuration} from "../../../components/game/pieces_layer/constants";
 import {DiceStatus} from "../../dice_state/DiceStatus";
@@ -111,28 +111,12 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         this.scoreState.total = config.points.total
     }
 
-    private splitMove(move: Move<Index>, diceUsed: number[], player: Color): Move<Index>[] {
-        const res = []
-
-        let from = move.from
-        for (const dice of diceUsed) {
-            const to = this.rules.movedBy(from, dice, player)
-            res.push({
-                from: from,
-                to: to
-            })
-            from = to
-        }
-        console.assert(from === move.to)
-        return res
-    }
-
     endTurn = (): void => {
         // TODO: обработать куб удвоения
         console.assert(this.player === this.userPlayer)
         console.assert(this.active)
         const splitMoves = this.performedMoves
-            .flatMap(m => this.splitMove(m.primaryMove, m.dice, this.player))
+            .flatMap(m => splitMove(m.primaryMove, m.dice, this.player, this.rules))
         this.connector.makeMove(splitMoves)
         this.controlButtonsState.turnComplete = false
         this.controlButtonsState.movesMade = false

@@ -35,7 +35,7 @@ test("encode:repeat", () => {
     const player = Color.WHITE
     const encoded = new BackgammonHistoryEncoder().encode(moves, player)
     expect(encoded.length).toEqual(1)
-    expect(encoded).toContain("17/13 (2)")
+    expect(encoded).toContain("17/13(2)")
 })
 
 test("encode:with store", () => {
@@ -80,6 +80,17 @@ test("encode:sequence", () => {
     expect(encoded).toContain("20/15/9")
 })
 
+test("encode:sequence black", () => {
+    const moves: Move<BackgammonIndex>[] = [
+        {from: 15, to: 20},
+        {from: "Black Bar", to: 15}
+    ]
+    const player = Color.BLACK
+    const encoded = new BackgammonHistoryEncoder().encode(moves, player)
+    expect(encoded.length).toEqual(1)
+    expect(encoded).toContain("bar/10/5")
+})
+
 test("encode:2 sequences", () => {
     const moves: Move<BackgammonIndex>[] = [
         {from: 20, to: 15},
@@ -107,5 +118,5 @@ test("encode:extreme", () => {
     const player = Color.WHITE
     const encoded = new BackgammonHistoryEncoder().encode(moves, player)
     expect(encoded.length).toEqual(1)
-    expect(encoded).toContain("8/4*/off (2)")
+    expect(encoded).toContain("8/4*/off(2)")
 })

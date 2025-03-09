@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import {ScoreTab} from "./ScoreTab";
-import {HistoryTab} from "./HistoryTab";
+import {HistoryTab} from "./history_panel/HistoryTab";
 import {ButtonsTab} from "./ButtonsTab";
 
 const PlainControlPanel = ({className}: { className?: string }) => {

@@ -34,7 +34,9 @@ export function localGameInit<Index, Prop>(
         boardAnimationSwitch: gameContext.boardAnimationSwitch,
         initPlacement: initPlacement,
         scoreState: gameContext.scoreState,
-        doubleCubeState: gameContext.doubleCubeState
+        doubleCubeState: gameContext.doubleCubeState,
+        gameHistoryState: gameContext.gameHistoryState,
+        historyEncoder: ruleSet.historyEncoder
     })
 
     gameContext.scoreState.total = pointsUntil

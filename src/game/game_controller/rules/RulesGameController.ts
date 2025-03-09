@@ -232,6 +232,7 @@ export abstract class RulesGameController<Index, Prop> implements GameController
             this.controlButtonsState.movesMade = false
             this.controlButtonsState.canRollDice = true
             this.canOfferDouble = this.previousDoubleState.canOffer
+            this.previousDoubleState = undefined
             return
         }
 
