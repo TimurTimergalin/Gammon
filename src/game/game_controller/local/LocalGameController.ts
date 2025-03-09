@@ -108,6 +108,7 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
 
     newTurn(first: boolean) {
         this.controlButtonsState.canConcedeGame = this._canConcedeGame()
+        this.previousDoubleState = undefined
         if (first) {
             this._rollDice(Color.WHITE, Color.BLACK)
             this.inferCurrentPlayer()
@@ -120,13 +121,7 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
             this.performedMoves = []
             this.controlButtonsState.canRollDice =
                 this.doubleCubeState.state !== "offered_to_white" && this.doubleCubeState.state !== "offered_to_black"
-            this.canOfferDouble =
-                (
-                    this.doubleCubeState.state === "free" ||
-                    (this.player === Color.WHITE && this.doubleCubeState.state === "belongs_to_white") ||
-                    (this.player === Color.BLACK && this.doubleCubeState.state === "belongs_to_black")
-                ) && this.doubleCubeState.convertedValue !== 64
-
+            this.canOfferDouble = this._canOfferDouble()
         }
         this.controlButtonsState.movesMade = false
     }

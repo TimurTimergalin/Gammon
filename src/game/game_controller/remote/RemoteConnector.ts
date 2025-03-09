@@ -1,5 +1,11 @@
 import {Color} from "../../../common/color";
-import {backgammonFinishTurn, backgammonRollDice, subscribeForEvents} from "../../../requests/requests";
+import {
+    backgammonAcceptDouble,
+    backgammonFinishTurn,
+    backgammonOfferDouble,
+    backgammonRollDice,
+    subscribeForEvents
+} from "../../../requests/requests";
 import {logResponseError} from "../../../requests/util";
 import {Move} from "../../board/move";
 import {RemoteMoveMapper} from "../../game_rule/RemoteMoveMapper";
@@ -22,9 +28,16 @@ export interface RemoteConnector<Index, Prop> {
         black: number
     }) => void)
 
+    set onOfferDouble(value: (by: Color) => void)
+    set onAcceptDouble(value: (by: Color) => void)
+
     makeMove(moves: Move<Index>[]): void
 
     rollDice(): void
+
+    offerDouble(): void
+
+    acceptDouble(): void
 
     unsubscribe(): void
 
@@ -41,7 +54,7 @@ export class RemoteConnectorImpl<RemoteMove, Index, Prop> implements RemoteConne
         } else {
             this.setOnMessage()
             for (const ev of this.queue) {
-                this.eventSource!.dispatchEvent(ev)
+                queueMicrotask(() => this.eventSource!.dispatchEvent(ev))
             }
             this.queue = []
         }
@@ -75,6 +88,14 @@ export class RemoteConnectorImpl<RemoteMove, Index, Prop> implements RemoteConne
         backgammonRollDice(this.fetch, this.roomId).then(resp => logResponseError(resp, "rolling dice"))
     }
 
+    offerDouble(): void {
+        backgammonOfferDouble(this.fetch, this.roomId).then(resp => logResponseError(resp, "offering double"))
+    }
+
+    acceptDouble(): void {
+        backgammonAcceptDouble(this.fetch, this.roomId).then(resp => logResponseError(resp, "accepting double"))
+    }
+
     private _onMovesMade: (moves: Move<Index>[]) => void = () => console.warn("No onMovesMade set")
     set onMovesMade(value: (moves: Move<Index>[]) => void) {
         this._onMovesMade = value;
@@ -84,6 +105,18 @@ export class RemoteConnectorImpl<RemoteMove, Index, Prop> implements RemoteConne
     set onNewDice(value: (dice: [number, number], player: Color) => void) {
         this._onNewDice = value;
     }
+
+    private _onOfferDouble: (by: Color) => void = () => console.warn("No onOfferDouble set")
+
+    set onOfferDouble(value: (by: Color) => void) {
+        this._onOfferDouble = value
+    }
+
+    private _onAcceptDouble: (by: Color) => void = () => console.warn("No onAcceptDouble set")
+    set onAcceptDouble(value: (by: Color) => void) {
+        this._onAcceptDouble = value
+    }
+
 
     private _onEnd: (winner: Color, next_game: Config<Index, Prop> | undefined, points: {
         white: number,
@@ -126,6 +159,12 @@ export class RemoteConnectorImpl<RemoteMove, Index, Prop> implements RemoteConne
                 } else {
                     this.configGetter(this.roomId).then(conf => this._onEnd(winner, conf, points))
                 }
+            } else if (data.type === "DOUBLE_EVENT") {
+                console.debug("double offered")
+                this._onOfferDouble(data.by === "WHITE" ? Color.WHITE : Color.BLACK)
+            } else if (data.type === "ACCEPT_DOUBLE_EVENT") {
+                console.debug("double accepted")
+                this._onAcceptDouble(data.by === "WHITE" ? Color.WHITE : Color.BLACK)
             } else {
                 console.warn("Ignoring unknown event")
             }
