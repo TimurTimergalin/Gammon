@@ -57,10 +57,10 @@ export class BackgammonConfigParser implements ConfigParser<BackgammonRemoteConf
             state: "belongs_to_black",
             value: doubleCubeValue!
         } : doubleCubePosition === "OFFERED_TO_WHITE" ? {
-            state: "belongs_to_white",
+            state: "offered_to_white",
             value: doubleCubeValue!
         } : {
-            state: "belongs_to_black",
+            state: "offered_to_black",
             value: doubleCubeValue!
         }
 
