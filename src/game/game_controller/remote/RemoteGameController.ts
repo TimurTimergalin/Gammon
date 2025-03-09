@@ -85,7 +85,11 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
             console.assert(this.diceState.dice2 !== null)
             this.calculateDice()
         } else {
-            this.canOfferDouble = this._canOfferDouble()
+            if (this.player === this.userPlayer) {
+                this.canOfferDouble = this._canOfferDouble()
+            } else {
+                this.canOfferDouble = false
+            }
             if (this.player === this.userPlayer) {
                 if (this.doubleCubeState.state !== "offered_to_white" && this.doubleCubeState.state !== "offered_to_black") {
                     this.controlButtonsState.canRollDice = true
@@ -165,6 +169,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
             this.diceState.dice1 = null
             this.diceState.dice2 = null
             this.player = oppositeColor(this.player)
+            this.canOfferDouble = this._canOfferDouble()
         } else {
             this.swapBoardAvailable = false
             this.connector.blocked = true
@@ -266,6 +271,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
     rollDice(): void {
         this.connector.rollDice()
         this.controlButtonsState.canRollDice = false
+        this.canOfferDouble = false
     }
 
     concedeMatch(): never {
