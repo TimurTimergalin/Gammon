@@ -249,6 +249,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
             this.doubleCubeState.state = "offered_to_black"
         }
         this.player = oppositeColor(this.player)
+        this.active = true
     }
 
     onAcceptDouble = (by: Color) => {
