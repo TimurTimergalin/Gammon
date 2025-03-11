@@ -6,7 +6,12 @@ import {
     backgammonFinishTurnUri,
     myUserInfoUri,
     signInUrl,
-    signUpUrl, backgammonRollDiceUri, usernamesUri, backgammonOfferDoubleUri, backgammonAcceptDoubleUri
+    signUpUrl,
+    backgammonRollDiceUri,
+    usernamesUri,
+    backgammonOfferDoubleUri,
+    backgammonAcceptDoubleUri,
+    backgammonConcedeUri
 } from "./paths";
 import {FetchType} from "../common/requests";
 
@@ -59,6 +64,19 @@ export async function backgammonAcceptDouble(fetch: FetchType, id: number) {
     )
 }
 
+export function backgammonConcedeMatch(fetch: FetchType, id: number) {
+    return fetch(backgammonConcedeUri(id, true), {
+        credentials: "include",
+        method: "put"
+    })
+}
+
+export function backgammonConcedeGame(fetch: FetchType, id: number) {
+    return fetch(backgammonConcedeUri(id, false), {
+        credentials: "include",
+        method: "put"
+    })
+}
 
 export const connect = (fetch: FetchType, gameType: string, points: number) =>
     fetch(connectUri, {

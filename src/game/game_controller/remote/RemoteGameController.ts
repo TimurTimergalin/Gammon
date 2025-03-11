@@ -212,6 +212,8 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
             this.controlButtonsState.turnComplete = false
             this.controlButtonsState.canRollDice = false
             this.controlButtonsState.movesMade = false
+            this.controlButtonsState.canConcedeGame = false
+            this.canOfferDouble = false
             this._opponentTurnDisplayed = false
             this.active = false
             return
@@ -279,8 +281,14 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         this.canOfferDouble = false
     }
 
-    concedeMatch(): never {
-        throw new Error("NOT IMPLEMENTED")  // TODO: implement concedeMatch
+    concedeMatch(): void {
+        this.active = false
+        this.controlButtonsState.canRollDice = false
+        this.controlButtonsState.movesMade = false
+        this.controlButtonsState.turnComplete = false
+        this.controlButtonsState.canConcedeGame = false
+        this.canOfferDouble = false
+        this.connector.concedeMatch()
     }
 
     concedeGame(): never {

@@ -1,6 +1,6 @@
 import {Color} from "../../../common/color";
 import {
-    backgammonAcceptDouble,
+    backgammonAcceptDouble, backgammonConcedeMatch,
     backgammonFinishTurn,
     backgammonOfferDouble,
     backgammonRollDice,
@@ -42,6 +42,8 @@ export interface RemoteConnector<Index, Prop> {
     unsubscribe(): void
 
     set blocked(val: boolean)
+
+    concedeMatch(): void
 }
 
 export class RemoteConnectorImpl<RemoteMove, Index, Prop> implements RemoteConnector<Index, Prop> {
@@ -190,5 +192,9 @@ export class RemoteConnectorImpl<RemoteMove, Index, Prop> implements RemoteConne
             this.eventSource.close()
             this.eventSource = undefined
         }
+    }
+
+    concedeMatch(): void {
+        backgammonConcedeMatch(this.fetch, this.roomId).then(() => console.log("Match conceded"))
     }
 }
