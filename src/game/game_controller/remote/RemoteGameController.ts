@@ -260,6 +260,10 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
             console.assert(this.doubleCubeState.state === "offered_to_black")
             this.doubleCubeState.state = "belongs_to_black"
         }
+        this.controlButtonsState.canRollDice = true
+        this.canOfferDouble = false
+        this.player = this.userPlayer
+        this.active = true
     }
 
     swapBoard(): void {

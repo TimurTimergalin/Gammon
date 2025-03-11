@@ -290,6 +290,9 @@ export abstract class RulesGameController<Index, Prop> implements GameController
     }
 
     interactWithDouble(): void {
+        if (!this.active) {
+            return
+        }
         if (this.canOfferDouble) {
             this.offerDouble()
         } else if (
