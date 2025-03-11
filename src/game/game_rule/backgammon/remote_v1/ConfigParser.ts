@@ -1,4 +1,4 @@
-import {Color} from "../../../../common/color";
+import {Color, oppositeColor} from "../../../../common/color";
 import {DiceStatus} from "../../../dice_state/DiceStatus";
 import {LayerStatus} from "../../../../components/game/dice_layer/LayerStatus";
 import {Config, ConfigParser, DoubleCubeConfig} from "../../ConfigParser";
@@ -16,7 +16,9 @@ export class BackgammonConfigParser implements ConfigParser<BackgammonRemoteConf
     mapConfig({gameData, blackPoints, whitePoints, threshold, players, doubleCubePosition, doubleCubeValue}: BackgammonRemoteConfig): Config<BackgammonIndex, BackgammonProp> {
         const config = gameData
         const toColor = (name: "WHITE" | "BLACK") => name === "WHITE" ? Color.WHITE : Color.BLACK
-        const player = toColor(config.turn)
+        const player = doubleCubePosition === "OFFERED_TO_WHITE" || doubleCubePosition === "OFFERED_TO_BLACK" ?
+            oppositeColor(toColor(config.turn)) :
+            toColor(config.turn)
         const userPlayer = toColor(config.color)
         const placement: Map<BackgammonIndex, BackgammonProp> = new Map()
 
