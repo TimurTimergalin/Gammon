@@ -68,12 +68,7 @@ export function backgammonConcedeMatch(fetch: FetchType, id: number) {
     return fetch(backgammonConcedeUri(id), {
         credentials: "include",
         method: "post",
-        body: JSON.stringify({
-            endMatch: true
-        }),
-        headers: {
-            "Content-Type": "application/json"
-        }
+        body: "true"
     })
 }
 
@@ -81,12 +76,7 @@ export function backgammonConcedeGame(fetch: FetchType, id: number) {
     return fetch(backgammonConcedeUri(id), {
         credentials: "include",
         method: "post",
-        body: JSON.stringify({
-            endMatch: false
-        }),
-        headers: {
-            "Content-Type": "application/json"
-        }
+        body: "false"
     })
 }
 
