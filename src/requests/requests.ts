@@ -67,14 +67,14 @@ export async function backgammonAcceptDouble(fetch: FetchType, id: number) {
 export function backgammonConcedeMatch(fetch: FetchType, id: number) {
     return fetch(backgammonConcedeUri(id, true), {
         credentials: "include",
-        method: "put"
+        method: "post"
     })
 }
 
 export function backgammonConcedeGame(fetch: FetchType, id: number) {
     return fetch(backgammonConcedeUri(id, false), {
         credentials: "include",
-        method: "put"
+        method: "post"
     })
 }
 
