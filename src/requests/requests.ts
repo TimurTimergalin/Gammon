@@ -1,17 +1,17 @@
 import {
+    backgammonAcceptDoubleUri,
+    backgammonConcedeUri,
     backgammonConfigUri,
+    backgammonFinishTurnUri,
+    backgammonOfferDoubleUri,
+    backgammonRollDiceUri,
     connectUri,
     disconnectUri,
     eventsUri,
-    backgammonFinishTurnUri,
     myUserInfoUri,
     signInUrl,
     signUpUrl,
-    backgammonRollDiceUri,
-    usernamesUri,
-    backgammonOfferDoubleUri,
-    backgammonAcceptDoubleUri,
-    backgammonConcedeUri
+    usernamesUri
 } from "./paths";
 import {FetchType} from "../common/requests";
 
@@ -65,16 +65,28 @@ export async function backgammonAcceptDouble(fetch: FetchType, id: number) {
 }
 
 export function backgammonConcedeMatch(fetch: FetchType, id: number) {
-    return fetch(backgammonConcedeUri(id, true), {
+    return fetch(backgammonConcedeUri(id), {
         credentials: "include",
-        method: "post"
+        method: "post",
+        body: JSON.stringify({
+            endMatch: true
+        }),
+        headers: {
+            "Content-Type": "application/json"
+        }
     })
 }
 
 export function backgammonConcedeGame(fetch: FetchType, id: number) {
-    return fetch(backgammonConcedeUri(id, false), {
+    return fetch(backgammonConcedeUri(id), {
         credentials: "include",
-        method: "post"
+        method: "post",
+        body: JSON.stringify({
+            endMatch: false
+        }),
+        headers: {
+            "Content-Type": "application/json"
+        }
     })
 }
 
