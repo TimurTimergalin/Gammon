@@ -68,19 +68,6 @@ export abstract class RulesGameController<Index, Prop> implements GameController
         this.doubleCubeState.state = this.player === Color.WHITE ? "belongs_to_white" : "belongs_to_black"
     }
 
-    protected _canConcedeGame() {
-        return (this.player === Color.WHITE && this.doubleCubeState.state === "offered_to_white") ||
-            (this.player === Color.BLACK && this.doubleCubeState.state === "offered_to_black") ||
-            (this.rules.canConcedePrematurely(this.board.ruleBoard, this.player) &&
-                (
-                    this.player === Color.WHITE && this.doubleCubeState.state === "belongs_to_white" ||
-                    this.player === Color.BLACK && this.doubleCubeState.state === "belongs_to_black" ||
-                    this.doubleCubeState.state === "unavailable"
-                )
-            )
-
-    }
-
     protected _canOfferDouble() {
         return (
             this.doubleCubeState.state === "free" ||
@@ -303,6 +290,8 @@ export abstract class RulesGameController<Index, Prop> implements GameController
             this.controlButtonsState.canConcedeGame = this._canConcedeGame()
         }
     }
+
+    protected abstract _canConcedeGame(): boolean
 
     abstract endTurn(): void;
 

@@ -287,4 +287,16 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
             "Игрок сдался"
         )
     }
+
+    protected _canConcedeGame(): boolean {
+        return (this.player === Color.WHITE && this.doubleCubeState.state === "offered_to_white") ||
+            (this.player === Color.BLACK && this.doubleCubeState.state === "offered_to_black") ||
+            (this.rules.canConcedePrematurely(this.board.ruleBoard, this.player) &&
+                (
+                    this.player === Color.WHITE && this.doubleCubeState.state === "belongs_to_white" ||
+                    this.player === Color.BLACK && this.doubleCubeState.state === "belongs_to_black" ||
+                    this.doubleCubeState.state === "unavailable"
+                )
+            )
+    }
 }

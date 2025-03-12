@@ -77,10 +77,20 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
             config.doubleCube.state === "unavailable" ? undefined :
                 config.doubleCube.state === "free" ? 64 :
                     config.doubleCube.value
+        this.scoreState.white = config.points.white
+        this.scoreState.black = config.points.black
+        this.scoreState.total = config.points.total
 
         if (config.dice[0] !== null && config.dice[1] !== null && config.dice[0].value < config.dice[1].value) {
             this.diceState.swapDice()
         }
+
+        if (config.winner !== null) {
+            this.endWindowState.title = this.winnerTitle(config.winner)
+            return
+        }
+        this.controlButtonsState.canConcedeGame = this._canConcedeGame()
+
         if (this.diceState.dice1 !== null) {
             console.assert(this.diceState.dice2 !== null)
             this.calculateDice()
@@ -96,9 +106,6 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
                 }
             }
         }
-        this.scoreState.white = config.points.white
-        this.scoreState.black = config.points.black
-        this.scoreState.total = config.points.total
     }
 
     endTurn = (): void => {
@@ -155,6 +162,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
                 this.connector.blocked = false
                 this.player = oppositeColor(this.player)
                 this.canOfferDouble = this._canOfferDouble()
+                this.controlButtonsState.canConcedeGame = this._canConcedeGame()
             } else {
                 setTimeout(
                     () => displayMove(index + 1),
@@ -170,6 +178,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
             this.diceState.dice2 = null
             this.player = oppositeColor(this.player)
             this.canOfferDouble = this._canOfferDouble()
+            this.controlButtonsState.canConcedeGame = this._canConcedeGame()
         } else {
             this.swapBoardAvailable = false
             this.connector.blocked = true
@@ -206,7 +215,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         this.scoreState.white = points.white
         this.scoreState.black = points.black
         if (newConfig === undefined) {
-            this.endWindowState.title = winner === Color.WHITE ? "Белые выиграли" : "Черные выиграли"
+            this.endWindowState.title = this.winnerTitle(winner)
             this.diceState.dice1 = null
             this.diceState.dice2 = null
             this.controlButtonsState.turnComplete = false
@@ -237,6 +246,10 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         }, 500)
     }
 
+    private winnerTitle(winner: Color) {
+        return winner === Color.WHITE ? "Белые выиграли" : "Черные выиграли";
+    }
+
     onOfferDouble = (by: Color) => {
         console.assert(by === oppositeColor(this.userPlayer))
         if (this.doubleCubeState.convertedValue === 1) {
@@ -252,6 +265,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         }
         this.player = oppositeColor(this.player)
         this.active = true
+        this.controlButtonsState.canConcedeGame = this._canConcedeGame()
     }
 
     onAcceptDouble = (by: Color) => {
@@ -291,9 +305,25 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         this.connector.concedeMatch()
     }
 
-    concedeGame(): never {
-        throw new Error("NOT IMPLEMENTED")  // TODO: implement concedeGame
+    concedeGame(): void {
+        this.active = false
+        this.controlButtonsState.canRollDice = false
+        this.controlButtonsState.movesMade = false
+        this.controlButtonsState.turnComplete = false
+        this.controlButtonsState.canConcedeGame = false
+        this.canOfferDouble = false
+        this.connector.concedeGame()
     }
 
-
+    protected _canConcedeGame(): boolean {
+        return (this.active && this.player === Color.WHITE && this.doubleCubeState.state === "offered_to_white") ||
+            (this.active && this.player === Color.BLACK && this.doubleCubeState.state === "offered_to_black") ||
+            (this.rules.canConcedePrematurely(this.board.ruleBoard, this.userPlayer) &&
+                (
+                    this.userPlayer === Color.WHITE && this.doubleCubeState.state === "belongs_to_white" ||
+                    this.userPlayer === Color.BLACK && this.doubleCubeState.state === "belongs_to_black" ||
+                    this.doubleCubeState.state === "unavailable"
+                )
+            )
+    }
 }

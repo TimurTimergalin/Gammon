@@ -26,7 +26,8 @@ export interface Config<Index, Prop> {
         white: PlayerState,
         black: PlayerState
     },
-    doubleCube: DoubleCubeConfig
+    doubleCube: DoubleCubeConfig,
+    winner: Color | null
 }
 
 export interface ConfigParser<RemoteConfig, Index, Prop> {

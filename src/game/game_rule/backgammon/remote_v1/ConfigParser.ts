@@ -13,7 +13,7 @@ import {FetchType} from "../../../../common/requests";
 const console = logger("game/game_rule/backgammon/remote_v1")
 
 export class BackgammonConfigParser implements ConfigParser<BackgammonRemoteConfig, BackgammonIndex, BackgammonProp> {
-    mapConfig({gameData, blackPoints, whitePoints, threshold, players, doubleCubePosition, doubleCubeValue}: BackgammonRemoteConfig): Config<BackgammonIndex, BackgammonProp> {
+    mapConfig({gameData, blackPoints, whitePoints, threshold, players, doubleCubePosition, doubleCubeValue, winner}: BackgammonRemoteConfig): Config<BackgammonIndex, BackgammonProp> {
         const config = gameData
         const toColor = (name: "WHITE" | "BLACK") => name === "WHITE" ? Color.WHITE : Color.BLACK
         const player = doubleCubePosition === "OFFERED_TO_WHITE" || doubleCubePosition === "OFFERED_TO_BLACK" ?
@@ -86,7 +86,8 @@ export class BackgammonConfigParser implements ConfigParser<BackgammonRemoteConf
                     iconSrc: imageUri(players.BLACK.id)
                 }
             },
-            doubleCube: doubleCube
+            doubleCube: doubleCube,
+            winner: winner === "WHITE" ? Color.WHITE : winner === "BLACK" ? Color.BLACK : winner
         }
     }
 
