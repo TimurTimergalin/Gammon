@@ -7,6 +7,7 @@ export default [
                 index("./routes/index.tsx"),
                 route("/play", "./routes/play_menu.tsx"),
                 route("/local-play/backgammon", "./routes/play/local/backgammon.tsx"),
+                route("/local-play/narde", "./routes/play/local/narde.tsx"),
                 route("/play/:roomId", "./routes/play/remote/play.tsx"),
                 route("*?", "./catchall.tsx"),
                 layout("./layouts/auth.tsx", [

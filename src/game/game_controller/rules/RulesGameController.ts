@@ -141,7 +141,7 @@ export abstract class RulesGameController<Index, Prop> implements GameController
         console.assert(this.active)
         console.debug("Legal moves calculating from", pi)
         const li = this.indexMapper.physicalToLogical(pi)
-        const legalMoves = this.rules.getLegalMoves(this.board.ruleBoard, li, this.player, this.diceState.toDiceArray())
+        const legalMoves = this.rules.getLegalMoves(this.board.ruleBoard, li, this.player, this.diceState.toDiceArray(), this.performedMoves)
         console.debug(legalMoves)
 
         const res = []

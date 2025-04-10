@@ -1,7 +1,6 @@
 import {RulesGameController} from "../rules/RulesGameController";
 import {Color, oppositeColor} from "../../../common/color";
-import {DiceStatus} from "../../dice_state/DiceStatus";
-import {LayerStatus} from "../../../components/game/dice_layer/LayerStatus";
+import {makeDice} from "../../dice_state/DiceStatus";
 import {ControlButtonsState} from "../../control_buttons_state/ControlButtonsState";
 import {IndexMapper} from "../../game_rule/IndexMapper";
 import {DiceState} from "../../dice_state/DiceState";
@@ -18,6 +17,7 @@ import {DoubleCubeState} from "../../double_cube_state/DoubleCubeState";
 import {GameHistoryEntry, GameHistoryState} from "../../game_history_state/GameHistoryState";
 import {HistoryEncoder} from "../../game_rule/HistoryEncoder";
 import {splitMove} from "../../board/move";
+import {DiceRule, randomDice} from "../../game_rule/DiceRule";
 
 const console = logger("game/game_controller/local")
 
@@ -30,8 +30,9 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
     private gameHistoryState: GameHistoryState
     private historyNewGame: { firstToMove: Color } | undefined = undefined
     private historyEncoder: HistoryEncoder<Index>
+    private diceRule: DiceRule
 
-    constructor({endWindowState, initPlacement, scoreState, gameHistoryState, historyEncoder, ...args}: {
+    constructor({endWindowState, initPlacement, scoreState, gameHistoryState, historyEncoder, diceRule, ...args}: {
         board: BoardSynchronizer<Index, Prop>,
         controlButtonsState: ControlButtonsState,
         active: boolean,
@@ -46,7 +47,8 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         scoreState: ScoreState,
         doubleCubeState: DoubleCubeState
         gameHistoryState: GameHistoryState
-        historyEncoder: HistoryEncoder<Index>
+        historyEncoder: HistoryEncoder<Index>,
+        diceRule: DiceRule
     }) {
         super(args);
         this.endWindowState = endWindowState
@@ -54,31 +56,17 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         this.points = scoreState
         this.gameHistoryState = gameHistoryState
         this.historyEncoder = historyEncoder
+        this.diceRule = diceRule
     }
 
-    private randomDice() {
-        return Math.ceil(Math.random() * 6 + 5e-324)
-    }
+    private _rollDice(color?: Color) {
+        let dice1, dice2
 
-    private _rollDice(color1: Color, color2: Color) {
-        const value1 = this.randomDice()
-        const dice1: DiceStatus = {
-            value: value1,
-            color: color1,
-            unavailabilityStatus: LayerStatus.NONE,
-            usageStatus: LayerStatus.NONE
-        }
-
-        let value2 = this.randomDice()
-        while (value2 === value1 && color1 !== color2) {
-            value2 = this.randomDice()
-        }
-
-        const dice2 = {
-            value: value2,
-            color: color2,
-            unavailabilityStatus: LayerStatus.NONE,
-            usageStatus: LayerStatus.NONE
+        if (color === undefined) {
+            [dice1, dice2] = this.diceRule.rollFirstDice()
+        } else {
+            dice1 = makeDice(randomDice(), color)
+            dice2 = makeDice(randomDice(), color)
         }
 
         this.diceState.dice1 = dice1
@@ -95,13 +83,13 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
 
         if (this.diceState.dice1!.color === this.diceState.dice2!.color) {
             this.player = this.diceState.dice1!.color
-            return
-        }
-        console.assert(this.diceState.dice1!.value !== this.diceState.dice2!.value)
-        if (this.diceState.dice1!.value > this.diceState.dice2!.value) {
-            this.player = this.diceState.dice1!.color
         } else {
-            this.player = this.diceState.dice2!.color
+            console.assert(this.diceState.dice1!.value !== this.diceState.dice2!.value)
+            if (this.diceState.dice1!.value > this.diceState.dice2!.value) {
+                this.player = this.diceState.dice1!.color
+            } else {
+                this.player = this.diceState.dice2!.color
+            }
         }
         this.historyNewGame = {firstToMove: this.player}
     }
@@ -110,7 +98,7 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         this.controlButtonsState.canConcedeGame = this._canConcedeGame()
         this.previousDoubleState = undefined
         if (first) {
-            this._rollDice(Color.WHITE, Color.BLACK)
+            this._rollDice()
             this.inferCurrentPlayer()
             this.calculateDice()
         } else {
@@ -264,7 +252,7 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
 
     rollDice(): void {
         this.canOfferDouble = false
-        this._rollDice(this.player, this.player)
+        this._rollDice(this.player)
         this.calculateDice()
         this.controlButtonsState.canRollDice = false
     }

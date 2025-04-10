@@ -7,3 +7,12 @@ export interface DiceStatus {
     usageStatus: LayerStatus,
     unavailabilityStatus: LayerStatus
 }
+
+export function makeDice(value: number, color: Color): DiceStatus {
+    return {
+        value: value,
+        color: color,
+        usageStatus: LayerStatus.NONE,
+        unavailabilityStatus: LayerStatus.NONE
+    }
+}

@@ -7,6 +7,9 @@ export type GameHistoryEntry =
     {type: "accept_double"} |
     {type: "game_end", white: number, black: number, reason?: string, winner: Color}
 
+// GameHistory: {firstToMove: WHITE | BLACK, items: [{}|{}|{}|{}]
+//
+
 export type GameInfo = {firstEntry: number, firstToMove: Color}
 
 

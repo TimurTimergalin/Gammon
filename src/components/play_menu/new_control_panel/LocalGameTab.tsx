@@ -10,8 +10,14 @@ const PlainLocalGameTab = ({className}: { className?: string }) => {
     const pointsUntil = useRef(0)
     const navigate = useNavigate()
 
-    const gameModes = ["Короткие нарды"]
+    const gameModes = ["Короткие нарды", "Длинные нарды"]
     const pointsOptions = ["1", "3", "5", "7"]
+    const routes = new Map(
+        [
+            [0, "/local-play/backgammon"],
+            [1, "/local-play/narde"]
+        ]
+    )
 
     return (
         <div className={className}>
@@ -19,7 +25,7 @@ const PlainLocalGameTab = ({className}: { className?: string }) => {
             <SwitchSelect options={pointsOptions} callback={(i) => pointsUntil.current = i}/>
             <AccentedButton onClick={
                 () => {
-                    const path = "/local-play/backgammon" // Должен зависеть от gameMode
+                    const path = routes.get(gameMode.current)
                     const points =
                         pointsUntil.current === 0 ? "1" :
                             pointsUntil.current === 1 ? "3" :

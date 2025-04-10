@@ -62,7 +62,8 @@ const initBackgammonPosition = (gc: GameContext, placement: BackgammonPlacement,
         initPlacement: backgammonRuleSet.initPlacement,
         doubleCubeState: gc.doubleCubeState,
         gameHistoryState: gc.gameHistoryState,
-        historyEncoder: backgammonRuleSet.historyEncoder
+        historyEncoder: backgammonRuleSet.historyEncoder,
+        diceRule: backgammonRuleSet.diceRule
     })
 
     gc.diceState.dice1 = {
