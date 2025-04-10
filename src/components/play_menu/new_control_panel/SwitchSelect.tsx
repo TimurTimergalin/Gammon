@@ -15,6 +15,7 @@ const Choice = styled(PlainChoice)<{ left: boolean, right: boolean, chosen: bool
         display: flex;
         justify-content: center;
         align-items: center;
+        text-align: center;
         border-top-left-radius: ${({left}) => left ? 5 : 0}px;
         border-bottom-left-radius: ${({left}) => left ? 5 : 0}px;
         border-top-right-radius: ${({right}) => right ? 5 : 0}px;

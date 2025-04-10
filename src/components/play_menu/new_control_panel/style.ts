@@ -2,7 +2,7 @@ import {css} from "styled-components";
 
 export const tabEntryStyle = css`
     margin: 10px 10%;
-    height: 25px;
+    min-height: 25px;
 `
 
 export const firstEntryMargin = css`
