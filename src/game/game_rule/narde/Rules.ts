@@ -114,6 +114,8 @@ export class NardeRules implements Rules<NardeIndex, NardeProp> {
                 if (blockSequence == 6) {
                     return true
                 }
+            } else {
+                blockSequence = 0
             }
         }
         console.assert(false)
