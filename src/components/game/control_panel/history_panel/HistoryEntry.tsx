@@ -1,5 +1,4 @@
 import {observer} from "mobx-react-lite";
-import {useGameContext} from "../../../../game/GameContext";
 import {GameHistoryEntry} from "../../../../game/game_history_state/GameHistoryState";
 import styled from "styled-components";
 import {Color} from "../../../../common/color";
@@ -88,12 +87,13 @@ const GameEndEntry = styled(PlainGameEndEntry)`
 `
 
 
-const PlainHistoryEntry = observer(function PlainHistoryEntry({entryIndex, className}: {
-    entryIndex: number,
+const PlainHistoryEntry = observer(function PlainHistoryEntry({entry, className}: {
+    entry: GameHistoryEntry,
     className?: string
 }) {
-    const gameHistoryState = useGameContext("gameHistoryState")
-    const entry = gameHistoryState.moves[entryIndex]
+    if (entry === undefined) {
+        return <></>
+    }
 
     const additionalStyle: CSSProperties = {
         paddingRight: entry.type === "game_end" ? 0 : 3,

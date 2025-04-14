@@ -7,26 +7,30 @@ export type GameHistoryEntry =
     {type: "accept_double"} |
     {type: "game_end", white: number, black: number, reason?: string, winner: Color}
 
-// GameHistory: {firstToMove: WHITE | BLACK, items: [{}|{}|{}|{}]
-//
-
-export type GameInfo = {firstEntry: number, firstToMove: Color}
+export type GameInfo = {firstToMove: Color}
 
 
 export class GameHistoryState {
-    moves: (GameHistoryEntry & {game: number})[] = []
-    games: GameInfo[] = []
-    private currentGame = -1
+    get currentGame(): GameInfo | undefined {
+        return this._currentGame;
+    }
+
+    set currentGame(value: GameInfo) {
+        this._currentGame = value;
+    }
+    moves: GameHistoryEntry[] = []
+    private _currentGame: GameInfo | undefined = undefined
 
     constructor() {
         makeAutoObservable(this)
     }
 
-    add(entry: GameHistoryEntry, newGame?: {firstToMove: Color}) {
-        if (newGame !== undefined) {
-            this.games.push({firstEntry: this.moves.length, ...newGame})
-            ++this.currentGame
-        }
-        this.moves.push({...entry, game: this.currentGame})
+    add(entry: GameHistoryEntry) {
+        this.moves.push(entry)
+    }
+
+    clear() {
+        this.moves.splice(0)
+        this._currentGame = undefined
     }
 }

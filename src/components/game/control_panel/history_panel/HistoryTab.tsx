@@ -1,93 +1,78 @@
 import styled from "styled-components";
 import {observer} from "mobx-react-lite";
-import {ReactNode, useEffect, useRef, useState} from "react";
+import {ReactNode, useRef} from "react";
 import {useGameContext} from "../../../../game/GameContext";
 import {Color} from "../../../../common/color";
-import {HistoryEntry} from "./HistoryEntry";
 import {altBackground} from "./common";
+import {HistoryEntry} from "./HistoryEntry";
 
 const PlainLineNumberLabel = ({lineNumber, className}: { lineNumber: number, className?: string }) => {
     const text = (lineNumber < 10 ? " " : "") + lineNumber
     return <span className={className}>{text}</span>
 }
 
-const LineNumberLabel = styled(PlainLineNumberLabel)<{ altBg: boolean }>` 
+const LineNumberLabel = styled(PlainLineNumberLabel)<{ altBg: boolean }>`
     white-space: pre;
     background-color: ${altBackground};
     padding-right: 5px;
 `
 
-const PlainSkip = ({className}: {className?: string}) => <span className={className}></span>
+const PlainSkip = ({className}: { className?: string }) => <span className={className}></span>
 
 const Skip = styled(PlainSkip)<{ altBg: boolean }>`
     background-color: ${altBackground};
 `
 
 const PlainHistoryTab = observer(function PlainHistoryTab({className}: { className?: string }) {
-    const needNewGame = useRef(true)
-    const lineNumber = useRef(1)
-    const processedEntryCount = useRef(0)
-    const needNewLine = useRef(true)
-    const useAltBackground = useRef(false)
-    const renderedElements = useRef<ReactNode[]>([])
-    const nextKey = useRef(0)
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [_, setCounter] = useState(0)
-    const counterRef = useRef(0)
+    const renderedElements: ReactNode[] = []
 
-    const gameHistoryState = useGameContext("gameHistoryState")
     const tabRef = useRef<HTMLDivElement | null>(null)
+    const gameHistoryState = useGameContext("gameHistoryState")
 
-    useEffect(() => {
-        for (
-            let i = processedEntryCount.current;
-            processedEntryCount.current < gameHistoryState.moves.length;
-            ++processedEntryCount.current
-        ) {
-            const entry = gameHistoryState.moves[i]
-            let needSkipBefore = false
-            if (needNewGame.current) {
-                lineNumber.current = 1
-                needNewLine.current = true
-                useAltBackground.current = false
-                const game = gameHistoryState.games[entry.game]
-                needSkipBefore = game.firstToMove === Color.BLACK
-                needNewGame.current = false
+    let lineNumber = 1
+    let altBg = true
+    let onLeft = true
+    let key = 0
+
+    if (gameHistoryState.currentGame === undefined) {
+        return <></>
+    }
+
+    const game = gameHistoryState.currentGame!
+
+    if (game.firstToMove === Color.BLACK && gameHistoryState.moves.length > 0) {
+        altBg = !altBg
+        renderedElements.push(<LineNumberLabel lineNumber={lineNumber++} altBg={altBg} key={key++}/>)
+        renderedElements.push(<Skip altBg={altBg} key={key++}/>)
+        onLeft = false
+    }
+
+    for (const entry of gameHistoryState.moves) {
+        if (entry.type === "game_end") {
+            if (!onLeft) {
+                renderedElements.push(<Skip altBg={altBg} key={key++}/>)
+                altBg = !altBg
             }
-            if (entry.type === "game_end") {
-                renderedElements.current.push(<HistoryEntry entryIndex={i} altBg={useAltBackground.current}
-                                                            key={nextKey.current++}/>)
-                needNewGame.current = true
-                setCounter(++counterRef.current)
-                continue
+            renderedElements.push(<HistoryEntry entry={entry} altBg={altBg} key={key++}/>)
+            onLeft = true
+        } else {
+            if (onLeft) {
+                altBg = !altBg
+                renderedElements.push(<LineNumberLabel altBg={altBg} lineNumber={lineNumber++} key={key++}/>)
             }
-            if (needNewLine.current) {
-                renderedElements.current.push(<LineNumberLabel lineNumber={lineNumber.current++}
-                                                               altBg={useAltBackground.current}
-                                                               key={nextKey.current++}/>)
-            } else {
-                renderedElements.current.pop()
-                --nextKey.current
-            }
-            if (needSkipBefore) {
-                renderedElements.current.push(<Skip altBg={useAltBackground.current} key={nextKey.current++}/>)
-            }
-            renderedElements.current.push(<HistoryEntry entryIndex={i} altBg={useAltBackground.current}
-                                                        key={nextKey.current++}/>)
-            if (!needSkipBefore && needNewLine.current) {
-                renderedElements.current.push(<Skip altBg={useAltBackground.current} key={nextKey.current++}/>)
-            }
-            needNewLine.current = !needNewLine.current || needSkipBefore
-            if (needNewLine.current) {
-                useAltBackground.current = !useAltBackground.current
-            }
+            renderedElements.push(<HistoryEntry entry={entry} altBg={altBg} key={key++} />)
+            onLeft = !onLeft
         }
-        setCounter(++counterRef.current)
-        tabRef.current!.scrollTop = tabRef.current!.scrollHeight
+    }
+    if (!onLeft) {
+        renderedElements.push(<Skip altBg={altBg} key={key++}/>)
+    }
 
-    }, [gameHistoryState.moves, gameHistoryState.moves.length, gameHistoryState.games, gameHistoryState]);
+    if (tabRef.current !== null) {
+        tabRef.current.scrollTop = tabRef.current.scrollHeight
+    }
 
-    return <div className={className} ref={tabRef}>{renderedElements.current}</div>
+    return <div className={className} ref={tabRef}>{renderedElements}</div>
 })
 
 export const HistoryTab = styled(PlainHistoryTab)`

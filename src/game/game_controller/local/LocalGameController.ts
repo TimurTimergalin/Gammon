@@ -28,7 +28,6 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
     private points: ScoreState
     private crawfordRule: boolean = false
     private gameHistoryState: GameHistoryState
-    private historyNewGame: { firstToMove: Color } | undefined = undefined
     private historyEncoder: HistoryEncoder<Index>
     private diceRule: DiceRule
 
@@ -91,7 +90,7 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
                 this.player = this.diceState.dice2!.color
             }
         }
-        this.historyNewGame = {firstToMove: this.player}
+        this.gameHistoryState.currentGame = {firstToMove: this.player}
     }
 
     newTurn(first: boolean) {
@@ -136,6 +135,7 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
     }
 
     newGame() {
+        this.gameHistoryState.clear()
         this.boardAnimationSwitch.withTurnedOff(() => {
                 this.board.updateLogical(this.initPlacement())
                 this.active = true
@@ -182,7 +182,6 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
             winner: winner,
             reason: reason
         }
-        console.assert(this.historyNewGame === undefined)
         this.gameHistoryState.add(entry)
 
         const matchComplete = this.checkMatchComplete()
@@ -215,23 +214,19 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
                     m => [...splitMove(m.primaryMove, m.dice, this.player, this.rules), ...m.additionalMoves]
                 ), this.player)
             }
-            this.gameHistoryState.add(entry, this.historyNewGame)
+            this.gameHistoryState.add(entry)
         } else if (this.previousDoubleState.canOffer) {  // Предложил куб
-            console.assert(this.doubleCubeState.value !== undefined)
             const entry: GameHistoryEntry = {
                 type: "offer_double",
                 newValue: this.doubleCubeState.value!
             }
-            console.assert(this.historyNewGame === undefined)
             this.gameHistoryState.add(entry)
         } else {  // Принял куб
             const entry: GameHistoryEntry = {
                 type: "accept_double"
             }
-            console.assert(this.historyNewGame === undefined)
             this.gameHistoryState.add(entry)
         }
-        this.historyNewGame = undefined
 
         const gameComplete = this.checkGameComplete()
         if (gameComplete !== undefined) {
