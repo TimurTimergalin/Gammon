@@ -31,7 +31,8 @@ export class BackgammonHistoryEncoder implements HistoryEncoder<BackgammonIndex>
         return this.indexRepr(i, player) + (isBar ? "*" : "")
     }
 
-    encode(moves: Move<BackgammonIndex>[], player: Color): string[] {
+    encode(moves_: Move<BackgammonIndex>[], player: Color): string[] {
+        const moves = [...moves_]
         moves.sort((a, b) => {
             const res = this.moveKey(a.from) - this.moveKey(b.from)
             if (player == Color.BLACK) {

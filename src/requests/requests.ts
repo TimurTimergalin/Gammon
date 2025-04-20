@@ -2,7 +2,7 @@ import {
     backgammonAcceptDoubleUri,
     backgammonConcedeUri,
     backgammonConfigUri,
-    backgammonFinishTurnUri,
+    backgammonFinishTurnUri, backgammonHistoryUri,
     backgammonOfferDoubleUri,
     backgammonRollDiceUri,
     connectUri,
@@ -83,6 +83,13 @@ export function backgammonConcedeGame(fetch: FetchType, id: number) {
         headers: {
             "Content-Type": "application/json"
         }
+    })
+}
+
+// TODO - эта ручка должна быть не только для backgammon-а
+export function backgammonHistory(fetch: FetchType, id: number) {
+    return fetch(backgammonHistoryUri(id), {
+        credentials: "include"
     })
 }
 

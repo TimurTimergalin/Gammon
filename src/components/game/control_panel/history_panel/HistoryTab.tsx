@@ -35,7 +35,7 @@ const PlainHistoryTab = observer(function PlainHistoryTab({className}: { classNa
     let key = 0
 
     if (gameHistoryState.currentGame === undefined) {
-        return <></>
+        return <div className={className}></div>
     }
 
     const game = gameHistoryState.currentGame!

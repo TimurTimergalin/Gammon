@@ -37,7 +37,8 @@ export class NardeHistoryEncoder implements HistoryEncoder<NardeIndex> {
         return true
     }
 
-    encode(moves: Move<NardeIndex>[], player: Color): string[] {
+    encode(moves_: Move<NardeIndex>[], player: Color): string[] {
+        const moves =[...moves_]
         moves.sort(
             (a, b) => this.positionOrderKey(a.from, player) - this.positionOrderKey(b.from, player)
         )

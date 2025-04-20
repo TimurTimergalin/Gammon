@@ -1,5 +1,5 @@
 import {logResponseError} from "../../../requests/util";
-import {getBackgammonConfig} from "../../../requests/requests";
+import {backgammonHistory, getBackgammonConfig} from "../../../requests/requests";
 import {RemoteSet} from "../../game_rule/RemoteSet";
 import {GameContext} from "../../GameContext";
 import {RuleSet} from "../../game_rule/RuleSet";
@@ -7,7 +7,10 @@ import {RemoteConnectorImpl} from "./RemoteConnector";
 import {RemoteGameController} from "./RemoteGameController";
 import {BoardSynchronizer} from "../../board/BoardSynchronizer";
 import {FetchType} from "../../../common/requests";
-import {Color} from "../../../common/color";
+import {Color, oppositeColor} from "../../../common/color";
+import {RemoteHistoryEntry, remoteHistoryMapper} from "./remoteHistoryMapper";
+import {forceType} from "../../../common/typing";
+import {GameHistoryEntry} from "../../game_history_state/GameHistoryState";
 
 async function getConfigJson(fetch: FetchType, roomId: number) {
     const resp = await getBackgammonConfig(fetch, roomId)
@@ -30,7 +33,30 @@ export async function remoteGameInit<RemoteConfig, Index, Prop, RemoteMove>(
         return remoteSet.configParser.mapConfig(remoteConfig)
     }
 
-    const config = await configGetter(roomId)
+    const historyGetter = async (roomId: number): Promise<[GameHistoryEntry[], Color]> => {
+        const remoteHistory = await (await backgammonHistory(fetch, roomId)).json()
+        console.log(remoteHistory)
+        forceType<{items: RemoteHistoryEntry<RemoteMove>[], firstToMove: "WHITE" | "BLACK"}>(remoteHistory)
+        const res: GameHistoryEntry[] = []
+        const firstToMove = remoteHistory.firstToMove === "WHITE" ? Color.WHITE : Color.BLACK
+        let currentPlayer = firstToMove
+
+        for (const entry of remoteHistory.items) {
+            res.push(remoteHistoryMapper({
+                remoteMoveMapper: remoteSet.remoteMoveMapper,
+                historyEncoder: ruleSet.historyEncoder,
+                remoteHistoryEntry: entry,
+                player: currentPlayer
+            }))
+            currentPlayer = oppositeColor(currentPlayer)
+        }
+        return [res, firstToMove]
+    }
+    const [config, [historyEntries, firstToMove]] = await Promise.all([configGetter(roomId), historyGetter(roomId)])
+
+    gameContext.gameHistoryState.clear()
+    gameContext.gameHistoryState.currentGame = {firstToMove: firstToMove}
+    historyEntries.forEach(e => gameContext.gameHistoryState.add(e))
 
     const indexMapper = ruleSet.indexMapperFactory(config.userPlayer)
 
@@ -61,7 +87,9 @@ export async function remoteGameInit<RemoteConfig, Index, Prop, RemoteMove>(
         endWindowState: gameContext.endWindowState,
         boardAnimationSwitch: gameContext.boardAnimationSwitch,
         scoreState: gameContext.scoreState,
-        doubleCubeState: gameContext.doubleCubeState
+        doubleCubeState: gameContext.doubleCubeState,
+        gameHistoryState: gameContext.gameHistoryState,
+        historyEncoder: ruleSet.historyEncoder
     })
 
     gameContext.labelState.labelMapper = ruleSet.labelMapperFactory(config.userPlayer)
