@@ -12,6 +12,7 @@ import {RemoteMoveMapper} from "../../game_rule/RemoteMoveMapper";
 import {logger} from "../../../logging/main";
 import {Config} from "../../game_rule/ConfigParser";
 import {FetchType} from "../../../common/requests";
+import {mapRemoteColor} from "../../game_rule/common_remote/common";
 
 
 const console = logger("game/game_controller/remote")
@@ -148,10 +149,10 @@ export class RemoteConnectorImpl<RemoteMove, Index, Prop> implements RemoteConne
             } else if (data.type === "TOSS_ZAR_EVENT") {
                 console.debug("dice event encountered")
                 const [d1, d2] = data.value
-                const color = data.tossedBy === "WHITE" ? Color.WHITE : Color.BLACK
+                const color = mapRemoteColor(data.tossedBy)
                 this._onNewDice([d1, d2], color)
             } else if (data.type === "END_GAME_EVENT") {
-                const winner = data.win === "WHITE" ? Color.WHITE : Color.BLACK
+                const winner = mapRemoteColor(data.win)
                 const points = {
                     white: data.whitePoints,
                     black: data.blackPoints
@@ -165,10 +166,10 @@ export class RemoteConnectorImpl<RemoteMove, Index, Prop> implements RemoteConne
                 }
             } else if (data.type === "DOUBLE_EVENT") {
                 console.debug("double offered")
-                this._onOfferDouble(data.by === "WHITE" ? Color.WHITE : Color.BLACK)
+                this._onOfferDouble(mapRemoteColor(data.by))
             } else if (data.type === "ACCEPT_DOUBLE_EVENT") {
                 console.debug("double accepted")
-                this._onAcceptDouble(data.by === "WHITE" ? Color.WHITE : Color.BLACK)
+                this._onAcceptDouble(mapRemoteColor(data.by))
             } else {
                 console.warn("Ignoring unknown event")
             }

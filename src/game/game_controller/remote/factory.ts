@@ -11,6 +11,7 @@ import {Color, oppositeColor} from "../../../common/color";
 import {RemoteHistoryEntry, remoteHistoryMapper} from "./remoteHistoryMapper";
 import {forceType} from "../../../common/typing";
 import {GameHistoryEntry} from "../../game_history_state/GameHistoryState";
+import {mapRemoteColor, RemoteColor} from "../../game_rule/common_remote/common";
 
 async function getConfigJson(fetch: FetchType, roomId: number) {
     const resp = await getBackgammonConfig(fetch, roomId)
@@ -36,9 +37,9 @@ export async function remoteGameInit<RemoteConfig, Index, Prop, RemoteMove>(
     const historyGetter = async (roomId: number): Promise<[GameHistoryEntry[], Color]> => {
         const remoteHistory = await (await backgammonHistory(fetch, roomId)).json()
         console.log(remoteHistory)
-        forceType<{items: RemoteHistoryEntry<RemoteMove>[], firstToMove: "WHITE" | "BLACK"}>(remoteHistory)
+        forceType<{items: RemoteHistoryEntry<RemoteMove>[], firstToMove: RemoteColor}>(remoteHistory)
         const res: GameHistoryEntry[] = []
-        const firstToMove = remoteHistory.firstToMove === "WHITE" ? Color.WHITE : Color.BLACK
+        const firstToMove = mapRemoteColor(remoteHistory.firstToMove)
         let currentPlayer = firstToMove
 
         for (const entry of remoteHistory.items) {

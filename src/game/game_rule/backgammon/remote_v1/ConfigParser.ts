@@ -1,25 +1,35 @@
-import {Color, oppositeColor} from "../../../../common/color";
-import {DiceStatus} from "../../../dice_state/DiceStatus";
-import {LayerStatus} from "../../../../components/game/dice_layer/LayerStatus";
-import {Config, ConfigParser, DoubleCubeConfig} from "../../ConfigParser";
-import {BackgammonRemoteConfig, BackgammonRemotePlayer} from "./types";
+import {Color} from "../../../../common/color";
+import {DiceStatus, makeDice} from "../../../dice_state/DiceStatus";
+import {Config, ConfigParser} from "../../ConfigParser";
+import {BackgammonRemoteConfig} from "./types";
 import {BackgammonIndex, BackgammonProp} from "../../../board/backgammon/types";
 import {BackgammonBoard} from "../../../board/backgammon/BackgammonBoard";
 import {logger} from "../../../../logging/main";
 import {imageUri} from "../../../../requests/paths";
-import {usernames} from "../../../../requests/requests";
 import {FetchType} from "../../../../common/requests";
+import {
+    inferTurnFromCubePosition,
+    mapRemoteColor,
+    mapRemoteDoubleCube,
+    requestPlayers
+} from "../../common_remote/common";
 
 const console = logger("game/game_rule/backgammon/remote_v1")
 
 export class BackgammonConfigParser implements ConfigParser<BackgammonRemoteConfig, BackgammonIndex, BackgammonProp> {
-    mapConfig({gameData, blackPoints, whitePoints, threshold, players, doubleCubePosition, doubleCubeValue, winner}: BackgammonRemoteConfig): Config<BackgammonIndex, BackgammonProp> {
+    mapConfig({
+                  gameData,
+                  blackPoints,
+                  whitePoints,
+                  threshold,
+                  players,
+                  doubleCubePosition,
+                  doubleCubeValue,
+                  winner
+              }: BackgammonRemoteConfig): Config<BackgammonIndex, BackgammonProp> {
         const config = gameData
-        const toColor = (name: "WHITE" | "BLACK") => name === "WHITE" ? Color.WHITE : Color.BLACK
-        const player = doubleCubePosition === "OFFERED_TO_WHITE" || doubleCubePosition === "OFFERED_TO_BLACK" ?
-            oppositeColor(toColor(config.turn)) :
-            toColor(config.turn)
-        const userPlayer = toColor(config.color)
+        const player = inferTurnFromCubePosition(doubleCubePosition, config.turn)
+        const userPlayer = mapRemoteColor(config.color)
         const placement: Map<BackgammonIndex, BackgammonProp> = new Map()
 
         placement.set("White Bar", {color: Color.WHITE, quantity: config.bar.WHITE})
@@ -30,41 +40,21 @@ export class BackgammonConfigParser implements ConfigParser<BackgammonRemoteConf
             console.assert(0 <= id)
             console.assert(id <= 25)
             console.assert(count > 0)
-            placement.set(toIndex(id), {color: toColor(color), quantity: count})
+            placement.set(toIndex(id), {color: mapRemoteColor(color), quantity: count})
         }
 
         const dice: [DiceStatus | null, DiceStatus | null] = [
-            config.zar[0] ? {
-                value: config.zar[0],
-                color: config.first ? Color.WHITE : toColor(config.turn),
-                usageStatus: LayerStatus.NONE,
-                unavailabilityStatus: LayerStatus.NONE
-            } : null,
-            config.zar[1] ? {
-                value: config.zar[1],
-                color: config.first ? Color.BLACK : toColor(config.turn),
-                usageStatus: LayerStatus.NONE,
-                unavailabilityStatus: LayerStatus.NONE
-            } : null
+            config.zar[0] ? makeDice(
+                config.zar[0],
+                config.first ? Color.WHITE : mapRemoteColor(config.turn)
+            ) : null,
+            config.zar[1] ? makeDice(
+                config.zar[1],
+                config.first ? Color.BLACK : mapRemoteColor(config.turn),
+            ) : null
         ]
 
-        const doubleCube: DoubleCubeConfig = doubleCubePosition === "UNAVAILABLE" ? {
-            state: "unavailable"
-        } : doubleCubePosition === "FREE" ? {
-            state: "free"
-        } : doubleCubePosition === "BELONGS_TO_WHITE" ? {
-            state: "belongs_to_white",
-            value: doubleCubeValue!
-        } : doubleCubePosition === "BELONGS_TO_BLACK" ? {
-            state: "belongs_to_black",
-            value: doubleCubeValue!
-        } : doubleCubePosition === "OFFERED_TO_WHITE" ? {
-            state: "offered_to_white",
-            value: doubleCubeValue!
-        } : {
-            state: "offered_to_black",
-            value: doubleCubeValue!
-        }
+        const doubleCube = mapRemoteDoubleCube(doubleCubePosition, doubleCubeValue)
 
         return {
             placement: new BackgammonBoard(placement),
@@ -87,27 +77,12 @@ export class BackgammonConfigParser implements ConfigParser<BackgammonRemoteConf
                 }
             },
             doubleCube: doubleCube,
-            winner: winner === "WHITE" ? Color.WHITE : winner === "BLACK" ? Color.BLACK : winner
+            winner: winner == null ? null : mapRemoteColor(winner)
         }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async preprocessConfig(fetch: FetchType, raw: any): Promise<BackgammonRemoteConfig> {
-        const resp = await usernames(fetch, [raw.players.WHITE, raw.players.BLACK])
-        if (!resp.ok) {
-            throw new Error(String(resp))
-        }
-        const _usernames = await resp.json() as string[]
-
-        raw.players.WHITE = {
-            id: raw.players.WHITE,
-            username: _usernames[0]
-        } satisfies BackgammonRemotePlayer
-
-        raw.players.BLACK = {
-            id: raw.players.BLACK,
-            username: _usernames[1]
-        } satisfies BackgammonRemotePlayer
+    async preprocessConfig(fetch: FetchType, raw: ReturnType<JSON['parse']>): Promise<BackgammonRemoteConfig> {
+        await requestPlayers(fetch, raw)
 
         return raw
     }

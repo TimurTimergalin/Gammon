@@ -2,6 +2,7 @@ import {RemoteMoveMapper} from "../../game_rule/RemoteMoveMapper";
 import {HistoryEncoder} from "../../game_rule/HistoryEncoder";
 import {GameHistoryEntry} from "../../game_history_state/GameHistoryState";
 import {Color} from "../../../common/color";
+import {RemoteColor} from "../../game_rule/common_remote/common";
 
 export type RemoteHistoryEntry<RemoteMove> = {
     type: "MOVE",
@@ -16,7 +17,7 @@ export type RemoteHistoryEntry<RemoteMove> = {
     type: "GAME_END",
     white: number,
     black: number,
-    winner: "WHITE" | "BLACK",
+    winner: RemoteColor,
     iSurrendered: boolean
 }
 

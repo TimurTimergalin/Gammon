@@ -32,6 +32,5 @@ export interface Config<Index, Prop> {
 
 export interface ConfigParser<RemoteConfig, Index, Prop> {
     mapConfig(config: RemoteConfig): Config<Index, Prop>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    preprocessConfig(fetch: FetchType, raw: any): Promise<RemoteConfig>
+    preprocessConfig(fetch: FetchType, raw: ReturnType<JSON['parse']>): Promise<RemoteConfig>
 }
