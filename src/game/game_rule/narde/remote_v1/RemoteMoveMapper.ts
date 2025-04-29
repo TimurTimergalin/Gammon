@@ -24,14 +24,14 @@ export class NardeRemoteMoveMapper implements RemoteMoveMapper<NardeRemoteMove, 
         return 25 - index
     }
 
-    toRemote({from, to}: Move<NardeIndex>): NardeRemoteMove {
+    toRemote = ({from, to}: Move<NardeIndex>): NardeRemoteMove => {
         return {
             from: this.indexToRemote(from),
             to: this.indexToRemote(to)
         }
     }
 
-    fromRemote({from, to}: NardeRemoteMove): Move<NardeIndex> {
+    fromRemote = ({from, to}: NardeRemoteMove): Move<NardeIndex> => {
         return {
             from: this.indexFromRemote(from),
             to: this.indexFromRemote(to)

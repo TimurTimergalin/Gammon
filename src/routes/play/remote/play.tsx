@@ -64,9 +64,7 @@ const InnerRemoteGameWindow = observer(<RemoteConfig, Index, Prop, RemoteMove>(
     useEffect(() => {
         remoteGameInit({
             gameContext: gameContext,
-            remoteSet: remoteSet,
             roomId: roomIdParsed,
-            ruleSet: ruleSet,
             fetch: fetch
         }).then(({cleanup, player1, player2}) => {
             setGameLoaded(true)

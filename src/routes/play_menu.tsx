@@ -2,9 +2,9 @@ import {GameAndControlPanelContainer} from "../components/play_menu/GameAndContr
 import GameView from "../components/game/GameView";
 import {GameContextHolder} from "../components/game/GameContextHolder";
 import {GamePart} from "../components/game_page/GamePart";
-import {ControlPanel} from "../components/play_menu/new_control_panel/ControlPanel";
-import {RemoteGameTab} from "../components/play_menu/new_control_panel/RemoteGameTab";
-import {LocalGameTab} from "../components/play_menu/new_control_panel/LocalGameTab";
+import {ControlPanel} from "../components/play_menu/control_panel/ControlPanel";
+import {RemoteGameTab} from "../components/play_menu/control_panel/RemoteGameTab";
+import {LocalGameTab} from "../components/play_menu/control_panel/LocalGameTab";
 import {observer} from "mobx-react-lite";
 import {useAuthContext} from "../controller/auth_status/context";
 import {imageUri} from "../requests/paths";

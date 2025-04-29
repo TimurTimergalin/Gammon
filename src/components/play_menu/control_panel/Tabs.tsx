@@ -2,7 +2,7 @@ import styled from "styled-components";
 import {logger} from "../../../logging/main";
 import {useEffect, useState} from "react";
 
-const console = logger("components/play_menu/new_control_panel")
+const console = logger("components/play_menu/control_panel")
 
 const PlainOptionTab = ({children, callback, className}: {
     children: string,

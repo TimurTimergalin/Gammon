@@ -10,7 +10,7 @@ import styled from "styled-components";
 import {firstEntryMargin, playButtonStyle, tabEntryStyle} from "./style";
 import {logger} from "../../../logging/main";
 
-const console = logger("components/play_menu/new_control_panel")
+const console = logger("components/play_menu/control_panel")
 
 const AnimateEllipsis = ({children}: { children: string }) => {
     const [numberOfDots, setNumberOfDots] = useState(3)
@@ -49,17 +49,17 @@ const PlainRemoteGameTab = ({className}: { className?: string }) => {
     const navigate = useNavigate()
     const [fetch, fetchCleanups] = useFetch()
 
-    const gameModes = ["Короткие нарды"]
+    const gameModes = ["Короткие нарды", "Длинные нарды"]
     const pointsOptions = ["1", "3", "5", "7"]
 
     const callback = useCallback(() => {
         startedConnection.current = true
-        const gameMode = "SHORT_BACKGAMMON"  // Должен зависеть от gameMode
+        const game = gameMode.current === 0 ? "SHORT_BACKGAMMON" : "REGULAR_GAMMON"
         const points =
             pointsUntil.current === 0 ? 1 :
                 pointsUntil.current === 1 ? 3 :
                     pointsUntil.current === 2 ? 5 : 7
-        connect(fetch, gameMode, points)
+        connect(fetch, game, points)
             .then(resp => {
                 startedConnection.current = false
                 return resp
