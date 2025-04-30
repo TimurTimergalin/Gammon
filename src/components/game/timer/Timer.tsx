@@ -13,7 +13,7 @@ export const Timer = observer(({index}: { index: 0 | 1 }) => {
     let timerText = minutes + ":" + (seconds >= 10 ? seconds : "0" + seconds)
     if (timerState.timeMs <= 20 * 1000) {
         const centiseconds = Math.floor((timerState.timeMs - minutes * 1000 * 60 - seconds * 1000) / 10)
-        timerText += "." + centiseconds
+        timerText += "." + (centiseconds >= 10 ? centiseconds : "0" + centiseconds)
     }
 
     const bgColor = colorFill(color)
