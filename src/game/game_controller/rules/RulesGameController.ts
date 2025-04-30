@@ -11,6 +11,7 @@ import {logger} from "../../../logging/main";
 import {BoardSynchronizer} from "../../board/BoardSynchronizer";
 import {BoardAnimationSwitch} from "../../board_animation_switch/BoardAnimationSwitch";
 import {CubeState, DoubleCubeState} from "../../double_cube_state/DoubleCubeState";
+import {DragState} from "../../drag_state/DragState";
 
 const console = logger("game/game_controller/rules")
 
@@ -27,11 +28,12 @@ export abstract class RulesGameController<Index, Prop> implements GameController
     protected diceState: DiceState
     protected rules: Rules<Index, Prop>
     protected boardAnimationSwitch: BoardAnimationSwitch
+    protected doubleCubeState: DoubleCubeState
 
     private legalMovesMap: Map<number, CompoundMove<Index>> = new Map()
     private indexMapper: IndexMapper<Index>
     private labelState: LabelState
-    protected doubleCubeState: DoubleCubeState
+    private dragState: DragState
 
     protected get player(): Color {
         return this._player
@@ -76,6 +78,15 @@ export abstract class RulesGameController<Index, Prop> implements GameController
         ) && this.doubleCubeState.convertedValue !== 64
     }
 
+    protected _clearDrag() {
+        if (this.dragState.clickedIndex !== null) {
+            this.putBack(this.dragState.clickedIndex, this.dragState.dragStatus!.pickedColor)
+            this.dragState.clickedIndex = null
+            this.dragState.dragStatus = null
+        }
+        this.legalMovesTracker.clear()
+    }
+
     protected constructor(
         {
             board,
@@ -87,7 +98,8 @@ export abstract class RulesGameController<Index, Prop> implements GameController
             legalMovesTracker,
             labelState,
             boardAnimationSwitch,
-            doubleCubeState
+            doubleCubeState,
+            dragState
         }: {
             board: BoardSynchronizer<Index, Prop>,
             controlButtonsState: ControlButtonsState,
@@ -98,7 +110,8 @@ export abstract class RulesGameController<Index, Prop> implements GameController
             legalMovesTracker: LegalMovesTracker,
             labelState: LabelState,
             boardAnimationSwitch: BoardAnimationSwitch,
-            doubleCubeState: DoubleCubeState
+            doubleCubeState: DoubleCubeState,
+            dragState: DragState
         }
     ) {
         this.board = board;
@@ -111,6 +124,7 @@ export abstract class RulesGameController<Index, Prop> implements GameController
         this.labelState = labelState
         this.boardAnimationSwitch = boardAnimationSwitch
         this.doubleCubeState = doubleCubeState
+        this.dragState = dragState
     }
 
     protected checkTurnComplete() {
@@ -212,7 +226,6 @@ export abstract class RulesGameController<Index, Prop> implements GameController
     }
 
     putBack(to: number, color: Color): void {
-        console.assert(this.active)
         this.board.putPhysical(to, color)
     }
 

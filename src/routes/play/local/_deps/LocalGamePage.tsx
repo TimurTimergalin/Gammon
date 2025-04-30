@@ -18,20 +18,24 @@ interface LocalGameWindowProps<Index, Prop> {
 
 const InnerLocalGamePage = <Index, Prop>({ruleset}: LocalGameWindowProps<Index, Prop>) => {
     const gameContext = useFullGameContext()
-    const [searchParams] = useSearchParams([["pointsUntil", "1"]])
+    const [searchParams] = useSearchParams([["pointsUntil", "1"], ["blitz", "0"]])
 
     const pointsUntilParsed = parseInt(searchParams.get("pointsUntil") || "1")
     const pointsUntil = !isNaN(pointsUntilParsed) && pointsUntilParsed >= 1 ? pointsUntilParsed : 1
+    
+    const blitzParsed = parseInt(searchParams.get("blitz") || "0")
+    const blitz = !isNaN(blitzParsed) && blitzParsed === 1 
 
     useEffect(() => {
         localGameInit(
             {
                 gameContext: gameContext,
                 ruleSet: ruleset,
-                pointsUntil: pointsUntil
+                pointsUntil: pointsUntil,
+                blitz: blitz
             }
         )
-    }, [gameContext, pointsUntil, ruleset]);
+    }, [blitz, gameContext, pointsUntil, ruleset]);
 
     const player1 = useMemo(() => ({
         username: "Белые",
@@ -46,7 +50,7 @@ const InnerLocalGamePage = <Index, Prop>({ruleset}: LocalGameWindowProps<Index, 
     return (
         <GameAndControlPanelContainer>
             <div style={{width: "100%", height: "100%", position: "relative"}}>
-                <GamePart displayButtons={true} player1={player1} player2={player2}>
+                <GamePart displayControls={true} player1={player1} player2={player2} displayTimer={true}>
                     <GameView/>
                 </GamePart>
                 <EndWindow>

@@ -10,9 +10,9 @@ export class NardeDoubleCubePositionMapper implements DoubleCubePositionMapper {
 
     positionOwned(color: Color): Store {
         if (this.player === Color.WHITE) {
-            return color === Color.WHITE ? "TopLeft" : "BottomRight"
+            return color === Color.WHITE ? "BottomRight": "TopLeft"
         }
-        return color === Color.WHITE ? "BottomRight" : "TopLeft"
+        return color === Color.WHITE ? "TopLeft" : "BottomRight"
     }
 
     positionFree(): Stand {

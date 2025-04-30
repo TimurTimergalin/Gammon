@@ -15,12 +15,16 @@ import {ScoreState} from "./score_state/ScoreState";
 import {useFactoryRef} from "../common/hooks";
 import {DoubleCubeState} from "./double_cube_state/DoubleCubeState";
 import {GameHistoryState} from "./game_history_state/GameHistoryState";
+import {TimerPairState} from "./timer_state/TimerPairState";
 
 type Setter<T> = {
     set(_: T): void
 }
 
 export class GameContext {
+    get timerPairState(): TimerPairState {
+        return this._timerPairState.current!;
+    }
     get gameHistoryState(): GameHistoryState {
         return this._gameHistoryState.current!;
     }
@@ -94,6 +98,7 @@ export class GameContext {
     private _scoreState: RefObject<ScoreState>
     private _doubleCubeState: RefObject<DoubleCubeState>
     private _gameHistoryState: RefObject<GameHistoryState>
+    private _timerPairState: RefObject<TimerPairState>
 
     private _gameController: MutableRefObject<GameController>
     private readonly _gameControllerSetter: Setter<GameController>
@@ -112,7 +117,8 @@ export class GameContext {
                     boardAnimationSwitch,
                     scoreState,
                     doubleCubeState,
-                    gameHistoryState
+                    gameHistoryState,
+        timerPairState
                 }: {
                     controlButtonsState: RefObject<ControlButtonsState>,
                     hoverTracker: RefObject<HoverTracker>,
@@ -127,7 +133,8 @@ export class GameContext {
                     boardAnimationSwitch: RefObject<BoardAnimationSwitch>,
                     scoreState: RefObject<ScoreState>,
                     doubleCubeState: RefObject<DoubleCubeState>,
-                    gameHistoryState: RefObject<GameHistoryState>
+                    gameHistoryState: RefObject<GameHistoryState>,
+                    timerPairState: RefObject<TimerPairState>
                 }
     ) {
         this._controlButtonsState = controlButtonsState;
@@ -144,6 +151,7 @@ export class GameContext {
         this._scoreState = scoreState
         this._doubleCubeState = doubleCubeState
         this._gameHistoryState = gameHistoryState
+        this._timerPairState = timerPairState
 
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const outer = this

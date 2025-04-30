@@ -18,6 +18,8 @@ import {GameHistoryEntry, GameHistoryState} from "../../game_history_state/GameH
 import {HistoryEncoder} from "../../game_rule/HistoryEncoder";
 import {splitMove} from "../../board/move";
 import {DiceRule, randomDice} from "../../game_rule/DiceRule";
+import {TimerManager} from "../TimerManager";
+import {DragState} from "../../drag_state/DragState";
 
 const console = logger("game/game_controller/local")
 
@@ -30,8 +32,9 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
     private gameHistoryState: GameHistoryState
     private historyEncoder: HistoryEncoder<Index>
     private diceRule: DiceRule
+    private timerManager: TimerManager
 
-    constructor({endWindowState, initPlacement, scoreState, gameHistoryState, historyEncoder, diceRule, ...args}: {
+    constructor({endWindowState, initPlacement, scoreState, gameHistoryState, historyEncoder, diceRule, timerManager, ...args}: {
         board: BoardSynchronizer<Index, Prop>,
         controlButtonsState: ControlButtonsState,
         active: boolean,
@@ -47,7 +50,9 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         doubleCubeState: DoubleCubeState
         gameHistoryState: GameHistoryState
         historyEncoder: HistoryEncoder<Index>,
-        diceRule: DiceRule
+        diceRule: DiceRule,
+        timerManager: TimerManager,
+        dragState: DragState
     }) {
         super(args);
         this.endWindowState = endWindowState
@@ -56,6 +61,7 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         this.gameHistoryState = gameHistoryState
         this.historyEncoder = historyEncoder
         this.diceRule = diceRule
+        this.timerManager = timerManager
     }
 
     private _rollDice(color?: Color) {
@@ -100,6 +106,7 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
             this._rollDice()
             this.inferCurrentPlayer()
             this.calculateDice()
+            this.timerManager.start(this.player)
         } else {
             this.diceState.dice1 = null
             this.diceState.dice2 = null
@@ -166,7 +173,9 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         this.controlButtonsState.turnComplete = false
         this.controlButtonsState.canConcedeGame = false
         this.controlButtonsState.canRollDice = false
+        this._clearDrag()
         this.active = false
+        this.timerManager.stop()
 
         if (winner === Color.WHITE) {
             this.points.white += points
@@ -236,6 +245,7 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
                 this.doubleCubeState.convertedValue
             )
         } else {
+            this.timerManager.switch()
             this.player = oppositeColor(this.player)
             this.newTurn(false)
         }
@@ -243,6 +253,7 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
 
     swapBoard(): void {
         this._swapBoard()
+        this.timerManager.swap()
     }
 
     rollDice(): void {
@@ -271,7 +282,11 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         )
     }
 
-    protected _canConcedeGame(): boolean {
+    onTimeEnd(): void {
+        this.finishGame(oppositeColor(this.player), this.doubleCubeState.convertedValue, "Время вышло")
+    }
+
+    _canConcedeGame(): boolean {
         return (this.player === Color.WHITE && this.doubleCubeState.state === "offered_to_white") ||
             (this.player === Color.BLACK && this.doubleCubeState.state === "offered_to_black") ||
             (this.rules.canConcedePrematurely(this.board.ruleBoard, this.player) &&

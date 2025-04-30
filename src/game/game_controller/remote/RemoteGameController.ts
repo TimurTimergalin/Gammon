@@ -19,6 +19,7 @@ import {ScoreState} from "../../score_state/ScoreState";
 import {DoubleCubeState} from "../../double_cube_state/DoubleCubeState";
 import {GameHistoryState} from "../../game_history_state/GameHistoryState";
 import {HistoryEncoder} from "../../game_rule/HistoryEncoder";
+import {DragState} from "../../drag_state/DragState";
 
 const console = logger("game/game_controller/remote")
 
@@ -72,7 +73,8 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         scoreState: ScoreState,
         doubleCubeState: DoubleCubeState,
         gameHistoryState: GameHistoryState,
-        historyEncoder: HistoryEncoder<Index>
+        historyEncoder: HistoryEncoder<Index>,
+        dragState: DragState
     }) {
         const active = player === userPlayer
         super({...base, active: active});
@@ -169,6 +171,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
     onMovesMade = (moves: Move<Index>[]) => {
         // const merged = mergeMoves(moves)
         // merged.forEach(this.board.performMoveLogical)
+        this._clearDrag()
 
         this.gameHistoryState.add(
             {
@@ -252,6 +255,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
     };
 
     onEnd = (winner: Color, newConfig: Config<Index, Prop> | undefined, points: { white: number, black: number }) => {
+        this._clearDrag()
         this.active = false
         this.scoreState.white = points.white
         this.scoreState.black = points.black

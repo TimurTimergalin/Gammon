@@ -8,6 +8,7 @@ import {BackgammonLabelMapper} from "./LabelMapper";
 import {BackgammonDoubleCubePositionMapper} from "./DoubleCubePositionMapper";
 import {BackgammonHistoryEncoder} from "./HistoryEncoder";
 import {BackgammonDiceRule} from "./DiceRule";
+import {BackgammonTimeControlTable} from "./TimeControlTable";
 
 export const backgammonRuleSet: RuleSet<BackgammonIndex, BackgammonProp> = {
     indexMapperFactory: (color) => new BackgammonIndexMapper(color),
@@ -17,5 +18,6 @@ export const backgammonRuleSet: RuleSet<BackgammonIndex, BackgammonProp> = {
     rules: new BackgammonRules(),
     doubleCubePositionMapperFactory: (color) => new BackgammonDoubleCubePositionMapper(color),
     historyEncoder: new BackgammonHistoryEncoder(),
-    diceRule: new BackgammonDiceRule()
+    diceRule: new BackgammonDiceRule(),
+    timeControlTable: new BackgammonTimeControlTable()
 }

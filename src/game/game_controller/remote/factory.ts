@@ -109,7 +109,8 @@ async function remoteGameInitInner<RemoteConfig, Index, Prop, RemoteMove>(
         scoreState: gameContext.scoreState,
         doubleCubeState: gameContext.doubleCubeState,
         gameHistoryState: gameContext.gameHistoryState,
-        historyEncoder: ruleSet.historyEncoder
+        historyEncoder: ruleSet.historyEncoder,
+        dragState: gameContext.dragState
     })
 
     gameContext.labelState.labelMapper = ruleSet.labelMapperFactory(config.userPlayer)

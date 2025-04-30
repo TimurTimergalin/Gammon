@@ -8,6 +8,7 @@ import {NardeRules} from "./Rules";
 import {NardeDoubleCubePositionMapper} from "./DoubleCubePositionMapper";
 import {NardeHistoryEncoder} from "./HistoryEncoder";
 import {NardeDiceRule} from "./DiceRule";
+import {NardeTimeControlTable} from "./TimeControlTable";
 
 export const nardeRuleSet: RuleSet<NardeIndex, NardeProp> = {
     indexMapperFactory: (color) => new NardeIndexMapper(color),
@@ -17,5 +18,6 @@ export const nardeRuleSet: RuleSet<NardeIndex, NardeProp> = {
     rules: new NardeRules(),
     doubleCubePositionMapperFactory: (color) => new NardeDoubleCubePositionMapper(color),
     historyEncoder: new NardeHistoryEncoder(),
-    diceRule: new NardeDiceRule()
+    diceRule: new NardeDiceRule(),
+    timeControlTable: new NardeTimeControlTable()
 }

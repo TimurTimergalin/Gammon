@@ -78,7 +78,7 @@ const InnerRemoteGameWindow = observer(<RemoteConfig, Index, Prop, RemoteMove>(
         <GameAndControlPanelContainer>
             <div style={{width: "100%", height: "100%", position: "relative"}}>
                 {gameLoaded &&
-                    <GamePart displayButtons={true} player1={player1} player2={player2}>
+                    <GamePart displayControls={true} player1={player1} player2={player2}>
                         <GameView/>
                     </GamePart>
                 }
