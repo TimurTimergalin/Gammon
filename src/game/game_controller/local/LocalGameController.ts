@@ -143,6 +143,7 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
 
     newGame() {
         this.gameHistoryState.clear()
+        this.timerManager.reset()
         this.boardAnimationSwitch.withTurnedOff(() => {
                 this.board.updateLogical(this.initPlacement())
                 this.active = true

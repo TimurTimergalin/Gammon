@@ -4,10 +4,16 @@ import {Color} from "../../common/color";
 export class TimerManager {
     private timerPairState: TimerPairState
     private readonly increment: number
+    private readonly time: number
 
-    constructor(timerPairState: TimerPairState, incrementMs: number) {
+    constructor({timerPairState, timeMs, incrementMs}: {
+        timerPairState: TimerPairState,
+        timeMs: number,
+        incrementMs: number
+    }) {
         this.timerPairState = timerPairState;
         this.increment = incrementMs;
+        this.time = timeMs
     }
 
     start(color: Color) {
@@ -36,6 +42,13 @@ export class TimerManager {
     stop() {
         this.timerPairState.timer1.stop()
         this.timerPairState.timer2.stop()
+    }
+
+    reset() {
+        this.timerPairState.timer1.stop()
+        this.timerPairState.timer1.set(this.time)
+        this.timerPairState.timer2.stop()
+        this.timerPairState.timer2.set(this.time)
     }
 
     update(newTime: number, color: Color) {

@@ -24,12 +24,14 @@ export function localGameInit<Index, Prop>(
     )
 
     const timeControl = ruleSet.timeControlTable.getTimeControl({pointsUntil, blitz})
-    gameContext.timerPairState.timer1.set(timeControl.timeMs)
-    gameContext.timerPairState.timer2.set(timeControl.timeMs)
     gameContext.timerPairState.timer1.owner = Color.BLACK
     gameContext.timerPairState.timer2.owner = Color.WHITE
 
-    const timerManager = new TimerManager(gameContext.timerPairState, timeControl.incrementMs)
+    const timerManager = new TimerManager({
+        timerPairState: gameContext.timerPairState,
+        incrementMs: timeControl.incrementMs,
+        timeMs: timeControl.timeMs
+    })
 
     const controller = new LocalGameController({
         board: board,
