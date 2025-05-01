@@ -101,3 +101,14 @@ export function useFetch(): [FetchType, (() => Promise<void>)[]] {
         }, []
     ), cleanupsRef.current]
 }
+
+export function useWindowSize() {
+    const sizeGetter = () => ({width: window.innerWidth, height: window.innerHeight})
+    const [windowSize, setWindowSize] = useState(sizeGetter())
+    useEffect(() => {
+        const callback = () => setWindowSize(sizeGetter())
+        window.addEventListener("resize", callback)
+        return () => window.removeEventListener("resize", callback)
+    }, [])
+    return windowSize
+}
