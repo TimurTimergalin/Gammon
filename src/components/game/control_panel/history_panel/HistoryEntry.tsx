@@ -69,10 +69,10 @@ const PlainGameEndEntry = (
     )
 }
 
-const GameEndEntry = styled(PlainGameEndEntry)`
+const GameEndEntry = styled(PlainGameEndEntry)<{row?: boolean}>`
     & {
         display: flex;
-        flex-direction: column;
+        flex-direction: ${({row}) => row ? "row" : "column"};
         align-items: center;
         background-color: #a8a8a8;
     }
@@ -87,9 +87,10 @@ const GameEndEntry = styled(PlainGameEndEntry)`
 `
 
 
-const PlainHistoryEntry = observer(function PlainHistoryEntry({entry, className}: {
+const PlainHistoryEntry = observer(function PlainHistoryEntry({entry, className, row}: {
     entry: GameHistoryEntry,
-    className?: string
+    className?: string,
+    row?: boolean
 }) {
     if (entry === undefined) {
         return <></>
@@ -106,7 +107,7 @@ const PlainHistoryEntry = observer(function PlainHistoryEntry({entry, className}
                 entry.type === "move" ? <MoveEntry {...entry}/> :
                     entry.type === "offer_double" ? <OfferDoubleEntry {...entry}/> :
                         entry.type === "accept_double" ? <AcceptDoubleEntry/> :
-                            <GameEndEntry {...entry} />
+                            <GameEndEntry {...entry} row={row} />
             }
         </div>
     )

@@ -3,12 +3,12 @@ import {useSearchParams} from "react-router";
 import {useEffect, useMemo} from "react";
 import {localGameInit} from "../../../../game/game_controller/local/factory";
 import {PlayerState} from "../../../../game/player_info/PlayerState";
-import {GameAndControlPanelContainer} from "../../../../components/game_page/GameAndControlPanelContainer";
-import {GamePart} from "../../../../components/game_page/GamePart";
+import {GameAndControlPanelContainer} from "../../../../components/game_page/old/GameAndControlPanelContainer";
+import {GamePart} from "../../../../components/game_page/old/GamePart";
 import GameView from "../../../../components/game/GameView";
 import {EndWindow} from "../../../../components/game/end_window/EndWindow";
 import {LocalPlayEndWindowContent} from "./LocalPlayEndWindowContent";
-import {ControlPanel} from "../../../../components/game/control_panel/ControlPanel";
+import {NormalControlPanel} from "../../../../components/game/control_panel/ControlPanel";
 import {RuleSet} from "../../../../game/game_rule/RuleSet";
 import {GameContextHolder} from "../../../../components/game/GameContextHolder";
 
@@ -57,7 +57,7 @@ const InnerLocalGamePage = <Index, Prop>({ruleset}: LocalGameWindowProps<Index, 
                     <LocalPlayEndWindowContent/>
                 </EndWindow>
             </div>
-            <ControlPanel/>
+            <NormalControlPanel/>
         </GameAndControlPanelContainer>
     )
 }

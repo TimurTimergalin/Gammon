@@ -3,11 +3,11 @@ import {RemoteSet} from "../../../game/game_rule/RemoteSet";
 import {useFullGameContext} from "../../../game/GameContext";
 import {useEffect, useState} from "react";
 import {remoteGameInit} from "../../../game/game_controller/remote/factory";
-import {GameAndControlPanelContainer} from "../../../components/game_page/GameAndControlPanelContainer";
+import {GameAndControlPanelContainer} from "../../../components/game_page/old/GameAndControlPanelContainer";
 import GameView from "../../../components/game/GameView";
-import {ControlPanel} from "../../../components/game/control_panel/ControlPanel";
+import {NormalControlPanel} from "../../../components/game/control_panel/ControlPanel";
 import {GameContextHolder} from "../../../components/game/GameContextHolder";
-import {GamePart} from "../../../components/game_page/GamePart";
+import {GamePart} from "../../../components/game_page/old/GamePart";
 import {logger} from "../../../logging/main";
 import {backgammonRuleSet} from "../../../game/game_rule/backgammon/RuleSet";
 import {backgammonRemoteSetV1} from "../../../game/game_rule/backgammon/remote_v1/RemoteSet";
@@ -86,7 +86,7 @@ const InnerRemoteGameWindow = observer(<RemoteConfig, Index, Prop, RemoteMove>(
                     <RemotePlayWindowContent/>
                 </EndWindow>
             </div>
-            <ControlPanel/>
+            <NormalControlPanel/>
         </GameAndControlPanelContainer>
     )
 })

@@ -26,4 +26,4 @@ export const GamePageAdapter = ({children}: {children?: ReactNode | ReactNode[]}
 
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const useGamePageLayout = () => useContext(GamePageLayoutContext)
+export const useGamePageLayout = () => useContext(GamePageLayoutContext)!

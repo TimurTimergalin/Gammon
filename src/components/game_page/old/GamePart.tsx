@@ -1,11 +1,11 @@
-import {PlayerState} from "../../game/player_info/PlayerState";
-import {useGameContext} from "../../game/GameContext";
+import {PlayerState} from "../../../game/player_info/PlayerState";
+import {useGameContext} from "../../../game/GameContext";
 import {CSSProperties, ReactNode, useEffect} from "react";
-import {PlayerIcon} from "../game/players/PlayerIcon";
-import {ButtonPanel} from "../game/buttons/ButtonPanel";
+import {PlayerIcon} from "../../game/players/PlayerIcon";
+import {ButtonPanel} from "../../game/buttons/ButtonPanel";
 import {observer} from "mobx-react-lite";
-import {ImgCacheProvider} from "../game/img_cache/provider";
-import {Timer} from "../game/timer/Timer";
+import {ImgCacheProvider} from "../../game/img_cache/provider";
+import {Timer} from "../../game/timer/Timer";
 
 export const GamePart = observer(function GamePart(
     {player1, player2, children, displayControls = false, displayTimer = false}: {

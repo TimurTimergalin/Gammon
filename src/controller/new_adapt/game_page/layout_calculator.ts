@@ -13,6 +13,24 @@ const minBoardHeight = 40 / pieceWidth * boardHeight
 
 export type GamePageLayout = [SideBarLayoutMode, HistoryPanelLayoutMode, ControlsLayoutMode]
 
+export function getWidthTaken([sb, h, c]: GamePageLayout) {
+    return (
+        2 * mandatoryMargin +
+        getSideBarSpaceTaken(sb).width +
+        getHistoryPanelSpaceTaken(h).width  +
+        getControlsSpaceTaken(c).width
+    )
+}
+
+export function getHeightTaken([sb, h, c]: GamePageLayout) {
+    return (
+        mandatoryMargin +
+        getSideBarSpaceTaken(sb).height +
+        getHistoryPanelSpaceTaken(h).height +
+        getControlsSpaceTaken(c).height
+    )
+}
+
 class GamePageLayoutTreeNode {
     sideBar: SideBarLayoutMode
     history: HistoryPanelLayoutMode
@@ -35,17 +53,11 @@ class GamePageLayoutTreeNode {
     }
 
     get widthTaken(): number {
-        return 2 * mandatoryMargin +
-            getHistoryPanelSpaceTaken(this.history).width +
-            getSideBarSpaceTaken(this.sideBar).width +
-            getControlsSpaceTaken(this.controls).width
+        return getWidthTaken([this.sideBar, this.history, this.controls])
     }
 
     get heightTaken(): number {
-        return mandatoryMargin +
-            getHistoryPanelSpaceTaken(this.history).height +
-            getSideBarSpaceTaken(this.sideBar).height +
-            getControlsSpaceTaken(this.controls).height
+        return getHeightTaken([this.sideBar, this.history, this.controls])
     }
 
     get layout(): GamePageLayout {

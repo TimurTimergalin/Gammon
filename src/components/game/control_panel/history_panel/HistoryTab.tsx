@@ -23,7 +23,7 @@ const Skip = styled(PlainSkip)<{ altBg: boolean }>`
     background-color: ${altBackground};
 `
 
-const PlainHistoryTab = observer(function PlainHistoryTab({className}: { className?: string }) {
+const PlainNormalHistoryTab = observer(function PlainHistoryTab({className}: { className?: string }) {
     const renderedElements: ReactNode[] = []
 
     const tabRef = useRef<HTMLDivElement | null>(null)
@@ -75,11 +75,60 @@ const PlainHistoryTab = observer(function PlainHistoryTab({className}: { classNa
     return <div className={className} ref={tabRef}>{renderedElements}</div>
 })
 
-export const HistoryTab = styled(PlainHistoryTab)`
+export const NormalHistoryTab = styled(PlainNormalHistoryTab)`
     background-color: #ddd;
     display: grid;
     grid-template-columns: auto 1fr 1fr;
     grid-template-rows: repeat(100000, min-content);
     overflow-y: auto;
+    scrollbar-width: none;
+`
+
+const PlainRowHistoryTab = observer(function PlainRowHistoryTab({className}: { className?: string }) {
+    const renderedElements: ReactNode[] = []
+
+    const tabRef = useRef<HTMLDivElement | null>(null)
+    const gameHistoryState = useGameContext("gameHistoryState")
+
+    let lineNumber = 1
+    let newLine = true
+    let key = 0
+
+    if (gameHistoryState.currentGame === undefined) {
+        return <div className={className}></div>
+    }
+
+    const game = gameHistoryState.currentGame!
+
+    if (game.firstToMove === Color.BLACK && gameHistoryState.moves.length > 0) {
+        renderedElements.push(<LineNumberLabel lineNumber={lineNumber++} altBg={false} key={key++}/>)
+        renderedElements.push(<Skip altBg={false} key={key++}/>)
+        newLine = false
+    }
+
+    for (const entry of gameHistoryState.moves) {
+        if (entry.type === "game_end") {
+            newLine = true
+            renderedElements.push(<HistoryEntry entry={entry} altBg={false} row={true} key={key++} />)
+        } else {
+            if (newLine) {
+                renderedElements.push(<LineNumberLabel altBg={false} lineNumber={lineNumber++} key={key++}/>)
+            }
+            renderedElements.push(<HistoryEntry entry={entry} altBg={!newLine} />)
+            newLine = !newLine
+        }
+    }
+
+    if (tabRef.current !== null) {
+        tabRef.current.scrollLeft = tabRef.current.scrollWidth
+    }
+
+    return <div className={className} ref={tabRef}>{renderedElements}</div>
+})
+
+export const RowHistoryTab = styled(PlainRowHistoryTab)`
+    background-color: #ddd;
+    display: flex;
+    overflow-x: auto;
     scrollbar-width: none;
 `

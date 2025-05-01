@@ -71,7 +71,7 @@ const PlainButtonsTab = ({className}: { className?: string }) => (
     </div>
 )
 
-export const ButtonsTab = styled(PlainButtonsTab)`
+export const NormalButtonsTab = styled(PlainButtonsTab)`
     & {
         background-color: white;
         border-radius: 0 0 20px 20px;
@@ -85,5 +85,14 @@ export const ButtonsTab = styled(PlainButtonsTab)`
 
     & > :nth-last-child(1) {
         margin-right: 10%;
+    }
+`
+
+export const RowButtonsTab = styled(PlainButtonsTab)`
+    & {
+        background-color: white;
+        border-radius: 0 5px 5px 0;
+        display: flex;
+        justify-content: space-evenly;
     }
 `

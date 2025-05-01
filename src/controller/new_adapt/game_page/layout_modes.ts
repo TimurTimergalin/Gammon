@@ -7,7 +7,7 @@ export type ControlsLayoutMode = "Normal" | "Right"
 export function getHistoryPanelSpaceTaken(mode: HistoryPanelLayoutMode): SpaceTaken {
     switch (mode) {
         case "Normal":
-            return wh(310, 0)
+            return wh(290, 0)
         case "Down":
             return wh(0, 65.2)
     }

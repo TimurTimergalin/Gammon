@@ -46,9 +46,15 @@ const PlainScoreTab = observer(function PlainScoreTab({className}: { className?:
         </div>
     )
 })
-export const ScoreTab = styled(PlainScoreTab)`
+export const NormalScoreTab = styled(PlainScoreTab)`
     & {
         border-radius: 20px 20px 0 0;
         background-color: #a8a8a8;
+    }
+`
+
+export const RowScoreTab = styled(PlainScoreTab)`
+    & {
+        border-radius: 5px 0 0 5px;
     }
 `
