@@ -1,7 +1,7 @@
-import {CSSProperties} from "react";
 import {observer} from "mobx-react-lite";
-import {useScreenSpecs} from "../../controller/adapt/ScreenSpecs";
+import {useScreenSpecs} from "../../../controller/adapt/ScreenSpecs";
 import {useNavigate} from "react-router";
+import {CSSProperties} from "react";
 
 export const Logo = observer(function Logo() {
     const screenSpecs = useScreenSpecs()
@@ -17,7 +17,12 @@ export const Logo = observer(function Logo() {
 
     const verticalMargin = 20
 
-    const containerStyle: CSSProperties = {display: "flex", marginTop: verticalMargin, marginBottom: verticalMargin, cursor: "pointer"};
+    const containerStyle: CSSProperties = {
+        display: "flex",
+        marginTop: verticalMargin,
+        marginBottom: verticalMargin,
+        cursor: "pointer"
+    };
     return (
         <div style={containerStyle}>
             <img src={iconSrc} alt={"logo"} style={imagStyle} onClick={() => navigate("/")}/>

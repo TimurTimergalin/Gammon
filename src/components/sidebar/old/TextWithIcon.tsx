@@ -1,10 +1,11 @@
-import {CSSProperties, ReactNode} from "react";
-import {textHeight} from "./size_constants";
-import {useScreenSpecs} from "../../controller/adapt/ScreenSpecs";
 import {observer} from "mobx-react-lite";
-import styled from "styled-components";
+import {CSSProperties, ReactNode} from "react";
+import {useScreenSpecs} from "../../../controller/adapt/ScreenSpecs";
 import {useNavigate} from "react-router";
-import {fontFamily} from "../../common/font";
+import {textHeight} from "../size_constants";
+import {fontFamily} from "../../../common/font";
+import styled from "styled-components";
+import {iconStyle} from "../icon_style";
 
 const PlainTextWithIcon = observer(function TextWithIcon({text, children, className, navigateTo}: {
     text: string,
@@ -58,20 +59,6 @@ const PlainTextWithIcon = observer(function TextWithIcon({text, children, classN
         </div>
     )
 })
-
 export const TextWithIcon = styled(PlainTextWithIcon)`
-    & {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        height: ${() => textHeight}px;
-        padding-left: 15%;
-        padding-top: 7%;
-        padding-bottom: 7%;
-        align-self: stretch;
-    }
-    
-    &:hover {
-        background-color: #332c26;
-    }
+    ${iconStyle}
 `

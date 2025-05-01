@@ -3,11 +3,10 @@ import {
     ControlsLayoutMode,
     getControlsSpaceTaken,
     getHistoryPanelSpaceTaken,
-    getSideBarSpaceTaken,
     HistoryPanelLayoutMode,
-    mandatoryMargin,
-    SideBarLayoutMode
+    mandatoryMargin
 } from "./layout_modes";
+import {getSideBarSpaceTaken, SideBarLayoutMode} from "../side_bar/layout_modes";
 
 const minBoardWidth = 40 / pieceWidth * boardWidth
 const minBoardHeight = 40 / pieceWidth * boardHeight
