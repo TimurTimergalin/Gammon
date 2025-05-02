@@ -1,7 +1,7 @@
 import {useNavigate} from "react-router";
 import {CSSProperties} from "react";
 
-export const NewLogo = ({iconSrc}: { iconSrc: string }) => {
+export const Logo = ({iconSrc}: { iconSrc: string }) => {
     const navigate = useNavigate()
 
     const imgStyle: CSSProperties = {

@@ -1,9 +1,9 @@
-import {MenuSideBarLayoutProvider} from "../components/new_adapt/MenuSideBarLayoutProvider";
 import {Outlet} from "react-router";
-import {NewSideBar} from "../components/sidebar/new/SideBar";
+import {SideBar} from "../components/sidebar/SideBar";
 import {observer} from "mobx-react-lite";
-import {useSideBarLayout} from "../components/new_adapt/SideBarContext";
 import {CSSProperties} from "react";
+import {useSideBarLayout} from "../components/adapt/SideBarContext";
+import {MenuSideBarLayoutProvider} from "../components/adapt/MenuSideBarLayoutProvider";
 
 
 const SideBarPage = observer(function SideBarPage() {
@@ -18,7 +18,7 @@ const SideBarPage = observer(function SideBarPage() {
 
     return (
         <div style={containerStyle}>
-            <NewSideBar />
+            <SideBar />
             <Outlet />
         </div>
     )

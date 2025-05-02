@@ -1,10 +1,10 @@
 import {createContext, ReactNode, useContext, useEffect, useRef} from "react";
-import {PlayMenuLayoutState} from "../../controller/new_adapt/menu/play/layout_state";
+import {PlayMenuLayoutState} from "../../controller/adapt/play/layout_state";
 import {useWindowSize} from "../../common/hooks";
 import {observer} from "mobx-react-lite";
 import {useSideBarLayout} from "./SideBarContext";
-import {getSideBarSpaceTaken} from "../../controller/new_adapt/side_bar/layout_modes";
-import {getPlayMenuBoardLayoutMode} from "../../controller/new_adapt/menu/play/layout_calculator";
+import {getSideBarSpaceTaken} from "../../controller/adapt/side_bar/layout_modes";
+import {getPlayMenuBoardLayoutMode} from "../../controller/adapt/play/layout_calculator";
 
 const PlayMenuLayoutContext = createContext<PlayMenuLayoutState | null>(null)
 

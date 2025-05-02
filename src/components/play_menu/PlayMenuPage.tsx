@@ -1,16 +1,16 @@
 import {observer} from "mobx-react-lite";
-import {usePlayMenuLayout} from "../../new_adapt/PlayMenuLayoutProvider";
 import {CSSProperties} from "react";
-import {useAuthContext} from "../../../controller/auth_status/context";
-import {imageUri} from "../../../requests/paths";
-import {PlayerIcon} from "../../game/players/PlayerIcon";
-import GameView from "../../game/GameView";
-import {ControlPanel} from "../control_panel/ControlPanel";
-import {RemoteGameTab} from "../control_panel/RemoteGameTab";
-import {LocalGameTab} from "../control_panel/LocalGameTab";
-import {GameContextHolder} from "../../game/GameContextHolder";
+import {useAuthContext} from "../../controller/auth_status/context";
+import {imageUri} from "../../requests/paths";
+import {PlayerIcon} from "../game/players/PlayerIcon";
+import GameView from "../game/GameView";
+import {ControlPanel} from "./control_panel/ControlPanel";
+import {RemoteGameTab} from "./control_panel/RemoteGameTab";
+import {LocalGameTab} from "./control_panel/LocalGameTab";
+import {GameContextHolder} from "../game/GameContextHolder";
+import {usePlayMenuLayout} from "../adapt/PlayMenuLayoutProvider";
 
-export const NewPlayMenuPage = observer(function PlayMenuPage() {
+export const PlayMenuPage = observer(function PlayMenuPage() {
     const layout = usePlayMenuLayout().mode
     const authStatus = useAuthContext()
 

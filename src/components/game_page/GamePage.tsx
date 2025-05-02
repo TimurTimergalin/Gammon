@@ -1,16 +1,16 @@
 import {observer} from "mobx-react-lite";
-import {useGamePageLayout} from "../../new_adapt/GamePageLayoutProvider";
 import {CSSProperties, ReactNode} from "react";
-import {useGameContext} from "../../../game/GameContext";
-import {useWindowSize} from "../../../common/hooks";
-import {boardHeight, boardWidth} from "../../game/dimensions/board_size_constants";
-import {getHeightTaken, getWidthTaken} from "../../../controller/new_adapt/game_page/layout_calculator";
-import {PlayerIcon} from "../../game/players/PlayerIcon";
-import {ColumnTimer, NormalTimer} from "../../game/timer/Timer";
-import {ButtonPanel} from "../../game/buttons/ButtonPanel";
-import {NewSideBar} from "../../sidebar/new/SideBar";
-import {ControlPanel} from "../../game/control_panel/ControlPanel";
-import {ImgCacheProvider} from "../../game/img_cache/provider";
+import {useGameContext} from "../../game/GameContext";
+import {useWindowSize} from "../../common/hooks";
+import {boardHeight, boardWidth} from "../game/dimensions/board_size_constants";
+import {getHeightTaken, getWidthTaken} from "../../controller/adapt/game_page/layout_calculator";
+import {PlayerIcon} from "../game/players/PlayerIcon";
+import {ColumnTimer, NormalTimer} from "../game/timer/Timer";
+import {ButtonPanel} from "../game/buttons/ButtonPanel";
+import {SideBar} from "../sidebar/SideBar";
+import {ControlPanel} from "../game/control_panel/ControlPanel";
+import {ImgCacheProvider} from "../game/img_cache/provider";
+import {useGamePageLayout} from "../adapt/GamePageLayoutProvider";
 
 export const GamePage = observer(function GamePage({displayTimer = false, displayControls = false, children}: {
     displayTimer?: boolean,
@@ -160,7 +160,7 @@ export const GamePage = observer(function GamePage({displayTimer = false, displa
     return (
         <ImgCacheProvider>
             <div style={layer1Style}>
-                <NewSideBar/>
+                <SideBar/>
                 <div style={layer2Style}>
                     {gamePart}
                     <div style={historyContainerStyle}>

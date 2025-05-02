@@ -1,7 +1,7 @@
 import {createContext, ReactNode, useContext, useEffect, useRef} from "react";
-import {GamePageLayoutState, GamePageSideBarLayoutState} from "../../controller/new_adapt/game_page/layout_state";
+import {GamePageLayoutState, GamePageSideBarLayoutState} from "../../controller/adapt/game_page/layout_state";
 import {useWindowSize} from "../../common/hooks";
-import {gamePageLayoutTree, getGamePageLayout} from "../../controller/new_adapt/game_page/layout_calculator";
+import {gamePageLayoutTree, getGamePageLayout} from "../../controller/adapt/game_page/layout_calculator";
 import {SideBarLayoutContextProvider} from "./SideBarContext";
 
 const GamePageLayoutContext = createContext<GamePageLayoutState | null>(null)

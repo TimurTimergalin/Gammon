@@ -1,12 +1,12 @@
 import {observer} from "mobx-react-lite";
-import {useAuthContext} from "../../../controller/auth_status/context";
+import {useAuthContext} from "../../controller/auth_status/context";
 import {CSSProperties, useCallback, useState} from "react";
-import {NewLogo} from "./Logo";
-import {useSideBarLayout} from "../../new_adapt/SideBarContext";
+import {Logo} from "./Logo";
 import {SideBarIcon} from "./SideBarIcon";
-import {Dice} from "../../game/dice_layer/dice";
-import {Color} from "../../../common/color";
-import {LayerStatus} from "../../game/dice_layer/LayerStatus";
+import {Dice} from "../game/dice_layer/dice";
+import {Color} from "../../common/color";
+import {LayerStatus} from "../game/dice_layer/LayerStatus";
+import {useSideBarLayout} from "../adapt/SideBarContext";
 
 const sideBarBgColor = "#252323"
 const PlayIcon = () => (
@@ -47,7 +47,7 @@ const NormalSideBar = observer(function NormalSideBar() {
 
     return (
         <div style={style}>
-            <NewLogo iconSrc={"/expanded_icon.svg"}/>
+            <Logo iconSrc={"/expanded_icon.svg"}/>
             <PlayIcon/>
             <ProfileIcon signedIn={authStatus.id !== null}/>
         </div>
@@ -67,7 +67,7 @@ const DiminishedSideBar = observer(function DiminishedSideBar() {
     }
 
     return <div style={style}>
-        <NewLogo iconSrc={"/collapsed_icon.svg"}/>
+        <Logo iconSrc={"/collapsed_icon.svg"}/>
         <PlayIcon/>
         <ProfileIcon signedIn={authStatus.id !== null}/>
     </div>
@@ -118,7 +118,7 @@ const CollapsedSideBar = observer(function CollapsedSideBar() {
     return (
         <>
             <div style={barStyle}>
-                <NewLogo iconSrc={"/expanded_icon.svg"}/>
+                <Logo iconSrc={"/expanded_icon.svg"}/>
                 <PlayIcon/>
                 <ProfileIcon signedIn={authStatus.id !== null}/>
             </div>
@@ -127,7 +127,7 @@ const CollapsedSideBar = observer(function CollapsedSideBar() {
         </>
     )
 })
-export const NewSideBar = observer(function NewSideBar() {
+export const SideBar = observer(function NewSideBar() {
     const {mode} = useSideBarLayout()
 
     switch (mode) {

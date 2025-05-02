@@ -3,7 +3,7 @@ import {NormalScoreTab, RowScoreTab} from "./ScoreTab";
 import {NormalHistoryTab, RowHistoryTab} from "./history_panel/HistoryTab";
 import {NormalButtonsTab, RowButtonsTab} from "./ButtonsTab";
 import {observer} from "mobx-react-lite";
-import {useGamePageLayout} from "../../new_adapt/GamePageLayoutProvider";
+import {useGamePageLayout} from "../../adapt/GamePageLayoutProvider";
 
 const PlainNormalControlPanel = ({className}: { className?: string }) => {
     return (

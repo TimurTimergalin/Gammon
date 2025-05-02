@@ -1,5 +1,5 @@
-import {GamePageLayoutProvider} from "../components/new_adapt/GamePageLayoutProvider";
 import {Outlet} from "react-router";
+import {GamePageLayoutProvider} from "../components/adapt/GamePageLayoutProvider";
 
 const Adapter = () => (
     <GamePageLayoutProvider>

@@ -1,5 +1,5 @@
 import {createContext, useContext} from "react";
-import {SideBarLayoutState} from "../../controller/new_adapt/side_bar/layout_state";
+import {SideBarLayoutState} from "../../controller/adapt/side_bar/layout_state";
 
 const SideBarLayoutContext = createContext<SideBarLayoutState | null>(null)
 

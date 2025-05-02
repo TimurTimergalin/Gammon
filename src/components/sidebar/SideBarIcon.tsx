@@ -1,11 +1,11 @@
 import {useNavigate} from "react-router";
-import {textHeight} from "../size_constants";
+import {textHeight} from "./size_constants";
 import {CSSProperties, ReactNode} from "react";
-import {fontFamily} from "../../../common/font";
+import {fontFamily} from "../../common/font";
 import {observer} from "mobx-react-lite";
-import {useSideBarLayout} from "../../new_adapt/SideBarContext";
 import styled from "styled-components";
-import {iconStyle} from "../icon_style";
+import {iconStyle} from "./icon_style";
+import {useSideBarLayout} from "../adapt/SideBarContext";
 
 type SideBarIconProps = {
     text: string,
