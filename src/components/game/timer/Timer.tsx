@@ -69,7 +69,8 @@ export const ColumnTimer = observer(function ColumnTimer({index}: { index: 0 | 1
     const centiseconds = Math.floor((timerState.timeMs - minutes * 1000 * 60 - seconds * 1000) / 10)
 
     const linesStyle: CSSProperties = {
-        margin: 0
+        margin: 0,
+        textAlign: "right",
     }
 
     const minutesLine = <p style={linesStyle}>{minutes}</p>
@@ -84,24 +85,24 @@ export const ColumnTimer = observer(function ColumnTimer({index}: { index: 0 | 1
 
     const containerStyle: CSSProperties = {
         position: "relative",
-        height: "fit-content",
-        width: 50
+        height: 95,
+        width: 50,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: bgColor,
+        borderRadius: 5,
     }
 
     const timerStyle: CSSProperties = {
-        backgroundColor: bgColor,
         color: textColor,
         paddingTop: 5,
         paddingBottom: 5,
-        borderRadius: 5,
-        width: "100%",
+        width: "fit-content",
         fontSize: 26,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        height: 85,
-        textAlign: "right",
+        display: "grid",
+        gridTemplateColumns: "1fr",
+        height: "fit-content",
         lineHeight: "1em"
     }
 

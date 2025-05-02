@@ -78,6 +78,7 @@ const PlainRemotePlayEndWindowContent = ({className}: {className?: string}) => {
     )
 }
 
-export const RemotePlayWindowContent = styled(PlainRemotePlayEndWindowContent)`
+export const RemotePlayEndWindowContent = styled(PlainRemotePlayEndWindowContent)`
     ${endWindowContentStyle}
 `
+
