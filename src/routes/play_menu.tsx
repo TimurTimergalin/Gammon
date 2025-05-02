@@ -1,4 +1,4 @@
-import {GameAndControlPanelContainer} from "../components/play_menu/GameAndControlPanelContainer";
+import {GameAndControlPanelContainer} from "../components/play_menu/old/GameAndControlPanelContainer";
 import GameView from "../components/game/GameView";
 import {GameContextHolder} from "../components/game/GameContextHolder";
 import {GamePart} from "../components/game_page/old/GamePart";

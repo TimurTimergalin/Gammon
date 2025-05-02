@@ -20,6 +20,9 @@ export default [
             route("/local-play/new/backgammon", "./routes/play/local/new_backgammon.tsx"),
             route("/local-play/new/narde", "./routes/play/local/new_narde.tsx"),
             route("/play/new/:roomId", "./routes/play/remote/play_new.tsx")
+        ]),
+        layout("./layouts/menu_sidebar_adapt.tsx", [
+            route("/play/new", "./routes/new_play_menu.tsx")
         ])
     ]),
 ] satisfies RouteConfig;
