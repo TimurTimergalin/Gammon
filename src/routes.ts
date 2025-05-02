@@ -10,10 +10,10 @@ export default [
                 route("/local-play/narde", "./routes/play/local/narde.tsx"),
                 route("/play/:roomId", "./routes/play/remote/play.tsx"),
                 route("*?", "./catchall.tsx"),
-                layout("./layouts/auth.tsx", [
-                    route("/sign-in", "./routes/auth/sign_in.tsx"),
-                    route("/sign-up", "./routes/auth/sign_up.tsx")
-                ])
+                // layout("./layouts/auth.tsx", [
+                //     route("/sign-in", "./routes/auth/sign_in.tsx"),
+                //     route("/sign-up", "./routes/auth/sign_up.tsx")
+                // ])
             ])
         ]),
         layout("./layouts/game_page_adapt.tsx", [
@@ -22,7 +22,11 @@ export default [
             route("/play/new/:roomId", "./routes/play/remote/play_new.tsx")
         ]),
         layout("./layouts/menu_sidebar_adapt.tsx", [
-            route("/play/new", "./routes/new_play_menu.tsx")
+            route("/play/new", "./routes/new_play_menu.tsx"),
+            layout("./layouts/auth.tsx", [
+                    route("/sign-in", "./routes/auth/sign_in.tsx"),
+                    route("/sign-up", "./routes/auth/sign_up.tsx")
+                ])
         ])
     ]),
 ] satisfies RouteConfig;

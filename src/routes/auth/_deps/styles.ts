@@ -6,6 +6,7 @@ export const authFormStyle = css`
     display: flex;
     flex-direction: column;
     width: 30%;
+    min-width: 350px;
     font-size: 15px;
 `
 
