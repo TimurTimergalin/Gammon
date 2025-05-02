@@ -9,6 +9,6 @@ export function getSideBarSpaceTaken(mode: SideBarLayoutMode): SpaceTaken {
         case "Diminished":
             return wh(60, 10)
         case "Collapsed":
-            return wh(0, 30)
+            return wh(0, 42)
     }
 }

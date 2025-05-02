@@ -1,13 +1,13 @@
 import styled from "styled-components";
 import {observer} from "mobx-react-lite";
-import {ReactNode, useRef} from "react";
+import {ReactNode, useEffect, useRef} from "react";
 import {useGameContext} from "../../../../game/GameContext";
 import {Color} from "../../../../common/color";
 import {altBackground} from "./common";
 import {HistoryEntry} from "./HistoryEntry";
 
 const PlainLineNumberLabel = ({lineNumber, className}: { lineNumber: number, className?: string }) => {
-    const text = (lineNumber < 10 ? " " : "") + lineNumber
+    const text = (lineNumber < 10 ? " " : "") + lineNumber + "."
     return <span className={className}>{text}</span>
 }
 
@@ -15,6 +15,8 @@ const LineNumberLabel = styled(PlainLineNumberLabel)<{ altBg: boolean }>`
     white-space: pre;
     background-color: ${altBackground};
     padding-right: 5px;
+    display: flex;
+    align-items: center;
 `
 
 const PlainSkip = ({className}: { className?: string }) => <span className={className}></span>
@@ -33,6 +35,13 @@ const PlainNormalHistoryTab = observer(function PlainHistoryTab({className}: { c
     let altBg = true
     let onLeft = true
     let key = 0
+
+    useEffect(() => {
+        const tab = tabRef.current
+        if (tab !== null) {
+            tab.scrollTop = tab.scrollHeight
+        }
+    });
 
     if (gameHistoryState.currentGame === undefined) {
         return <div className={className}></div>
@@ -68,10 +77,6 @@ const PlainNormalHistoryTab = observer(function PlainHistoryTab({className}: { c
         renderedElements.push(<Skip altBg={altBg} key={key++}/>)
     }
 
-    if (tabRef.current !== null) {
-        tabRef.current.scrollTop = tabRef.current.scrollHeight
-    }
-
     return <div className={className} ref={tabRef}>{renderedElements}</div>
 })
 
@@ -94,6 +99,14 @@ const PlainRowHistoryTab = observer(function PlainRowHistoryTab({className}: { c
     let newLine = true
     let key = 0
 
+    useEffect(() => {
+        const tab = tabRef.current
+        if (tab !== null) {
+            tab.scrollLeft = tab.scrollWidth
+        }
+    });
+
+
     if (gameHistoryState.currentGame === undefined) {
         return <div className={className}></div>
     }
@@ -114,13 +127,9 @@ const PlainRowHistoryTab = observer(function PlainRowHistoryTab({className}: { c
             if (newLine) {
                 renderedElements.push(<LineNumberLabel altBg={false} lineNumber={lineNumber++} key={key++}/>)
             }
-            renderedElements.push(<HistoryEntry entry={entry} altBg={!newLine} />)
+            renderedElements.push(<HistoryEntry entry={entry} altBg={!newLine} nowrap={true} key={key++} />)
             newLine = !newLine
         }
-    }
-
-    if (tabRef.current !== null) {
-        tabRef.current.scrollLeft = tabRef.current.scrollWidth
     }
 
     return <div className={className} ref={tabRef}>{renderedElements}</div>

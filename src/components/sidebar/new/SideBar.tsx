@@ -106,7 +106,7 @@ const CollapsedSideBar = observer(function CollapsedSideBar() {
         alignSelf: "start",
         marginLeft: 30,
         marginTop: 10,
-        marginBottom: 15
+        marginBottom: 10
     }
 
     const toggleMenuCallback = useCallback(
@@ -122,7 +122,7 @@ const CollapsedSideBar = observer(function CollapsedSideBar() {
                 <PlayIcon/>
                 <ProfileIcon signedIn={authStatus.id !== null}/>
             </div>
-            <img src={"menu_icon.svg"} style={menuIconStyle} alt={"Menu"} onClick={toggleMenuCallback}/>
+            <img src={"/menu_icon.svg"} style={menuIconStyle} alt={"Menu"} onClick={toggleMenuCallback}/>
             <div style={screenStyle} onClick={toggleMenuCallback}/>
         </>
     )

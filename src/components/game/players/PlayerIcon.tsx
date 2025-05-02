@@ -4,14 +4,14 @@ import {imgCacheContext} from "../img_cache/context";
 import {ImgCache} from "../img_cache/ImgCache";
 
 export const PlayerIcon = observer(function PlayerIcon({username, iconSrc}:{
-    username: string,
+    username?: string,
     iconSrc: string
 }) {
     const containerStyle: CSSProperties = {
         padding: "10px",
         display: "flex",
         height: "30px",
-        marginLeft: "10px",
+        width: "30px",
         userSelect: "none"
     }
 
@@ -30,7 +30,7 @@ export const PlayerIcon = observer(function PlayerIcon({username, iconSrc}:{
     const imgProps = {
         src: imgSrc,
         alt: "Icon",
-        style: {backgroundColor: "#252323", padding: "2px"},
+        style: {backgroundColor: "#252323", padding: "2px", width: 30},
         onError: () => {
             setImgSrc(imgCache?.getPlaceholder() ?? ImgCache.placeholder)
         }
@@ -41,7 +41,7 @@ export const PlayerIcon = observer(function PlayerIcon({username, iconSrc}:{
     return (
         <div style={containerStyle}>
             {img}
-            <p style={textStyle}>{username}</p>
+            {username !== undefined && <p style={textStyle}>{username}</p>}
         </div>
     )
 })

@@ -21,7 +21,7 @@ const PlainMoveEntry = (
     )
 }
 
-const MoveEntry = styled(PlainMoveEntry)`
+const MoveEntry = styled(PlainMoveEntry)<{nowrap?: boolean}>`
     & {
         display: flex;
     }
@@ -32,7 +32,7 @@ const MoveEntry = styled(PlainMoveEntry)`
 
     & > :nth-child(2) {
         display: flex;
-        flex-wrap: wrap; 
+        flex-wrap: ${({nowrap}) => nowrap ? "nowrap" : "wrap"}; 
         > *{
             margin-right: 5px;
         }
@@ -87,10 +87,11 @@ const GameEndEntry = styled(PlainGameEndEntry)<{row?: boolean}>`
 `
 
 
-const PlainHistoryEntry = observer(function PlainHistoryEntry({entry, className, row}: {
+const PlainHistoryEntry = observer(function PlainHistoryEntry({entry, className, row, nowrap}: {
     entry: GameHistoryEntry,
     className?: string,
-    row?: boolean
+    row?: boolean,
+    nowrap?: boolean
 }) {
     if (entry === undefined) {
         return <></>
@@ -98,13 +99,15 @@ const PlainHistoryEntry = observer(function PlainHistoryEntry({entry, className,
 
     const additionalStyle: CSSProperties = {
         paddingRight: entry.type === "game_end" ? 0 : 3,
-        gridColumn: entry.type === "game_end" ? "span 3" : "span 1"
+        gridColumn: entry.type === "game_end" ? "span 3" : "span 1",
+        display: "flex",
+        alignItems: "center"
     }
 
     return (
         <div className={className} style={additionalStyle}>
             {
-                entry.type === "move" ? <MoveEntry {...entry}/> :
+                entry.type === "move" ? <MoveEntry {...entry} nowrap={nowrap}/> :
                     entry.type === "offer_double" ? <OfferDoubleEntry {...entry}/> :
                         entry.type === "accept_double" ? <AcceptDoubleEntry/> :
                             <GameEndEntry {...entry} row={row} />

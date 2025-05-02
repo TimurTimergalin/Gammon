@@ -3,13 +3,14 @@ import {
     ControlsLayoutMode,
     getControlsSpaceTaken,
     getHistoryPanelSpaceTaken,
-    HistoryPanelLayoutMode,
-    mandatoryMargin
+    HistoryPanelLayoutMode
 } from "./layout_modes";
 import {getSideBarSpaceTaken, SideBarLayoutMode} from "../side_bar/layout_modes";
 
 const minBoardWidth = 40 / pieceWidth * boardWidth
 const minBoardHeight = 40 / pieceWidth * boardHeight
+const mandatoryMargin = 10
+
 
 export type GamePageLayout = [SideBarLayoutMode, HistoryPanelLayoutMode, ControlsLayoutMode]
 

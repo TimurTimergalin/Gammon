@@ -5,7 +5,7 @@ import {PlayerIcon} from "../../game/players/PlayerIcon";
 import {ButtonPanel} from "../../game/buttons/ButtonPanel";
 import {observer} from "mobx-react-lite";
 import {ImgCacheProvider} from "../../game/img_cache/provider";
-import {Timer} from "../../game/timer/Timer";
+import {NormalTimer} from "../../game/timer/Timer";
 
 export const GamePart = observer(function GamePart(
     {player1, player2, children, displayControls = false, displayTimer = false}: {
@@ -37,7 +37,7 @@ export const GamePart = observer(function GamePart(
                 <PlayerIcon {...playersInfo.player2} />
                 {displayTimer &&
                     <div style={timerContainerStyle}>
-                        <Timer index={0} />
+                        <NormalTimer index={0} />
                     </div>
                 }
             </div>
@@ -46,7 +46,7 @@ export const GamePart = observer(function GamePart(
                 <PlayerIcon {...playersInfo.player1} />
                 {displayTimer &&
                     <div style={timerContainerStyle}>
-                        <Timer index={1}/>
+                        <NormalTimer index={1}/>
                     </div>
                 }
                 {displayControls &&

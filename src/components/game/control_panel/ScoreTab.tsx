@@ -56,5 +56,6 @@ export const NormalScoreTab = styled(PlainScoreTab)`
 export const RowScoreTab = styled(PlainScoreTab)`
     & {
         border-radius: 5px 0 0 5px;
+        background-color: #a8a8a8;
     }
 `

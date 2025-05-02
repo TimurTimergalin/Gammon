@@ -80,6 +80,7 @@ const EndWindowStyle = styled(PlainEndWindow)`
     background-color: white;
     animation: ${windowAppearanceAnimation} 0.3s ease-out;
     pointer-events: auto;
+    z-index: 20;
 `
 
 export const EndWindow = observer(function EndWindow({children}: {children?: ReactNode | ReactNode[]}) {

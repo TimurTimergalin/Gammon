@@ -3,7 +3,7 @@ import {NormalScoreTab, RowScoreTab} from "./ScoreTab";
 import {NormalHistoryTab, RowHistoryTab} from "./history_panel/HistoryTab";
 import {NormalButtonsTab, RowButtonsTab} from "./ButtonsTab";
 import {observer} from "mobx-react-lite";
-import {useGamePageLayout} from "../../new_adapt/GamePageAdapter";
+import {useGamePageLayout} from "../../new_adapt/GamePageLayoutProvider";
 
 const PlainNormalControlPanel = ({className}: { className?: string }) => {
     return (
@@ -61,21 +61,25 @@ const RowControlPanel = styled(PlainRowControlPanel)`
         color: black;
         display: flex;
         flex-direction: row;
+        height: 55.2px;
+        
     }
     
     & > :nth-child(1) {
-        width: 70px;
+        width: 100px;
         height: 100%;
     }
     
     & > :nth-child(2) {
         height: 100%;
         flex: 1;
+        //overflow-x: auto;
+        //scrollbar-width: none;
     }
     
     & > :nth-child(3) {
         height: 100%;
-        width: 70px;
+        width: 100px;
     }
 `
 

@@ -6,7 +6,7 @@ import {SideBarLayoutContextProvider} from "./SideBarContext";
 
 const GamePageLayoutContext = createContext<GamePageLayoutState | null>(null)
 
-export const GamePageAdapter = ({children}: {children?: ReactNode | ReactNode[]}) => {
+export const GamePageLayoutProvider = ({children}: {children?: ReactNode | ReactNode[]}) => {
     const {width, height} = useWindowSize()
     const layoutState = useRef(new GamePageLayoutState())
     const sideBarLayoutState = useRef(new GamePageSideBarLayoutState(layoutState.current))
