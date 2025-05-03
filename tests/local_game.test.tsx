@@ -12,6 +12,7 @@ import {GameController} from "../src/game/game_controller/GameController";
 import {LabelMapper} from "../src/game/game_rule/LabelMapper";
 import {GameContextHolder} from "../src/components/game/GameContextHolder";
 import {act, render} from "@testing-library/react";
+import {TimerManager} from "../src/game/game_controller/TimerManager";
 
 beforeEach(() => {
         window.ResizeObserver = window.ResizeObserver || jest.fn().mockImplementation(() => ({
@@ -63,7 +64,9 @@ const initBackgammonPosition = (gc: GameContext, placement: BackgammonPlacement,
         doubleCubeState: gc.doubleCubeState,
         gameHistoryState: gc.gameHistoryState,
         historyEncoder: backgammonRuleSet.historyEncoder,
-        diceRule: backgammonRuleSet.diceRule
+        diceRule: backgammonRuleSet.diceRule,
+        timerManager: new TimerManager({timerPairState: gc.timerPairState, timeMs: 60 * 1000, incrementMs: 8 * 1000}),
+        dragState: gc.dragState
     })
 
     gc.diceState.dice1 = {
