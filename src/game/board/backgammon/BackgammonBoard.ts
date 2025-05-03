@@ -1,9 +1,7 @@
-import {BackgammonPlacement, BackgammonIndex, BackgammonProp} from "./types";
+import {BackgammonIndex, BackgammonPlacement, BackgammonProp} from "./types";
 import {Color} from "../../../common/color";
 import {Board} from "../Board";
-import {logger} from "../../../logging/main";
 
-const console = logger("game/board/backgammon")
 
 export class BackgammonBoard implements Board<BackgammonIndex, BackgammonProp>{
     constructor(board: BackgammonPlacement) {

@@ -2,9 +2,7 @@ import {Board} from "../Board";
 import {PositionState, stillPiece} from "./types";
 import {Color} from "../../../common/color";
 import {makeAutoObservable} from "mobx";
-import {logger} from "../../../logging/main";
 
-const console = logger("game/board/physical")
 
 export class PhysicalBoard implements Board<number, PositionState> {
     constructor() {

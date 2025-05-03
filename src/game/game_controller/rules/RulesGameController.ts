@@ -7,13 +7,10 @@ import {IndexMapper} from "../../game_rule/IndexMapper";
 import {DiceState} from "../../dice_state/DiceState";
 import {LegalMovesTracker} from "../../legal_moves_tracker/LegalMovesTracker";
 import {LabelState} from "../../label_state/LabelState";
-import {logger} from "../../../logging/main";
 import {BoardSynchronizer} from "../../board/BoardSynchronizer";
 import {BoardAnimationSwitch} from "../../board_animation_switch/BoardAnimationSwitch";
 import {CubeState, DoubleCubeState} from "../../double_cube_state/DoubleCubeState";
 import {DragState} from "../../drag_state/DragState";
-
-const console = logger("game/game_controller/rules")
 
 
 export abstract class RulesGameController<Index, Prop> implements GameController {

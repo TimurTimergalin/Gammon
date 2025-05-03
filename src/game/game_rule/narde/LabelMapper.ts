@@ -1,8 +1,6 @@
-import {logger} from "../../../logging/main";
 import {LabelMapper, Labels} from "../LabelMapper";
 import {Color, oppositeColor} from "../../../common/color";
 
-const console = logger("game/game_rule/narde")
 
 export class NardeLabelMapper implements LabelMapper {
     private readonly player: Color

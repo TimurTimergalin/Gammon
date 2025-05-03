@@ -1,8 +1,5 @@
 import {LabelMapper, Labels} from "../LabelMapper";
 import {Color, oppositeColor} from "../../../common/color";
-import {logger} from "../../../logging/main";
-
-const console = logger("game/game_rule/backgammon")
 
 
 export class BackgammonLabelMapper implements LabelMapper{

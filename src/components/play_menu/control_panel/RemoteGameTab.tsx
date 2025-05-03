@@ -8,9 +8,7 @@ import {logResponseError} from "../../../requests/util";
 import {playUri} from "../../../requests/paths";
 import styled from "styled-components";
 import {firstEntryMargin, playButtonStyle, tabEntryStyle} from "./style";
-import {logger} from "../../../logging/main";
 
-const console = logger("components/play_menu/control_panel")
 
 const AnimateEllipsis = ({children}: { children: string }) => {
     const [numberOfDots, setNumberOfDots] = useState(3)

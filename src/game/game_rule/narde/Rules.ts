@@ -12,12 +12,10 @@ import {
 } from "../../board/narde/types";
 import {Board} from "../../board/Board";
 import {Color, oppositeColor} from "../../../common/color";
-import {logger} from "../../../logging/main";
 import {forceType} from "../../../common/typing";
 import {CompoundMove, Move} from "../../board/move";
 import {NardeBoard} from "../../board/narde/NardeBoard";
 
-const console = logger("game/game_rule/narde")
 
 export class NardeRules implements Rules<NardeIndex, NardeProp> {
     owns(board: Board<NardeIndex, NardeProp>, player: Color, position: NardeIndex): boolean {

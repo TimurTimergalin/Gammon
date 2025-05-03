@@ -1,9 +1,7 @@
 import {DiceStatus} from "./DiceStatus";
 import {makeAutoObservable} from "mobx";
 import {LayerStatus} from "../../components/game/dice_layer/LayerStatus";
-import {logger} from "../../logging/main";
 
-const console = logger("game/dice_state")
 
 export class DiceState {
     get dice1(): DiceStatus | null {

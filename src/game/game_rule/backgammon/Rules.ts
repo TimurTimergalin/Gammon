@@ -1,6 +1,7 @@
 import {
     allIndices,
-    BackgammonCompoundMove, BackgammonIndex,
+    BackgammonCompoundMove,
+    BackgammonIndex,
     BackgammonMove,
     BackgammonProp,
     getBar,
@@ -14,9 +15,6 @@ import {Color, oppositeColor} from "../../../common/color";
 import {BackgammonBoard} from "../../board/backgammon/BackgammonBoard";
 import {Rules} from "../Rules";
 import {Move} from "../../board/move";
-import {logger} from "../../../logging/main";
-
-const console = logger("game/game_rule/backgammon")
 
 
 export class BackgammonRules implements Rules<BackgammonIndex, BackgammonProp> {

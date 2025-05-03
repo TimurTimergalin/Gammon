@@ -1,9 +1,7 @@
-import {logger} from "../../../logging/main";
 import {Board} from "../Board";
 import {NardeIndex, NardePlacement, NardeProp} from "./types";
 import {Color} from "../../../common/color";
 
-const console = logger("game/board/narde")
 
 export class NardeBoard implements Board<NardeIndex, NardeProp> {
     private board: NardePlacement

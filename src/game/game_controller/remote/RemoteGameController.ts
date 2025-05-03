@@ -10,7 +10,6 @@ import {Move, splitMove} from "../../board/move";
 import {LayerStatus} from "../../../components/game/dice_layer/LayerStatus";
 import {moveDuration} from "../../../components/game/pieces_layer/constants";
 import {LabelState} from "../../label_state/LabelState";
-import {logger} from "../../../logging/main";
 import {BoardSynchronizer} from "../../board/BoardSynchronizer";
 import {Config} from "../../game_rule/ConfigParser";
 import {EndWindowState} from "../../end_window_state/EndWindowState";
@@ -21,7 +20,6 @@ import {GameHistoryState} from "../../game_history_state/GameHistoryState";
 import {HistoryEncoder} from "../../game_rule/HistoryEncoder";
 import {DragState} from "../../drag_state/DragState";
 
-const console = logger("game/game_controller/remote")
 
 export class RemoteGameController<Index, Prop> extends RulesGameController<Index, Prop> {
     private connector: RemoteConnector<Index, Prop>

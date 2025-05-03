@@ -3,9 +3,7 @@ import {borderWidth, diceCornerRadius, diceWidth, dotRadius} from "./dice_size_c
 import {LayerStatus} from "./LayerStatus";
 import {observer} from "mobx-react-lite";
 import {useGameContext} from "../../../game/GameContext";
-import {logger} from "../../../logging/main";
 
-const console = logger("components/game/dice_layer")
 
 export function DiceBase({x, y, color}: {
     x: number,

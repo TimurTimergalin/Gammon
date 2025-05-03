@@ -7,7 +7,6 @@ import {DiceState} from "../../dice_state/DiceState";
 import {LegalMovesTracker} from "../../legal_moves_tracker/LegalMovesTracker";
 import {Rules} from "../../game_rule/Rules";
 import {LabelState} from "../../label_state/LabelState";
-import {logger} from "../../../logging/main";
 import {BoardSynchronizer} from "../../board/BoardSynchronizer";
 import {EndWindowState} from "../../end_window_state/EndWindowState";
 import {InitPlacement} from "../../game_rule/InitPlacement";
@@ -20,8 +19,6 @@ import {splitMove} from "../../board/move";
 import {DiceRule, randomDice} from "../../game_rule/DiceRule";
 import {TimerManager} from "../TimerManager";
 import {DragState} from "../../drag_state/DragState";
-
-const console = logger("game/game_controller/local")
 
 
 export class LocalGameController<Index, Prop> extends RulesGameController<Index, Prop> {

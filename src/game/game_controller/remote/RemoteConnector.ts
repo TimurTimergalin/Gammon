@@ -1,6 +1,8 @@
 import {Color} from "../../../common/color";
 import {
-    backgammonAcceptDouble, backgammonConcedeGame, backgammonConcedeMatch,
+    backgammonAcceptDouble,
+    backgammonConcedeGame,
+    backgammonConcedeMatch,
     backgammonFinishTurn,
     backgammonOfferDouble,
     backgammonRollDice,
@@ -9,13 +11,10 @@ import {
 import {logResponseError} from "../../../requests/util";
 import {Move} from "../../board/move";
 import {RemoteMoveMapper} from "../../game_rule/RemoteMoveMapper";
-import {logger} from "../../../logging/main";
 import {Config} from "../../game_rule/ConfigParser";
 import {FetchType} from "../../../common/requests";
 import {mapRemoteColor} from "../../game_rule/common_remote/common";
 
-
-const console = logger("game/game_controller/remote")
 
 export interface RemoteConnector<Index, Prop> {
     subscribe(): void

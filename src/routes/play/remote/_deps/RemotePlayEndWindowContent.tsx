@@ -7,9 +7,7 @@ import {endWindowButtonStyle, endWindowContentStyle, returnToMenuButtonStyle} fr
 import styled from "styled-components";
 import {useGameContext} from "../../../../game/GameContext";
 import {useFetch} from "../../../../common/hooks";
-import {logger} from "../../../../logging/main";
 
-const console = logger("routes/play/remote")
 
 const ReturnToMenuButton = (props: ComponentProps<"button">) => {
     const navigate = useNavigate()

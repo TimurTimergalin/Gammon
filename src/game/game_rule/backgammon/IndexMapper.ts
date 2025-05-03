@@ -1,9 +1,7 @@
 import {IndexMapper} from "../IndexMapper";
 import {Color, oppositeColor} from "../../../common/color";
 import {BackgammonIndex} from "../../board/backgammon/types";
-import {logger} from "../../../logging/main";
 
-const console = logger("game/game_rule/backgammon")
 
 export class BackgammonIndexMapper implements IndexMapper<BackgammonIndex> {
     private readonly color: Color

@@ -9,12 +9,11 @@ import {AccentedButton} from "../../components/AccentedButton";
 import {FormStateProvider} from "../../controller/forms/FormStateProvider";
 import {formBaseStyle} from "../../css/forms";
 import {AuthFormInput, AuthFormInputMessage} from "./_deps/common";
-import {logger} from "../../logging/main";
 import {type Route} from "./+types/sign_in"
 import {FetchType} from "../../common/requests";
 
-const console = logger("windows/auth_status")
 
+// eslint-disable-next-line react-refresh/only-export-components
 export async function clientAction({request}: Route.ClientActionArgs) {
     console.debug("ACTION!")
     const data = await request.formData()

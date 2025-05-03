@@ -4,7 +4,6 @@ import {Config, ConfigParser} from "../../ConfigParser";
 import {BackgammonRemoteConfig} from "./types";
 import {BackgammonIndex, BackgammonProp} from "../../../board/backgammon/types";
 import {BackgammonBoard} from "../../../board/backgammon/BackgammonBoard";
-import {logger} from "../../../../logging/main";
 import {imageUri} from "../../../../requests/paths";
 import {FetchType} from "../../../../common/requests";
 import {
@@ -14,7 +13,6 @@ import {
     requestPlayers
 } from "../../common_remote/common";
 
-const console = logger("game/game_rule/backgammon/remote_v1")
 
 export class BackgammonConfigParser implements ConfigParser<BackgammonRemoteConfig, BackgammonIndex, BackgammonProp> {
     mapConfig({
