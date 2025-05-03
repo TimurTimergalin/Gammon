@@ -26,4 +26,10 @@ export interface GameController {
     swapBoard(): void
 
     rollDice(): void
+
+    interactWithDouble(): void
+
+    concedeMatch(): void
+
+    concedeGame(): void
 }

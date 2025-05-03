@@ -21,22 +21,22 @@ export function HoverLayer() {
             hoverTracker.changeHoverIndex(pointX(ev), pointY(ev))
         }
 
-        const touchEndCallback = (e: Event) => {
-            if (hoverTracker.clearHoverIndex()) {
-                e.preventDefault()
-            }
-        }
+        // const touchEndCallback = (e: Event) => {
+        //     if (hoverTracker.clearHoverIndex()) {
+        //         e.preventDefault()
+        //     }
+        // }
 
         document.addEventListener("mousemove", moveCallback)
         document.addEventListener("touchmove", moveCallback)
-        document.addEventListener("touchend", touchEndCallback)
-        document.addEventListener("touchcancel", touchEndCallback)
+        // document.addEventListener("touchend", touchEndCallback)
+        // document.addEventListener("touchcancel", touchEndCallback)
 
         return () => {
             document.removeEventListener("mousemove", moveCallback)
             document.removeEventListener("touchmove", moveCallback)
-            document.removeEventListener("touchend", touchEndCallback)
-            document.removeEventListener("touchcancel", touchEndCallback)
+            // document.removeEventListener("touchend", touchEndCallback)
+            // document.removeEventListener("touchcancel", touchEndCallback)
         }
 
     }, [hoverTracker]);

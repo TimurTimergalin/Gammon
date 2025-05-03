@@ -1,19 +1,21 @@
 import styled from "styled-components";
-import {ScoreTab} from "./ScoreTab";
-import {HistoryTab} from "./HistoryTab";
-import {ButtonsTab} from "./ButtonsTab";
+import {MicroScoreTab, NormalScoreTab, RowScoreTab} from "./ScoreTab";
+import {NormalHistoryTab, RowHistoryTab} from "./history_panel/HistoryTab";
+import {MicroButtonsTab, NormalButtonsTab, RowButtonsTab} from "./ButtonsTab";
+import {observer} from "mobx-react-lite";
+import {useGamePageLayout} from "../../adapt/GamePageLayoutProvider";
 
-const PlainControlPanel = ({className}: { className?: string }) => {
+const PlainNormalControlPanel = ({className}: { className?: string }) => {
     return (
         <div className={className}>
-            <ScoreTab />
-            <HistoryTab />
-            <ButtonsTab />
+            <NormalScoreTab />
+            <NormalHistoryTab />
+            <NormalButtonsTab />
         </div>
     )
 }
 
-export const ControlPanel = styled(PlainControlPanel)`
+export const NormalControlPanel = styled(PlainNormalControlPanel)`
     & {
         border-radius: 20px;
         background-color: white;
@@ -39,3 +41,81 @@ export const ControlPanel = styled(PlainControlPanel)`
         height: 38px;
     }
 `
+
+const PlainRowControlPanel = ({className}: { className?: string }) => {
+    return (
+        <div className={className}>
+            <RowScoreTab />
+            <RowHistoryTab />
+            <RowButtonsTab />
+        </div>
+    )
+}
+
+const RowControlPanel = styled(PlainRowControlPanel)`
+    & {
+        border-radius: 5px;
+        background-color: white;
+        flex: 1;
+        text-align: center;
+        color: black;
+        display: flex;
+        flex-direction: row;
+        height: 55.2px;
+        
+    }
+    
+    & > :nth-child(1) {
+        width: 100px;
+        height: 100%;
+    }
+    
+    & > :nth-child(2) {
+        height: 100%;
+        flex: 1;
+        //overflow-x: auto;
+        //scrollbar-width: none;
+    }
+    
+    & > :nth-child(3) {
+        height: 100%;
+        width: 100px;
+    }
+`
+
+
+const PlainMicroControlPanel = ({className}: { className?: string }) => {
+    return (
+        <div className={className}>
+            <MicroScoreTab />
+            <MicroButtonsTab />
+        </div>
+    )
+}
+
+
+const MicroControlPanel = styled(PlainMicroControlPanel)`
+    & {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        align-items: stretch;
+    }
+    
+    & > * {
+        flex: 1;
+    }
+`
+
+export const ControlPanel = observer(function ControlPanel(){
+    const mode = useGamePageLayout().layout[1]
+    switch (mode) {
+        case "Normal":
+            return <NormalControlPanel />
+        case "Down":
+            return <RowControlPanel />
+        case "Micro":
+            return <MicroControlPanel />
+    }
+})

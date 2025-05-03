@@ -43,6 +43,7 @@ const PiecesLayer = observer(function PiecesLayer() {
             }
 
             const moves = gameController.calculateLegalMoves(clickedIndex)
+            const currentMousePosition = mousePosRef.current
             showLegalMovesTimeout.current = setTimeout(
                 () => {
                     const pickedColor = pickedStack.last.color
@@ -51,10 +52,18 @@ const PiecesLayer = observer(function PiecesLayer() {
                     }
                     gameController.remove(clickedIndex)
                     boardState.eraseFrom()
-                    dragState.dragStatus = {
-                        clickX: mousePosRef.current[0],
-                        clickY: mousePosRef.current[1],
-                        pickedColor: pickedColor!
+                    if (mousePosRef.current === currentMousePosition) {
+                        dragState.dragStatus = {
+                            clickX: pointX(e),
+                            clickY: pointY(e),
+                            pickedColor: pickedColor!
+                        }
+                    } else {
+                        dragState.dragStatus = {
+                            clickX: mousePosRef.current[0],
+                            clickY: mousePosRef.current[1],
+                            pickedColor: pickedColor!
+                        }
                     }
                 },
                 maxClickDuration
@@ -76,7 +85,7 @@ const PiecesLayer = observer(function PiecesLayer() {
             }
 
             const releaseIndex = hoverTracker.hoveredIndex
-            
+
             if (dragState.dragStatus === null) {
                 if (dragState.clickedIndex === releaseIndex || releaseIndex === null) {
                     boardState.eraseFrom()
@@ -105,12 +114,19 @@ const PiecesLayer = observer(function PiecesLayer() {
             return false
         }
 
+        const onMove = (e: TouchEvent) => {
+            if (dragState.clickedIndex !== null) {
+                e.preventDefault()
+            }
+        }
+
         document.addEventListener("mousedown", onMouseDown)
         document.addEventListener("mouseup", onMouseUp)
         document.addEventListener("touchstart", onMouseDown)
         document.addEventListener("touchend", onMouseUp)
         document.addEventListener("touchcancel", onMouseUp)
         document.addEventListener("contextmenu", disableContextMenu)
+        document.addEventListener("touchmove", onMove, {passive: false})
 
         return () => {
             document.removeEventListener("mousedown", onMouseDown)
@@ -119,6 +135,7 @@ const PiecesLayer = observer(function PiecesLayer() {
             document.removeEventListener("touchend", onMouseUp)
             document.removeEventListener("touchcancel", onMouseUp)
             document.removeEventListener("contextmenu", disableContextMenu)
+            document.removeEventListener("touchmove", onMove)
         }
     }, [boardState, dragState, gameController, gameState, hoverTracker, legalMovesTracker, mousePosRef]);
 

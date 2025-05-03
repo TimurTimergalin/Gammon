@@ -5,10 +5,7 @@ import {PositionState} from "./physical/types";
 import {PhysicalBoard} from "./physical/PhysicalBoard";
 import {Color} from "../../common/color";
 import {Move} from "./move";
-import {logger} from "../../logging/main";
 import {logicalToPhysical, physicalToLogical} from "../game_rule/functions";
-
-const console = logger("game/game_controller/rules")
 
 
 export class BoardSynchronizer<Index, Prop> {

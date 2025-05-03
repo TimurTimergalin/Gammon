@@ -9,13 +9,12 @@ import {authButtonStyle, authFormStyle} from "./_deps/styles";
 import styled from "styled-components";
 import {formBaseStyle} from "../../css/forms";
 import {FormStateProvider} from "../../controller/forms/FormStateProvider";
-import {logger} from "../../logging/main";
 import {type Route} from "./+types/sign_up"
 import {FetchType} from "../../common/requests";
 import {RefObject, useRef} from "react";
 
-const console = logger("windows/auth_status")
 
+// eslint-disable-next-line react-refresh/only-export-components
 export async function clientAction({request}: Route.ClientActionArgs) {
     const data = await request.formData()
 

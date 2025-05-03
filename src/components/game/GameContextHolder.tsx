@@ -1,18 +1,21 @@
 import {useFactoryRef} from "../../common/hooks";
-import {ControlButtonsState} from "../../game/ControlButtonsState";
-import {HoverTracker} from "../../game/HoverTracker";
+import {ControlButtonsState} from "../../game/control_buttons_state/ControlButtonsState";
+import {HoverTracker} from "../../game/hover_tracker/HoverTracker";
 import {ReactNode} from "react";
 import {PlayersInfo} from "../../game/player_info/PlayersInfo";
 import {DragState} from "../../game/drag_state/DragState";
 import {DiceState} from "../../game/dice_state/DiceState";
 import {PhysicalBoard} from "../../game/board/physical/PhysicalBoard";
-import {LegalMovesTracker} from "../../game/LegalMovesTracker";
+import {LegalMovesTracker} from "../../game/legal_moves_tracker/LegalMovesTracker";
 import {GameContext, GameContextProvider} from "../../game/GameContext";
 import {DummyGameController} from "../../game/game_controller/DummyGameController";
-import {LabelState} from "../../game/LabelState";
-import {EndWindowState} from "../../game/EndWindowState";
-import {BoardAnimationSwitch} from "../../game/BoardAnimationSwitch";
-import {ScoreState} from "../../game/ScoreState";
+import {LabelState} from "../../game/label_state/LabelState";
+import {EndWindowState} from "../../game/end_window_state/EndWindowState";
+import {BoardAnimationSwitch} from "../../game/board_animation_switch/BoardAnimationSwitch";
+import {ScoreState} from "../../game/score_state/ScoreState";
+import {DoubleCubeState} from "../../game/double_cube_state/DoubleCubeState";
+import {GameHistoryState} from "../../game/game_history_state/GameHistoryState";
+import {TimerPairState} from "../../game/timer_state/TimerPairState";
 
 export const GameContextHolder = ({children}: { children: ReactNode | ReactNode[] }) => {
     const controlButtonsState = useFactoryRef(() => new ControlButtonsState())
@@ -38,6 +41,9 @@ export const GameContextHolder = ({children}: { children: ReactNode | ReactNode[
     const endWindowState = useFactoryRef(() => new EndWindowState())
     const boardAnimationSwitch = useFactoryRef(() => new BoardAnimationSwitch(true))
     const scoreState = useFactoryRef(() => new ScoreState({white: 0, black: 0, total: 0}))
+    const doubleCubeState = useFactoryRef(() => new DoubleCubeState({}))
+    const gameHistoryState = useFactoryRef(() => new GameHistoryState())
+    const timerPairState = useFactoryRef(() => new TimerPairState())
 
     const gameContext = useFactoryRef(() => new GameContext({
         controlButtonsState: controlButtonsState,
@@ -51,7 +57,10 @@ export const GameContextHolder = ({children}: { children: ReactNode | ReactNode[
         labelMapperHolder: labelMapperHolder,
         endWindowState: endWindowState,
         boardAnimationSwitch: boardAnimationSwitch,
-        scoreState: scoreState
+        scoreState: scoreState,
+        doubleCubeState: doubleCubeState,
+        gameHistoryState: gameHistoryState,
+        timerPairState: timerPairState
     }))
 
     return (

@@ -1,9 +1,7 @@
 import {makeAutoObservable, runInAction} from "mobx";
 import {createContext, FormEvent, useContext} from "react";
 import {ValidityCheckResult} from "./validators";
-import {logger} from "../../logging/main";
 
-const console = logger("forms")
 
 export class FormState {
     private _formData: FormData | null = null

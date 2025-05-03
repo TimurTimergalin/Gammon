@@ -29,7 +29,7 @@ function DragPiece({initClientX, initClientY, color}: {
 }) {
     const svgClientRect = useContext(SvgClientRectContext)
     const [clientX, clientY] = useMousePosition(initClientX, initClientY)
-    const [svgX, svgY] = clampSvgCoordinates(...clientToSvg(clientX, clientY, svgClientRect!))
+    const [svgX, svgY] = svgClientRect !== null ? clampSvgCoordinates(...clientToSvg(clientX, clientY, svgClientRect)) : [0, 0]
 
     return <TopDownPiece color={color} cx={svgX} cy={svgY}/>
 }

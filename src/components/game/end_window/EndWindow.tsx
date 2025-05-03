@@ -71,15 +71,17 @@ const windowAppearanceAnimation = keyframes`
 
 const EndWindowStyle = styled(PlainEndWindow)`
     width: 300px;
-    height: 100%;
-    margin-left: auto;
-    margin-right: auto;
+    max-width: 50%;
+    height: 90%;
+    max-height: 500px;
+    margin: auto;
     display: flex;
     flex-direction: column;
     border-radius: 20px;
     background-color: white;
     animation: ${windowAppearanceAnimation} 0.3s ease-out;
     pointer-events: auto;
+    z-index: 20;
 `
 
 export const EndWindow = observer(function EndWindow({children}: {children?: ReactNode | ReactNode[]}) {

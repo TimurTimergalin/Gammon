@@ -1,24 +1,38 @@
-import {ControlButtonsState} from "./ControlButtonsState";
-import {HoverTracker} from "./HoverTracker";
+import {ControlButtonsState} from "./control_buttons_state/ControlButtonsState";
+import {HoverTracker} from "./hover_tracker/HoverTracker";
 import {createContext, MutableRefObject, RefObject, useContext} from "react";
 import {forceType} from "../common/typing";
 import {PlayersInfo} from "./player_info/PlayersInfo";
 import {DragState} from "./drag_state/DragState";
 import {DiceState} from "./dice_state/DiceState";
 import {PhysicalBoard} from "./board/physical/PhysicalBoard";
-import {LegalMovesTracker} from "./LegalMovesTracker";
+import {LegalMovesTracker} from "./legal_moves_tracker/LegalMovesTracker";
 import {GameController} from "./game_controller/GameController";
-import {LabelState} from "./LabelState";
-import {EndWindowState} from "./EndWindowState";
-import {BoardAnimationSwitch} from "./BoardAnimationSwitch";
-import {ScoreState} from "./ScoreState";
+import {LabelState} from "./label_state/LabelState";
+import {EndWindowState} from "./end_window_state/EndWindowState";
+import {BoardAnimationSwitch} from "./board_animation_switch/BoardAnimationSwitch";
+import {ScoreState} from "./score_state/ScoreState";
 import {useFactoryRef} from "../common/hooks";
+import {DoubleCubeState} from "./double_cube_state/DoubleCubeState";
+import {GameHistoryState} from "./game_history_state/GameHistoryState";
+import {TimerPairState} from "./timer_state/TimerPairState";
 
 type Setter<T> = {
     set(_: T): void
 }
 
 export class GameContext {
+    get timerPairState(): TimerPairState {
+        return this._timerPairState.current!;
+    }
+    get gameHistoryState(): GameHistoryState {
+        return this._gameHistoryState.current!;
+    }
+
+    get doubleCubeState(): DoubleCubeState {
+        return this._doubleCubeState.current!;
+    }
+
     get scoreState(): ScoreState {
         return this._scoreState.current!;
     }
@@ -82,6 +96,9 @@ export class GameContext {
     private _endWindowState: RefObject<EndWindowState>
     private _boardAnimationSwitch: RefObject<BoardAnimationSwitch>
     private _scoreState: RefObject<ScoreState>
+    private _doubleCubeState: RefObject<DoubleCubeState>
+    private _gameHistoryState: RefObject<GameHistoryState>
+    private _timerPairState: RefObject<TimerPairState>
 
     private _gameController: MutableRefObject<GameController>
     private readonly _gameControllerSetter: Setter<GameController>
@@ -98,7 +115,10 @@ export class GameContext {
                     labelMapperHolder,
                     endWindowState,
                     boardAnimationSwitch,
-                    scoreState
+                    scoreState,
+                    doubleCubeState,
+                    gameHistoryState,
+        timerPairState
                 }: {
                     controlButtonsState: RefObject<ControlButtonsState>,
                     hoverTracker: RefObject<HoverTracker>,
@@ -111,7 +131,10 @@ export class GameContext {
                     labelMapperHolder: RefObject<LabelState>,
                     endWindowState: RefObject<EndWindowState>,
                     boardAnimationSwitch: RefObject<BoardAnimationSwitch>,
-                    scoreState: RefObject<ScoreState>
+                    scoreState: RefObject<ScoreState>,
+                    doubleCubeState: RefObject<DoubleCubeState>,
+                    gameHistoryState: RefObject<GameHistoryState>,
+                    timerPairState: RefObject<TimerPairState>
                 }
     ) {
         this._controlButtonsState = controlButtonsState;
@@ -126,6 +149,9 @@ export class GameContext {
         this._endWindowState = endWindowState
         this._boardAnimationSwitch = boardAnimationSwitch
         this._scoreState = scoreState
+        this._doubleCubeState = doubleCubeState
+        this._gameHistoryState = gameHistoryState
+        this._timerPairState = timerPairState
 
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const outer = this

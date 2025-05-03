@@ -1,17 +1,16 @@
 import {GameController} from "../GameController";
 import {Rules} from "../../game_rule/Rules";
 import {Color} from "../../../common/color";
-import {ControlButtonsState} from "../../ControlButtonsState";
+import {ControlButtonsState} from "../../control_buttons_state/ControlButtonsState";
 import {CompoundMove, invertCompound, mergeMoves} from "../../board/move";
 import {IndexMapper} from "../../game_rule/IndexMapper";
 import {DiceState} from "../../dice_state/DiceState";
-import {LegalMovesTracker} from "../../LegalMovesTracker";
-import {LabelState} from "../../LabelState";
-import {logger} from "../../../logging/main";
+import {LegalMovesTracker} from "../../legal_moves_tracker/LegalMovesTracker";
+import {LabelState} from "../../label_state/LabelState";
 import {BoardSynchronizer} from "../../board/BoardSynchronizer";
-import {BoardAnimationSwitch} from "../../BoardAnimationSwitch";
-
-const console = logger("game/game_controller/rules")
+import {BoardAnimationSwitch} from "../../board_animation_switch/BoardAnimationSwitch";
+import {CubeState, DoubleCubeState} from "../../double_cube_state/DoubleCubeState";
+import {DragState} from "../../drag_state/DragState";
 
 
 export abstract class RulesGameController<Index, Prop> implements GameController {
@@ -20,14 +19,18 @@ export abstract class RulesGameController<Index, Prop> implements GameController
     protected _player!: Color
     protected active: boolean
     protected performedMoves: CompoundMove<Index>[] = []
+    protected canOfferDouble: boolean = false
+    protected previousDoubleState: { state: CubeState, value: number, canOffer: boolean } | undefined = undefined
     protected legalMovesTracker: LegalMovesTracker
     protected diceState: DiceState
     protected rules: Rules<Index, Prop>
     protected boardAnimationSwitch: BoardAnimationSwitch
+    protected doubleCubeState: DoubleCubeState
 
     private legalMovesMap: Map<number, CompoundMove<Index>> = new Map()
     private indexMapper: IndexMapper<Index>
     private labelState: LabelState
+    private dragState: DragState
 
     protected get player(): Color {
         return this._player
@@ -42,10 +45,43 @@ export abstract class RulesGameController<Index, Prop> implements GameController
         this.boardAnimationSwitch.withTurnedOff(
             () => {
                 this.labelState.labelMapper = this.labelState.labelMapper?.flipped()
+                this.doubleCubeState.positionMapper = this.doubleCubeState.positionMapper?.flipped()
                 this.indexMapper = this.indexMapper.flipped()
                 this.board.swapBoard()
             }
         )
+    }
+
+    protected _offerDouble() {
+        const newValue = this.doubleCubeState.convertedValue * 2
+
+        if (this.player === Color.WHITE) {
+            this.doubleCubeState.state = "offered_to_black"
+        } else {
+            this.doubleCubeState.state = "offered_to_white"
+        }
+        this.doubleCubeState.value = newValue
+    }
+
+    protected _acceptDouble() {
+        this.doubleCubeState.state = this.player === Color.WHITE ? "belongs_to_white" : "belongs_to_black"
+    }
+
+    protected _canOfferDouble() {
+        return (
+            this.doubleCubeState.state === "free" ||
+            (this.player === Color.WHITE && this.doubleCubeState.state === "belongs_to_white") ||
+            (this.player === Color.BLACK && this.doubleCubeState.state === "belongs_to_black")
+        ) && this.doubleCubeState.convertedValue !== 64
+    }
+
+    protected _clearDrag() {
+        if (this.dragState.clickedIndex !== null) {
+            this.putBack(this.dragState.clickedIndex, this.dragState.dragStatus!.pickedColor)
+            this.dragState.clickedIndex = null
+            this.dragState.dragStatus = null
+        }
+        this.legalMovesTracker.clear()
     }
 
     protected constructor(
@@ -58,7 +94,9 @@ export abstract class RulesGameController<Index, Prop> implements GameController
             diceState,
             legalMovesTracker,
             labelState,
-            boardAnimationSwitch
+            boardAnimationSwitch,
+            doubleCubeState,
+            dragState
         }: {
             board: BoardSynchronizer<Index, Prop>,
             controlButtonsState: ControlButtonsState,
@@ -68,7 +106,9 @@ export abstract class RulesGameController<Index, Prop> implements GameController
             diceState: DiceState,
             legalMovesTracker: LegalMovesTracker,
             labelState: LabelState,
-            boardAnimationSwitch: BoardAnimationSwitch
+            boardAnimationSwitch: BoardAnimationSwitch,
+            doubleCubeState: DoubleCubeState,
+            dragState: DragState
         }
     ) {
         this.board = board;
@@ -80,6 +120,8 @@ export abstract class RulesGameController<Index, Prop> implements GameController
         this.legalMovesTracker = legalMovesTracker
         this.labelState = labelState
         this.boardAnimationSwitch = boardAnimationSwitch
+        this.doubleCubeState = doubleCubeState
+        this.dragState = dragState
     }
 
     protected checkTurnComplete() {
@@ -110,7 +152,7 @@ export abstract class RulesGameController<Index, Prop> implements GameController
         console.assert(this.active)
         console.debug("Legal moves calculating from", pi)
         const li = this.indexMapper.physicalToLogical(pi)
-        const legalMoves = this.rules.getLegalMoves(this.board.ruleBoard, li, this.player, this.diceState.toDiceArray())
+        const legalMoves = this.rules.getLegalMoves(this.board.ruleBoard, li, this.player, this.diceState.toDiceArray(), this.performedMoves)
         console.debug(legalMoves)
 
         const res = []
@@ -181,12 +223,24 @@ export abstract class RulesGameController<Index, Prop> implements GameController
     }
 
     putBack(to: number, color: Color): void {
-        console.assert(this.active)
         this.board.putPhysical(to, color)
     }
 
     undoMoves(): void {
         console.assert(this.active)
+        if (this.previousDoubleState !== undefined) {
+            console.assert(this.performedMoves.length === 0)
+            console.assert(this.doubleCubeState.value !== undefined)
+            this.doubleCubeState.value = this.previousDoubleState.value
+            this.doubleCubeState.state = this.previousDoubleState.state
+            this.controlButtonsState.turnComplete = false
+            this.controlButtonsState.movesMade = false
+            this.controlButtonsState.canRollDice = true
+            this.canOfferDouble = this.previousDoubleState.canOffer
+            this.previousDoubleState = undefined
+            return
+        }
+
         const invertedMoves = this.performedMoves.map(invertCompound).reverse()
 
         invertedMoves.forEach(m => m.dice.forEach(this.diceState.addDice))
@@ -207,9 +261,55 @@ export abstract class RulesGameController<Index, Prop> implements GameController
         this.diceState.swapDice()
     }
 
+    offerDouble(): void {
+        console.assert(this.doubleCubeState !== undefined)
+        this.previousDoubleState = {
+            state: this.doubleCubeState.state,
+            value: this.doubleCubeState.value!,
+            canOffer: true
+        }
+        this._offerDouble()
+        this.controlButtonsState.movesMade = true
+        this.controlButtonsState.turnComplete = true
+        this.controlButtonsState.canRollDice = false
+        this.canOfferDouble = false
+    }
+
+    acceptDouble(): void {
+        this.previousDoubleState = {
+            state: this.doubleCubeState.state,
+            value: this.doubleCubeState.value!,
+            canOffer: false
+        }
+        this._acceptDouble()
+        this.controlButtonsState.movesMade = true
+        this.controlButtonsState.turnComplete = true
+    }
+
+    interactWithDouble(): void {
+        if (!this.active) {
+            return
+        }
+        if (this.canOfferDouble) {
+            this.offerDouble()
+        } else if (
+            (this.player === Color.WHITE && this.doubleCubeState.state === "offered_to_white") ||
+            (this.player === Color.BLACK && this.doubleCubeState.state === "offered_to_black")
+        ) {
+            this.acceptDouble()
+            this.controlButtonsState.canConcedeGame = this._canConcedeGame()
+        }
+    }
+
+    protected abstract _canConcedeGame(): boolean
+
     abstract endTurn(): void;
 
     abstract swapBoard(): void;
 
     abstract rollDice(): void
+
+    abstract concedeMatch(): void;
+
+    abstract concedeGame(): void;
 }

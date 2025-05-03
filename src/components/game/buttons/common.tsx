@@ -2,7 +2,9 @@ import {CSSProperties} from "react";
 
 export const additionalStyle = (): CSSProperties => ({
     padding: 0,
-    marginLeft: "1%",
+    marginLeft: 3,
+    marginRight: 3,
+    marginBottom: 5,
     borderRadius: "10%",
     display: "flex",
     aspectRatio: 3 / 2,

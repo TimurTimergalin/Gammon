@@ -7,7 +7,9 @@ const AuthPage = ({children}: {children: ReactNode}) => {
         alignSelf: "stretch",
         display: "flex",
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "start",
+        minHeight: 0,
+        overflow: "auto"
     }
     return (
         <div style={style}>

@@ -41,17 +41,11 @@ export function backgammonDefaultPlacement(): Board<BackgammonIndex, BackgammonP
 }
 
 export function backgammonDebugPlacement(): Board<BackgammonIndex, BackgammonProp> {
-    const placement: BackgammonPlacement = new Map([
-            [1, {color: Color.BLACK, quantity: 1}],
-            [2, {color: Color.WHITE, quantity: 2}],
-            [3, {color: Color.WHITE, quantity: 2}],
-            [6, {color: Color.WHITE, quantity: 6}],
-            [8, {color: Color.WHITE, quantity: 1}],
-            [12, {color: Color.BLACK, quantity: 3}],
-            [13, {color: Color.WHITE, quantity: 3}],
-            [17, {color: Color.BLACK, quantity: 5}],
-            [19, {color: Color.BLACK, quantity: 6}],
-            [24, {color: Color.WHITE, quantity: 2}]
+    const placement: BackgammonPlacement = new Map<BackgammonIndex, BackgammonProp>([
+            [1, {color: Color.WHITE, quantity: 1}],
+            ["White Store", {color: Color.WHITE, quantity: 14}],
+            [24, {color: Color.BLACK, quantity: 1}],
+            ["Black Store", {color: Color.BLACK, quantity: 14}]
         ])
 
     return new BackgammonBoard(placement)

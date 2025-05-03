@@ -12,5 +12,6 @@ html, body {
     font-family: Nunito, sans-serif;
     letter-spacing: .07em;
     color: white;
-    background-color: #2f2e2d;
+    background-color: #363434;
+    overflow: hidden;
 }

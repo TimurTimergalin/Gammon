@@ -1,34 +1,22 @@
-export type BackgammonRemoteMove = {
-    from: number,
-    to: number
-}
+import {RemoteColor, RemoteConfig} from "../../common_remote/common";
+import {Move} from "../../../board/move";
 
-export type BackgammonRemotePlayer = {
-    id: number,
-    username: string
-}
+export type BackgammonRemoteMove = Move<number>
 
-export interface BackgammonRemoteConfig {
+export type BackgammonRemoteConfig = {
     gameData: {
-        color: "BLACK" | "WHITE",
-        turn: "BLACK" | "WHITE",
+        color: RemoteColor,
+        turn: RemoteColor,
         first: boolean,
         bar: {
             WHITE: number,
             BLACK: number
         },
         deck: {
-            color: "BLACK" | "WHITE",
+            color: RemoteColor,
             count: number,
             id: number
         }[],
         zar: [number, number] | [],
-    },
-    blackPoints: number,
-    whitePoints: number,
-    threshold: number,
-    players: {
-        WHITE: BackgammonRemotePlayer,
-        BLACK: BackgammonRemotePlayer
     }
-}
+} & RemoteConfig

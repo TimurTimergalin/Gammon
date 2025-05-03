@@ -1,7 +1,5 @@
 import {GameController} from "./GameController";
-import {logger} from "../../logging/main";
 
-const console = logger("game/game_controller/dummy")
 
 export class DummyGameController implements GameController {
     calculateLegalMoves(): never {
@@ -66,4 +64,21 @@ export class DummyGameController implements GameController {
         console.error("Called", "rollDice", "on dummy")
         return undefined as never
     }
+
+    interactWithDouble(): never {
+        console.error("Called", "interactWithDouble", "on dummy")
+        return undefined as never
+    }
+
+    concedeMatch(): never {
+        console.error("Called", "concedeMatch", "on dummy")
+        return undefined as never
+    }
+
+    concedeGame(): never {
+        console.error("Called", "concedeGame", "on dummy")
+        return undefined as never
+    }
+
+
 }

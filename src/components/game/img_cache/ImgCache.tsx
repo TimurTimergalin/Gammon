@@ -1,11 +1,11 @@
 export class ImgCache {
     private images = new Map<string, string>()
-    private placeholder = "/user_icon_placeholder"
+    static readonly placeholder = "/user_icon_placeholder.svg"
     private placeholderDataUrl: string | undefined = undefined
     private errors = new Set<string>()
 
     constructor() {
-        this.getDataUrl(this.placeholder).then(
+        this.getDataUrl(ImgCache.placeholder).then(
             dataUrl => this.placeholderDataUrl = dataUrl
         )
     }
@@ -26,11 +26,15 @@ export class ImgCache {
             return this.images.get(src)!
         }
         if (this.errors.has(src)) {
-            return this.placeholderDataUrl ?? this.placeholder
+            return this.placeholderDataUrl ?? ImgCache.placeholder
         }
         this.getDataUrl(src)
             .then(dataUrl => this.images.set(src, dataUrl as string))
             .catch(() => this.errors.add(src))
         return src
+    }
+
+    getPlaceholder() {
+        return this.placeholderDataUrl ?? ImgCache.placeholder
     }
 }
