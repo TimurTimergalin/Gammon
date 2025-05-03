@@ -9,7 +9,7 @@ export const FormWithValidation = observer(function FormWithValidation(
     const formState = useFormState()
 
     return (
-        <fetcher.Form style={{position: "relative", overflow: "clip"}} onSubmit={formState.onSubmit} {...args} noValidate={true}>
+        <fetcher.Form style={{position: "relative", overflow: "auto"}} onSubmit={formState.onSubmit} {...args} noValidate={true}>
             {children}
             {fetcher.state !== "idle" &&
                 <div style={{

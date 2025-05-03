@@ -71,9 +71,10 @@ const windowAppearanceAnimation = keyframes`
 
 const EndWindowStyle = styled(PlainEndWindow)`
     width: 300px;
-    height: 100%;
-    margin-left: auto;
-    margin-right: auto;
+    max-width: 50%;
+    height: 90%;
+    max-height: 500px;
+    margin: auto;
     display: flex;
     flex-direction: column;
     border-radius: 20px;

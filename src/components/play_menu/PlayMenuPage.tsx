@@ -80,10 +80,10 @@ export const PlayMenuPage = observer(function PlayMenuPage() {
         const controlPanelContainerStyle: CSSProperties = {
             display: "flex",
             alignItems: "stretch",
-            width: "60%",
-            minWidth: 350,
-            height: "60%",
-            minHeight: 400
+            width: "80%",
+            maxWidth: 350,
+            height: "90%",
+            maxHeight: 400
         }
 
         return (

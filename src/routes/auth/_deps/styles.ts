@@ -5,9 +5,11 @@ export const authFormStyle = css`
     padding: 30px;
     display: flex;
     flex-direction: column;
-    width: 30%;
-    min-width: 350px;
+    width: 60%;
+    max-width: 350px;
     font-size: 15px;
+    height: calc(85% - 60px);
+    max-height: 500px;
 `
 
 export const authFormInputMessageStyle = css`
