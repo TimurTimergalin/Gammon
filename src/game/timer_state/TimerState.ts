@@ -56,7 +56,7 @@ export class TimerState {
             this.increment(lastCall - newCall)
             lastCall = newCall
             if (this.time <= 0) {
-                this.time = 0
+                this.set(0)
                 this.onEnd()
                 this.stop()
             }

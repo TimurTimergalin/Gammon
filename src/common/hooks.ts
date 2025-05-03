@@ -16,6 +16,7 @@ export function useMousePosition(initX: number, initY: number) {
 
     useEffect(() => {
         const callback = (e: PointEvent) => {
+            console.log(e)
             setMousePosition([pointX(e), pointY(e)])
         }
         document.addEventListener("mousemove", callback)

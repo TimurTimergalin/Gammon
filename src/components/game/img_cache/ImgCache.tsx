@@ -12,7 +12,6 @@ export class ImgCache {
 
     private async getDataUrl(src: string): Promise<string> {
         const resp = await fetch(src)
-        console.log(`Response of ${src} was ${resp.status}`)
         const blob = await resp.blob()
         return await new Promise((resolve, reject) => {
             const reader = new FileReader()
