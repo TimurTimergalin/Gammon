@@ -105,12 +105,19 @@ const PiecesLayer = observer(function PiecesLayer() {
             return false
         }
 
+        const onMove = (e: TouchEvent) => {
+            if (dragState.clickedIndex !== null) {
+                e.preventDefault()
+            }
+        }
+
         document.addEventListener("mousedown", onMouseDown)
         document.addEventListener("mouseup", onMouseUp)
         document.addEventListener("touchstart", onMouseDown)
         document.addEventListener("touchend", onMouseUp)
         document.addEventListener("touchcancel", onMouseUp)
         document.addEventListener("contextmenu", disableContextMenu)
+        document.addEventListener("touchmove", onMove, {passive: false})
 
         return () => {
             document.removeEventListener("mousedown", onMouseDown)
@@ -119,6 +126,7 @@ const PiecesLayer = observer(function PiecesLayer() {
             document.removeEventListener("touchend", onMouseUp)
             document.removeEventListener("touchcancel", onMouseUp)
             document.removeEventListener("contextmenu", disableContextMenu)
+            document.removeEventListener("touchmove", onMove)
         }
     }, [boardState, dragState, gameController, gameState, hoverTracker, legalMovesTracker, mousePosRef]);
 
