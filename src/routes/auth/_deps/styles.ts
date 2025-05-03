@@ -3,13 +3,16 @@ import {CSSProperties} from "react";
 
 export const authFormStyle = css`
     padding: 30px;
+    margin-top: auto;
+    margin-bottom: auto;
     display: flex;
     flex-direction: column;
     width: 60%;
     max-width: 350px;
     font-size: 15px;
-    height: calc(85% - 60px);
-    max-height: 500px;
+    min-height: fit-content;
+    height: 80%;
+    max-height: 480px;
 `
 
 export const authFormInputMessageStyle = css`
