@@ -41,7 +41,7 @@ const PlainSwapBoardButton = ({className}: { className?: string }) => {
 const SwapBoardButton = styled(PlainSwapBoardButton)`
     ${buttonStyle}
     & img {
-        height: 40px;
+        height: 25px;
         width: auto;
     }
 `
@@ -58,7 +58,7 @@ const PlainSurrenderButton = ({className}: { className?: string }) => {
 const SurrenderButton = styled(PlainSurrenderButton)`
     ${buttonStyle}
     & img {
-        height: 30px;
+        height: 20px;
         width: auto;
     }
 `

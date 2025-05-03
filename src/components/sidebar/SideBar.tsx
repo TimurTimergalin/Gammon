@@ -105,8 +105,8 @@ const CollapsedSideBar = observer(function CollapsedSideBar() {
         width: 40,
         alignSelf: "start",
         marginLeft: 30,
-        marginTop: 10,
-        marginBottom: 10
+        paddingTop: 10,
+        paddingBottom: 10
     }
 
     const toggleMenuCallback = useCallback(

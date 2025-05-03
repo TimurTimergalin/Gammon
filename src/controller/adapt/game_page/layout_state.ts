@@ -1,7 +1,7 @@
-import {GamePageLayout} from "./layout_calculator";
 import {makeAutoObservable} from "mobx";
 import {SideBarLayoutState} from "../side_bar/layout_state";
 import {SideBarLayoutMode} from "../side_bar/layout_modes";
+import {GamePageLayout} from "./layout_calculator/common";
 
 export class GamePageLayoutState {
     private readonly _layout: GamePageLayout = ["Normal", "Normal", "Normal"]

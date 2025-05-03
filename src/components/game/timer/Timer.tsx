@@ -129,3 +129,57 @@ export const ColumnTimer = observer(function ColumnTimer({index}: { index: 0 | 1
         </div>
     )
 })
+
+export const MicroTimer = observer(function MicroTimer({index}: { index: 0 | 1 }) {
+    const timerState = useGameContext("timerPairState")[index === 0 ? "timer1" : "timer2"]
+    const color = timerState.owner
+
+    const minutes = Math.floor(timerState.timeMs / (1000 * 60))
+    const seconds = Math.floor((timerState.timeMs - 1000 * 60 * minutes) / 1000)
+
+    const timerText = minutes + ":" + (seconds >= 10 ? seconds : "0" + seconds)
+
+    const bgColor = colorFill(color)
+    const textColor = colorFill(oppositeColor(color))
+
+    const containerStyle: CSSProperties = {
+        position: "relative",
+        height: "fit-content",
+        width: 42
+    }
+
+    const timerStyle: CSSProperties = {
+        backgroundColor: bgColor,
+        color: textColor,
+        paddingLeft: 2,
+        paddingRight: 2,
+        borderRadius: 5,
+        fontSize: 13,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: 38,
+        textAlign: "center"
+    }
+
+    const barrierStyle: CSSProperties = {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        borderRadius: 5,
+        backgroundColor: "#66666666"
+    }
+
+    return (
+        <div style={containerStyle}>
+            <div style={timerStyle}>
+                {timerText}
+            </div>
+            {!timerState.active &&
+                <div style={barrierStyle}></div>
+            }
+        </div>
+    )
+})

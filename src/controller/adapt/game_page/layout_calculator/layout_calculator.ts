@@ -1,36 +1,11 @@
-import {boardHeight, boardWidth, pieceWidth} from "../../../components/game/dimensions/board_size_constants";
-import {
-    ControlsLayoutMode,
-    getControlsSpaceTaken,
-    getHistoryPanelSpaceTaken,
-    HistoryPanelLayoutMode
-} from "./layout_modes";
-import {getSideBarSpaceTaken, SideBarLayoutMode} from "../side_bar/layout_modes";
+import {boardHeight, boardWidth, pieceWidth} from "../../../../components/game/dimensions/board_size_constants";
+import {ControlsLayoutMode, HistoryPanelLayoutMode} from "../layout_modes";
+import {SideBarLayoutMode} from "../../side_bar/layout_modes";
+import {GamePageLayout, getHeightTaken, getWidthTaken} from "./common";
 
 const minBoardWidth = 40 / pieceWidth * boardWidth
 const minBoardHeight = 40 / pieceWidth * boardHeight
-const mandatoryMargin = 10
 
-
-export type GamePageLayout = [SideBarLayoutMode, HistoryPanelLayoutMode, ControlsLayoutMode]
-
-export function getWidthTaken([sb, h, c]: GamePageLayout) {
-    return (
-        2 * mandatoryMargin +
-        getSideBarSpaceTaken(sb).width +
-        getHistoryPanelSpaceTaken(h).width  +
-        getControlsSpaceTaken(c).width
-    )
-}
-
-export function getHeightTaken([sb, h, c]: GamePageLayout) {
-    return (
-        mandatoryMargin +
-        getSideBarSpaceTaken(sb).height +
-        getHistoryPanelSpaceTaken(h).height +
-        getControlsSpaceTaken(c).height
-    )
-}
 
 class GamePageLayoutTreeNode {
     sideBar: SideBarLayoutMode
@@ -66,13 +41,13 @@ class GamePageLayoutTreeNode {
     }
 }
 
-export function getGamePageLayout(tree: GamePageLayoutTreeNode, screenWidth: number, screenHeight: number): GamePageLayout {
+export function getGamePageLayoutV1(tree: GamePageLayoutTreeNode, screenWidth: number, screenHeight: number): GamePageLayout {
     const width = screenWidth - tree.widthTaken
     if (width < minBoardWidth) {
         if (tree.lackWidth === null) {
             return tree.layout
         } else {
-            return getGamePageLayout(tree.lackWidth, screenWidth, screenHeight)
+            return getGamePageLayoutV1(tree.lackWidth, screenWidth, screenHeight)
         }
     }
     const height = screenHeight - tree.heightTaken
@@ -80,7 +55,7 @@ export function getGamePageLayout(tree: GamePageLayoutTreeNode, screenWidth: num
         if (tree.lackHeight === null) {
             return tree.layout
         } else {
-            return getGamePageLayout(tree.lackHeight, screenWidth, screenHeight)
+            return getGamePageLayoutV1(tree.lackHeight, screenWidth, screenHeight)
         }
     }
     return tree.layout

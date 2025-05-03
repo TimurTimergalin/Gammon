@@ -1,8 +1,8 @@
 import {createContext, ReactNode, useContext, useEffect, useRef} from "react";
 import {GamePageLayoutState, GamePageSideBarLayoutState} from "../../controller/adapt/game_page/layout_state";
 import {useWindowSize} from "../../common/hooks";
-import {gamePageLayoutTree, getGamePageLayout} from "../../controller/adapt/game_page/layout_calculator";
 import {SideBarLayoutContextProvider} from "./SideBarContext";
+import {getGamePageLayoutV2} from "../../controller/adapt/game_page/layout_calculator/layout_calculator2";
 
 const GamePageLayoutContext = createContext<GamePageLayoutState | null>(null)
 
@@ -12,7 +12,7 @@ export const GamePageLayoutProvider = ({children}: {children?: ReactNode | React
     const sideBarLayoutState = useRef(new GamePageSideBarLayoutState(layoutState.current))
 
     useEffect(() => {
-        layoutState.current.layout = getGamePageLayout(gamePageLayoutTree, width, height)
+        layoutState.current.layout = getGamePageLayoutV2(width, height)
     }, [height, width])
 
     return (

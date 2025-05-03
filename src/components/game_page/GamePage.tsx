@@ -3,14 +3,15 @@ import {CSSProperties, ReactNode} from "react";
 import {useGameContext} from "../../game/GameContext";
 import {useWindowSize} from "../../common/hooks";
 import {boardHeight, boardWidth} from "../game/dimensions/board_size_constants";
-import {getHeightTaken, getWidthTaken} from "../../controller/adapt/game_page/layout_calculator";
 import {PlayerIcon} from "../game/players/PlayerIcon";
-import {ColumnTimer, NormalTimer} from "../game/timer/Timer";
+import {ColumnTimer, MicroTimer, NormalTimer} from "../game/timer/Timer";
 import {ButtonPanel} from "../game/buttons/ButtonPanel";
 import {SideBar} from "../sidebar/SideBar";
 import {ControlPanel} from "../game/control_panel/ControlPanel";
 import {ImgCacheProvider} from "../game/img_cache/provider";
 import {useGamePageLayout} from "../adapt/GamePageLayoutProvider";
+import {getHeightTaken, getWidthTaken} from "../../controller/adapt/game_page/layout_calculator/common";
+import {getControlsSpaceTaken} from "../../controller/adapt/game_page/layout_modes";
 
 export const GamePage = observer(function GamePage({displayTimer = false, displayControls = false, children}: {
     displayTimer?: boolean,
@@ -28,14 +29,16 @@ export const GamePage = observer(function GamePage({displayTimer = false, displa
     const boardAspectRatio = boardWidth / boardHeight
     const availableWidth = width - getWidthTaken(layout)
     const availableHeight = height - getHeightTaken(layout)
-    const gameContainerStyle: CSSProperties =
+
+    console.log(availableWidth, availableHeight)
+    const gameContainerStyle =
         availableHeight * boardAspectRatio <= availableWidth ? {
             height: availableHeight,
             width: boardAspectRatio * availableHeight
         } : {
             height: availableWidth / boardAspectRatio,
             width: availableWidth
-        }
+        } satisfies CSSProperties
 
     const layer1Style: CSSProperties = {
         width: "100%",
@@ -54,7 +57,8 @@ export const GamePage = observer(function GamePage({displayTimer = false, displa
         display: "flex",
         flexDirection: historyLayout === "Down" ? "column" : "row",
         alignItems: "center",
-        justifyContent: "space-evenly"
+        justifyContent: "space-evenly",
+        minHeight: 0
     }
 
     const historyContainerStyle: CSSProperties =
@@ -62,12 +66,13 @@ export const GamePage = observer(function GamePage({displayTimer = false, displa
             width: 290,
             marginLeft: 10,
             height: 400,
-            display: "flex"
+            display: "flex",
+            maxHeight: "80vh"
         } : {
             marginLeft: "10%",
             marginRight: "10%",
             height: "fit-content",
-            width: gameContainerStyle.width,
+            width: gameContainerStyle.width + getControlsSpaceTaken(controlsLayout).width,
             marginTop: 10
         }
 
@@ -78,7 +83,7 @@ export const GamePage = observer(function GamePage({displayTimer = false, displa
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            position: "relative"
+            position: "relative",
         }
 
         const timerContainerStyle: CSSProperties = {
@@ -135,7 +140,8 @@ export const GamePage = observer(function GamePage({displayTimer = false, displa
             marginBottom: "auto",
             height: "fit-content",
             display: "flex",
-            flexDirection: "column"
+            flexDirection: "column",
+            scale: controlsLayout === "Right" ? "1" : "0.8"
         }
 
         gamePart = (
@@ -143,12 +149,33 @@ export const GamePage = observer(function GamePage({displayTimer = false, displa
                 <div style={gameContainerStyle}>
                     {children}
                 </div>
-                <div style={{display: "flex", flexDirection: "column", position: "relative", alignItems: "center", minHeight: "100%", marginLeft: 10}}>
-                    <PlayerIcon iconSrc={player2.iconSrc}/>
-                    <ColumnTimer index={0}/>
+                <div style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    position: "relative",
+                    alignItems: "center",
+                    minHeight: "100%",
+                    marginLeft: 10
+                }}>
+                    {controlsLayout === "Right" &&
+                        <>
+                            <PlayerIcon iconSrc={player2.iconSrc}/>
+                            <ColumnTimer index={0}/>
+                        </>
+                    }
+                    {controlsLayout === "Micro" &&
+                        <MicroTimer index={0}/>
+                    }
                     <div style={{flex: 1}}/>
-                    <ColumnTimer index={1}/>
-                    <PlayerIcon iconSrc={player1.iconSrc}/>
+                    {controlsLayout === "Right" &&
+                        <>
+                            <ColumnTimer index={1}/>
+                            <PlayerIcon iconSrc={player1.iconSrc}/>
+                        </>
+                    }
+                    {controlsLayout === "Micro" &&
+                        <MicroTimer index={1} />
+                    }
                     <div style={buttonsContainerStyle}>
                         <ButtonPanel/>
                     </div>

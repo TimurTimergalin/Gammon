@@ -13,4 +13,5 @@ html, body {
     letter-spacing: .07em;
     color: white;
     background-color: #363434;
+    overflow: hidden;
 }
