@@ -143,7 +143,6 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
 
     newGame() {
         this.gameHistoryState.clear()
-        this.timerManager.reset()
         this.boardAnimationSwitch.withTurnedOff(() => {
                 this.board.updateLogical(this.initPlacement())
                 this.active = true
@@ -169,7 +168,26 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         return color === Color.WHITE ? "Белые выиграли" : "Черные выиграли"
     }
 
-    finishGame(winner: Color, points: number, reason?: string) {
+    finishGameAndStartNew(winner: Color, points: number, reason?: string) {
+        this.finishGame(winner, points, reason);
+
+        const matchComplete = this.checkMatchComplete()
+
+        if (matchComplete !== undefined) {
+            this.endWindowState.title = this.winnerTitle(matchComplete.winner)
+
+            this.diceState.dice1 = null
+            this.diceState.dice2 = null
+            return
+        }
+
+        setTimeout(
+            () => this.newGame(),
+            500
+        )
+    }
+
+    private finishGame(winner: Color, points: number, reason: string | undefined) {
         this.controlButtonsState.movesMade = false
         this.controlButtonsState.turnComplete = false
         this.controlButtonsState.canConcedeGame = false
@@ -193,21 +211,6 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
             reason: reason
         }
         this.gameHistoryState.add(entry)
-
-        const matchComplete = this.checkMatchComplete()
-
-        if (matchComplete !== undefined) {
-            this.endWindowState.title = this.winnerTitle(matchComplete.winner)
-
-            this.diceState.dice1 = null
-            this.diceState.dice2 = null
-            return
-        }
-
-        setTimeout(
-            () => this.newGame(),
-            500
-        )
     }
 
     endTurn(): void {
@@ -240,7 +243,7 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
 
         const gameComplete = this.checkGameComplete()
         if (gameComplete !== undefined) {
-            this.finishGame(
+            this.finishGameAndStartNew(
                 gameComplete.winner,
                 this.rules.calculatePoints(this.board.ruleBoard, gameComplete.winner) *
                 this.doubleCubeState.convertedValue
@@ -268,15 +271,12 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
         if (this.endWindowState.title !== undefined) {
             return
         }
-        this.active = false
-        this.controlButtonsState.movesMade = false
-        this.controlButtonsState.canRollDice = false
-        this.controlButtonsState.turnComplete = false
+        this.finishGame(oppositeColor(this.player), 0, "Противник сдался")
         this.endWindowState.title = this.winnerTitle(oppositeColor(this.player))
     }
 
     concedeGame(): void {
-        this.finishGame(oppositeColor(this.player),
+        this.finishGameAndStartNew(oppositeColor(this.player),
             this.doubleCubeState.convertedValue === 1 ? 1 :
                 Math.floor(this.doubleCubeState.convertedValue / 2),
             "Игрок сдался"
@@ -284,7 +284,8 @@ export class LocalGameController<Index, Prop> extends RulesGameController<Index,
     }
 
     onTimeEnd(): void {
-        this.finishGame(oppositeColor(this.player), this.doubleCubeState.convertedValue, "Время вышло")
+        this.finishGame(oppositeColor(this.player), 0, "Время вышло")
+        this.endWindowState.title = this.winnerTitle(oppositeColor(this.player))
     }
 
     _canConcedeGame(): boolean {

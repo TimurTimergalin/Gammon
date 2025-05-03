@@ -1,6 +1,6 @@
 export class ImgCache {
     private images = new Map<string, string>()
-    static readonly placeholder = "/user_icon_placeholder"
+    static readonly placeholder = "/user_icon_placeholder.svg"
     private placeholderDataUrl: string | undefined = undefined
     private errors = new Set<string>()
 

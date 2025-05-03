@@ -21,9 +21,11 @@ const PlainMoveEntry = (
     )
 }
 
-const MoveEntry = styled(PlainMoveEntry)<{nowrap?: boolean}>`
+const MoveEntry = styled(PlainMoveEntry)<{inline?: boolean}>`
     & {
         display: flex;
+        padding-left: 1px;
+        padding-right: 1px;
     }
     
     & > :nth-child(1) {
@@ -32,9 +34,9 @@ const MoveEntry = styled(PlainMoveEntry)<{nowrap?: boolean}>`
 
     & > :nth-child(2) {
         display: flex;
-        flex-wrap: ${({nowrap}) => nowrap ? "nowrap" : "wrap"}; 
+        flex-wrap: ${({inline}) => inline ? "nowrap" : "wrap"}; 
         > *{
-            margin-right: 5px;
+            margin-right: ${({inline}) => inline ? 0 : 5}px;
         }
     }
 `
@@ -75,23 +77,26 @@ const GameEndEntry = styled(PlainGameEndEntry)<{row?: boolean}>`
         flex-direction: ${({row}) => row ? "row" : "column"};
         align-items: center;
         background-color: #a8a8a8;
+        flex: 1
     }
 
     & > :nth-child(1) {
         color: white;
+        margin-left: 1px;
     }
 
     & > :nth-child(3) {
         color: white;
+        margin-right: 1px;
     }
 `
 
 
-const PlainHistoryEntry = observer(function PlainHistoryEntry({entry, className, row, nowrap}: {
+const PlainHistoryEntry = observer(function PlainHistoryEntry({entry, className, row, inline}: {
     entry: GameHistoryEntry,
     className?: string,
     row?: boolean,
-    nowrap?: boolean
+    inline?: boolean
 }) {
     if (entry === undefined) {
         return <></>
@@ -107,7 +112,7 @@ const PlainHistoryEntry = observer(function PlainHistoryEntry({entry, className,
     return (
         <div className={className} style={additionalStyle}>
             {
-                entry.type === "move" ? <MoveEntry {...entry} nowrap={nowrap}/> :
+                entry.type === "move" ? <MoveEntry {...entry} inline={inline}/> :
                     entry.type === "offer_double" ? <OfferDoubleEntry {...entry}/> :
                         entry.type === "accept_double" ? <AcceptDoubleEntry/> :
                             <GameEndEntry {...entry} row={row} />

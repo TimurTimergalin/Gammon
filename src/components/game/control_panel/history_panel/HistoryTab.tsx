@@ -49,7 +49,8 @@ const PlainNormalHistoryTab = observer(function PlainHistoryTab({className}: { c
 
     const game = gameHistoryState.currentGame!
 
-    if (game.firstToMove === Color.BLACK && gameHistoryState.moves.length > 0) {
+    if (game.firstToMove === Color.BLACK && gameHistoryState.moves.length > 0 &&
+        gameHistoryState.moves[0].type !== "game_end") {
         altBg = !altBg
         renderedElements.push(<LineNumberLabel lineNumber={lineNumber++} altBg={altBg} key={key++}/>)
         renderedElements.push(<Skip altBg={altBg} key={key++}/>)
@@ -73,7 +74,7 @@ const PlainNormalHistoryTab = observer(function PlainHistoryTab({className}: { c
             onLeft = !onLeft
         }
     }
-    if (!onLeft) {
+    if (!onLeft && gameHistoryState.moves[gameHistoryState.moves.length - 1].type !== "game_end") {
         renderedElements.push(<Skip altBg={altBg} key={key++}/>)
     }
 
@@ -84,7 +85,7 @@ export const NormalHistoryTab = styled(PlainNormalHistoryTab)`
     background-color: #ddd;
     display: grid;
     grid-template-columns: auto 1fr 1fr;
-    grid-template-rows: repeat(100000, min-content);
+    grid-template-rows: repeat(500, min-content);
     overflow-y: auto;
     scrollbar-width: none;
 `
@@ -113,7 +114,8 @@ const PlainRowHistoryTab = observer(function PlainRowHistoryTab({className}: { c
 
     const game = gameHistoryState.currentGame!
 
-    if (game.firstToMove === Color.BLACK && gameHistoryState.moves.length > 0) {
+    if (game.firstToMove === Color.BLACK && gameHistoryState.moves.length > 0
+        && gameHistoryState.moves[0].type !== "game_end") {
         renderedElements.push(<LineNumberLabel lineNumber={lineNumber++} altBg={false} key={key++}/>)
         renderedElements.push(<Skip altBg={false} key={key++}/>)
         newLine = false
@@ -127,7 +129,7 @@ const PlainRowHistoryTab = observer(function PlainRowHistoryTab({className}: { c
             if (newLine) {
                 renderedElements.push(<LineNumberLabel altBg={false} lineNumber={lineNumber++} key={key++}/>)
             }
-            renderedElements.push(<HistoryEntry entry={entry} altBg={!newLine} nowrap={true} key={key++} />)
+            renderedElements.push(<HistoryEntry entry={entry} altBg={!newLine} inline={true} key={key++} />)
             newLine = !newLine
         }
     }

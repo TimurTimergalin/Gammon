@@ -32,6 +32,7 @@ export function localGameInit<Index, Prop>(
         incrementMs: timeControl.incrementMs,
         timeMs: timeControl.timeMs
     })
+    timerManager.reset()
 
     const controller = new LocalGameController({
         board: board,

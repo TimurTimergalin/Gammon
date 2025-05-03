@@ -23,6 +23,7 @@ export const ScoreText = styled(PlainScoreText)`
     }
     & > :nth-child(1) {
         color: ${colorFill(Color.WHITE)};
+        margin-left: 0.2em;
     }
 
     & > :nth-child(2) {
@@ -33,6 +34,7 @@ export const ScoreText = styled(PlainScoreText)`
 
     & > :nth-child(3) {
         color: ${colorFill(Color.BLACK)};
+        margin-right: 0.2em;
     }
 `
 
@@ -50,6 +52,7 @@ export const NormalScoreTab = styled(PlainScoreTab)`
     & {
         border-radius: 20px 20px 0 0;
         background-color: #a8a8a8;
+        border-bottom: 1px solid #2f2e2d;
     }
 `
 
@@ -57,5 +60,6 @@ export const RowScoreTab = styled(PlainScoreTab)`
     & {
         border-radius: 5px 0 0 5px;
         background-color: #a8a8a8;
+        border-right: 1px solid #2f2e2d;
     }
 `
