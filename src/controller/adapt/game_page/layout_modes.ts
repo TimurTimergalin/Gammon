@@ -2,7 +2,7 @@ import {SpaceTaken, wh} from "../common";
 
 export type HistoryPanelLayoutMode = "Normal" | "Down" | "Micro"
 
-export type ControlsLayoutMode = "Normal" | "Right" | "Micro"
+export type ControlsLayoutMode = "Normal" | "Right" | "MicroRight" | "Micro"
 
 export function getHistoryPanelSpaceTaken(mode: HistoryPanelLayoutMode): SpaceTaken {
     switch (mode) {
@@ -21,8 +21,10 @@ export function getControlsSpaceTaken(mode: ControlsLayoutMode): SpaceTaken {
             return wh(0, 112)
         case "Right":
             return wh(62.5, 0)
-        case "Micro":
+        case "MicroRight":
             return wh(52, 0)
+        case "Micro":
+            return wh(0, 92)
     }
 }
 

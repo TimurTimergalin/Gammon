@@ -40,12 +40,14 @@ const historyLayoutKey = (mode: HistoryPanelLayoutMode) => {
 
 const controlsLayoutKey = (mode: ControlsLayoutMode) => {
     switch (mode) {
-        case "Micro":
+        case "MicroRight":
             return 0
-        case "Right":
+        case "Micro":
             return 1
-        case "Normal":
+        case "Right":
             return 2
+        case "Normal":
+            return 3
     }
 }
 
@@ -93,7 +95,7 @@ export const getGamePageLayoutV2 = (screenWidth: number, screenHeight: number): 
 
     for (const s of (["Normal", "Diminished", "Collapsed"] as SideBarLayoutMode[])) {
         for (const h of (["Normal", "Down", "Micro"] as HistoryPanelLayoutMode[])) {
-            for (const c of (["Normal", "Micro", "Right"] as ControlsLayoutMode[])) {
+            for (const c of (["Normal", "Right", "Micro", "MicroRight"] as ControlsLayoutMode[])) {
                 if (layoutLt(max, [s, h, c], screenWidth, screenHeight)) {
                     max = [s, h, c]
                 }

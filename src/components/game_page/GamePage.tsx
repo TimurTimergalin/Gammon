@@ -128,6 +128,32 @@ export const GamePage = observer(function GamePage({displayTimer = false, displa
                 </div>
             </div>
         )
+    } else if(controlsLayout === "Micro") {
+        const layer3Style: CSSProperties = {
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "relative",
+        }
+
+        gamePart = (
+            <div style={layer3Style}>
+                <div style={{display: "flex", marginBottom: 6, width: "100%"}}>
+                    {displayTimer && <MicroTimer index={0} />}
+                </div>
+                <div style={gameContainerStyle}>
+                    {children}
+                </div>
+                <div style={{display: "flex", marginTop: 6, width: "100%"}}>
+                    {displayTimer && <MicroTimer index={1} />}
+                    <div style={{flex: 1}} />
+                    {displayControls && <div style={{display: "flex"}}>
+                        <ButtonPanel/>
+                    </div>}
+                </div>
+            </div>
+        )
     } else {
         const layer3Style: CSSProperties = {
             display: "flex",
@@ -165,25 +191,25 @@ export const GamePage = observer(function GamePage({displayTimer = false, displa
                     {controlsLayout === "Right" &&
                         <>
                             <PlayerIcon iconSrc={player2.iconSrc}/>
-                            <ColumnTimer index={0}/>
+                            {displayTimer && <ColumnTimer index={0}/>}
                         </>
                     }
-                    {controlsLayout === "Micro" &&
+                    {controlsLayout === "MicroRight" &&
                         <MicroTimer index={0}/>
                     }
                     <div style={{flex: 1}}/>
                     {controlsLayout === "Right" &&
                         <>
-                            <ColumnTimer index={1}/>
+                            {displayTimer && <ColumnTimer index={1}/>}
                             <PlayerIcon iconSrc={player1.iconSrc}/>
                         </>
                     }
-                    {controlsLayout === "Micro" &&
+                    {controlsLayout === "MicroRight" &&
                         <MicroTimer index={1} />
                     }
-                    <div style={buttonsContainerStyle}>
+                    {displayControls && <div style={buttonsContainerStyle}>
                         <ButtonPanel/>
-                    </div>
+                    </div>}
                 </div>
             </div>
         )
