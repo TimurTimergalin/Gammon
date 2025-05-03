@@ -2,7 +2,7 @@ import {observer} from "mobx-react-lite";
 import {GameHistoryEntry} from "../../../../game/game_history_state/GameHistoryState";
 import styled from "styled-components";
 import {Color} from "../../../../common/color";
-import {ScoreText} from "../ScoreTab";
+import {NormalScoreText} from "../ScoreTab";
 import {altBackground} from "./common";
 import {CSSProperties} from "react";
 
@@ -65,7 +65,7 @@ const PlainGameEndEntry = (
     return (
         <div className={className}>
             <div>Победитель: {winner === Color.WHITE ? "Белые" : "Черные"}</div>
-            <ScoreText white={white} black={black}/>
+            <NormalScoreText white={white} black={black}/>
             <div>{reason}</div>
         </div>
     )

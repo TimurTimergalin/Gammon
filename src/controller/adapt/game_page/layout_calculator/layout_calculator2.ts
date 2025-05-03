@@ -29,10 +29,12 @@ const sideBarLayoutKey = (mode: SideBarLayoutMode) => {
 
 const historyLayoutKey = (mode: HistoryPanelLayoutMode) => {
     switch (mode) {
-        case "Down":
+        case "Micro":
             return 0
-        case "Normal":
+        case "Down":
             return 1
+        case "Normal":
+            return 2
     }
 }
 
@@ -62,7 +64,17 @@ const layoutLt = (
         return false
     }
     if (width1 < recommendedBoardWidth) {
-        return width1 < width2
+        if (width1 !== width2) {
+            return width1 < width2
+        }
+        if (sideBarLayoutKey(lay1[0]) !== sideBarLayoutKey(lay2[0])) {
+            return sideBarLayoutKey(lay1[0]) > sideBarLayoutKey(lay2[0])
+        }
+        if (historyLayoutKey(lay1[1]) !== historyLayoutKey(lay2[1])) {
+            return historyLayoutKey(lay1[1]) > historyLayoutKey(lay2[1])
+        }
+
+        return controlsLayoutKey(lay1[2]) > controlsLayoutKey(lay2[2])
     }
 
     if (controlsLayoutKey(lay1[2]) !== controlsLayoutKey(lay2[2])) {
@@ -80,7 +92,7 @@ export const getGamePageLayoutV2 = (screenWidth: number, screenHeight: number): 
     let max: GamePageLayout = ["Normal", "Normal", "Normal"]
 
     for (const s of (["Normal", "Diminished", "Collapsed"] as SideBarLayoutMode[])) {
-        for (const h of (["Normal", "Down"] as HistoryPanelLayoutMode[])) {
+        for (const h of (["Normal", "Down", "Micro"] as HistoryPanelLayoutMode[])) {
             for (const c of (["Normal", "Micro", "Right"] as ControlsLayoutMode[])) {
                 if (layoutLt(max, [s, h, c], screenWidth, screenHeight)) {
                     max = [s, h, c]

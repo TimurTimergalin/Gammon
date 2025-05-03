@@ -96,3 +96,12 @@ export const RowButtonsTab = styled(PlainButtonsTab)`
         justify-content: space-evenly;
     }
 `
+
+export const MicroButtonsTab = styled(PlainButtonsTab)`
+    & {
+        background-color: white;
+        border-radius: 0 0 5px 5px;
+        display: flex;
+        justify-content: space-evenly;
+    }
+`

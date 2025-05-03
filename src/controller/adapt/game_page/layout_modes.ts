@@ -1,6 +1,6 @@
 import {SpaceTaken, wh} from "../common";
 
-export type HistoryPanelLayoutMode = "Normal" | "Down"
+export type HistoryPanelLayoutMode = "Normal" | "Down" | "Micro"
 
 export type ControlsLayoutMode = "Normal" | "Right" | "Micro"
 
@@ -10,6 +10,8 @@ export function getHistoryPanelSpaceTaken(mode: HistoryPanelLayoutMode): SpaceTa
             return wh(300, 0)
         case "Down":
             return wh(0, 65.2)
+        case "Micro":
+            return wh(90, 0)
     }
 }
 

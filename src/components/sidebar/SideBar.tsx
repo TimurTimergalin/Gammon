@@ -104,7 +104,7 @@ const CollapsedSideBar = observer(function CollapsedSideBar() {
     const menuIconStyle: CSSProperties = {
         width: 40,
         alignSelf: "start",
-        marginLeft: 30,
+        marginLeft: 10,
         paddingTop: 10,
         paddingBottom: 10
     }

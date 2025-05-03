@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import {NormalScoreTab, RowScoreTab} from "./ScoreTab";
+import {MicroScoreTab, NormalScoreTab, RowScoreTab} from "./ScoreTab";
 import {NormalHistoryTab, RowHistoryTab} from "./history_panel/HistoryTab";
-import {NormalButtonsTab, RowButtonsTab} from "./ButtonsTab";
+import {MicroButtonsTab, NormalButtonsTab, RowButtonsTab} from "./ButtonsTab";
 import {observer} from "mobx-react-lite";
 import {useGamePageLayout} from "../../adapt/GamePageLayoutProvider";
 
@@ -83,6 +83,31 @@ const RowControlPanel = styled(PlainRowControlPanel)`
     }
 `
 
+
+const PlainMicroControlPanel = ({className}: { className?: string }) => {
+    return (
+        <div className={className}>
+            <MicroScoreTab />
+            <MicroButtonsTab />
+        </div>
+    )
+}
+
+
+const MicroControlPanel = styled(PlainMicroControlPanel)`
+    & {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        align-items: stretch;
+    }
+    
+    & > * {
+        flex: 1;
+    }
+`
+
 export const ControlPanel = observer(function ControlPanel(){
     const mode = useGamePageLayout().layout[1]
     switch (mode) {
@@ -90,5 +115,7 @@ export const ControlPanel = observer(function ControlPanel(){
             return <NormalControlPanel />
         case "Down":
             return <RowControlPanel />
+        case "Micro":
+            return <MicroControlPanel />
     }
 })

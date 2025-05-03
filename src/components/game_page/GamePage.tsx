@@ -68,12 +68,17 @@ export const GamePage = observer(function GamePage({displayTimer = false, displa
             height: 400,
             display: "flex",
             maxHeight: "80vh"
-        } : {
+        } : historyLayout === "Down"? {
             marginLeft: "10%",
             marginRight: "10%",
             height: "fit-content",
             width: gameContainerStyle.width + getControlsSpaceTaken(controlsLayout).width,
             marginTop: 10
+        } : {
+            width: 80,
+            height: "fit-content",
+            marginLeft: 10,
+            display: "flex"
         }
 
     let gamePart: ReactNode
