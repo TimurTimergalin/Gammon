@@ -27,11 +27,11 @@ export default function GameView() {
                 preserveAspectRatio={"xMinYMin"}
                 ref={svgRef}>
                 <BoardLayer/>
-                <HoverLayer/>
                 <IndexLayer />
                 <PiecesLayer/>
                 <MoveHintLayer/>
                 <DiceLayer/>
+                <HoverLayer/>
                 <DoubleCubeLayer />
                 <DragPieceLayer/>
             </svg>
