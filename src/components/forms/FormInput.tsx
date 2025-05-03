@@ -14,8 +14,10 @@ export const FormInput = observer(function FormInput(
 
     useEffect(() => {
         const result = validityCheck(inputRef.current!.value)
-        formState.validity.set(index, result)
-        formState.touched.set(index, false)
+        runInAction(() => {
+            formState.validity.set(index, result)
+            formState.touched.set(index, false)
+        })
     }, [formState, index, validityCheck])
 
     const touched = formState.touched.get(index)!
