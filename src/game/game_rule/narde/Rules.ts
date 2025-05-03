@@ -3,7 +3,8 @@ import {
     allIndices,
     getStore,
     getValue,
-    indicesOf, isHead,
+    indicesOf,
+    isHead,
     isHome,
     isStore,
     NardeIndex,
@@ -193,10 +194,10 @@ private diceToUse(from: NardeIndex, to: NardeIndex, dice: number[], player: Colo
 
     private getHeadMoves(board: NardeBoard, dice: number[]) {
         const whiteHead = board.get(24)
-        const whiteStart = whiteHead !== undefined && whiteHead.quantity === 15
+        const whiteStart = whiteHead !== undefined && whiteHead.quantity === 15 && whiteHead.color === Color.WHITE
         const blackHead = board.get(12)
-        const blackStart = blackHead !== undefined && blackHead.quantity === 15
-        const isDoubled = dice.length === 4 && dice[0] === dice[1] && dice[1] === dice[2] && dice[2] === dice[3]
+        const blackStart = blackHead !== undefined && blackHead.quantity === 15 && blackHead.color === Color.BLACK
+        const isDoubled = dice.length >= 2 && dice[0] === dice[1]
         const isAllowedDouble = dice.length !== 0 && (dice[0] === 3 || dice[0] === 4 || dice[0] === 6)
 
         return whiteStart && blackStart && isDoubled && isAllowedDouble ? 2 : 1
@@ -258,7 +259,7 @@ private diceToUse(from: NardeIndex, to: NardeIndex, dice: number[], player: Colo
             diceValuesCopy.push(...dice)
             board.move(primaryMove.to, primaryMove.from)
         }
-        let initHeadMoves = this.getHeadMoves(board, diceValues)
+        let initHeadMoves = this.getHeadMoves(board, diceValuesCopy)
 
         for (const {primaryMove} of performedMoves.reverse()) {
             board.move(primaryMove.from, primaryMove.to)
