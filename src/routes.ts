@@ -11,9 +11,10 @@ export default [
         layout("./layouts/menu_sidebar_adapt.tsx", [
             route("/play", "./routes/play_menu.tsx"),
             layout("./layouts/auth.tsx", [
-                    route("/sign-in", "./routes/auth/sign_in.tsx"),
-                    route("/sign-up", "./routes/auth/sign_up.tsx")
-                ])
+                route("/sign-in", "./routes/auth/sign_in.tsx"),
+                route("/sign-up", "./routes/auth/sign_up.tsx")
+            ]),
+            route("/profile", "./routes/profile.tsx")
         ])
     ]),
 ] satisfies RouteConfig;
