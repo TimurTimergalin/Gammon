@@ -1,4 +1,4 @@
-import {CSSProperties, useCallback, useEffect, useRef, useState} from "react";
+import {CSSProperties, useCallback, useContext, useEffect, useRef, useState} from "react";
 import {SwitchSelect} from "./SwitchSelect";
 import {AccentedButton} from "../../AccentedButton";
 import {Link, useNavigate} from "react-router";
@@ -10,6 +10,7 @@ import styled from "styled-components";
 import {firstEntryMargin, playButtonStyle, tabEntryStyle} from "./style";
 import {observer} from "mobx-react-lite";
 import {useAuthContext} from "../../../controller/auth_status/context";
+import {ControlPanelContext} from "../../../controller/play_menu/ControlPanelContext";
 
 
 const AnimateEllipsis = ({children}: { children: string }) => {
@@ -42,11 +43,12 @@ const PlayButton = ({onClick}: { onClick: () => void }) => {
     )
 }
 
-const PlainAuthRemoteGameTab = ({className}: { className?: string }) => {
+const PlainAuthRemoteGameTab = observer(({className}: { className?: string }) => {
     const gameMode = useRef(0)
     const pointsUntil = useRef(0)
     const startedConnection = useRef(false)
     const navigate = useNavigate()
+    const controlPanelState = useContext(ControlPanelContext)
     const [fetch, fetchCleanups] = useFetch()
 
     const gameModes = ["Короткие нарды", "Длинные нарды"]
@@ -54,6 +56,7 @@ const PlainAuthRemoteGameTab = ({className}: { className?: string }) => {
 
     const callback = useCallback(() => {
         startedConnection.current = true
+        controlPanelState.enabled = false
         const game = gameMode.current === 0 ? "SHORT_BACKGAMMON" : "REGULAR_GAMMON"
         const points =
             pointsUntil.current === 0 ? 1 :
@@ -71,7 +74,7 @@ const PlainAuthRemoteGameTab = ({className}: { className?: string }) => {
             )
             .then(parseInt)
             .then(roomId => isNaN(roomId) ? console.error("Unable to get roomId") : navigate(playUri(roomId)))
-    }, [fetch, navigate])
+    }, [controlPanelState, fetch, navigate])
 
     useEffect(() => {
         fetchCleanups.add(
@@ -88,14 +91,24 @@ const PlainAuthRemoteGameTab = ({className}: { className?: string }) => {
         return () => console.debug("De-render")
     }, []);
 
+    const screenStyle = {
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        backgroundColor: "#66666666"
+    } satisfies CSSProperties
+
     return (
         <div className={className}>
             <SwitchSelect options={gameModes} callback={(i) => gameMode.current = i}/>
             <SwitchSelect options={pointsOptions} callback={(i) => pointsUntil.current = i}/>
             <PlayButton onClick={callback}/>
+            {!controlPanelState.enabled &&
+                <div style={screenStyle} />
+            }
         </div>
     )
-}
+})
 
 const AuthRemoteGameTab = styled(PlainAuthRemoteGameTab)`
     & {
