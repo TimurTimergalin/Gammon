@@ -1,7 +1,7 @@
 import {CSSProperties, ReactNode} from "react";
 import styled from "styled-components";
 
-function EloIcon({iconSrc, value}: { iconSrc: string, value: number }) {
+function EloIcon({iconSrc, value, title}: { iconSrc: string, value: number, title?: string }) {
     const imgStyle = {
         width: 30,
         aspectRatio: 1,
@@ -9,11 +9,13 @@ function EloIcon({iconSrc, value}: { iconSrc: string, value: number }) {
     } satisfies CSSProperties
     const spanStyle = {
         marginRight: 10,
-        whiteSpace: "nowrap"
+        whiteSpace: "nowrap",
+        display: "inline-flex",
+        alignItems: "center"
     } satisfies CSSProperties
     return (
-        <span style={spanStyle}>
-            <img src={iconSrc} alt={"Иконка режима"} style={imgStyle}/> {value}
+        <span style={spanStyle} title={title}>
+            <img src={iconSrc} alt={"Иконка режима"} style={imgStyle} /> {value}
         </span>
     )
 }
@@ -44,22 +46,21 @@ function ProfileBar() {
         marginTop: 5
     } satisfies CSSProperties
 
-    const pl = "/placeholder.svg"
 
     return (
         <div style={layer1Style}>
             <div style={imgContainerStyle}>
-                <img src={pl} alt={"Аватар"}/>
+                <img src={"/user_icon_placeholder.svg"} alt={"Аватар"} style={{height: "90%", backgroundColor: "#333", padding: "5%"}}/>
             </div>
             <p style={nameStyle}>Отображаемое имя</p>
             <p style={regularTextStyle}><span style={{marginRight: 10}}>Логин</span>
                 <button type={"button"}>Редактировать/Вызвать на матч</button>
             </p>
             <p>
-                <EloIcon iconSrc={pl} value={1000}/>
-                <EloIcon iconSrc={pl} value={1000}/>
-                <EloIcon iconSrc={pl} value={1000}/>
-                <EloIcon iconSrc={pl} value={1000}/>
+                <EloIcon iconSrc={"/backgammon.svg"} value={1000} title={"ELO - Короткие нарды"}/>
+                <EloIcon iconSrc={"/backgammon_blitz.svg"} value={1000} title={"ELO - Короткие нарды (блиц)"}/>
+                <EloIcon iconSrc={"/narde.svg"} value={1000} title={"ELO - Длинные нарды"}/>
+                <EloIcon iconSrc={"/narde_blitz.svg"} value={1000} title={"ELO - Длинные нарды (блиц)"}/>
             </p>
         </div>
     )
@@ -162,11 +163,10 @@ const MatchList = styled(PlainMatchList)`
         align-items: center;
         padding-left: 15px;
         padding-right: 15px;
-        overflow-y: scroll;
+        overflow-y: auto;
 
         > * {
-            height: fit-content;
-            min-height: 50px;
+            height: 50px;
             padding: 5px 20px;
             margin-bottom: 10px;
             width: 90%;
@@ -180,9 +180,9 @@ function PlainProfilePage({className}: { className?: string }) {
         <div className={className}>
             <ProfileBar />
             <MatchList>
-                <MatchEntry userWon={true} gameModeIcon={"/placeholder.svg"} blackElo={1000} whiteName={"u1"} blackName={"u2"} whiteElo={1000} />
-                <MatchEntry userWon={false} gameModeIcon={"/placeholder.svg"} blackElo={1000} whiteName={"u1"} blackName={"u2"} whiteElo={1000} />
-                <MatchEntry userWon={true} gameModeIcon={"/placeholder.svg"} blackElo={1000} whiteName={"u1"} blackName={"u2"} whiteElo={1000} />
+                <MatchEntry userWon={true} gameModeIcon={"/backgammon.svg"} blackElo={1000} whiteName={"u1"} blackName={"u2"} whiteElo={1000} />
+                <MatchEntry userWon={false} gameModeIcon={"/backgammon_blitz.svg"} blackElo={1000} whiteName={"u1"} blackName={"u2"} whiteElo={1000} />
+                <MatchEntry userWon={true} gameModeIcon={"/narde.svg"} blackElo={1000} whiteName={"u1"} blackName={"u2"} whiteElo={1000} />
             </MatchList>
         </div>
     )
