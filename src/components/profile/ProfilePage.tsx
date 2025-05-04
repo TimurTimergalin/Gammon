@@ -1,5 +1,11 @@
-import {CSSProperties, ReactNode} from "react";
+import {CSSProperties, ReactNode, useContext} from "react";
 import styled from "styled-components";
+import {AccentedButton} from "../AccentedButton";
+import {observer} from "mobx-react-lite";
+import {ProfileStatusContext} from "../../controller/profile/context";
+import {useImgCache, useImgPlaceholder} from "../game/img_cache/context";
+import {imageUri} from "../../requests/paths";
+import {useAuthContext} from "../../controller/auth_status/context";
 
 function EloIcon({iconSrc, value, title}: { iconSrc: string, value: number, title?: string }) {
     const imgStyle = {
@@ -20,7 +26,7 @@ function EloIcon({iconSrc, value, title}: { iconSrc: string, value: number, titl
     )
 }
 
-function ProfileBar() {
+const ProfileBar = observer(function ProfileBar() {
     const layer1Style = {
         backgroundColor: "#444444",
         color: "white",
@@ -46,15 +52,30 @@ function ProfileBar() {
         marginTop: 5
     } satisfies CSSProperties
 
+    const buttonStyle = {
+        ...regularTextStyle,
+        borderRadius: 5
+    } satisfies CSSProperties
+
+    const profileStatus = useContext(ProfileStatusContext)!
+    const authStatus = useAuthContext()
+    const placeholderData = useImgPlaceholder()
+
+    const buttonText = authStatus.id === profileStatus.id ? "Редактировать" : "Вызвать на матч"
 
     return (
         <div style={layer1Style}>
             <div style={imgContainerStyle}>
-                <img src={"/user_icon_placeholder.svg"} alt={"Аватар"} style={{height: "90%", backgroundColor: "#333", padding: "5%"}}/>
+                <img
+                    src={useImgCache(imageUri(profileStatus.id))}
+                    alt={"Аватар"}
+                    style={{height: "90%", backgroundColor: "#333", padding: "5%"}}
+                    onError={(e) => e.currentTarget.src = placeholderData}
+                />
             </div>
-            <p style={nameStyle}>Отображаемое имя</p>
-            <p style={regularTextStyle}><span style={{marginRight: 10}}>Логин</span>
-                <button type={"button"}>Редактировать/Вызвать на матч</button>
+            <p style={nameStyle}>{profileStatus.username}</p>
+            <p style={regularTextStyle}><span style={{marginRight: 10}}>{profileStatus.login}</span>
+                <AccentedButton type={"button"} style={buttonStyle}>{buttonText}</AccentedButton>
             </p>
             <p>
                 <EloIcon iconSrc={"/backgammon.svg"} value={1000} title={"ELO - Короткие нарды"}/>
@@ -64,7 +85,7 @@ function ProfileBar() {
             </p>
         </div>
     )
-}
+})
 
 type MatchEntryProp = {
     gameModeIcon: string,
@@ -187,7 +208,6 @@ function PlainProfilePage({className}: { className?: string }) {
         </div>
     )
 }
-
 export const ProfilePage = styled(PlainProfilePage)`
     & {
         display: flex;

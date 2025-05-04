@@ -1,7 +1,6 @@
 import {observer} from "mobx-react-lite";
-import {ComponentProps, CSSProperties, useContext, useState} from "react";
-import {imgCacheContext} from "../img_cache/context";
-import {ImgCache} from "../img_cache/ImgCache";
+import {ComponentProps, CSSProperties, useState} from "react";
+import {useImgCache, useImgPlaceholder} from "../img_cache/context";
 
 export const PlayerIcon = observer(function PlayerIcon({username, iconSrc}:{
     username?: string,
@@ -23,16 +22,15 @@ export const PlayerIcon = observer(function PlayerIcon({username, iconSrc}:{
         alignSelf: "center"
     }
 
-    const imgCache = useContext(imgCacheContext)
+    const [imgSrc, setImgSrc] = useState(useImgCache(iconSrc))
 
-    const [imgSrc, setImgSrc] = useState(imgCache === null ? iconSrc : imgCache.get(iconSrc))
-
+    const placeholderData = useImgPlaceholder()
     const imgProps = {
         src: imgSrc,
         alt: "Icon",
         style: {backgroundColor: "#252323", padding: "2px", width: 30},
         onError: () => {
-            setImgSrc(imgCache?.getPlaceholder() ?? ImgCache.placeholder)
+            setImgSrc(placeholderData)
         }
     } satisfies ComponentProps<"img">
 

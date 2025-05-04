@@ -10,7 +10,7 @@ import {
     eventsUri,
     myUserInfoUri,
     signInUrl,
-    signUpUrl,
+    signUpUrl, userInfoUri,
     usernamesUri
 } from "./paths";
 import {FetchType} from "../common/requests";
@@ -140,8 +140,12 @@ export const signUp = (fetch: FetchType, credentials: SignUpCredentials) => fetc
     }
 })
 
+export type InvitePolicy = "ALL" | "FRIENDS_ONLY"
+
 export type UserInfo = {
     username: string,
+    login: string,
+    policy: InvitePolicy,
     id: number
 }
 
@@ -149,6 +153,10 @@ export function myUserInfo(fetch: FetchType) {
     return fetch(myUserInfoUri, {
         credentials: "include"
     })
+}
+
+export function userInfo(fetch: FetchType, id: number) {
+    return fetch(userInfoUri(id))
 }
 
 export function usernames(fetch: FetchType, ids: number[]) {

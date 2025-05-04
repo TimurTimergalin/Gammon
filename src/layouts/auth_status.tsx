@@ -13,25 +13,31 @@ const loaderDataPostfix = "-loaderData"
 // eslint-disable-next-line react-refresh/only-export-components
 export async function clientLoader(): Promise<UserInfo | null> {
     // Это обход бага в react-router-е (https://github.com/remix-run/react-router/issues/12607)
+    console.log("Auth loader")
     if (sessionStorage.getItem(module + shouldRevalidatePostfix) !== "true") {
         return JSON.parse(sessionStorage.getItem(module + loaderDataPostfix)!)
     }
 
-    const resp = await myUserInfo(fetch)
-    if (!resp.ok) {
-        return null
-    }
 
     try {
-        const res = await resp.json()
-        sessionStorage.setItem(module + loaderDataPostfix, JSON.stringify(res))
+        const resp = await myUserInfo(fetch)
+        if (!resp.ok) {
+            return null
+        }
 
-        return res || null
-    } catch (e) {
-        console.error(e)
+        try {
+            const res = await resp.json()
+            sessionStorage.setItem(module + loaderDataPostfix, JSON.stringify(res))
+
+            return res || null
+        } catch (e) {
+            console.error(e)
+            return null
+        }
+    } catch {
         return null
     }
-    // return
+
 }
 
 function Provider({loaderData}: Route.ComponentProps) {
@@ -40,6 +46,8 @@ function Provider({loaderData}: Route.ComponentProps) {
     useEffect(() => {
         authStatus.current.username = loaderData?.username || null
         authStatus.current.id = loaderData?.id || null
+        authStatus.current.login = loaderData?.login || null
+        authStatus.current.policy = loaderData?.policy || null
     }, [loaderData]);
 
     return <AuthContextProvider value={authStatus.current}><Outlet/></AuthContextProvider>
@@ -47,13 +55,11 @@ function Provider({loaderData}: Route.ComponentProps) {
 
 // eslint-disable-next-line react-refresh/only-export-components
 export function shouldRevalidate({currentUrl, defaultShouldRevalidate}: ShouldRevalidateFunctionArgs) {
-    console.log("defaultSR", defaultShouldRevalidate)
     const res = currentUrl.pathname === "/sign-in" && defaultShouldRevalidate
 
     // Это обход бага в react-router-е (https://github.com/remix-run/react-router/issues/12607)
     sessionStorage.setItem(module + shouldRevalidatePostfix, String(res))
 
-    console.log("shouldRevalidate", res)
     return res
 }
 

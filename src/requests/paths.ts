@@ -12,6 +12,7 @@ export const disconnectUri = "/menu/disconnect"
 export const signInUrl = "/player/login"
 export const signUpUrl = "/player/create"
 export const myUserInfoUri = "/player/me"
+export const userInfoUri = (id: number) => `/player/userinfo?` + new URLSearchParams({userId: String(id)})
 export const imageUri = (id: number) => `/player/image?` + new URLSearchParams({userId: String(id)})
 export const usernamesUri = (ids: number[]) => "/player/usernames?" + new URLSearchParams({
     ids: ids.join(",")

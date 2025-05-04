@@ -1,5 +1,6 @@
 import {ReactNode} from "react";
 import {Links, Meta, Outlet, Scripts, ScrollRestoration} from "react-router";
+import "croppie/croppie.css"
 
 export function Layout(
     {children}: { children: ReactNode }
