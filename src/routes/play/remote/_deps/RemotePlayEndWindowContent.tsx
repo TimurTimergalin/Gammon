@@ -44,7 +44,7 @@ const NewGameButton = (props: ComponentProps<"button">) => {
     }
 
     useEffect(() => {
-        fetchCleanups.push(
+        fetchCleanups.add(
             async () => {
                 if (startedConnection.current) {
                     await disconnect(fetch)

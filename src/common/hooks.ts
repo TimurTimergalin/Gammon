@@ -73,9 +73,9 @@ export function useFactoryRef<T>(factory: () => T) {
     return ref as MutableRefObject<T>
 }
 
-export function useFetch(): [FetchType, (() => Promise<void>)[]] {
+export function useFetch(): [FetchType, Set<(() => Promise<void>)>] {
     const abortControllerRef = useRef(new AbortController())
-    const cleanupsRef = useRef<(() => Promise<void>)[]>([])
+    const cleanupsRef = useRef<Set<(() => Promise<void>)>>(new Set())
 
     useEffect(() => {
         const abortController = abortControllerRef.current
@@ -83,7 +83,7 @@ export function useFetch(): [FetchType, (() => Promise<void>)[]] {
 
         const cleanup = () => {
             window.removeEventListener("unload", cleanup)
-            Promise.all(cleanups.map(cleanup => cleanup())).then(
+            Promise.all(Array.from(cleanups).map(cleanup => cleanup())).then(
                 () => abortController.abort("Component de-render")
             )
         }

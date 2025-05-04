@@ -74,7 +74,7 @@ const PlainAuthRemoteGameTab = ({className}: { className?: string }) => {
     }, [fetch, navigate])
 
     useEffect(() => {
-        fetchCleanups.push(
+        fetchCleanups.add(
             async () => {
                 if (startedConnection.current) {
                     await disconnect(fetch)
