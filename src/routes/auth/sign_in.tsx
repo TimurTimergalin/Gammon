@@ -40,7 +40,7 @@ export async function clientAction({request}: Route.ClientActionArgs) {
 const PlainSignInForm = observer(function LoginFormBase({className}: { className?: string } & Route.ComponentProps) {
     const fetcher = useFetcher()
     return (
-        <FormWithValidation className={className} method={"post"} fetcher={fetcher}>
+        <FormWithValidation className={className} method={"post"} fetcher={fetcher} action={"/sign-in"}>
             <p>Логин</p>
             <AuthFormInput validityCheck={required} index={0} name={"login"}/>
             <AuthFormInputMessage index={0}/>

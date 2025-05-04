@@ -81,11 +81,12 @@ const PlainAuthRemoteGameTab = observer(({className}: { className?: string }) =>
             async () => {
                 if (startedConnection.current) {
                     await disconnect(fetch)
+                    controlPanelState.enabled = true
                     console.debug("Disconnected")
                 }
             }
         )
-    }, [fetch, fetchCleanups]);
+    }, [controlPanelState, fetch, fetchCleanups]);
 
     useEffect(() => {
         return () => console.debug("De-render")
@@ -95,7 +96,7 @@ const PlainAuthRemoteGameTab = observer(({className}: { className?: string }) =>
         position: "absolute",
         width: "100%",
         height: "100%",
-        backgroundColor: "#66666666"
+        backgroundColor: "#66666666",
     } satisfies CSSProperties
 
     return (
@@ -114,6 +115,7 @@ const AuthRemoteGameTab = styled(PlainAuthRemoteGameTab)`
     & {
         display: flex;
         flex-direction: column;
+        position: relative;
     }
 
     & > :nth-child(-n + 2) {

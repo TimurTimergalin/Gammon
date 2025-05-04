@@ -10,6 +10,7 @@ const shouldRevalidatePostfix = "-shouldRevalidate"
 const loaderDataPostfix = "-loaderData"
 
 
+// eslint-disable-next-line react-refresh/only-export-components
 export async function clientLoader(): Promise<UserInfo | null> {
     // Это обход бага в react-router-е (https://github.com/remix-run/react-router/issues/12607)
     if (sessionStorage.getItem(module + shouldRevalidatePostfix) !== "true") {
@@ -44,12 +45,15 @@ function Provider({loaderData}: Route.ComponentProps) {
     return <AuthContextProvider value={authStatus.current}><Outlet/></AuthContextProvider>
 }
 
-export function shouldRevalidate({formAction, defaultShouldRevalidate}: ShouldRevalidateFunctionArgs) {
-    const res = formAction === "/sign-in" && defaultShouldRevalidate
+// eslint-disable-next-line react-refresh/only-export-components
+export function shouldRevalidate({currentUrl, defaultShouldRevalidate}: ShouldRevalidateFunctionArgs) {
+    console.log("defaultSR", defaultShouldRevalidate)
+    const res = currentUrl.pathname === "/sign-in" && defaultShouldRevalidate
 
     // Это обход бага в react-router-е (https://github.com/remix-run/react-router/issues/12607)
     sessionStorage.setItem(module + shouldRevalidatePostfix, String(res))
 
+    console.log("shouldRevalidate", res)
     return res
 }
 
