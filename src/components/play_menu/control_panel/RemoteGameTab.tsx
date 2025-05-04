@@ -1,13 +1,15 @@
-import {useCallback, useEffect, useRef, useState} from "react";
+import {CSSProperties, useCallback, useEffect, useRef, useState} from "react";
 import {SwitchSelect} from "./SwitchSelect";
 import {AccentedButton} from "../../AccentedButton";
-import {useNavigate} from "react-router";
+import {Link, useNavigate} from "react-router";
 import {useFetch} from "../../../common/hooks";
 import {connect, disconnect} from "../../../requests/requests";
 import {logResponseError} from "../../../requests/util";
 import {playUri} from "../../../requests/paths";
 import styled from "styled-components";
 import {firstEntryMargin, playButtonStyle, tabEntryStyle} from "./style";
+import {observer} from "mobx-react-lite";
+import {useAuthContext} from "../../../controller/auth_status/context";
 
 
 const AnimateEllipsis = ({children}: { children: string }) => {
@@ -40,7 +42,7 @@ const PlayButton = ({onClick}: { onClick: () => void }) => {
     )
 }
 
-const PlainRemoteGameTab = ({className}: { className?: string }) => {
+const PlainAuthRemoteGameTab = ({className}: { className?: string }) => {
     const gameMode = useRef(0)
     const pointsUntil = useRef(0)
     const startedConnection = useRef(false)
@@ -95,7 +97,7 @@ const PlainRemoteGameTab = ({className}: { className?: string }) => {
     )
 }
 
-export const RemoteGameTab = styled(PlainRemoteGameTab)`
+const AuthRemoteGameTab = styled(PlainAuthRemoteGameTab)`
     & {
         display: flex;
         flex-direction: column;
@@ -113,3 +115,37 @@ export const RemoteGameTab = styled(PlainRemoteGameTab)`
         ${playButtonStyle}
     }
 `
+
+const PlainNonAuthRemoteGameTab = ({className}: {className?: string}) => {
+    const linkStyle = {
+        color: "#ff7f2a"
+    } satisfies CSSProperties
+
+    return (
+        <div className={className}>
+            <p>Чтобы играть с другими игроками необходимо <Link to={"/sign-in"} style={linkStyle}>войти</Link></p>
+        </div>
+    )
+}
+
+const NonAuthRemoteGameTab = styled(PlainNonAuthRemoteGameTab)`
+    & {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    & >:nth-child(1) {
+        ${tabEntryStyle};
+        text-align: center;
+    }
+`
+
+export const RemoteGameTab = observer(function RemoteGameTab() {
+    const authStatus = useAuthContext()
+
+    if (authStatus.id === null) {
+        return <NonAuthRemoteGameTab />
+    } else {
+        return <AuthRemoteGameTab />
+    }
+})
