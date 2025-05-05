@@ -9,7 +9,11 @@ import {useAuthContext} from "../controller/auth_status/context";
 import {ProfileStatusContext} from "../controller/profile/context";
 import {FetchType} from "../common/requests";
 
-export async function clientLoader({request, params}: Route.ClientLoaderArgs): Promise<UserInfo | null | "Unknown user"> {
+// eslint-disable-next-line react-refresh/only-export-components
+export async function clientLoader({
+                                       request,
+                                       params
+                                   }: Route.ClientLoaderArgs): Promise<UserInfo | null | "Unknown user"> {
     console.log("profile loader")
 
     const userId = params.userId
@@ -38,44 +42,40 @@ const Page = observer(function Page({loaderData}: Route.ComponentProps) {
     const authStatus = useAuthContext()
     const navigate = useNavigate()
     const [unknown, setUnknown] = useState(false)
-    console.log(loaderData)
-    console.log(authStatus.id)
 
     useEffect(() => {
-        setTimeout(() => {
-            if (loaderData === null && authStatus.id === null) {
-                navigate("/sign-in")
-            }
-            if (loaderData === "Unknown user") {
-                setUnknown(true)
-                return
-            }
+        if (loaderData === null && authStatus.id === null) {
+            navigate("/sign-in")
+        }
+        if (loaderData === "Unknown user") {
+            setUnknown(true)
+            return
+        }
 
-            if (loaderData === null) {
-                if (profileStatus === null) {
-                    setProfileState(new ProfileStatus({
-                        id: authStatus.id!,
-                        username: authStatus.username!,
-                        login: authStatus.login!,
-                        policy: authStatus.policy!
-                    }))
-                } else {
-                    profileStatus.id = authStatus.id!
-                    profileStatus.username = authStatus.username!
-                    profileStatus.login = authStatus.login!
-                    profileStatus.policy = authStatus.policy!
-                }
+        if (loaderData === null) {
+            if (profileStatus === null) {
+                setProfileState(new ProfileStatus({
+                    id: authStatus.id!,
+                    username: authStatus.username!,
+                    login: authStatus.login!,
+                    policy: authStatus.policy!
+                }))
             } else {
-                if (profileStatus === null) {
-                    setProfileState(new ProfileStatus(loaderData))
-                } else {
-                    profileStatus.id = loaderData.id
-                    profileStatus.username = loaderData.username
-                    profileStatus.login = loaderData.login
-                    profileStatus.policy = loaderData.policy
-                }
+                profileStatus.id = authStatus.id!
+                profileStatus.username = authStatus.username!
+                profileStatus.login = authStatus.login!
+                profileStatus.policy = authStatus.policy!
             }
-        })
+        } else {
+            if (profileStatus === null) {
+                setProfileState(new ProfileStatus(loaderData))
+            } else {
+                profileStatus.id = loaderData.id
+                profileStatus.username = loaderData.username
+                profileStatus.login = loaderData.login
+                profileStatus.policy = loaderData.policy
+            }
+        }
     }, [authStatus, loaderData, navigate, profileStatus]);
 
     if (unknown) {

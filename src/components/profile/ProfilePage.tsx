@@ -69,7 +69,7 @@ const ProfileBar = observer(function ProfileBar() {
                 <img
                     src={useImgCache(imageUri(profileStatus.id))}
                     alt={"Аватар"}
-                    style={{height: "90%", backgroundColor: "#333", padding: "5%"}}
+                    style={{height: "90%", backgroundColor: "#333", padding: "5%", aspectRatio: 1}}
                     onError={(e) => e.currentTarget.src = placeholderData}
                 />
             </div>
@@ -104,7 +104,7 @@ function PlainMatchEntry({className, gameModeIcon, whiteName, whiteElo, blackNam
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        width: "fit-content",
+        aspectRatio: 1,
         marginRight: 10
     } satisfies CSSProperties
 

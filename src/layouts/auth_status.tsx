@@ -1,7 +1,7 @@
 import {myUserInfo, UserInfo} from "../requests/requests";
 import {Outlet, ShouldRevalidateFunctionArgs} from "react-router";
 import {type Route} from "./+types/auth_status"
-import {useEffect, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 import {AuthStatus} from "../controller/auth_status/AuthStatus";
 import {AuthContextProvider} from "../controller/auth_status/context";
 
@@ -42,13 +42,19 @@ export async function clientLoader(): Promise<UserInfo | null> {
 
 function Provider({loaderData}: Route.ComponentProps) {
     const authStatus = useRef(new AuthStatus())
+    const [init, setInit] = useState(false)
 
     useEffect(() => {
         authStatus.current.username = loaderData?.username || null
         authStatus.current.id = loaderData?.id || null
         authStatus.current.login = loaderData?.login || null
         authStatus.current.policy = loaderData?.policy || null
+        setInit(true)
     }, [loaderData]);
+
+    if (!init) {
+        return <></>
+    }
 
     return <AuthContextProvider value={authStatus.current}><Outlet/></AuthContextProvider>
 }
