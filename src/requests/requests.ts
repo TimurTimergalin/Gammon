@@ -10,7 +10,7 @@ import {
     eventsUri,
     myUserInfoUri,
     signInUrl,
-    signUpUrl, userInfoUri,
+    signUpUrl, uploadImgUri, userInfoUri,
     usernamesUri
 } from "./paths";
 import {FetchType} from "../common/requests";
@@ -161,4 +161,10 @@ export function userInfo(fetch: FetchType, id: number) {
 
 export function usernames(fetch: FetchType, ids: number[]) {
     return fetch(usernamesUri(ids))
+}
+
+export function uploadImage(fetch: FetchType, data: Blob, filename: string) {
+    const formData = new FormData()
+    formData.append("icon", data, filename)
+    return fetch(uploadImgUri, {credentials: "include", body: formData, method: "POST"})
 }

@@ -1,4 +1,4 @@
-import {ImgCacheProvider} from "../components/game/img_cache/provider";
+import {ImgCacheProvider} from "../controller/img_cache/provider";
 import {Outlet} from "react-router";
 
 export default function Provider() {

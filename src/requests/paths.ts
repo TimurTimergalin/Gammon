@@ -17,3 +17,4 @@ export const imageUri = (id: number) => `/player/image?` + new URLSearchParams({
 export const usernamesUri = (ids: number[]) => "/player/usernames?" + new URLSearchParams({
     ids: ids.join(",")
 })
+export const uploadImgUri = "/player/image"

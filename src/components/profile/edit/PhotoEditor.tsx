@@ -10,6 +10,10 @@ import {autorun} from "mobx";
 import Croppie from "croppie/croppie.js"
 import "croppie/croppie.min.js"
 import "croppie/croppie.css"
+import {useInvalidate} from "../../../controller/img_cache/context";
+import {uploadImage} from "../../../requests/requests";
+import {imageUri} from "../../../requests/paths";
+import {useAuthContext} from "../../../controller/auth_status/context";
 
 
 const CancelButton = styled.button`
@@ -41,6 +45,7 @@ const PlainPhotoEditor = observer(({className}: { className?: string }) => {
     const [containerContent, setContainerContent] = useState<ReactNode>(<></>)
     const crop = useRef<Croppie>(undefined)
     const containerRef = useRef<HTMLDivElement | null>(null)
+    const authStatus = useAuthContext()
 
     useEffect(() => {
         return autorun(() => {
@@ -86,6 +91,20 @@ const PlainPhotoEditor = observer(({className}: { className?: string }) => {
         photoEditStatus.cropInit = false
     }
 
+    const invalidateCache = useInvalidate()
+
+    const upload = () => {
+        crop.current?.result({type: "blob", format: "jpg"}).then(
+            (blob: Blob) => {
+                photoEditStatus.image = undefined
+                photoEditStatus.cropInit = false
+                photoEditStatus.show = false
+                invalidateCache(imageUri(authStatus.id!))
+                return uploadImage(fetch, blob, "icon.jpg")
+            }
+        )
+    }
+
     return (
         <div className={className}>
             <div style={imgContainerStyle} ref={containerRef}>
@@ -96,6 +115,7 @@ const PlainPhotoEditor = observer(({className}: { className?: string }) => {
                 <AccentedButton type={"button"}
                                 disabled={typeof photoEditStatus.image !== "string" || !photoEditStatus.cropInit}
                                 style={buttonsStyle}
+                                onClick={upload}
                 >Загрузить</AccentedButton>
             </div>
         </div>

@@ -1,6 +1,6 @@
 import {observer} from "mobx-react-lite";
 import {ComponentProps, CSSProperties, useState} from "react";
-import {useImgCache, useImgPlaceholder} from "../img_cache/context";
+import {useImgCache, useImgPlaceholder} from "../../../controller/img_cache/context";
 
 export const PlayerIcon = observer(function PlayerIcon({username, iconSrc}:{
     username?: string,
@@ -34,6 +34,7 @@ export const PlayerIcon = observer(function PlayerIcon({username, iconSrc}:{
         }
     } satisfies ComponentProps<"img">
 
+    // noinspection HtmlRequiredAltAttribute
     const img = <img {...imgProps} />
 
     return (

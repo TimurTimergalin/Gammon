@@ -1,3 +1,5 @@
+import {makeAutoObservable, runInAction} from "mobx";
+
 export class ImgCache {
     private images = new Map<string, string>()
     static readonly placeholder = "/user_icon_placeholder.svg"
@@ -6,8 +8,9 @@ export class ImgCache {
 
     constructor() {
         this.getDataUrl(ImgCache.placeholder).then(
-            dataUrl => this.placeholderDataUrl = dataUrl
+            dataUrl => runInAction(() => {this.placeholderDataUrl = dataUrl})
         )
+        makeAutoObservable(this)
     }
 
     private async getDataUrl(src: string): Promise<string> {
@@ -29,12 +32,16 @@ export class ImgCache {
             return this.placeholderDataUrl ?? ImgCache.placeholder
         }
         this.getDataUrl(src)
-            .then(dataUrl => this.images.set(src, dataUrl as string))
+            .then(dataUrl => runInAction(() => {this.images.set(src, dataUrl as string)}))
             .catch(() => this.errors.add(src))
         return src
     }
 
     getPlaceholder() {
         return this.placeholderDataUrl ?? ImgCache.placeholder
+    }
+
+    invalidate(src: string) {
+        this.images.delete(src)
     }
 }

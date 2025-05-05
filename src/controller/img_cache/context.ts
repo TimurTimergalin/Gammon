@@ -1,4 +1,4 @@
-import {createContext, useContext} from "react";
+import {createContext, useCallback, useContext} from "react";
 import {ImgCache} from "./ImgCache";
 
 export const imgCacheContext = createContext<ImgCache | null>(null)
@@ -12,4 +12,9 @@ export const useImgCache = (src: string) => {
 export const useImgPlaceholder = () => {
     const imgCache = useContext(imgCacheContext)
     return imgCache?.getPlaceholder() ?? ImgCache.placeholder
+}
+
+export const useInvalidate = () => {
+    const imgCache = useContext(imgCacheContext)
+    return useCallback((src: string) => imgCache?.invalidate(src), [imgCache])
 }

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import {observer} from "mobx-react-lite";
 import {useAuthContext} from "../../../controller/auth_status/context";
-import {useImgCache, useImgPlaceholder} from "../../game/img_cache/context";
+import {useImgCache, useImgPlaceholder} from "../../../controller/img_cache/context";
 import {imageUri} from "../../../requests/paths";
 import {AccentedButton} from "../../AccentedButton";
 import {useContext, useRef} from "react";
