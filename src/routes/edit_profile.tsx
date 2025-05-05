@@ -1,3 +1,3 @@
-import {EditProfilePage} from "../components/profile/EditProfilePage";
+import {EditProfilePage} from "../components/profile/edit/EditProfilePage";
 
 export default EditProfilePage

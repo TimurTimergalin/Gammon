@@ -1,0 +1,139 @@
+import styled from "styled-components";
+import {observer} from "mobx-react-lite";
+import {CSSProperties, ReactNode, useContext, useEffect, useRef, useState} from "react";
+import {PhotoEditContext} from "../../../controller/photo_edit/context";
+import {AccentedButton} from "../../AccentedButton";
+import {fontFamily} from "../../../common/font";
+import {autorun} from "mobx";
+
+// @ts-expect-error not ts module
+import Croppie from "croppie/croppie.js"
+import "croppie/croppie.min.js"
+import "croppie/croppie.css"
+
+
+const CancelButton = styled.button`
+    & {
+        justify-content: center;
+        align-items: center;
+        user-select: none;
+        background-color: #888;
+        border: 0;
+        font-family: ${fontFamily}, sans-serif;
+        color: white;
+    }
+
+    &[disabled], &:disabled {
+        background-color: #976646;
+    }
+
+    &:hover:enabled {
+        background-color: #999;
+    }
+
+    &:active:enabled {
+        background-color: #aaa;
+    }
+`
+
+const PlainPhotoEditor = observer(({className}: { className?: string }) => {
+    const photoEditStatus = useContext(PhotoEditContext)!
+    const [containerContent, setContainerContent] = useState<ReactNode>(<></>)
+    const crop = useRef<Croppie>(undefined)
+    const containerRef = useRef<HTMLDivElement | null>(null)
+
+    useEffect(() => {
+        return autorun(() => {
+            if (typeof photoEditStatus.image !== "string" && crop.current !== undefined) {
+                crop.current.destroy()
+                crop.current = undefined
+                photoEditStatus.cropInit = false
+            }
+            if (photoEditStatus.image === undefined) {
+                setContainerContent(<></>)
+            } else if (photoEditStatus.image === false) {
+                setContainerContent(<p>Ошибка при загрузке изображения</p>)
+            } else {
+                crop.current = new Croppie(containerRef.current, {viewport: {type: "square"}})
+                crop.current.bind({url: photoEditStatus.image})
+                    .then(() => photoEditStatus.cropInit = true)
+                    .catch(() => photoEditStatus.image = false)
+            }
+        })
+    }, [photoEditStatus]);
+
+
+    const imgContainerStyle = {
+        flex: 1,
+        backgroundColor: "#252323",
+        marginBottom: 10,
+        minHeight: 0,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center"
+    } satisfies CSSProperties
+
+    const buttonsStyle = {
+        height: 40,
+        width: 80,
+        borderRadius: 5
+    } satisfies CSSProperties
+
+    const cancel = () => {
+        photoEditStatus.image = undefined
+        photoEditStatus.show = false
+        photoEditStatus.cropInit = false
+    }
+
+    return (
+        <div className={className}>
+            <div style={imgContainerStyle} ref={containerRef}>
+                {containerContent}
+            </div>
+            <div style={{display: "flex", justifyContent: "space-evenly"}}>
+                <CancelButton type={"button"} style={buttonsStyle} onClick={cancel}>Отмена</CancelButton>
+                <AccentedButton type={"button"}
+                                disabled={typeof photoEditStatus.image !== "string" || !photoEditStatus.cropInit}
+                                style={buttonsStyle}
+                >Загрузить</AccentedButton>
+            </div>
+        </div>
+    )
+})
+
+const PhotoEditor = styled(PlainPhotoEditor)`
+    & {
+        background-color: #444444;
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+    }
+`
+
+const PlainPhotoEditorTab = observer(({className}: { className?: string }) => {
+    const photoEditStatus = useContext(PhotoEditContext)!
+
+    return (
+        <div className={className} style={{display: photoEditStatus.show ? "flex" : "none"}}>
+            <PhotoEditor/>
+        </div>
+    )
+})
+
+export const PhotoEditorTab = styled(PlainPhotoEditorTab)`
+    & {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: #222222aa;
+    }
+
+    & > * {
+        width: 40%;
+        height: 60%;
+        min-width: 300px;
+        margin: auto;
+    }
+`
