@@ -7,8 +7,9 @@ import {userInfo, UserInfo} from "../requests/requests";
 import {observer} from "mobx-react-lite";
 import {useAuthContext} from "../controller/auth_status/context";
 import {ProfileStatusContext} from "../controller/profile/context";
+import {FetchType} from "../common/requests";
 
-export async function clientLoader({params}: Route.ClientLoaderArgs): Promise<UserInfo | null | "Unknown user"> {
+export async function clientLoader({request, params}: Route.ClientLoaderArgs): Promise<UserInfo | null | "Unknown user"> {
     console.log("profile loader")
 
     const userId = params.userId
@@ -19,7 +20,10 @@ export async function clientLoader({params}: Route.ClientLoaderArgs): Promise<Us
     }
 
     try {
-        const res = await userInfo(fetch, intUserId)
+        const cancellableFetch: FetchType = (input, init) =>
+            fetch(input, {signal: request.signal, ...init})
+
+        const res = await userInfo(cancellableFetch, intUserId)
         if (!res.ok) {
             return "Unknown user"
         }
