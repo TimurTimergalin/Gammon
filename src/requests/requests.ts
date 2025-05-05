@@ -165,6 +165,6 @@ export function usernames(fetch: FetchType, ids: number[]) {
 
 export function uploadImage(fetch: FetchType, data: Blob, filename: string) {
     const formData = new FormData()
-    formData.append("icon", data, filename)
+    formData.append("file", data, filename)
     return fetch(uploadImgUri, {credentials: "include", body: formData, method: "POST"})
 }
