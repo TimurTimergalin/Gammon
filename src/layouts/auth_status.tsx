@@ -15,7 +15,9 @@ export async function clientLoader(): Promise<UserInfo | null> {
     // Это обход бага в react-router-е (https://github.com/remix-run/react-router/issues/12607)
     console.log("Auth loader")
     if (sessionStorage.getItem(module + shouldRevalidatePostfix) !== "true") {
-        return JSON.parse(sessionStorage.getItem(module + loaderDataPostfix)!)
+        const res = JSON.parse(sessionStorage.getItem(module + loaderDataPostfix)!)
+        console.log(res)
+        return res
     }
 
 
@@ -29,6 +31,7 @@ export async function clientLoader(): Promise<UserInfo | null> {
             const res = await resp.json()
             sessionStorage.setItem(module + loaderDataPostfix, JSON.stringify(res))
 
+            console.log(res)
             return res || null
         } catch (e) {
             console.error(e)
@@ -48,7 +51,7 @@ function Provider({loaderData}: Route.ComponentProps) {
         authStatus.current.username = loaderData?.username || null
         authStatus.current.id = loaderData?.id || null
         authStatus.current.login = loaderData?.login || null
-        authStatus.current.policy = loaderData?.policy || null
+        authStatus.current.invitePolicy = loaderData?.invitePolicy || null
         setInit(true)
     }, [loaderData]);
 

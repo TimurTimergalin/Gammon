@@ -2,12 +2,12 @@ import {makeAutoObservable} from "mobx";
 import {InvitePolicy} from "../../requests/requests";
 
 export class AuthStatus {
-    get policy(): InvitePolicy | null {
-        return this._policy;
+    get invitePolicy(): InvitePolicy | null {
+        return this._invitePolicy;
     }
 
-    set policy(value: InvitePolicy | null) {
-        this._policy = value;
+    set invitePolicy(value: InvitePolicy | null) {
+        this._invitePolicy = value;
     }
     get login(): string | null {
         return this._login;
@@ -33,7 +33,7 @@ export class AuthStatus {
     private _username: string | null = null
     private _id: number | null = null
     private _login: string | null = null
-    private _policy: InvitePolicy | null = null
+    private _invitePolicy: InvitePolicy | null = null
 
     constructor() {
         makeAutoObservable(this)

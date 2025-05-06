@@ -10,8 +10,8 @@ import {
     eventsUri,
     myUserInfoUri,
     signInUrl,
-    signUpUrl, uploadImgUri, userInfoUri,
-    usernamesUri
+    signUpUrl, uploadImgUri, getUserInfoUri,
+    usernamesUri, updateUserInfoUri
 } from "./paths";
 import {FetchType} from "../common/requests";
 
@@ -145,7 +145,7 @@ export type InvitePolicy = "ALL" | "FRIENDS_ONLY"
 export type UserInfo = {
     username: string,
     login: string,
-    policy: InvitePolicy,
+    invitePolicy: InvitePolicy,
     id: number
 }
 
@@ -156,7 +156,24 @@ export function myUserInfo(fetch: FetchType) {
 }
 
 export function userInfo(fetch: FetchType, id: number) {
-    return fetch(userInfoUri(id))
+    return fetch(getUserInfoUri(id))
+}
+
+export type UpdateUserInfoRequest = {
+    username: string,
+    login: string,
+    invitePolicy: InvitePolicy
+}
+
+export function updateUserInfo(fetch: FetchType, props: UpdateUserInfoRequest) {
+    return fetch(updateUserInfoUri, {
+        method: "PUT",
+        credentials: "include",
+        body: JSON.stringify(props),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
 }
 
 export function usernames(fetch: FetchType, ids: number[]) {

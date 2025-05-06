@@ -8,6 +8,7 @@ import {ImageContainer} from "./ImageContainer";
 import {PhotoEditorTab} from "./PhotoEditor";
 import {PhotoEditContext} from "../../../controller/photo_edit/context";
 import {PhotoEditStatus} from "../../../controller/photo_edit/PhotoEditStatus";
+import {FormStateProvider} from "../../../controller/forms/FormStateProvider";
 
 const PlainEditProfileTab = observer(function EditProfilePage({className}: { className?: string }) {
     const authStatus = useAuthContext()
@@ -36,7 +37,9 @@ const PlainEditProfileTab = observer(function EditProfilePage({className}: { cla
         <div className={className}>
             <ImageContainer/>
             <div style={formContainerStyle}>
-                <EditProfileForm/>
+                <FormStateProvider>
+                    <EditProfileForm/>
+                </FormStateProvider>
             </div>
         </div>
     )

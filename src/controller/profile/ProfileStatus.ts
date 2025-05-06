@@ -2,12 +2,12 @@ import {InvitePolicy} from "../../requests/requests";
 import {makeAutoObservable} from "mobx";
 
 export class ProfileStatus {
-    get policy(): InvitePolicy {
-        return this._policy;
+    get invitePolicy(): InvitePolicy {
+        return this._invitePolicy;
     }
 
-    set policy(value: InvitePolicy) {
-        this._policy = value;
+    set invitePolicy(value: InvitePolicy) {
+        this._invitePolicy = value;
     }
     get login(): string {
         return this._login;
@@ -33,14 +33,14 @@ export class ProfileStatus {
     private _id: number
     private _username: string
     private _login: string
-    private _policy: InvitePolicy
+    private _invitePolicy: InvitePolicy
 
 
-    constructor({id, username, login, policy}: { id: number, username: string, login: string, policy: InvitePolicy }) {
+    constructor({id, username, login, invitePolicy}: { id: number, username: string, login: string, invitePolicy: InvitePolicy }) {
         this._id = id;
         this._username = username;
         this._login = login;
-        this._policy = policy;
+        this._invitePolicy = invitePolicy;
         makeAutoObservable(this)
     }
 }

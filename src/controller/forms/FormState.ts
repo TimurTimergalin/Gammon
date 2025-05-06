@@ -4,14 +4,8 @@ import {ValidityCheckResult} from "./validators";
 
 
 export class FormState {
-    private _formData: FormData | null = null
-    get formData(): FormData | null {
-        return this._formData;
-    }
-
     readonly validity: Map<number, ValidityCheckResult> = new Map()
     readonly touched: Map<number, boolean> = new Map()
-    readonly defaultOnSubmit = () => console.error("No onSubmit specified")
 
     get onSubmit(): (e: FormEvent) => void {
         return (e: FormEvent) => {

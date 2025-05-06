@@ -3,7 +3,6 @@ import {observer} from "mobx-react-lite";
 import {CSSProperties, ReactNode, useContext, useEffect, useRef, useState} from "react";
 import {PhotoEditContext} from "../../../controller/photo_edit/context";
 import {AccentedButton} from "../../AccentedButton";
-import {fontFamily} from "../../../common/font";
 import {autorun} from "mobx";
 
 // @ts-expect-error not ts module
@@ -14,31 +13,8 @@ import {useInvalidate} from "../../../controller/img_cache/context";
 import {uploadImage} from "../../../requests/requests";
 import {imageUri} from "../../../requests/paths";
 import {useAuthContext} from "../../../controller/auth_status/context";
+import {GreyButton} from "./common";
 
-
-const CancelButton = styled.button`
-    & {
-        justify-content: center;
-        align-items: center;
-        user-select: none;
-        background-color: #888;
-        border: 0;
-        font-family: ${fontFamily}, sans-serif;
-        color: white;
-    }
-
-    &[disabled], &:disabled {
-        background-color: #976646;
-    }
-
-    &:hover:enabled {
-        background-color: #999;
-    }
-
-    &:active:enabled {
-        background-color: #aaa;
-    }
-`
 
 const PlainPhotoEditor = observer(({className}: { className?: string }) => {
     const photoEditStatus = useContext(PhotoEditContext)!
@@ -111,7 +87,7 @@ const PlainPhotoEditor = observer(({className}: { className?: string }) => {
                 {containerContent}
             </div>
             <div style={{display: "flex", justifyContent: "space-evenly"}}>
-                <CancelButton type={"button"} style={buttonsStyle} onClick={cancel}>Отмена</CancelButton>
+                <GreyButton type={"button"} style={buttonsStyle} onClick={cancel}>Отмена</GreyButton>
                 <AccentedButton type={"button"}
                                 disabled={typeof photoEditStatus.image !== "string" || !photoEditStatus.cropInit}
                                 style={buttonsStyle}

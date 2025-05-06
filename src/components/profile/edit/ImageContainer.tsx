@@ -63,4 +63,8 @@ export const ImageContainer = styled(PlainImageContainer)`
         padding: 6px;
         background-color: #252323;
     }
+    & > ${AccentedButton} {
+        font-size: 20px;
+        border-radius: 5px;
+    }
 `

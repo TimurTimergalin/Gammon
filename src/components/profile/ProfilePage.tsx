@@ -6,6 +6,7 @@ import {ProfileStatusContext} from "../../controller/profile/context";
 import {useImgCache, useImgPlaceholder} from "../../controller/img_cache/context";
 import {imageUri} from "../../requests/paths";
 import {useAuthContext} from "../../controller/auth_status/context";
+import {useNavigate} from "react-router";
 
 function EloIcon({iconSrc, value, title}: { iconSrc: string, value: number, title?: string }) {
     const imgStyle = {
@@ -60,8 +61,11 @@ const ProfileBar = observer(function ProfileBar() {
     const profileStatus = useContext(ProfileStatusContext)!
     const authStatus = useAuthContext()
     const placeholderData = useImgPlaceholder()
+    const navigate = useNavigate()
 
     const buttonText = authStatus.id === profileStatus.id ? "Редактировать" : "Вызвать на матч"
+
+    const buttonOnClick = authStatus.id === profileStatus.id ? () => {navigate("/edit-profile")} : () => {}
 
     return (
         <div style={layer1Style}>
@@ -75,7 +79,7 @@ const ProfileBar = observer(function ProfileBar() {
             </div>
             <p style={nameStyle}>{profileStatus.username}</p>
             <p style={regularTextStyle}><span style={{marginRight: 10}}>{profileStatus.login}</span>
-                <AccentedButton type={"button"} style={buttonStyle}>{buttonText}</AccentedButton>
+                <AccentedButton type={"button"} style={buttonStyle} onClick={buttonOnClick}>{buttonText}</AccentedButton>
             </p>
             <p>
                 <EloIcon iconSrc={"/backgammon.svg"} value={1000} title={"ELO - Короткие нарды"}/>

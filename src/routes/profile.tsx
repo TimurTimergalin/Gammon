@@ -58,13 +58,13 @@ const Page = observer(function Page({loaderData}: Route.ComponentProps) {
                     id: authStatus.id!,
                     username: authStatus.username!,
                     login: authStatus.login!,
-                    policy: authStatus.policy!
+                    invitePolicy: authStatus.invitePolicy!
                 }))
             } else {
                 profileStatus.id = authStatus.id!
                 profileStatus.username = authStatus.username!
                 profileStatus.login = authStatus.login!
-                profileStatus.policy = authStatus.policy!
+                profileStatus.invitePolicy = authStatus.invitePolicy!
             }
         } else {
             if (profileStatus === null) {
@@ -73,7 +73,7 @@ const Page = observer(function Page({loaderData}: Route.ComponentProps) {
                 profileStatus.id = loaderData.id
                 profileStatus.username = loaderData.username
                 profileStatus.login = loaderData.login
-                profileStatus.policy = loaderData.policy
+                profileStatus.invitePolicy = loaderData.invitePolicy
             }
         }
     }, [authStatus, loaderData, navigate, profileStatus]);
