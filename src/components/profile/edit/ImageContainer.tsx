@@ -16,7 +16,7 @@ const PlainImageContainer = observer(({className}: { className?: string }) => {
 
     const inputOnChange = () => {
         const input = inputRef.current!
-        if (!input.files) {
+        if (!input.files || input.files.length === 0) {
             photoEditStatus.show = false
             return
         }

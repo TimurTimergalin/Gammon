@@ -14,6 +14,7 @@ import {uploadImage} from "../../../requests/requests";
 import {imageUri} from "../../../requests/paths";
 import {useAuthContext} from "../../../controller/auth_status/context";
 import {GreyButton} from "./common";
+import {useNavigate} from "react-router";
 
 
 const PlainPhotoEditor = observer(({className}: { className?: string }) => {
@@ -22,6 +23,7 @@ const PlainPhotoEditor = observer(({className}: { className?: string }) => {
     const crop = useRef<Croppie>(undefined)
     const containerRef = useRef<HTMLDivElement | null>(null)
     const authStatus = useAuthContext()
+    const navigate = useNavigate()
 
     useEffect(() => {
         return autorun(() => {
@@ -78,7 +80,7 @@ const PlainPhotoEditor = observer(({className}: { className?: string }) => {
                 invalidateCache(imageUri(authStatus.id!))
                 return uploadImage(fetch, blob, "icon.jpg")
             }
-        )
+        ).then(() => navigate(0))
     }
 
     return (
