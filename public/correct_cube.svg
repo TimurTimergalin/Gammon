@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="200"
+   height="200"
+   viewBox="0 0 200 200.00001"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   sodipodi:docname="correct_cube.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#111111"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     inkscape:zoom="2.7545174"
+     inkscape:cx="65.89176"
+     inkscape:cy="132.69112"
+     inkscape:window-width="1920"
+     inkscape:window-height="991"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <rect
+       x="1.08912"
+       y="1.08912"
+       width="198.21984"
+       height="199.30896"
+       id="rect1" />
+  </defs>
+  <g
+     inkscape:label="Слой 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <circle
+       style="fill:#81d57a;fill-opacity:1;stroke-width:1.202"
+       id="path1"
+       cx="-100"
+       cy="100"
+       r="100"
+       transform="scale(-1,1)" />
+    <g
+       id="g2"
+       transform="translate(0.36304,-1.8152)">
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke-width:1.202"
+         id="rect2"
+         width="123"
+         height="30"
+         x="-78.890381"
+         y="143.66394"
+         transform="matrix(-0.71795563,0.69608887,0.69608887,0.71795563,0,0)" />
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke-width:1.202"
+         id="rect2-8"
+         width="76"
+         height="30"
+         x="93.684761"
+         y="18.160807"
+         transform="rotate(44.11405)" />
+    </g>
+  </g>
+</svg>
