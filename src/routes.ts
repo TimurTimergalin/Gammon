@@ -16,7 +16,8 @@ export default [
                     route("/sign-up", "./routes/auth/sign_up.tsx")
                 ]),
                 route("/profile/:userId?", "./routes/profile.tsx"),
-                route("/edit-profile", "./routes/edit_profile.tsx")
+                route("/edit-profile", "./routes/edit_profile.tsx"),
+                route("/history", "./routes/history.tsx")
             ])
         ]),
     ]),
