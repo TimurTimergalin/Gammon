@@ -29,7 +29,6 @@ export const GamePage = observer(function GamePage({displayTimer = false, displa
     const availableWidth = width - getWidthTaken(layout)
     const availableHeight = height - getHeightTaken(layout)
 
-    console.log(availableWidth, availableHeight)
     const gameContainerStyle =
         availableHeight * boardAspectRatio <= availableWidth ? {
             height: availableHeight,

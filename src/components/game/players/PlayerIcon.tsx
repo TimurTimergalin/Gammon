@@ -1,6 +1,6 @@
 import {observer} from "mobx-react-lite";
-import {ComponentProps, CSSProperties, useState} from "react";
-import {useImgCache, useImgPlaceholder} from "../../../controller/img_cache/context";
+import {ComponentProps, CSSProperties, useContext, useEffect, useState} from "react";
+import {imgCacheContext, useImgCache, useImgPlaceholder} from "../../../controller/img_cache/context";
 
 export const PlayerIcon = observer(function PlayerIcon({username, iconSrc}:{
     username?: string,
@@ -21,8 +21,17 @@ export const PlayerIcon = observer(function PlayerIcon({username, iconSrc}:{
         height: "min-content",
         alignSelf: "center"
     }
+    
+    const imgCache = useContext(imgCacheContext)
 
     const [imgSrc, setImgSrc] = useState(useImgCache(iconSrc))
+
+    useEffect(() => {
+        setImgSrc(imgCache?.get(iconSrc) ?? iconSrc)
+        console.log("Re-rendering")
+    }, [iconSrc, imgCache]);
+    
+    console.log("Displaying ", imgSrc)
 
     const placeholderData = useImgPlaceholder()
     const imgProps = {
@@ -30,6 +39,7 @@ export const PlayerIcon = observer(function PlayerIcon({username, iconSrc}:{
         alt: "Icon",
         style: {backgroundColor: "#252323", padding: "2px", width: 30},
         onError: () => {
+            console.log("Unable to display src: ", imgSrc)
             setImgSrc(placeholderData)
         }
     } satisfies ComponentProps<"img">
