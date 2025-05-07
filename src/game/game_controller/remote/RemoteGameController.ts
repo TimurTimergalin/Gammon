@@ -296,14 +296,13 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
     }
 
     onOfferDouble = (by: Color) => {
-        console.assert(by === oppositeColor(this.userPlayer))
         if (this.doubleCubeState.convertedValue === 1) {
             this.doubleCubeState.value = 2
         } else {
             console.assert(this.doubleCubeState.value !== undefined)
             this.doubleCubeState.value! *= 2
         }
-        if (this.userPlayer === Color.WHITE) {
+        if (by === Color.BLACK) {
             this.doubleCubeState.state = "offered_to_white"
         } else {
             this.doubleCubeState.state = "offered_to_black"
@@ -316,7 +315,6 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
     }
 
     onAcceptDouble = (by: Color) => {
-        console.assert(by === oppositeColor(this.userPlayer))
         if (by === Color.WHITE) {
             console.assert(this.doubleCubeState.state === "offered_to_white")
             this.doubleCubeState.state = "belongs_to_white"
