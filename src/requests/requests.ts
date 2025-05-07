@@ -167,7 +167,7 @@ export type UpdateUserInfoRequest = {
 
 export function updateUserInfo(fetch: FetchType, props: UpdateUserInfoRequest) {
     return fetch(updateUserInfoUri, {
-        method: "PUT",
+        method: "POST",
         credentials: "include",
         body: JSON.stringify(props),
         headers: {
