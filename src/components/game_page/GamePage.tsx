@@ -11,6 +11,7 @@ import {ControlPanel} from "../game/control_panel/ControlPanel";
 import {useGamePageLayout} from "../adapt/GamePageLayoutProvider";
 import {getHeightTaken, getWidthTaken} from "../../controller/adapt/game_page/layout_calculator/common";
 import {getControlsSpaceTaken} from "../../controller/adapt/game_page/layout_modes";
+import {CanConcedeContext} from "./can_concede_context";
 
 export const GamePage = observer(function GamePage({displayTimer = false, displayControls = false, children}: {
     displayTimer?: boolean,
@@ -192,7 +193,7 @@ export const GamePage = observer(function GamePage({displayTimer = false, displa
                             {displayTimer && <ColumnTimer index={0}/>}
                         </>
                     }
-                    {controlsLayout === "MicroRight" &&
+                    {controlsLayout === "MicroRight" && displayTimer &&
                         <MicroTimer index={0}/>
                     }
                     <div style={{flex: 1}}/>
@@ -202,7 +203,7 @@ export const GamePage = observer(function GamePage({displayTimer = false, displa
                             <PlayerIcon iconSrc={player1.iconSrc}/>
                         </>
                     }
-                    {controlsLayout === "MicroRight" &&
+                    {controlsLayout === "MicroRight" && displayTimer &&
                         <MicroTimer index={1}/>
                     }
                     {displayControls && <div style={buttonsContainerStyle}>
@@ -219,7 +220,9 @@ export const GamePage = observer(function GamePage({displayTimer = false, displa
             <div style={layer2Style}>
                 {gamePart}
                 <div style={historyContainerStyle}>
-                    <ControlPanel/>
+                    <CanConcedeContext.Provider value={displayControls}>
+                        <ControlPanel/>
+                    </CanConcedeContext.Provider>
                 </div>
             </div>
         </div>

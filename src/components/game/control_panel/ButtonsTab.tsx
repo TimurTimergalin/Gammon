@@ -1,5 +1,7 @@
 import styled, {css} from "styled-components";
 import {useGameContext} from "../../../game/GameContext";
+import {useContext} from "react";
+import {CanConcedeContext} from "../../game_page/can_concede_context";
 
 const buttonStyle = css`
     & {
@@ -64,12 +66,15 @@ const SurrenderButton = styled(PlainSurrenderButton)`
 `
 
 
-const PlainButtonsTab = ({className}: { className?: string }) => (
-    <div className={className}>
-        <SwapBoardButton />
-        <SurrenderButton />
-    </div>
-)
+const PlainButtonsTab = ({className}: { className?: string }) => {
+    const displaySurrender = useContext(CanConcedeContext)
+    return (
+        <div className={className}>
+            <SwapBoardButton/>
+            {displaySurrender && <SurrenderButton/>}
+        </div>
+    );
+}
 
 export const NormalButtonsTab = styled(PlainButtonsTab)`
     & {

@@ -65,12 +65,13 @@ async function remoteGameInitInner<RemoteConfig, Index, Prop, RemoteMove>(
     const [historyEntries, firstToMove] = history
 
     const config = remoteSet.configParser.mapConfig(remoteConfig)
+    console.log(config.userPlayer)
 
     gameContext.gameHistoryState.clear()
     gameContext.gameHistoryState.currentGame = {firstToMove: firstToMove}
     historyEntries.forEach(e => gameContext.gameHistoryState.add(e))
 
-    const indexMapper = ruleSet.indexMapperFactory(config.userPlayer)
+    const indexMapper = ruleSet.indexMapperFactory(config.userPlayer ?? Color.WHITE)
 
     const board = new BoardSynchronizer(
         gameContext.boardState,
@@ -113,9 +114,9 @@ async function remoteGameInitInner<RemoteConfig, Index, Prop, RemoteMove>(
         dragState: gameContext.dragState
     })
 
-    gameContext.labelState.labelMapper = ruleSet.labelMapperFactory(config.userPlayer)
+    gameContext.labelState.labelMapper = ruleSet.labelMapperFactory(config.userPlayer ?? Color.WHITE)
     gameContext.gameControllerSetter.set(controller)
-    gameContext.doubleCubeState.positionMapper = ruleSet.doubleCubePositionMapperFactory(config.userPlayer)
+    gameContext.doubleCubeState.positionMapper = ruleSet.doubleCubePositionMapperFactory(config.userPlayer ?? Color.WHITE)
 
     controller.init(config)
 
@@ -129,8 +130,9 @@ async function remoteGameInitInner<RemoteConfig, Index, Prop, RemoteMove>(
 
     return {
         cleanup: connector.unsubscribe,
-        player1: config.userPlayer === Color.WHITE ? config.players.white : config.players.black,
-        player2: config.userPlayer === Color.WHITE ? config.players.black : config.players.white
+        player1: config.userPlayer !== Color.BLACK ? config.players.white : config.players.black,
+        player2: config.userPlayer !== Color.BLACK ? config.players.black : config.players.white,
+        spectator: config.userPlayer === null
     }
 }
 
@@ -138,7 +140,7 @@ export async function remoteGameInit({roomId, gameContext, fetch}: {
     roomId: number,
     gameContext: GameContext,
     fetch: FetchType
-}): Promise<{ cleanup: () => void, player1: PlayerState, player2: PlayerState }> {
+}): Promise<{ cleanup: () => void, player1: PlayerState, player2: PlayerState, spectator: boolean }> {
     const [raw, gameType] = await getConfig(fetch, roomId)
     console.log(gameType)
     const ruleSet = gameType === "SHORT_BACKGAMMON" ? backgammonRuleSet : nardeRuleSet

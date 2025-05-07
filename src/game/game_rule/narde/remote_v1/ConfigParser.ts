@@ -32,7 +32,7 @@ export class NardeConfigParser implements ConfigParser<NardeRemoteConfig, NardeI
               }: NardeRemoteConfig): Config<NardeIndex, NardeProp> {
         const config = gameData
         const player = inferTurnFromCubePosition(doubleCubePosition, config.turn)
-        const userPlayer = mapRemoteColor(config.color)
+        const userPlayer = config.color !== null ? mapRemoteColor(config.color) : null
         const dice: [DiceStatus | null, DiceStatus | null] = [
             config.zar[0] ? makeDice(config.zar[0], mapRemoteColor(config.turn)) : null,
             config.zar[1] ? makeDice(config.zar[1], mapRemoteColor(config.turn)) : null

@@ -5,7 +5,7 @@ export type NardeRemoteMove = Move<number>
 
 export type NardeRemoteConfig = {
     gameData: {
-        color: RemoteColor,
+        color: RemoteColor | null,
         turn: RemoteColor,
         deck: {
             color: RemoteColor,

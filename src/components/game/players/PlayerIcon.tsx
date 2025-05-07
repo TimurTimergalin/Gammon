@@ -28,10 +28,8 @@ export const PlayerIcon = observer(function PlayerIcon({username, iconSrc}:{
 
     useEffect(() => {
         setImgSrc(imgCache?.get(iconSrc) ?? iconSrc)
-        console.log("Re-rendering")
     }, [iconSrc, imgCache]);
     
-    console.log("Displaying ", imgSrc)
 
     const placeholderData = useImgPlaceholder()
     const imgProps = {
@@ -39,7 +37,6 @@ export const PlayerIcon = observer(function PlayerIcon({username, iconSrc}:{
         alt: "Icon",
         style: {backgroundColor: "#252323", padding: "2px", width: 30},
         onError: () => {
-            console.log("Unable to display src: ", imgSrc)
             setImgSrc(placeholderData)
         }
     } satisfies ComponentProps<"img">

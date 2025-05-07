@@ -26,8 +26,9 @@ export class BackgammonConfigParser implements ConfigParser<BackgammonRemoteConf
                   winner
               }: BackgammonRemoteConfig): Config<BackgammonIndex, BackgammonProp> {
         const config = gameData
+        console.log(config)
         const player = inferTurnFromCubePosition(doubleCubePosition, config.turn)
-        const userPlayer = mapRemoteColor(config.color)
+        const userPlayer = config.color !== null ? mapRemoteColor(config.color) : null
         const placement: Map<BackgammonIndex, BackgammonProp> = new Map()
 
         placement.set("White Bar", {color: Color.WHITE, quantity: config.bar.WHITE})

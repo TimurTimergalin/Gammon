@@ -24,7 +24,7 @@ import {DragState} from "../../drag_state/DragState";
 export class RemoteGameController<Index, Prop> extends RulesGameController<Index, Prop> {
     private connector: RemoteConnector<Index, Prop>
     private endWindowState: EndWindowState
-    private readonly userPlayer: Color
+    private readonly userPlayer: Color | null
 
     private _opponentTurnDisplayed: boolean
     private swapBoardAvailable = true
@@ -64,7 +64,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         diceState: DiceState,
         legalMovesTracker: LegalMovesTracker,
         connector: RemoteConnector<Index, Prop>,
-        userPlayer: Color,
+        userPlayer: Color | null,
         labelState: LabelState,
         endWindowState: EndWindowState,
         boardAnimationSwitch: BoardAnimationSwitch,
@@ -325,7 +325,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         this.gameHistoryState.add({type: "accept_double"})
         this.controlButtonsState.canRollDice = true
         this.canOfferDouble = false
-        this.player = this.userPlayer
+        this.player = oppositeColor(by)
         this.active = true
     }
 
@@ -362,6 +362,9 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
     }
 
     protected _canConcedeGame(): boolean {
+        if (this.userPlayer === null) {
+            return false
+        }
         return (this.active && this.player === Color.WHITE && this.doubleCubeState.state === "offered_to_white") ||
             (this.active && this.player === Color.BLACK && this.doubleCubeState.state === "offered_to_black") ||
             (this.rules.canConcedePrematurely(this.board.ruleBoard, this.userPlayer) &&

@@ -25,19 +25,15 @@ export class ImgCache {
     }
 
     get(src: string): string {
-        console.log("Get")
         if (this.images.has(src)) {
             return this.images.get(src)!
         }
-        console.log("Not src")
         if (this.errors.has(src)) {
-            console.log("In errors")
             return this.placeholderDataUrl ?? ImgCache.placeholder
         }
         this.getDataUrl(src)
             .then(dataUrl => runInAction(() => {this.images.set(src, dataUrl as string)}))
             .catch(() => this.errors.add(src))
-        console.log("returning " + src)
         return src
     }
 

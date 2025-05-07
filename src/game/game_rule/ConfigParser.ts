@@ -16,7 +16,7 @@ export interface Config<Index, Prop> {
     placement: Board<Index, Prop>,
     player: Color,  // Цвет игрока, который ходит
     dice: [DiceStatus | null, DiceStatus | null],
-    userPlayer: Color  // Цвет пользователя,
+    userPlayer: Color | null  // Цвет пользователя,
     points: {
         white: number,
         black: number,
