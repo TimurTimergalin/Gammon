@@ -2,12 +2,7 @@ import {Config, ConfigParser} from "../../ConfigParser";
 import {NardeRemoteConfig} from "./types";
 import {NardeIndex, NardeProp} from "../../../board/narde/types";
 import {FetchType} from "../../../../common/requests";
-import {
-    inferTurnFromCubePosition,
-    mapRemoteColor,
-    mapRemoteDoubleCube,
-    requestPlayers
-} from "../../common_remote/common";
+import {mapRemoteColor, mapRemoteDoubleCube, requestPlayers} from "../../common_remote/common";
 import {DiceStatus, makeDice} from "../../../dice_state/DiceStatus";
 import {NardeRemoteMoveMapper} from "./RemoteMoveMapper";
 import {NardeBoard} from "../../../board/narde/NardeBoard";
@@ -31,7 +26,7 @@ export class NardeConfigParser implements ConfigParser<NardeRemoteConfig, NardeI
                   winner
               }: NardeRemoteConfig): Config<NardeIndex, NardeProp> {
         const config = gameData
-        const player = inferTurnFromCubePosition(doubleCubePosition, config.turn)
+        const player = mapRemoteColor(config.turn)
         const userPlayer = config.color !== null ? mapRemoteColor(config.color) : null
         const dice: [DiceStatus | null, DiceStatus | null] = [
             config.zar[0] ? makeDice(config.zar[0], mapRemoteColor(config.turn)) : null,
