@@ -35,7 +35,7 @@ export type HistoryEntryType = FunctionComponent<{
 }>
 
 
-const PlainNormalHistoryTab = observer(function PlainHistoryTab({className, historyEntryComponent: HistoryEntryC = HistoryEntry}: { className?: string , historyEntryComponent: HistoryEntryType}) {
+const PlainNormalHistoryTab = observer(function PlainHistoryTab({className, historyEntryComponent: HistoryEntryC = HistoryEntry}: { className?: string , historyEntryComponent?: HistoryEntryType}) {
     const renderedElements: ReactNode[] = []
 
     const tabRef = useRef<HTMLDivElement | null>(null)
