@@ -21,4 +21,5 @@ export const usernamesUri = (ids: number[]) => "/player/usernames?" + new URLSea
 })
 export const uploadImgUri = "/player/image"
 
-export const historyLengthUri = (id: number) => `/backgammon/${id}/count`
+export const historyLengthUri = (id: number) => `/game/backgammon/${id}/count`
+export const analysisUri = (id: number) => `/game/backgammon/analysis/${id}`

@@ -11,7 +11,7 @@ import {
     myUserInfoUri,
     signInUrl,
     signUpUrl, uploadImgUri, getUserInfoUri,
-    usernamesUri, updateUserInfoUri, historyLengthUri
+    usernamesUri, updateUserInfoUri, historyLengthUri, analysisUri
 } from "./paths";
 import {FetchType} from "../common/requests";
 
@@ -87,7 +87,9 @@ export function backgammonConcedeGame(fetch: FetchType, id: number) {
 }
 
 export function getHistory(fetch: FetchType, matchId: number, gameId?: number) {
-    return fetch(historyUri(matchId, gameId), {
+    const uri = historyUri(matchId, gameId)
+    console.log(uri)
+    return fetch(uri, {
         credentials: "include"
     })
 }
@@ -187,4 +189,8 @@ export function uploadImage(fetch: FetchType, data: Blob, filename: string) {
 
 export function getHistoryLength(fetch: FetchType, matchId: number) {
     return fetch(historyLengthUri(matchId), {credentials: "include"})
+}
+
+export function getAnalysis(fetch: FetchType, matchId: number) {
+    return fetch(analysisUri(matchId), {credentials: "include"})
 }

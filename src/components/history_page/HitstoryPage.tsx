@@ -14,6 +14,8 @@ import {mapHistory} from "../../game/game_controller/remote/factory";
 import {GameHistoryEntry} from "../../game/game_history_state/GameHistoryState";
 import {Color, oppositeColor} from "../../common/color";
 import {BoardSynchronizer} from "../../game/board/BoardSynchronizer";
+import {mergeMoves} from "../../game/board/move";
+import {makeDice} from "../../game/dice_state/DiceStatus";
 
 
 const PlainOption = ({onChoose, text, className}: { onChoose: () => void, text: string, className?: string }) => {
@@ -72,26 +74,27 @@ const PlainHoverHistoryEntry = ({className, entry, altBg, index, onChange}: {
 }) => {
     const additionalStyle = entry.type === "game_end" ? {
         gridColumn: "span 3"
-    } : {}
+    } : {gridColumn: "span 1"}
 
     return (
         <div className={className} style={additionalStyle} onClick={() => onChange(index)}>
-            <HistoryEntry entry={entry} altBg={altBg} />
+            <HistoryEntry entry={entry} altBg={altBg}/>
         </div>
     )
 }
 
-const HoverHistoryEntry = styled(PlainHoverHistoryEntry)<{index: number, getChosen: () => number}>`
-    &:hover>* {
+const HoverHistoryEntry = styled(PlainHoverHistoryEntry)<{ index: number, getChosen: () => number }>`
+    &:hover > * {
         background-color: #eeeeee;
     }
-    &>* {
-        ${({index, getChosen}) => getChosen() === index ? "background-color: #eeeeee;" : ""}
+
+    & > * {
+        ${({index, getChosen}) => getChosen() === index ? "background-color: #eeeeee;" : ""};
+        height: 100%;
     }
 `
 
 type Argument<F> = F extends (p: infer A) => unknown ? A : never
-
 
 
 const PlainAnalysisPanel = ({className, remoteHistory}: {
@@ -103,22 +106,24 @@ const PlainAnalysisPanel = ({className, remoteHistory}: {
     const gameHistoryState = useGameContext("gameHistoryState")
     const boardState = useGameContext("boardState")
     const doubleCubeState = useGameContext("doubleCubeState")
+    const diceState = useGameContext("diceState")
     const entries = useRef<GameHistoryEntry[]>([])
     const firstToMove = useRef<Color>(Color.WHITE)
 
-    const HistoryEntryC = (props: Omit<Argument<typeof HoverHistoryEntry>, "onChange" | "getChosen">) => <HoverHistoryEntry onChange={setChosenMove} getChosen={() => chosenMove} {...props}/>
+    const HistoryEntryC = (props: Omit<Argument<typeof HoverHistoryEntry>, "onChange" | "getChosen">) =>
+        <HoverHistoryEntry onChange={setChosenMove} getChosen={() => chosenMove} {...props}/>
 
     useEffect(() => {
         const type = remoteHistory[0].type
         const ruleSet = type === "SHORT_BACKGAMMON" ? backgammonRuleSet : nardeRuleSet
-        
+
         const remoteMoveMapper = type === "SHORT_BACKGAMMON" ? backgammonRemoteSetV1.remoteMoveMapper : nardeRemoteSetV1.remoteMoveMapper
         const [entries_, firstToMove_] = mapHistory(ruleSet.historyEncoder, remoteMoveMapper, remoteHistory[chosenGame])
         entries.current = entries_
         firstToMove.current = firstToMove_
         doubleCubeState.positionMapper = ruleSet.doubleCubePositionMapperFactory(Color.WHITE)
     }, [chosenGame, doubleCubeState, remoteHistory]);
-    
+
     useEffect(() => {
         const type = remoteHistory[0].type
         const historyEncoder = type === "SHORT_BACKGAMMON" ? backgammonRuleSet.historyEncoder : nardeRuleSet.historyEncoder
@@ -127,7 +132,7 @@ const PlainAnalysisPanel = ({className, remoteHistory}: {
         gameHistoryState.clear()
         gameHistoryState.currentGame = {firstToMove: firstToMove}
         entries.forEach(e => gameHistoryState.add(e))
-        
+
         console.log("Remote history")
     }, [chosenGame, gameHistoryState, remoteHistory])
 
@@ -158,9 +163,22 @@ const PlainAnalysisPanel = ({className, remoteHistory}: {
             if (i > chosenMove) {
                 break
             }
+            if (i === chosenMove) {
+                if (entries.current[chosenMove].type === "move") {
+                    diceState.dice1 = makeDice(entries.current[chosenMove].dice[0], currentPlayer)
+                    diceState.dice2 = makeDice(entries.current[chosenMove].dice[1], currentPlayer)
+                } else {
+                    diceState.dice1 = null
+                    diceState.dice2 = null
+                }
+            }
             if (entry.type === "move") {
-                for (const move of remoteHistory[chosenGame].items[i].moves) {
-                    boardSynchronizer.performMoveLogical(remoteSet.remoteMoveMapper.fromRemote(move))
+                // @ts-expect-error working with responses
+                const moves = remoteHistory[chosenGame].items[i].moves.map((m) => remoteSet.remoteMoveMapper.fromRemote(m))
+                const mergedMoves = mergeMoves(moves)
+                for (const move of mergedMoves) {
+                    // @ts-expect-error working with responses
+                    boardSynchronizer.performMoveLogical(move)
                 }
                 if (i !== chosenMove) {
                     boardState.eraseFrom()
@@ -180,8 +198,9 @@ const PlainAnalysisPanel = ({className, remoteHistory}: {
                 }
             }
             currentPlayer = oppositeColor(currentPlayer)
+
         }
-    }, [boardState, chosenGame, chosenMove, doubleCubeState, remoteHistory])
+    }, [boardState, chosenGame, chosenMove, diceState, doubleCubeState, remoteHistory])
 
     const lastMove = remoteHistory[chosenGame].items.length - 2
     console.log(lastMove)
@@ -199,9 +218,12 @@ const PlainAnalysisPanel = ({className, remoteHistory}: {
             </div>
             <div>
                 <button type={"button"} onClick={() => setChosenMove(-1)} disabled={chosenMove === -1}>{"<<"}</button>
-                <button type={"button"} onClick={() => setChosenMove(chosenMove - 1)} disabled={chosenMove === -1}>{"<"}</button>
-                <button type={"button"} onClick={() => setChosenMove(chosenMove + 1)} disabled={chosenMove === lastMove}>{">"}</button>
-                <button type={"button"} onClick={() => setChosenMove(lastMove)} disabled={chosenMove === lastMove}>{">>"}</button>
+                <button type={"button"} onClick={() => setChosenMove(chosenMove - 1)}
+                        disabled={chosenMove === -1}>{"<"}</button>
+                <button type={"button"} onClick={() => setChosenMove(chosenMove + 1)}
+                        disabled={chosenMove === lastMove}>{">"}</button>
+                <button type={"button"} onClick={() => setChosenMove(lastMove)}
+                        disabled={chosenMove === lastMove}>{">>"}</button>
             </div>
             <div>
             </div>
@@ -230,11 +252,13 @@ const AnalysisPanel = styled(PlainAnalysisPanel)`
             overflow-y: auto;
             scrollbar-width: none;
             color: black;
+            min-height: 0;
         }
-        
+
         > :nth-child(4) {
             display: flex;
-            >* {
+
+            > * {
                 flex: 1;
             }
         }
@@ -296,6 +320,7 @@ const SidePanel = styled(PlainSidePanel)`
 
         > :nth-child(2) {
             flex: 1;
+            min-height: 0;
         }
     }
 `
