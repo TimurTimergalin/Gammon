@@ -107,6 +107,7 @@ const FriendRequestEntry = styled(PlainFriendRequestEntry)`
             height: 80%;
             background-color: #333;
             padding: 5px;
+            margin-left: 5px;   
         }
         >:nth-child(2) {
             flex: 1;
