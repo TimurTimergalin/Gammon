@@ -88,6 +88,7 @@ export async function clientLoader(/*{params: {matchId: matchIdStr}, request}: R
                     type: "GAME_END",
                     white: 0,
                     black: 3,
+                    winner: "BLACK",
                     isSurrendered: true
                 }
             ]

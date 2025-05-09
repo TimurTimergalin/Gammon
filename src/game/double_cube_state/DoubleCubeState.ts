@@ -15,7 +15,7 @@ export class DoubleCubeState {
     set value(value: number | undefined) {
         this._value = value;
     }
-    get positionMapper(): DoubleCubePositionMapper | undefined{
+    get positionMapper(): DoubleCubePositionMapper | undefined {
         return this._positionMapper;
     }
 

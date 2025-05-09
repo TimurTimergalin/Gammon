@@ -4,13 +4,16 @@ import {NormalTimer} from "../game/timer/Timer";
 import {GameContextHolder} from "../game/GameContextHolder";
 import {NormalHistoryTab} from "../game/control_panel/history_panel/HistoryTab";
 import {HistoryEntry} from "../game/control_panel/history_panel/HistoryEntry";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useGameContext} from "../../game/GameContext";
 import {backgammonRuleSet} from "../../game/game_rule/backgammon/RuleSet";
 import {nardeRuleSet} from "../../game/game_rule/narde/RuleSet";
 import {backgammonRemoteSetV1} from "../../game/game_rule/backgammon/remote_v1/RemoteSet";
 import {nardeRemoteSetV1} from "../../game/game_rule/narde/remote_v1/RemoteSet";
 import {mapHistory} from "../../game/game_controller/remote/factory";
+import {GameHistoryEntry} from "../../game/game_history_state/GameHistoryState";
+import {Color, oppositeColor} from "../../common/color";
+import {BoardSynchronizer} from "../../game/board/BoardSynchronizer";
 
 
 const PlainOption = ({onChoose, text, className}: { onChoose: () => void, text: string, className?: string }) => {
@@ -60,14 +63,58 @@ const GameChoice = styled(PlainGameChoice)`
     }
 `
 
+const PlainHoverHistoryEntry = ({className, entry, altBg, index, onChange}: {
+    className?: string,
+    entry: GameHistoryEntry,
+    altBg: boolean,
+    index: number,
+    onChange: (i: number) => void
+}) => {
+    const additionalStyle = entry.type === "game_end" ? {
+        gridColumn: "span 3"
+    } : {}
+
+    return (
+        <div className={className} style={additionalStyle} onClick={() => onChange(index)}>
+            <HistoryEntry entry={entry} altBg={altBg} />
+        </div>
+    )
+}
+
+const HoverHistoryEntry = styled(PlainHoverHistoryEntry)`
+    &:hover>* {
+        background-color: #eeeeee;
+    }
+`
+
+type Argument<F> = F extends (p: infer A) => unknown ? A : never
+
 
 const PlainAnalysisPanel = ({className, remoteHistory}: {
     className?: string,
     remoteHistory: ReturnType<JSON["parse"]>
 }) => {
     const [chosenGame, setChosenGame] = useState(0)
+    const [chosenMove, setChosenMove] = useState<number>(-1)
     const gameHistoryState = useGameContext("gameHistoryState")
+    const boardState = useGameContext("boardState")
+    const doubleCubeState = useGameContext("doubleCubeState")
+    const entries = useRef<GameHistoryEntry[]>([])
+    const firstToMove = useRef<Color>(Color.WHITE)
 
+    const HistoryEntryC = (props: Omit<Argument<typeof HoverHistoryEntry>, "onChange">) => <HoverHistoryEntry onChange={setChosenMove} {...props}/>
+
+    useEffect(() => {
+        const type = remoteHistory[0].type
+        const ruleSet = type === "SHORT_BACKGAMMON" ? backgammonRuleSet : nardeRuleSet
+        
+        const remoteMoveMapper = type === "SHORT_BACKGAMMON" ? backgammonRemoteSetV1.remoteMoveMapper : nardeRemoteSetV1.remoteMoveMapper
+        const [entries_, firstToMove_] = mapHistory(ruleSet.historyEncoder, remoteMoveMapper, remoteHistory[chosenGame])
+        entries.current = entries_
+        firstToMove.current = firstToMove_
+        doubleCubeState.positionMapper = ruleSet.doubleCubePositionMapperFactory(Color.WHITE)
+    }, [chosenGame, doubleCubeState, remoteHistory]);
+    
     useEffect(() => {
         const type = remoteHistory[0].type
         const historyEncoder = type === "SHORT_BACKGAMMON" ? backgammonRuleSet.historyEncoder : nardeRuleSet.historyEncoder
@@ -78,14 +125,70 @@ const PlainAnalysisPanel = ({className, remoteHistory}: {
         entries.forEach(e => gameHistoryState.add(e))
         
         console.log("Remote history")
-    }, [chosenGame, gameHistoryState, remoteHistory]);
+    }, [chosenGame, gameHistoryState, remoteHistory])
+
+    useEffect(() => {
+        const type = remoteHistory[0].type
+        const ruleSet = type === "SHORT_BACKGAMMON" ? backgammonRuleSet : nardeRuleSet
+        const remoteSet = type === "SHORT_BACKGAMMON" ? backgammonRemoteSetV1 : nardeRemoteSetV1
+        const initialPosition = ruleSet.initPlacement
+
+        let cubeAvailable
+        if (remoteHistory[chosenGame].threshold === 1) {
+            cubeAvailable = true
+        } else if (chosenGame === 0) {
+            cubeAvailable = true
+        } else {
+            const lastGame = remoteHistory[chosenGame - 1]
+            const lastGameItems = lastGame.items
+            const lastGameEnd = lastGameItems[lastGameItems.length - 1]
+            cubeAvailable = !((lastGameEnd.white === lastGame.threshold - 1 && lastGameEnd.winner === "WHITE") ||
+                (lastGameEnd.black === lastGame.threshold - 1 && lastGameEnd.winner === "BLACK"));
+        }
+        doubleCubeState.state = cubeAvailable ? "free" : "unavailable"
+        doubleCubeState.value = cubeAvailable ? 64 : undefined
+
+        const boardSynchronizer = new BoardSynchronizer(boardState, initialPosition(), ruleSet.indexMapperFactory(Color.WHITE), ruleSet.propMapper)
+        let currentPlayer = firstToMove.current
+        for (const [i, entry] of entries.current.entries()) {
+            if (i > chosenMove) {
+                break
+            }
+            if (entry.type === "move") {
+                for (const move of remoteHistory[chosenGame].items[i].moves) {
+                    boardSynchronizer.performMoveLogical(remoteSet.remoteMoveMapper.fromRemote(move))
+                }
+                if (i !== chosenMove) {
+                    boardState.eraseFrom()
+                }
+            } else if (entry.type === "offer_double") {
+                doubleCubeState.value = entry.newValue
+                if (currentPlayer === Color.WHITE) {
+                    doubleCubeState.state = "offered_to_black"
+                } else {
+                    doubleCubeState.state = "offered_to_white"
+                }
+            } else if (entry.type === "accept_double") {
+                if (currentPlayer === Color.WHITE) {
+                    doubleCubeState.state = "belongs_to_white"
+                } else {
+                    doubleCubeState.state = "belongs_to_black"
+                }
+            }
+            currentPlayer = oppositeColor(currentPlayer)
+        }
+    }, [boardState, chosenGame, chosenMove, doubleCubeState, remoteHistory])
+    
     return (
         <div className={className}>
-            <GameChoice boundary={remoteHistory.length} onChange={setChosenGame}/>
+            <GameChoice boundary={remoteHistory.length} onChange={(i) => {
+                setChosenGame(i)
+                setChosenMove(-1)
+            }}/>
             <div>
             </div>
             <div>
-                <NormalHistoryTab historyEntryComponent={HistoryEntry}/>
+                <NormalHistoryTab historyEntryComponent={HistoryEntryC}/>
             </div>
             <div>
             </div>

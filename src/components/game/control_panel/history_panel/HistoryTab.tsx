@@ -31,6 +31,7 @@ export type HistoryEntryType = FunctionComponent<{
     className?: string,
     row?: boolean,
     inline?: boolean,
+    index: number,
     altBg: boolean
 }>
 
@@ -67,20 +68,20 @@ const PlainNormalHistoryTab = observer(function PlainHistoryTab({className, hist
         onLeft = false
     }
 
-    for (const entry of gameHistoryState.moves) {
+    for (const [i, entry] of gameHistoryState.moves.entries()) {
         if (entry.type === "game_end") {
             if (!onLeft) {
                 renderedElements.push(<Skip altBg={altBg} key={key++}/>)
                 altBg = !altBg
             }
-            renderedElements.push(<HistoryEntryC entry={entry} altBg={altBg} key={key++}/>)
+            renderedElements.push(<HistoryEntryC entry={entry} altBg={altBg} key={key++} index={i}/>)
             onLeft = true
         } else {
             if (onLeft) {
                 altBg = !altBg
                 renderedElements.push(<LineNumberLabel altBg={altBg} lineNumber={lineNumber++} key={key++}/>)
             }
-            renderedElements.push(<HistoryEntryC entry={entry} altBg={altBg} key={key++} />)
+            renderedElements.push(<HistoryEntryC entry={entry} altBg={altBg} key={key++} index={i}/>)
             onLeft = !onLeft
         }
     }
