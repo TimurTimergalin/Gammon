@@ -2,7 +2,7 @@ import {
     backgammonAcceptDoubleUri,
     backgammonConcedeUri,
     backgammonConfigUri,
-    backgammonFinishTurnUri, backgammonHistoryUri,
+    backgammonFinishTurnUri, historyUri,
     backgammonOfferDoubleUri,
     backgammonRollDiceUri,
     connectUri,
@@ -11,7 +11,7 @@ import {
     myUserInfoUri,
     signInUrl,
     signUpUrl, uploadImgUri, getUserInfoUri,
-    usernamesUri, updateUserInfoUri
+    usernamesUri, updateUserInfoUri, historyLengthUri
 } from "./paths";
 import {FetchType} from "../common/requests";
 
@@ -86,9 +86,8 @@ export function backgammonConcedeGame(fetch: FetchType, id: number) {
     })
 }
 
-// TODO - эта ручка должна быть не только для backgammon-а
-export function backgammonHistory(fetch: FetchType, id: number) {
-    return fetch(backgammonHistoryUri(id), {
+export function getHistory(fetch: FetchType, matchId: number, gameId?: number) {
+    return fetch(historyUri(matchId, gameId), {
         credentials: "include"
     })
 }
@@ -184,4 +183,8 @@ export function uploadImage(fetch: FetchType, data: Blob, filename: string) {
     const formData = new FormData()
     formData.append("file", data, filename)
     return fetch(uploadImgUri, {credentials: "include", body: formData, method: "POST"})
+}
+
+export function getHistoryLength(fetch: FetchType, matchId: number) {
+    return fetch(historyLengthUri(matchId), {credentials: "include"})
 }
