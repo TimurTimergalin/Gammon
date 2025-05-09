@@ -81,13 +81,17 @@ const PlainHoverHistoryEntry = ({className, entry, altBg, index, onChange}: {
     )
 }
 
-const HoverHistoryEntry = styled(PlainHoverHistoryEntry)`
+const HoverHistoryEntry = styled(PlainHoverHistoryEntry)<{index: number, getChosen: () => number}>`
     &:hover>* {
         background-color: #eeeeee;
+    }
+    &>* {
+        ${({index, getChosen}) => getChosen() === index ? "background-color: #eeeeee;" : ""}
     }
 `
 
 type Argument<F> = F extends (p: infer A) => unknown ? A : never
+
 
 
 const PlainAnalysisPanel = ({className, remoteHistory}: {
@@ -102,7 +106,7 @@ const PlainAnalysisPanel = ({className, remoteHistory}: {
     const entries = useRef<GameHistoryEntry[]>([])
     const firstToMove = useRef<Color>(Color.WHITE)
 
-    const HistoryEntryC = (props: Omit<Argument<typeof HoverHistoryEntry>, "onChange">) => <HoverHistoryEntry onChange={setChosenMove} {...props}/>
+    const HistoryEntryC = (props: Omit<Argument<typeof HoverHistoryEntry>, "onChange" | "getChosen">) => <HoverHistoryEntry onChange={setChosenMove} getChosen={() => chosenMove} {...props}/>
 
     useEffect(() => {
         const type = remoteHistory[0].type
@@ -178,7 +182,10 @@ const PlainAnalysisPanel = ({className, remoteHistory}: {
             currentPlayer = oppositeColor(currentPlayer)
         }
     }, [boardState, chosenGame, chosenMove, doubleCubeState, remoteHistory])
-    
+
+    const lastMove = remoteHistory[chosenGame].items.length - 2
+    console.log(lastMove)
+
     return (
         <div className={className}>
             <GameChoice boundary={remoteHistory.length} onChange={(i) => {
@@ -189,6 +196,12 @@ const PlainAnalysisPanel = ({className, remoteHistory}: {
             </div>
             <div>
                 <NormalHistoryTab historyEntryComponent={HistoryEntryC}/>
+            </div>
+            <div>
+                <button type={"button"} onClick={() => setChosenMove(-1)} disabled={chosenMove === -1}>{"<<"}</button>
+                <button type={"button"} onClick={() => setChosenMove(chosenMove - 1)} disabled={chosenMove === -1}>{"<"}</button>
+                <button type={"button"} onClick={() => setChosenMove(chosenMove + 1)} disabled={chosenMove === lastMove}>{">"}</button>
+                <button type={"button"} onClick={() => setChosenMove(lastMove)} disabled={chosenMove === lastMove}>{">>"}</button>
             </div>
             <div>
             </div>
@@ -218,8 +231,15 @@ const AnalysisPanel = styled(PlainAnalysisPanel)`
             scrollbar-width: none;
             color: black;
         }
-
+        
         > :nth-child(4) {
+            display: flex;
+            >* {
+                flex: 1;
+            }
+        }
+
+        > :nth-child(5) {
             height: 130px;
             background-color: #666;
         }
