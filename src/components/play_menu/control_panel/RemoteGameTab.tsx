@@ -13,7 +13,7 @@ import {useAuthContext} from "../../../controller/auth_status/context";
 import {ControlPanelContext} from "../../../controller/play_menu/ControlPanelContext";
 
 
-const AnimateEllipsis = ({children}: { children: string }) => {
+export const AnimateEllipsis = ({children}: { children: string }) => {
     const [numberOfDots, setNumberOfDots] = useState(3)
 
     useEffect(() => {

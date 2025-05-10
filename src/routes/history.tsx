@@ -1,11 +1,61 @@
 import {HistoryPage} from "../components/history_page/HitstoryPage";
 import type {Route} from "./+types/history"
-import {getHistory, getHistoryLength} from "../requests/requests";
+import {getAnalysis, getHistory, getHistoryLength} from "../requests/requests";
 import {redirect} from "react-router";
 import {FetchType} from "../common/requests";
+import {useEffect, useState} from "react";
+import {useFetch} from "../common/hooks";
 // import {redirect} from "react-router";
 // import {FetchType} from "../common/requests";
 // import {getHistory, getHistoryLength} from "../requests/requests";
+
+
+async function getMatchLength(matchId: number, fetch: FetchType): Promise<number | null> {
+    const lengthResp = await getHistoryLength(fetch, matchId)
+    if (!lengthResp.ok) {
+        return null
+    }
+    const length = parseInt(await lengthResp.text())
+    if (isNaN(length)) {
+        return null
+    }
+    return length
+}
+
+async function getRemoteHistory(matchId: number, fetch: FetchType) {
+    const length = await getMatchLength(matchId, fetch)
+    if (length === null) {
+        return null
+    }
+
+    const historyRequests = []
+    for (let i = 1; i <= length; ++i) {
+        historyRequests.push(
+            getHistory(fetch, matchId, i)
+        )
+    }
+
+    const responses = await Promise.all(historyRequests)
+    for (const resp of responses) {
+        if (!resp.ok) {
+            return null
+        }
+    }
+
+    const res = await Promise.all(responses.map(r => r.json()))
+    console.log(res)
+    return res
+}
+
+async function getAnalysisLoader(matchId: number, fetch: FetchType) {
+    const analysisResp = await getAnalysis(fetch, matchId)
+    if (!analysisResp.ok) {
+        return null
+    }
+    const res = await analysisResp.json()
+    console.log(res)
+    return res
+}
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function clientLoader({params: {matchId: matchIdStr}, request}: Route.ClientLoaderArgs) {
@@ -16,31 +66,11 @@ export async function clientLoader({params: {matchId: matchIdStr}, request}: Rou
     const cancellableFetch: FetchType = (input, init) =>
         fetch(input, {signal: request.signal, ...init})
 
-    const lengthResp = await getHistoryLength(cancellableFetch, matchId)
-    if (!lengthResp.ok) {
+    const [history] = await Promise.all([getRemoteHistory(matchId, cancellableFetch)])
+    if (history === null) {
         return redirect("/")
     }
-    const length = parseInt(await lengthResp.text())
-    if (isNaN(length)) {
-        return redirect("/")
-    }
-
-    const historyRequests = []
-    for (let i = 1; i <= length; ++i) {
-        historyRequests.push(
-            getHistory(cancellableFetch, matchId, i)
-        )
-    }
-
-    const responses = await Promise.all(historyRequests)
-    for (const resp of responses) {
-        if (!resp.ok) {
-            return redirect("/")
-        }
-    }
-    const res = await Promise.all(responses.map(r => r.json()))
-    console.log(res)
-    return res
+    return [matchId, history]
     // await new Promise(resolve => setTimeout(resolve, 500))
 
     // return [
@@ -107,6 +137,15 @@ export async function clientLoader({params: {matchId: matchIdStr}, request}: Rou
 }
 
 
-export default function Page({loaderData}: Route.ComponentProps) {
-    return <HistoryPage remoteHistory={loaderData}/>
+export default function Page({loaderData: [matchId, history]}: Route.ComponentProps) {
+    const [analysis, setAnalysis] = useState<undefined | null | ReturnType<JSON["parse"]>>(undefined)
+    const [fetch] = useFetch()
+    
+    useEffect(() => {
+        getAnalysisLoader(matchId as number, fetch).then(setAnalysis)
+    }, [fetch, matchId]);
+
+    console.log(analysis)
+
+    return <HistoryPage remoteHistory={history} analysis={analysis}/>
 }
