@@ -2,26 +2,68 @@ import styled from "styled-components";
 import GameView from "../game/GameView";
 import {NormalTimer} from "../game/timer/Timer";
 import {GameContextHolder} from "../game/GameContextHolder";
+import {useState} from "react";
+import {Option} from "./GameChoice";
+import {AnalysisPanel} from "./AnalysisPanel";
+import {SummaryContent, SummaryPanel} from "./SummaryPanel";
 
-const PlainAnalysisPanel = ({className}: { className?: string }) => {
-    return (
-        <div className={className}>
 
-        </div>
-    )
-}
-
-const AnalysisPanel = styled(PlainAnalysisPanel)`
-
-`
-
-const PlainHistoryPage = ({className}: { className?: string }) => {
+const PlainSidePanel = ({className, remoteHistory, analysis}: {
+    className?: string,
+    remoteHistory: ReturnType<JSON["parse"]>,
+    analysis: undefined | null | ReturnType<JSON["parse"]>
+}) => {
+    const [chosenTab, setChosenTab] = useState(0)
 
     return (
         <div className={className}>
             <div>
+                <Option onChoose={() => setChosenTab(0)} text={"Отчет"} chosen={chosenTab === 0}/>
+                <Option onChoose={() => setChosenTab(1)} text={"Анализ"} chosen={chosenTab === 1}/>
+            </div>
+            {chosenTab === 0 && <SummaryPanel analysis={analysis} remoteHistory={remoteHistory}/>}
+            {chosenTab === 1 && <AnalysisPanel remoteHistory={remoteHistory} analysis={analysis}/>}
+        </div>
+    )
+}
+
+const SidePanel = styled(PlainSidePanel)`
+    & {
+        display: flex;
+        flex-direction: column;
+        color: black;
+
+        > :nth-child(1) {
+            display: flex;
+            height: 40px;
+            align-items: stretch;
+
+            > ${Option} {
+                flex: 1;
+            }
+        }
+
+        > :nth-child(2) {
+            flex: 1;
+            min-height: 0;
+            >${SummaryContent} {
+                height: 100%;
+            }
+        }
+    }
+`
+
+const PlainHistoryPage = ({className, remoteHistory, analysis}: {
+    className?: string,
+    remoteHistory: ReturnType<JSON["parse"]>,
+    analysis: undefined | null | ReturnType<JSON["parse"]>
+}) => {
+
+    return (
+        <div className={className}>
+            <GameContextHolder>
                 <div>
-                    <GameContextHolder>
+                    <div>
                         <div>
                             <GameView/>
                         </div>
@@ -29,11 +71,12 @@ const PlainHistoryPage = ({className}: { className?: string }) => {
                             <NormalTimer index={0}/>
                             <NormalTimer index={1}/>
                         </div>
-                    </GameContextHolder>
+                    </div>
+                    <span/>
+                    <SidePanel remoteHistory={remoteHistory} analysis={analysis}/>
                 </div>
-                <span />
-                <AnalysisPanel/>
-            </div>
+            </GameContextHolder>
+
         </div>
     )
 }
@@ -61,7 +104,7 @@ export const HistoryPage = styled(PlainHistoryPage)`
                 flex: 10;
                 min-width: 350px;
                 margin-left: 30px;
-                
+
                 > div:nth-child(1) {
                     flex: 1;
                 }
@@ -71,14 +114,14 @@ export const HistoryPage = styled(PlainHistoryPage)`
                     justify-content: space-evenly;
                 }
             }
-            > ${AnalysisPanel} {
+
+            > ${SidePanel} {
                 width: 320px;
                 height: 600px;
-                background-color: white;
                 margin-right: 30px;
                 margin-top: 40px;
             }
-            
+
             > span {
                 flex: 1;
                 min-width: 30px;

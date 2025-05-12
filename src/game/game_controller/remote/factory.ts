@@ -1,4 +1,4 @@
-import {backgammonHistory, getBackgammonConfig} from "../../../requests/requests";
+import {getHistory as getRemoteHistory, getBackgammonConfig} from "../../../requests/requests";
 import {RemoteSet} from "../../game_rule/RemoteSet";
 import {GameContext} from "../../GameContext";
 import {RuleSet} from "../../game_rule/RuleSet";
@@ -28,13 +28,11 @@ async function getConfig(fetch: FetchType, roomId: number): Promise<[ReturnType<
     return [config, config.gameData.type]
 }
 
-async function getHistory<RemoteMove, Index>(
-    roomId: number,
-    fetch: FetchType,
+export function mapHistory<RemoteMove, Index>(
     historyEncoder: HistoryEncoder<Index>,
-    remoteMoveMapper: RemoteMoveMapper<RemoteMove, Index>
-): Promise<[GameHistoryEntry[], Color]> {
-    const remoteHistory = await (await backgammonHistory(fetch, roomId)).json()
+    remoteMoveMapper: RemoteMoveMapper<RemoteMove, Index>,
+    remoteHistory: ReturnType<JSON["parse"]>
+): [GameHistoryEntry[], Color] {
     const res: GameHistoryEntry[] = []
     const firstToMove = mapRemoteColor(remoteHistory.firstToMove)
     let currentPlayer = firstToMove
@@ -49,6 +47,17 @@ async function getHistory<RemoteMove, Index>(
         currentPlayer = oppositeColor(currentPlayer)
     }
     return [res, firstToMove]
+}
+
+async function getHistory<RemoteMove, Index>(
+    roomId: number,
+    fetch: FetchType,
+    historyEncoder: HistoryEncoder<Index>,
+    remoteMoveMapper: RemoteMoveMapper<RemoteMove, Index>
+): Promise<[GameHistoryEntry[], Color]> {
+    const remoteHistory = await (await getRemoteHistory(fetch, roomId)).json()
+
+    return mapHistory(historyEncoder, remoteMoveMapper, remoteHistory)
 }
 
 async function remoteGameInitInner<RemoteConfig, Index, Prop, RemoteMove>(

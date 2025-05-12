@@ -17,7 +17,8 @@ export default [
                 ]),
                 route("/profile/:userId?", "./routes/profile.tsx"),
                 route("/edit-profile", "./routes/edit_profile.tsx"),
-                route("/history", "./routes/history.tsx"),
+
+                route("/history/:matchId", "./routes/history.tsx")
                 route("/friends", "./routes/friends.tsx")
             ])
         ]),

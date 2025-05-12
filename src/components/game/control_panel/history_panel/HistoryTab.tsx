@@ -1,10 +1,11 @@
 import styled from "styled-components";
 import {observer} from "mobx-react-lite";
-import {ReactNode, useEffect, useRef} from "react";
+import {FunctionComponent, ReactNode, useEffect, useRef} from "react";
 import {useGameContext} from "../../../../game/GameContext";
 import {Color} from "../../../../common/color";
 import {altBackground} from "./common";
 import {HistoryEntry} from "./HistoryEntry";
+import {GameHistoryEntry} from "../../../../game/game_history_state/GameHistoryState";
 
 const PlainLineNumberLabel = ({lineNumber, className}: { lineNumber: number, className?: string }) => {
     const text = (lineNumber < 10 ? " " : "") + lineNumber + "."
@@ -25,7 +26,17 @@ const Skip = styled(PlainSkip)<{ altBg: boolean }>`
     background-color: ${altBackground};
 `
 
-const PlainNormalHistoryTab = observer(function PlainHistoryTab({className}: { className?: string }) {
+export type HistoryEntryType = FunctionComponent<{
+    entry: GameHistoryEntry,
+    className?: string,
+    row?: boolean,
+    inline?: boolean,
+    index: number,
+    altBg: boolean
+}>
+
+
+const PlainNormalHistoryTab = observer(function PlainHistoryTab({className, historyEntryComponent: HistoryEntryC = HistoryEntry}: { className?: string , historyEntryComponent?: HistoryEntryType}) {
     const renderedElements: ReactNode[] = []
 
     const tabRef = useRef<HTMLDivElement | null>(null)
@@ -57,20 +68,20 @@ const PlainNormalHistoryTab = observer(function PlainHistoryTab({className}: { c
         onLeft = false
     }
 
-    for (const entry of gameHistoryState.moves) {
+    for (const [i, entry] of gameHistoryState.moves.entries()) {
         if (entry.type === "game_end") {
             if (!onLeft) {
                 renderedElements.push(<Skip altBg={altBg} key={key++}/>)
                 altBg = !altBg
             }
-            renderedElements.push(<HistoryEntry entry={entry} altBg={altBg} key={key++}/>)
+            renderedElements.push(<HistoryEntryC entry={entry} altBg={altBg} key={key++} index={i}/>)
             onLeft = true
         } else {
             if (onLeft) {
                 altBg = !altBg
                 renderedElements.push(<LineNumberLabel altBg={altBg} lineNumber={lineNumber++} key={key++}/>)
             }
-            renderedElements.push(<HistoryEntry entry={entry} altBg={altBg} key={key++} />)
+            renderedElements.push(<HistoryEntryC entry={entry} altBg={altBg} key={key++} index={i}/>)
             onLeft = !onLeft
         }
     }
