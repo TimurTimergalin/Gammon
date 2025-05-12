@@ -6,12 +6,7 @@ import {BackgammonIndex, BackgammonProp} from "../../../board/backgammon/types";
 import {BackgammonBoard} from "../../../board/backgammon/BackgammonBoard";
 import {imageUri} from "../../../../requests/paths";
 import {FetchType} from "../../../../common/requests";
-import {
-    inferTurnFromCubePosition,
-    mapRemoteColor,
-    mapRemoteDoubleCube,
-    requestPlayers
-} from "../../common_remote/common";
+import {mapRemoteColor, mapRemoteDoubleCube, requestPlayers} from "../../common_remote/common";
 
 
 export class BackgammonConfigParser implements ConfigParser<BackgammonRemoteConfig, BackgammonIndex, BackgammonProp> {
@@ -27,7 +22,7 @@ export class BackgammonConfigParser implements ConfigParser<BackgammonRemoteConf
               }: BackgammonRemoteConfig): Config<BackgammonIndex, BackgammonProp> {
         const config = gameData
         console.log(config)
-        const player = inferTurnFromCubePosition(doubleCubePosition, config.turn)
+        const player = mapRemoteColor(config.turn)
         const userPlayer = config.color !== null ? mapRemoteColor(config.color) : null
         const placement: Map<BackgammonIndex, BackgammonProp> = new Map()
 
