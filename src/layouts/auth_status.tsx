@@ -52,6 +52,7 @@ function Provider({loaderData}: Route.ComponentProps) {
         authStatus.current.id = loaderData?.id || null
         authStatus.current.login = loaderData?.login || null
         authStatus.current.invitePolicy = loaderData?.invitePolicy || null
+        authStatus.current.rating = loaderData?.rating || null
         setInit(true)
     }, [loaderData]);
 

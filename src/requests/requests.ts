@@ -147,7 +147,13 @@ export type UserInfo = {
     username: string,
     login: string,
     invitePolicy: InvitePolicy,
-    id: number
+    id: number,
+    rating: {
+        backgammonBlitz: number;
+        backgammonDefault: number;
+        nardeBlitz: number;
+        nardeDefault: number
+    }
 }
 
 export function myUserInfo(fetch: FetchType) {

@@ -82,10 +82,10 @@ const ProfileBar = observer(function ProfileBar() {
                 <AccentedButton type={"button"} style={buttonStyle} onClick={buttonOnClick}>{buttonText}</AccentedButton>
             </p>
             <p>
-                <EloIcon iconSrc={"/backgammon.svg"} value={1000} title={"ELO - Короткие нарды"}/>
-                <EloIcon iconSrc={"/backgammon_blitz.svg"} value={1000} title={"ELO - Короткие нарды (блиц)"}/>
-                <EloIcon iconSrc={"/narde.svg"} value={1000} title={"ELO - Длинные нарды"}/>
-                <EloIcon iconSrc={"/narde_blitz.svg"} value={1000} title={"ELO - Длинные нарды (блиц)"}/>
+                <EloIcon iconSrc={"/backgammon.svg"} value={profileStatus.rating?.backgammonDefault} title={"ELO - Короткие нарды"}/>
+                <EloIcon iconSrc={"/backgammon_blitz.svg"} value={profileStatus.rating?.backgammonBlitz} title={"ELO - Короткие нарды (блиц)"}/>
+                <EloIcon iconSrc={"/narde.svg"} value={profileStatus.rating?.nardeDefault} title={"ELO - Длинные нарды"}/>
+                <EloIcon iconSrc={"/narde_blitz.svg"} value={profileStatus.rating?.nardeBlitz} title={"ELO - Длинные нарды (блиц)"}/>
             </p>
         </div>
     )
