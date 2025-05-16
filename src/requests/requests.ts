@@ -94,13 +94,14 @@ export function getHistory(fetch: FetchType, matchId: number, gameId?: number) {
     })
 }
 
-export const connect = (fetch: FetchType, gameType: string, points: number) =>
+export const connect = (fetch: FetchType, gameType: string, points: number, blitz: boolean) =>
     fetch(connectUri, {
         credentials: "include",
         method: "POST",
         body: JSON.stringify({
             type: gameType,
-            points: points
+            points: points,
+            timePolicy: blitz ? "BLITZ" : "DEFAULT_TIMER"
         }),
         headers: {
             "Content-Type": "application/json"

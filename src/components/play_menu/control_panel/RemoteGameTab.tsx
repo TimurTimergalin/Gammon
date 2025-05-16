@@ -44,8 +44,9 @@ const PlayButton = ({onClick}: { onClick: () => void }) => {
 }
 
 const PlainAuthRemoteGameTab = observer(({className}: { className?: string }) => {
-    const gameMode = useRef(0)
-    const pointsUntil = useRef(0)
+    const [gameMode, setGameMode] = useState(0)
+    const [pointsUntil, setPointUntil] = useState(0)
+    const [blitz, setBlitz] = useState(0)
     const startedConnection = useRef(false)
     const navigate = useNavigate()
     const controlPanelState = useContext(ControlPanelContext)
@@ -53,16 +54,17 @@ const PlainAuthRemoteGameTab = observer(({className}: { className?: string }) =>
 
     const gameModes = ["Короткие нарды", "Длинные нарды"]
     const pointsOptions = ["1", "3", "5", "7"]
+    const blitzOptions = ["Обычные", "Блиц"]
 
     const callback = useCallback(() => {
         startedConnection.current = true
         controlPanelState.enabled = false
-        const game = gameMode.current === 0 ? "SHORT_BACKGAMMON" : "REGULAR_GAMMON"
+        const game = gameMode === 0 ? "SHORT_BACKGAMMON" : "REGULAR_GAMMON"
         const points =
-            pointsUntil.current === 0 ? 1 :
-                pointsUntil.current === 1 ? 3 :
-                    pointsUntil.current === 2 ? 5 : 7
-        connect(fetch, game, points)
+            pointsUntil === 0 ? 1 :
+                pointsUntil === 1 ? 3 :
+                    pointsUntil === 2 ? 5 : 7
+        connect(fetch, game, points, blitz === 1)
             .then(resp => {
                 startedConnection.current = false
                 return resp
@@ -74,7 +76,7 @@ const PlainAuthRemoteGameTab = observer(({className}: { className?: string }) =>
             )
             .then(parseInt)
             .then(roomId => isNaN(roomId) ? console.error("Unable to get roomId") : navigate(playUri(roomId)))
-    }, [controlPanelState, fetch, navigate])
+    }, [blitz, controlPanelState, fetch, gameMode, navigate, pointsUntil])
 
     useEffect(() => {
         fetchCleanups.add(
@@ -99,13 +101,55 @@ const PlainAuthRemoteGameTab = observer(({className}: { className?: string }) =>
         backgroundColor: "#66666666",
     } satisfies CSSProperties
 
+    const normalTimeControlFormatTable = new Map([
+        [0, new Map([
+            [0, "2|8"],
+            [1, "6|8"],
+            [2, "10|8"],
+            [3, "14|8"]
+        ])],
+        [1, new Map([
+            [0, "2|8"],
+            [1, "6|8"],
+            [2, "10|8"],
+            [3, "14|8"]
+        ])]
+    ])
+
+    const blitzTimeControlFormatTable = new Map([
+        [0, new Map([
+            [0, "30 сек.|8"],
+            [1, "1|8"],
+            [2, "2|8"],
+            [3, "3|8"]
+        ])],
+        [1, new Map([
+            [0, "30 сек.|8"],
+            [1, "1|8"],
+            [2, "2|8"],
+            [3, "3|8"]
+        ])]
+    ])
+
+    const timeControlFormatTable = new Map(
+        [
+            [0, normalTimeControlFormatTable],
+            [1, blitzTimeControlFormatTable]
+        ]
+    )
+
+    const timeControlFormat = "Контроль времени: " + timeControlFormatTable.get(blitz)!.get(gameMode)!.get(pointsUntil)
+
+
     return (
         <div className={className}>
-            <SwitchSelect options={gameModes} callback={(i) => gameMode.current = i}/>
-            <SwitchSelect options={pointsOptions} callback={(i) => pointsUntil.current = i}/>
+            <SwitchSelect options={gameModes} callback={setGameMode}/>
+            <SwitchSelect options={pointsOptions} callback={setPointUntil}/>
+            <SwitchSelect options={blitzOptions} callback={setBlitz}/>
+            <p style={{textAlign: "center"}}>{timeControlFormat}</p>
             <PlayButton onClick={callback}/>
             {!controlPanelState.enabled &&
-                <div style={screenStyle} />
+                <div style={screenStyle}/>
             }
         </div>
     )
@@ -118,7 +162,7 @@ const AuthRemoteGameTab = styled(PlainAuthRemoteGameTab)`
         position: relative;
     }
 
-    & > :nth-child(-n + 2) {
+    & > :nth-child(-n + 4) {
         ${tabEntryStyle}
     }
 
@@ -126,7 +170,7 @@ const AuthRemoteGameTab = styled(PlainAuthRemoteGameTab)`
         ${firstEntryMargin}
     }
 
-    & > :nth-child(3) {
+    & >button {
         ${playButtonStyle}
     }
 `
