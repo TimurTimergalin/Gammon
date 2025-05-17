@@ -18,7 +18,10 @@ export class BackgammonConfigParser implements ConfigParser<BackgammonRemoteConf
                   players,
                   doubleCubePosition,
                   doubleCubeValue,
-                  winner
+                  winner,
+                  remainBlackTime,
+                  remainWhiteTime,
+                  increment
               }: BackgammonRemoteConfig): Config<BackgammonIndex, BackgammonProp> {
         const config = gameData
         console.log(config)
@@ -71,7 +74,12 @@ export class BackgammonConfigParser implements ConfigParser<BackgammonRemoteConf
                 }
             },
             doubleCube: doubleCube,
-            winner: winner == null ? null : mapRemoteColor(winner)
+            winner: winner == null ? null : mapRemoteColor(winner),
+            time: {
+                white: remainWhiteTime,
+                black: remainBlackTime,
+                increment: increment
+            }
         }
     }
 

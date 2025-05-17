@@ -51,7 +51,7 @@ const InnerRemoteGamePage = observer(function InnerNewRemoteGamePage(
     }, [fetch, gameContext, roomIdParsed])
 
     return (
-        <GamePage displayControls={!isSpectator}>
+        <GamePage displayControls={!isSpectator} displayTimer={true}>
             {gameLoaded &&
                 <GameView />
             }

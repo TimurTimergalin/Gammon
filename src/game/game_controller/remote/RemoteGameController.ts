@@ -19,6 +19,7 @@ import {DoubleCubeState} from "../../double_cube_state/DoubleCubeState";
 import {GameHistoryState} from "../../game_history_state/GameHistoryState";
 import {HistoryEncoder} from "../../game_rule/HistoryEncoder";
 import {DragState} from "../../drag_state/DragState";
+import {TimerManager} from "../TimerManager";
 
 
 export class RemoteGameController<Index, Prop> extends RulesGameController<Index, Prop> {
@@ -45,6 +46,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
     private scoreState: ScoreState
     private gameHistoryState: GameHistoryState
     private historyEncoder: HistoryEncoder<Index>
+    private timeManager: TimerManager
 
     constructor({
                     connector,
@@ -54,6 +56,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
                     scoreState,
                     gameHistoryState,
                     historyEncoder,
+                    timeManager,
                     ...base
                 }: {
         board: BoardSynchronizer<Index, Prop>,
@@ -72,7 +75,8 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         doubleCubeState: DoubleCubeState,
         gameHistoryState: GameHistoryState,
         historyEncoder: HistoryEncoder<Index>,
-        dragState: DragState
+        dragState: DragState,
+        timeManager: TimerManager
     }) {
         const active = player === userPlayer
         super({...base, active: active});
@@ -84,6 +88,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         this.scoreState = scoreState
         this.gameHistoryState = gameHistoryState
         this.historyEncoder = historyEncoder
+        this.timeManager = timeManager
     }
 
     init(config: Config<Index, Prop>) {
@@ -123,6 +128,10 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
                 }
             }
         }
+        this.timeManager.update(config.time.white, Color.WHITE)
+        this.timeManager.update(config.time.black, Color.BLACK)
+        this.timeManager.stop()
+        this.timeManager.start(this.player)
     }
 
     endTurn = (): void => {
@@ -164,6 +173,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         this.controlButtonsState.turnComplete = false
         this.controlButtonsState.movesMade = false
         this.canOfferDouble = false
+        this.timeManager.switch()
     };
 
     onMovesMade = (moves: Move<Index>[]) => {
@@ -182,9 +192,9 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
             }
         )
 
-        console.log(moves)
         const squashedMoves = this.rules.squashMoves(moves)
-        console.log(squashedMoves)
+
+        this.timeManager.switch()
 
         const delayMs = 50
 
@@ -258,6 +268,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         this.scoreState.white = points.white
         this.scoreState.black = points.black
         this.gameHistoryState.add({type: "game_end", winner: winner, black: points.black, white: points.white})
+        this.timeManager.stop()
         if (newConfig === undefined) {
             this.endWindowState.title = this.winnerTitle(winner)
             this.diceState.dice1 = null
@@ -312,6 +323,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         this.player = oppositeColor(this.player)
         this.active = true
         this.controlButtonsState.canConcedeGame = this._canConcedeGame()
+        this.timeManager.switch()
     }
 
     onAcceptDouble = (by: Color) => {
@@ -327,6 +339,12 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         this.canOfferDouble = false
         this.player = oppositeColor(by)
         this.active = true
+        this.timeManager.switch()
+    }
+
+    onUpdateTime = (white: number, black: number) => {
+        this.timeManager.update(white, Color.WHITE)
+        this.timeManager.update(black, Color.BLACK)
     }
 
     swapBoard(): void {
@@ -359,6 +377,12 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         this.controlButtonsState.canConcedeGame = false
         this.canOfferDouble = false
         this.connector.concedeGame()
+    }
+
+    onTimeout() {
+        this._clearDrag()
+        this.active = false
+        this.connector.signalTimeout()
     }
 
     protected _canConcedeGame(): boolean {

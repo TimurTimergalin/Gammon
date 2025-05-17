@@ -2,7 +2,7 @@ import {
     backgammonAcceptDoubleUri,
     backgammonConcedeUri,
     backgammonConfigUri,
-    backgammonFinishTurnUri, historyUri,
+    backgammonFinishTurnUri, backgammonHistoryUri,
     backgammonOfferDoubleUri,
     backgammonRollDiceUri,
     connectUri,
@@ -11,7 +11,7 @@ import {
     myUserInfoUri,
     signInUrl,
     signUpUrl, uploadImgUri, getUserInfoUri,
-    usernamesUri, updateUserInfoUri, historyLengthUri, analysisUri
+    usernamesUri, updateUserInfoUri, historyLengthUri, analysisUri, backgammonTimeoutUri
 } from "./paths";
 import {FetchType} from "../common/requests";
 
@@ -86,12 +86,22 @@ export function backgammonConcedeGame(fetch: FetchType, id: number) {
     })
 }
 
-export function getHistory(fetch: FetchType, matchId: number, gameId?: number) {
-    const uri = historyUri(matchId, gameId)
+export function backgammonHistory(fetch: FetchType, matchId: number, gameId?: number) {
+    const uri = backgammonHistoryUri(matchId, gameId)
     console.log(uri)
     return fetch(uri, {
         credentials: "include"
     })
+}
+
+export function backgammonSignalTimeout(fetch: FetchType, matchId: number) {
+    return fetch(
+        backgammonTimeoutUri(matchId),
+        {
+            credentials: "include",
+            method: "POST"
+        }
+    )
 }
 
 export const connect = (fetch: FetchType, gameType: string, points: number, blitz: boolean) =>

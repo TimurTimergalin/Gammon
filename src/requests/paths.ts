@@ -5,8 +5,9 @@ export const backgammonRollDiceUri = (id: number) => `/game/backgammon/zar/${id}
 export const backgammonOfferDoubleUri = (id: number) => `/game/backgammon/double/${id}`
 export const backgammonAcceptDoubleUri = (id: number) => `/game/backgammon/double/accept/${id}`
 export const backgammonConcedeUri = (id: number) => `/game/backgammon/surrender/${id}?`
-export const historyUri = (id: number, gameId?: number) =>
+export const backgammonHistoryUri = (id: number, gameId?: number) =>
     `/game/backgammon/history/${id}` + (gameId === undefined ? "" : ("?" + new URLSearchParams({gameId: String(gameId)})))
+export const backgammonTimeoutUri = (id: number) => `/game/backgammon/timeout/${id}`
 export const playUri = (id: number) => `/play/${id}`
 export const connectUri = "/menu/connect"
 export const disconnectUri = "/menu/disconnect"

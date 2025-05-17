@@ -1,6 +1,6 @@
 import {HistoryPage} from "../components/history_page/HitstoryPage";
 import type {Route} from "./+types/history"
-import {getAnalysis, getHistory, getHistoryLength} from "../requests/requests";
+import {getAnalysis, backgammonHistory, getHistoryLength} from "../requests/requests";
 import {redirect} from "react-router";
 import {FetchType} from "../common/requests";
 import {useEffect, useState} from "react";
@@ -31,7 +31,7 @@ async function getRemoteHistory(matchId: number, fetch: FetchType) {
     const historyRequests = []
     for (let i = 1; i <= length; ++i) {
         historyRequests.push(
-            getHistory(fetch, matchId, i)
+            backgammonHistory(fetch, matchId, i)
         )
     }
 

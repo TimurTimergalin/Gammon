@@ -27,7 +27,12 @@ export interface Config<Index, Prop> {
         black: PlayerState
     },
     doubleCube: DoubleCubeConfig,
-    winner: Color | null
+    winner: Color | null,
+    time: {
+        white: number,
+        black: number,
+        increment: number
+    }
 }
 
 export interface ConfigParser<RemoteConfig, Index, Prop> {

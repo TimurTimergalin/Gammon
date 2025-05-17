@@ -1,4 +1,4 @@
-import {getHistory as getRemoteHistory, getBackgammonConfig} from "../../../requests/requests";
+import {backgammonHistory as getRemoteHistory, getBackgammonConfig} from "../../../requests/requests";
 import {RemoteSet} from "../../game_rule/RemoteSet";
 import {GameContext} from "../../GameContext";
 import {RuleSet} from "../../game_rule/RuleSet";
@@ -17,6 +17,7 @@ import {backgammonRuleSet} from "../../game_rule/backgammon/RuleSet";
 import {nardeRuleSet} from "../../game_rule/narde/RuleSet";
 import {backgammonRemoteSetV1} from "../../game_rule/backgammon/remote_v1/RemoteSet";
 import {nardeRemoteSetV1} from "../../game_rule/narde/remote_v1/RemoteSet";
+import {TimerManager} from "../TimerManager";
 
 
 type RemoteGameType = "SHORT_BACKGAMMON" | "REGULAR_GAMMON"
@@ -103,6 +104,12 @@ async function remoteGameInitInner<RemoteConfig, Index, Prop, RemoteMove>(
         fetch: fetch
     })
 
+    const timeManager = new TimerManager({
+        timerPairState: gameContext.timerPairState,
+        timeMs: 0,
+        incrementMs: config.time.increment
+    })
+
     const controller = new RemoteGameController({
         board: board,
         connector: connector,
@@ -120,12 +127,17 @@ async function remoteGameInitInner<RemoteConfig, Index, Prop, RemoteMove>(
         doubleCubeState: gameContext.doubleCubeState,
         gameHistoryState: gameContext.gameHistoryState,
         historyEncoder: ruleSet.historyEncoder,
-        dragState: gameContext.dragState
+        dragState: gameContext.dragState,
+        timeManager: timeManager
     })
 
     gameContext.labelState.labelMapper = ruleSet.labelMapperFactory(config.userPlayer ?? Color.WHITE)
     gameContext.gameControllerSetter.set(controller)
     gameContext.doubleCubeState.positionMapper = ruleSet.doubleCubePositionMapperFactory(config.userPlayer ?? Color.WHITE)
+    gameContext.timerPairState.timer1.onEnd = () => controller.onTimeout()
+    gameContext.timerPairState.timer2.onEnd = () => controller.onTimeout()
+    gameContext.timerPairState.timer1.owner = config.userPlayer === null ? Color.BLACK : oppositeColor(config.userPlayer)
+    gameContext.timerPairState.timer2.owner = config.userPlayer ?? Color.WHITE
 
     controller.init(config)
 
@@ -134,6 +146,7 @@ async function remoteGameInitInner<RemoteConfig, Index, Prop, RemoteMove>(
     connector.onEnd = controller.onEnd
     connector.onOfferDouble = controller.onOfferDouble
     connector.onAcceptDouble = controller.onAcceptDouble
+    connector.onUpdateTime = controller.onUpdateTime
 
     connector.subscribe()
 

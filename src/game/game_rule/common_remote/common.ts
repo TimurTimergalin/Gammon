@@ -65,5 +65,8 @@ export interface RemoteConfig {
     },
     doubleCubeValue: number | null,
     doubleCubePosition: RemoteDoubleCubePosition,
-    winner: RemoteColor | null
+    winner: RemoteColor | null,
+    remainWhiteTime: number,
+    remainBlackTime: number,
+    increment: number
 }

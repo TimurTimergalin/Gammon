@@ -23,7 +23,10 @@ export class NardeConfigParser implements ConfigParser<NardeRemoteConfig, NardeI
                   players,
                   doubleCubePosition,
                   doubleCubeValue,
-                  winner
+                  winner,
+                  remainWhiteTime,
+                  remainBlackTime,
+                  increment
               }: NardeRemoteConfig): Config<NardeIndex, NardeProp> {
         const config = gameData
         const player = mapRemoteColor(config.turn)
@@ -61,7 +64,12 @@ export class NardeConfigParser implements ConfigParser<NardeRemoteConfig, NardeI
                 }
             },
             doubleCube: doubleCube,
-            winner: winner == null ? null : mapRemoteColor(winner)
+            winner: winner == null ? null : mapRemoteColor(winner),
+            time: {
+                white: remainWhiteTime,
+                black: remainBlackTime,
+                increment: increment
+            }
         }
     }
 
