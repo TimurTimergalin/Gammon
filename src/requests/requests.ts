@@ -1,17 +1,27 @@
 import {
+    addFriendUri,
+    analysisUri,
     backgammonAcceptDoubleUri,
     backgammonConcedeUri,
     backgammonConfigUri,
-    backgammonFinishTurnUri, backgammonHistoryUri,
+    backgammonFinishTurnUri,
+    backgammonHistoryUri,
     backgammonOfferDoubleUri,
     backgammonRollDiceUri,
+    backgammonTimeoutUri,
     connectUri,
     disconnectUri,
     eventsUri,
+    friendRequestsUri,
+    getUserInfoUri,
+    historyLengthUri,
     myUserInfoUri,
+    removeFriendUri,
     signInUrl,
-    signUpUrl, uploadImgUri, getUserInfoUri,
-    usernamesUri, updateUserInfoUri, historyLengthUri, analysisUri, backgammonTimeoutUri
+    signUpUrl,
+    updateUserInfoUri,
+    uploadImgUri,
+    usernamesUri
 } from "./paths";
 import {FetchType} from "../common/requests";
 
@@ -210,4 +220,38 @@ export function getHistoryLength(fetch: FetchType, matchId: number) {
 
 export function getAnalysis(fetch: FetchType, matchId: number) {
     return fetch(analysisUri(matchId), {credentials: "include"})
+}
+
+export function getFriendRequest(fetch: FetchType) {
+    return fetch(friendRequestsUri, {
+        credentials: "include"
+    })
+}
+
+export function approveFriendRequest(fetch: FetchType, userId: number) {
+    return fetch(addFriendUri, {
+        credentials: "include",
+        method: "POST",
+        body: JSON.stringify({
+            type: "BY_ID",
+            friendId: userId
+        }),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+}
+
+export function rejectFriendRequest(fetch: FetchType, userId: number) {
+    return fetch(removeFriendUri, {
+        credentials: "include",
+        method: "DELETE",
+        body: JSON.stringify({
+            type: "BY_ID",
+            friendId: userId
+        }),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
 }

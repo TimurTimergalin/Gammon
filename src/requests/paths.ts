@@ -8,6 +8,8 @@ export const backgammonConcedeUri = (id: number) => `/game/backgammon/surrender/
 export const backgammonHistoryUri = (id: number, gameId?: number) =>
     `/game/backgammon/history/${id}` + (gameId === undefined ? "" : ("?" + new URLSearchParams({gameId: String(gameId)})))
 export const backgammonTimeoutUri = (id: number) => `/game/backgammon/timeout/${id}`
+export const historyLengthUri = (id: number) => `/game/backgammon/${id}/count`
+export const analysisUri = (id: number) => `/game/backgammon/analysis/${id}`
 export const playUri = (id: number) => `/play/${id}`
 export const connectUri = "/menu/connect"
 export const disconnectUri = "/menu/disconnect"
@@ -21,6 +23,7 @@ export const usernamesUri = (ids: number[]) => "/player/usernames?" + new URLSea
     ids: ids.join(",")
 })
 export const uploadImgUri = "/player/image"
+export const friendRequestsUri = "/player/requests"
+export const addFriendUri = `/player/add`
+export const removeFriendUri = "/player/remove"
 
-export const historyLengthUri = (id: number) => `/game/backgammon/${id}/count`
-export const analysisUri = (id: number) => `/game/backgammon/analysis/${id}`
