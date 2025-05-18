@@ -26,4 +26,6 @@ export const uploadImgUri = "/player/image"
 export const friendRequestsUri = "/player/requests"
 export const addFriendUri = `/player/add`
 export const removeFriendUri = "/player/remove"
+export const canAddFriendUri = (id: number) => `/player/can-add-friend/${id}`
+export const isFriendUri = (id: number) => `/player/check?` + new URLSearchParams({secondUser: String(id)})
 

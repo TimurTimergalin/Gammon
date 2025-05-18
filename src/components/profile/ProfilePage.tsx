@@ -1,4 +1,4 @@
-import {CSSProperties, ReactNode, useContext} from "react";
+import {CSSProperties, ReactNode, useContext, useEffect, useState} from "react";
 import styled from "styled-components";
 import {AccentedButton} from "../AccentedButton";
 import {observer} from "mobx-react-lite";
@@ -7,6 +7,8 @@ import {useImgCache, useImgPlaceholder} from "../../controller/img_cache/context
 import {imageUri} from "../../requests/paths";
 import {useAuthContext} from "../../controller/auth_status/context";
 import {useNavigate} from "react-router";
+import {addFriendById, canAddFriend, isFriend} from "../../requests/requests";
+import {useFetch} from "../../common/hooks";
 
 function EloIcon({iconSrc, value, title}: { iconSrc: string, value: number, title?: string }) {
     const imgStyle = {
@@ -22,7 +24,7 @@ function EloIcon({iconSrc, value, title}: { iconSrc: string, value: number, titl
     } satisfies CSSProperties
     return (
         <span style={spanStyle} title={title}>
-            <img src={iconSrc} alt={"Иконка режима"} style={imgStyle} /> {value}
+            <img src={iconSrc} alt={"Иконка режима"} style={imgStyle}/> {value}
         </span>
     )
 }
@@ -55,39 +57,117 @@ const ProfileBar = observer(function ProfileBar() {
 
     const buttonStyle = {
         ...regularTextStyle,
-        borderRadius: 5
+        borderRadius: 5,
+        marginLeft: 5
     } satisfies CSSProperties
 
     const profileStatus = useContext(ProfileStatusContext)!
     const authStatus = useAuthContext()
     const placeholderData = useImgPlaceholder()
+    const imageSrc = useImgCache(imageUri(profileStatus.id))
     const navigate = useNavigate()
+    const [fetch] = useFetch()
 
-    const buttonText = authStatus.id === profileStatus.id ? "Редактировать" : "Вызвать на матч"
+    const [init, setInit] = useState(authStatus.id === profileStatus.id)
+    const [friendStatus, setFriendStatus] = useState<"Self" | "Already sent" | "Remove" | "Add">("Self")
 
-    const buttonOnClick = authStatus.id === profileStatus.id ? () => {navigate("/edit-profile")} : () => {}
+    const editProfileButton = authStatus.id !== profileStatus.id ? <></> :
+        <AccentedButton type={"button"} style={buttonStyle}
+                        onClick={() => navigate("/edit-profile")}>Редактировать</AccentedButton>
+
+    const challengeButtonDisabled = profileStatus.invitePolicy === "FRIENDS_ONLY" && friendStatus !== "Remove"
+    const challengeButton = authStatus.id === profileStatus.id ? <></> :
+        <AccentedButton
+            type={"button"}
+            style={buttonStyle}
+            disabled={challengeButtonDisabled}
+            title={challengeButtonDisabled ? "Этот пользователь принимает вызовы только от друзей" : ""}
+        >Вызвать на матч</AccentedButton>
+
+    const friendButton = friendStatus === "Self" ?
+        <></> :
+        friendStatus === "Add" ?
+            <AccentedButton
+                type={"button"}
+                style={buttonStyle}
+                onClick={() => {
+                    addFriendById(fetch, profileStatus.id).then()
+                    setFriendStatus("Already sent")
+                }}
+            >Добавить в друзья</AccentedButton> :
+        friendStatus === "Remove" ?
+            <AccentedButton
+                type={"button"}
+                style={buttonStyle}
+                onClick={() => {
+                    addFriendById(fetch, profileStatus.id).then()
+                    setFriendStatus("Add")
+                }}
+            >Удалить из друзей</AccentedButton> :
+            <AccentedButton
+                type={"button"}
+                style={buttonStyle}
+                disabled={true}
+            >Запрос в друзья отправлен</AccentedButton>
+
+
+    useEffect(() => {
+        if (authStatus.id !== profileStatus.id) {
+            Promise.all([
+                isFriend(fetch, profileStatus.id).then(
+                    resp => resp.json()
+                ).then(
+                    ({isFriends}) => isFriends
+                ),
+                canAddFriend(fetch, profileStatus.id).then(
+                    resp => resp.json()
+                ).then(
+                    ({can}) => can
+                )
+            ]).then(
+                ([isFriends, canAddFriend]) => {
+                    if (isFriends) {
+                        setFriendStatus("Remove")
+                    } else if (!canAddFriend) {
+                        setFriendStatus("Already sent")
+                    } else {
+                        setFriendStatus("Add")
+                    }
+                    setInit(true)
+                }
+            )
+        }
+    }, [authStatus.id, fetch, profileStatus.id]);
 
     return (
-        <div style={layer1Style}>
-            <div style={imgContainerStyle}>
-                <img
-                    src={useImgCache(imageUri(profileStatus.id))}
-                    alt={"Аватар"}
-                    style={{height: "90%", backgroundColor: "#333", padding: "5%", aspectRatio: 1}}
-                    onError={(e) => e.currentTarget.src = placeholderData}
-                />
+        <>{init &&
+            <div style={layer1Style}>
+                <div style={imgContainerStyle}>
+                    <img
+                        src={imageSrc}
+                        alt={"Аватар"}
+                        style={{height: "90%", backgroundColor: "#333", padding: "5%", aspectRatio: 1}}
+                        onError={(e) => e.currentTarget.src = placeholderData}
+                    />
+                </div>
+                <p style={nameStyle}>{profileStatus.username}</p>
+                <p style={regularTextStyle}><span style={{marginRight: 10}}>{profileStatus.login}</span>
+                    {editProfileButton}
+                    {challengeButton}
+                    {friendButton}
+                </p>
+                <p>
+                    <EloIcon iconSrc={"/backgammon.svg"} value={profileStatus.rating?.backgammonDefault}
+                             title={"ELO - Короткие нарды"}/>
+                    <EloIcon iconSrc={"/backgammon_blitz.svg"} value={profileStatus.rating?.backgammonBlitz}
+                             title={"ELO - Короткие нарды (блиц)"}/>
+                    <EloIcon iconSrc={"/narde.svg"} value={profileStatus.rating?.nardeDefault}
+                             title={"ELO - Длинные нарды"}/>
+                    <EloIcon iconSrc={"/narde_blitz.svg"} value={profileStatus.rating?.nardeBlitz}
+                             title={"ELO - Длинные нарды (блиц)"}/>
+                </p>
             </div>
-            <p style={nameStyle}>{profileStatus.username}</p>
-            <p style={regularTextStyle}><span style={{marginRight: 10}}>{profileStatus.login}</span>
-                <AccentedButton type={"button"} style={buttonStyle} onClick={buttonOnClick}>{buttonText}</AccentedButton>
-            </p>
-            <p>
-                <EloIcon iconSrc={"/backgammon.svg"} value={profileStatus.rating?.backgammonDefault} title={"ELO - Короткие нарды"}/>
-                <EloIcon iconSrc={"/backgammon_blitz.svg"} value={profileStatus.rating?.backgammonBlitz} title={"ELO - Короткие нарды (блиц)"}/>
-                <EloIcon iconSrc={"/narde.svg"} value={profileStatus.rating?.nardeDefault} title={"ELO - Длинные нарды"}/>
-                <EloIcon iconSrc={"/narde_blitz.svg"} value={profileStatus.rating?.nardeBlitz} title={"ELO - Длинные нарды (блиц)"}/>
-            </p>
-        </div>
+        }</>
     )
 })
 
@@ -100,7 +180,15 @@ type MatchEntryProp = {
     blackName: string
 }
 
-function PlainMatchEntry({className, gameModeIcon, whiteName, whiteElo, blackName, blackElo, userWon}: MatchEntryProp & {
+function PlainMatchEntry({
+                             className,
+                             gameModeIcon,
+                             whiteName,
+                             whiteElo,
+                             blackName,
+                             blackElo,
+                             userWon
+                         }: MatchEntryProp & {
     className?: string
 }) {
     const imgContainerStyle = {
@@ -167,13 +255,13 @@ const MatchEntry = styled(PlainMatchEntry)`
     &:hover {
         background-color: #555555;
     }
-    
+
     &:active {
         background-color: #666666;
     }
 `
 
-function PlainMatchList ({children, className}: {children?: ReactNode | ReactNode[], className?: string}) {
+function PlainMatchList({children, className}: { children?: ReactNode | ReactNode[], className?: string }) {
     return (
         <div className={className}>
             {children}
@@ -203,15 +291,19 @@ const MatchList = styled(PlainMatchList)`
 function PlainProfilePage({className}: { className?: string }) {
     return (
         <div className={className}>
-            <ProfileBar />
+            <ProfileBar/>
             <MatchList>
-                <MatchEntry userWon={true} gameModeIcon={"/backgammon.svg"} blackElo={1000} whiteName={"u1"} blackName={"u2"} whiteElo={1000} />
-                <MatchEntry userWon={false} gameModeIcon={"/backgammon_blitz.svg"} blackElo={1000} whiteName={"u1"} blackName={"u2"} whiteElo={1000} />
-                <MatchEntry userWon={true} gameModeIcon={"/narde.svg"} blackElo={1000} whiteName={"u1"} blackName={"u2"} whiteElo={1000} />
+                <MatchEntry userWon={true} gameModeIcon={"/backgammon.svg"} blackElo={1000} whiteName={"u1"}
+                            blackName={"u2"} whiteElo={1000}/>
+                <MatchEntry userWon={false} gameModeIcon={"/backgammon_blitz.svg"} blackElo={1000} whiteName={"u1"}
+                            blackName={"u2"} whiteElo={1000}/>
+                <MatchEntry userWon={true} gameModeIcon={"/narde.svg"} blackElo={1000} whiteName={"u1"} blackName={"u2"}
+                            whiteElo={1000}/>
             </MatchList>
         </div>
     )
 }
+
 export const ProfilePage = styled(PlainProfilePage)`
     & {
         display: flex;
@@ -220,13 +312,14 @@ export const ProfilePage = styled(PlainProfilePage)`
         align-self: stretch;
         flex-direction: column;
         align-items: stretch;
-        
-        
+
+
         > :nth-child(1) {
             min-height: 160px;
             height: fit-content;
             margin-bottom: 15px;
         }
+
         > :nth-child(2) {
             flex: 1;
         }

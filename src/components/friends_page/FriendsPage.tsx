@@ -3,7 +3,7 @@ import {useImgCache, useImgPlaceholder} from "../../controller/img_cache/context
 import {AccentedButton} from "../AccentedButton";
 import {ReactNode, useContext, useEffect, useState} from "react";
 import {useFetch} from "../../common/hooks";
-import {approveFriendRequest, getFriendRequest, rejectFriendRequest, userInfo} from "../../requests/requests";
+import {addFriendById, getFriendRequest, removeFriend, userInfo} from "../../requests/requests";
 import {imageUri} from "../../requests/paths";
 import {FriendsStatusContext} from "../../controller/friend/context";
 import {FriendsStatus} from "../../controller/friend/FriendsStatus";
@@ -105,13 +105,13 @@ const PlainFriendRequestEntry = ({className, iconSrc, username, id}: {
     const {friendRequests: requestsList, friends} = useContext(FriendsStatusContext)!
 
     const onRefuse = () => {
-        rejectFriendRequest(fetch, id).then()
+        removeFriend(fetch, id).then()
         const toDelete = requestsList.findIndex(o => o.id == id)
         requestsList.splice(toDelete, 1)
     }
 
     const onAccept = () => {
-        approveFriendRequest(fetch, id).then()
+        addFriendById(fetch, id).then()
         const toDelete = requestsList.findIndex(o => o.id == id)
         requestsList.splice(toDelete, 1)
         userInfo(fetch, id)

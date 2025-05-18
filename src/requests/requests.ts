@@ -8,13 +8,13 @@ import {
     backgammonHistoryUri,
     backgammonOfferDoubleUri,
     backgammonRollDiceUri,
-    backgammonTimeoutUri,
+    backgammonTimeoutUri, canAddFriendUri,
     connectUri,
     disconnectUri,
     eventsUri,
     friendRequestsUri,
     getUserInfoUri,
-    historyLengthUri,
+    historyLengthUri, isFriendUri,
     myUserInfoUri,
     removeFriendUri,
     signInUrl,
@@ -228,7 +228,7 @@ export function getFriendRequest(fetch: FetchType) {
     })
 }
 
-export function approveFriendRequest(fetch: FetchType, userId: number) {
+export function addFriendById(fetch: FetchType, userId: number) {
     return fetch(addFriendUri, {
         credentials: "include",
         method: "POST",
@@ -242,7 +242,7 @@ export function approveFriendRequest(fetch: FetchType, userId: number) {
     })
 }
 
-export function rejectFriendRequest(fetch: FetchType, userId: number) {
+export function removeFriend(fetch: FetchType, userId: number) {
     return fetch(removeFriendUri, {
         credentials: "include",
         method: "DELETE",
@@ -255,3 +255,16 @@ export function rejectFriendRequest(fetch: FetchType, userId: number) {
         }
     })
 }
+
+export function canAddFriend(fetch: FetchType, userId: number) {
+    return fetch(canAddFriendUri(userId), {
+        credentials: "include"
+    })
+}
+
+export function isFriend(fetch: FetchType, userId: number) {
+    return fetch(isFriendUri(userId), {
+        credentials: "include"
+    })
+}
+
