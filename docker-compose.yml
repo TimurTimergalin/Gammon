@@ -7,3 +7,12 @@ services:
       dockerfile: Dockerfile
     ports:
       - "1026:1026"
+  proxy:
+    image: nginx:1.27.5
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx:/etc/nginx/templates
+    environment:
+      - BACKEND_HOST=${SERVER_HOST}
+      - NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx

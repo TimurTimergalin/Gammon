@@ -7,7 +7,8 @@ export default defineConfig({
   preview: {
     port: 1026,
     host: "0.0.0.0",
-    strictPort: true
+    strictPort: true,
+    allowedHosts: ["frontend"]
   },
   ssr: {
     noExternal: "styled-components"
