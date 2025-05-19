@@ -1,4 +1,4 @@
-import {backgammonHistory, getBackgammonConfig} from "../../../requests/requests";
+import {backgammonHistory as getRemoteHistory, getBackgammonConfig} from "../../../requests/requests";
 import {RemoteSet} from "../../game_rule/RemoteSet";
 import {GameContext} from "../../GameContext";
 import {RuleSet} from "../../game_rule/RuleSet";
@@ -17,6 +17,7 @@ import {backgammonRuleSet} from "../../game_rule/backgammon/RuleSet";
 import {nardeRuleSet} from "../../game_rule/narde/RuleSet";
 import {backgammonRemoteSetV1} from "../../game_rule/backgammon/remote_v1/RemoteSet";
 import {nardeRemoteSetV1} from "../../game_rule/narde/remote_v1/RemoteSet";
+import {TimerManager} from "../TimerManager";
 
 
 type RemoteGameType = "SHORT_BACKGAMMON" | "REGULAR_GAMMON"
@@ -28,13 +29,11 @@ async function getConfig(fetch: FetchType, roomId: number): Promise<[ReturnType<
     return [config, config.gameData.type]
 }
 
-async function getHistory<RemoteMove, Index>(
-    roomId: number,
-    fetch: FetchType,
+export function mapHistory<RemoteMove, Index>(
     historyEncoder: HistoryEncoder<Index>,
-    remoteMoveMapper: RemoteMoveMapper<RemoteMove, Index>
-): Promise<[GameHistoryEntry[], Color]> {
-    const remoteHistory = await (await backgammonHistory(fetch, roomId)).json()
+    remoteMoveMapper: RemoteMoveMapper<RemoteMove, Index>,
+    remoteHistory: ReturnType<JSON["parse"]>
+): [GameHistoryEntry[], Color] {
     const res: GameHistoryEntry[] = []
     const firstToMove = mapRemoteColor(remoteHistory.firstToMove)
     let currentPlayer = firstToMove
@@ -51,6 +50,17 @@ async function getHistory<RemoteMove, Index>(
     return [res, firstToMove]
 }
 
+async function getHistory<RemoteMove, Index>(
+    roomId: number,
+    fetch: FetchType,
+    historyEncoder: HistoryEncoder<Index>,
+    remoteMoveMapper: RemoteMoveMapper<RemoteMove, Index>
+): Promise<[GameHistoryEntry[], Color]> {
+    const remoteHistory = await (await getRemoteHistory(fetch, roomId)).json()
+
+    return mapHistory(historyEncoder, remoteMoveMapper, remoteHistory)
+}
+
 async function remoteGameInitInner<RemoteConfig, Index, Prop, RemoteMove>(
     {remoteSet, ruleSet, roomId, gameContext, fetch, remoteConfig, history}: {
         remoteSet: RemoteSet<RemoteConfig, Index, Prop, RemoteMove>,
@@ -65,12 +75,13 @@ async function remoteGameInitInner<RemoteConfig, Index, Prop, RemoteMove>(
     const [historyEntries, firstToMove] = history
 
     const config = remoteSet.configParser.mapConfig(remoteConfig)
+    console.log(config.userPlayer)
 
     gameContext.gameHistoryState.clear()
     gameContext.gameHistoryState.currentGame = {firstToMove: firstToMove}
     historyEntries.forEach(e => gameContext.gameHistoryState.add(e))
 
-    const indexMapper = ruleSet.indexMapperFactory(config.userPlayer)
+    const indexMapper = ruleSet.indexMapperFactory(config.userPlayer ?? Color.WHITE)
 
     const board = new BoardSynchronizer(
         gameContext.boardState,
@@ -93,6 +104,12 @@ async function remoteGameInitInner<RemoteConfig, Index, Prop, RemoteMove>(
         fetch: fetch
     })
 
+    const timeManager = new TimerManager({
+        timerPairState: gameContext.timerPairState,
+        timeMs: 0,
+        incrementMs: config.time.increment
+    })
+
     const controller = new RemoteGameController({
         board: board,
         connector: connector,
@@ -110,12 +127,17 @@ async function remoteGameInitInner<RemoteConfig, Index, Prop, RemoteMove>(
         doubleCubeState: gameContext.doubleCubeState,
         gameHistoryState: gameContext.gameHistoryState,
         historyEncoder: ruleSet.historyEncoder,
-        dragState: gameContext.dragState
+        dragState: gameContext.dragState,
+        timeManager: timeManager
     })
 
-    gameContext.labelState.labelMapper = ruleSet.labelMapperFactory(config.userPlayer)
+    gameContext.labelState.labelMapper = ruleSet.labelMapperFactory(config.userPlayer ?? Color.WHITE)
     gameContext.gameControllerSetter.set(controller)
-    gameContext.doubleCubeState.positionMapper = ruleSet.doubleCubePositionMapperFactory(config.userPlayer)
+    gameContext.doubleCubeState.positionMapper = ruleSet.doubleCubePositionMapperFactory(config.userPlayer ?? Color.WHITE)
+    gameContext.timerPairState.timer1.onEnd = () => controller.onTimeout()
+    gameContext.timerPairState.timer2.onEnd = () => controller.onTimeout()
+    gameContext.timerPairState.timer1.owner = config.userPlayer === null ? Color.BLACK : oppositeColor(config.userPlayer)
+    gameContext.timerPairState.timer2.owner = config.userPlayer ?? Color.WHITE
 
     controller.init(config)
 
@@ -124,13 +146,15 @@ async function remoteGameInitInner<RemoteConfig, Index, Prop, RemoteMove>(
     connector.onEnd = controller.onEnd
     connector.onOfferDouble = controller.onOfferDouble
     connector.onAcceptDouble = controller.onAcceptDouble
+    connector.onUpdateTime = controller.onUpdateTime
 
     connector.subscribe()
 
     return {
         cleanup: connector.unsubscribe,
-        player1: config.userPlayer === Color.WHITE ? config.players.white : config.players.black,
-        player2: config.userPlayer === Color.WHITE ? config.players.black : config.players.white
+        player1: config.userPlayer !== Color.BLACK ? config.players.white : config.players.black,
+        player2: config.userPlayer !== Color.BLACK ? config.players.black : config.players.white,
+        spectator: config.userPlayer === null
     }
 }
 
@@ -138,7 +162,7 @@ export async function remoteGameInit({roomId, gameContext, fetch}: {
     roomId: number,
     gameContext: GameContext,
     fetch: FetchType
-}): Promise<{ cleanup: () => void, player1: PlayerState, player2: PlayerState }> {
+}): Promise<{ cleanup: () => void, player1: PlayerState, player2: PlayerState, spectator: boolean }> {
     const [raw, gameType] = await getConfig(fetch, roomId)
     console.log(gameType)
     const ruleSet = gameType === "SHORT_BACKGAMMON" ? backgammonRuleSet : nardeRuleSet

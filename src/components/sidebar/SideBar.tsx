@@ -28,9 +28,16 @@ const ProfileIcon = ({signedIn}: { signedIn: boolean }) => (
     <SideBarIcon
         navigateTo={!signedIn ? "/sign-in" : "/profile"}
         text={!signedIn ? "Войти" : "Профиль"}>
-        <img src={"/profile_icon.svg"} alt={"Профиль"} style={{height: "100%"}}/>
+        <img src={"/user_icon_placeholder.svg"} alt={"Профиль"} style={{height: "100%"}}/>
     </SideBarIcon>
 )
+
+const FriendIcon = () => (
+    <SideBarIcon navigateTo={"/friends"} text={"Друзья"}>
+        <img src={"/profile_icon.svg"} alt={"Друзья"} style={{height: "100%"}}/>
+    </SideBarIcon>
+)
+
 
 const NormalSideBar = observer(function NormalSideBar() {
     const authStatus = useAuthContext()
@@ -50,6 +57,7 @@ const NormalSideBar = observer(function NormalSideBar() {
             <Logo iconSrc={"/expanded_icon.svg"}/>
             <PlayIcon/>
             <ProfileIcon signedIn={authStatus.id !== null}/>
+            <FriendIcon />
         </div>
     )
 })
@@ -70,6 +78,7 @@ const DiminishedSideBar = observer(function DiminishedSideBar() {
         <Logo iconSrc={"/collapsed_icon.svg"}/>
         <PlayIcon/>
         <ProfileIcon signedIn={authStatus.id !== null}/>
+        <FriendIcon />
     </div>
 })
 const CollapsedSideBar = observer(function CollapsedSideBar() {
@@ -121,6 +130,7 @@ const CollapsedSideBar = observer(function CollapsedSideBar() {
                 <Logo iconSrc={"/expanded_icon.svg"}/>
                 <PlayIcon/>
                 <ProfileIcon signedIn={authStatus.id !== null}/>
+                <FriendIcon />
             </div>
             <img src={"/menu_icon.svg"} style={menuIconStyle} alt={"Menu"} onClick={toggleMenuCallback}/>
             <div style={screenStyle} onClick={toggleMenuCallback}/>

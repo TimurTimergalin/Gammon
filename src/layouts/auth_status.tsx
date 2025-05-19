@@ -1,7 +1,7 @@
 import {myUserInfo, UserInfo} from "../requests/requests";
 import {Outlet, ShouldRevalidateFunctionArgs} from "react-router";
 import {type Route} from "./+types/auth_status"
-import {useEffect, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 import {AuthStatus} from "../controller/auth_status/AuthStatus";
 import {AuthContextProvider} from "../controller/auth_status/context";
 
@@ -10,42 +10,62 @@ const shouldRevalidatePostfix = "-shouldRevalidate"
 const loaderDataPostfix = "-loaderData"
 
 
+// eslint-disable-next-line react-refresh/only-export-components
 export async function clientLoader(): Promise<UserInfo | null> {
     // Это обход бага в react-router-е (https://github.com/remix-run/react-router/issues/12607)
+    console.log("Auth loader")
     if (sessionStorage.getItem(module + shouldRevalidatePostfix) !== "true") {
-        return JSON.parse(sessionStorage.getItem(module + loaderDataPostfix)!)
+        const res = JSON.parse(sessionStorage.getItem(module + loaderDataPostfix)!)
+        console.log(res)
+        return res
     }
 
-    const resp = await myUserInfo(fetch)
-    if (!resp.ok) {
-        return null
-    }
 
     try {
-        const res = await resp.json()
-        sessionStorage.setItem(module + loaderDataPostfix, JSON.stringify(res))
+        const resp = await myUserInfo(fetch)
+        if (!resp.ok) {
+            return null
+        }
 
-        return res || null
-    } catch (e) {
-        console.error(e)
+        try {
+            const res = await resp.json()
+            sessionStorage.setItem(module + loaderDataPostfix, JSON.stringify(res))
+
+            console.log(res)
+            return res || null
+        } catch (e) {
+            console.error(e)
+            return null
+        }
+    } catch {
         return null
     }
-    // return
+
 }
 
 function Provider({loaderData}: Route.ComponentProps) {
     const authStatus = useRef(new AuthStatus())
+    const [init, setInit] = useState(false)
 
     useEffect(() => {
         authStatus.current.username = loaderData?.username || null
         authStatus.current.id = loaderData?.id || null
+        authStatus.current.login = loaderData?.login || null
+        authStatus.current.invitePolicy = loaderData?.invitePolicy || null
+        authStatus.current.rating = loaderData?.rating || null
+        setInit(true)
     }, [loaderData]);
+
+    if (!init) {
+        return <></>
+    }
 
     return <AuthContextProvider value={authStatus.current}><Outlet/></AuthContextProvider>
 }
 
-export function shouldRevalidate({formAction, defaultShouldRevalidate}: ShouldRevalidateFunctionArgs) {
-    const res = formAction === "/sign-in" && defaultShouldRevalidate
+// eslint-disable-next-line react-refresh/only-export-components
+export function shouldRevalidate({currentUrl, defaultShouldRevalidate}: ShouldRevalidateFunctionArgs) {
+    const res = currentUrl.pathname === "/sign-in" && defaultShouldRevalidate
 
     // Это обход бага в react-router-е (https://github.com/remix-run/react-router/issues/12607)
     sessionStorage.setItem(module + shouldRevalidatePostfix, String(res))

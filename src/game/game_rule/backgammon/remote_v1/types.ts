@@ -5,7 +5,7 @@ export type BackgammonRemoteMove = Move<number>
 
 export type BackgammonRemoteConfig = {
     gameData: {
-        color: RemoteColor,
+        color: RemoteColor | null,
         turn: RemoteColor,
         first: boolean,
         bar: {

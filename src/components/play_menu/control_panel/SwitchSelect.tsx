@@ -31,12 +31,13 @@ const Choice = styled(PlainChoice)<{ left: boolean, right: boolean, chosen: bool
     }
 `
 const choiceCallback = (i: number, callback: (i: number) => void) => () => callback(i)
-const PlainSwitchSelect = ({options, callback, className}: {
+const PlainSwitchSelect = ({options, callback, className, initChosen = 0}: {
     options: string[],
     callback: (v: number) => void,
-    className?: string
+    className?: string,
+    initChosen?: number
 }) => {
-    const [chosen, setChosen] = useState(0)
+    const [chosen, setChosen] = useState(initChosen)
 
     let i = 0
 

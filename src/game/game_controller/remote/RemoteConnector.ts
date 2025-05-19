@@ -5,7 +5,7 @@ import {
     backgammonConcedeMatch,
     backgammonFinishTurn,
     backgammonOfferDouble,
-    backgammonRollDice,
+    backgammonRollDice, backgammonSignalTimeout,
     subscribeForEvents
 } from "../../../requests/requests";
 import {logResponseError} from "../../../requests/util";
@@ -46,6 +46,8 @@ export interface RemoteConnector<Index, Prop> {
     concedeMatch(): void
 
     concedeGame(): void
+
+    signalTimeout(): void
 }
 
 export class RemoteConnectorImpl<RemoteMove, Index, Prop> implements RemoteConnector<Index, Prop> {
@@ -133,6 +135,11 @@ export class RemoteConnectorImpl<RemoteMove, Index, Prop> implements RemoteConne
         this._onEnd = value
     }
 
+    private _onUpdateTime: (white: number, black: number) => void = () => console.warn("No onUpdateTime set")
+    set onUpdateTime(value: (white: number, black: number) => void) {
+        this._onUpdateTime = value;
+    }
+
     private eventSource: EventSource | undefined = undefined
 
     private setOnMessage() {
@@ -145,11 +152,13 @@ export class RemoteConnectorImpl<RemoteMove, Index, Prop> implements RemoteConne
                 console.debug("move event encountered")
                 const moves = data.moves as RemoteMove[]
                 this._onMovesMade(moves.map(this.moveMapper.fromRemote))
+                this._onUpdateTime(data.remainWhiteTime, data.remainBlackTime)
             } else if (data.type === "TOSS_ZAR_EVENT") {
                 console.debug("dice event encountered")
                 const [d1, d2] = data.value
                 const color = mapRemoteColor(data.tossedBy)
                 this._onNewDice([d1, d2], color)
+                this._onUpdateTime(data.remainWhiteTime, data.remainBlackTime)
             } else if (data.type === "END_GAME_EVENT") {
                 const winner = mapRemoteColor(data.win)
                 const points = {
@@ -163,12 +172,15 @@ export class RemoteConnectorImpl<RemoteMove, Index, Prop> implements RemoteConne
                 } else {
                     this.configGetter(this.roomId).then(conf => this._onEnd(winner, conf, points))
                 }
+                this._onUpdateTime(data.remainWhiteTime, data.remainBlackTime)
             } else if (data.type === "DOUBLE_EVENT") {
                 console.debug("double offered")
                 this._onOfferDouble(mapRemoteColor(data.by))
+                this._onUpdateTime(data.remainWhiteTime, data.remainBlackTime)
             } else if (data.type === "ACCEPT_DOUBLE_EVENT") {
                 console.debug("double accepted")
                 this._onAcceptDouble(mapRemoteColor(data.by))
+                this._onUpdateTime(data.remainWhiteTime, data.remainBlackTime)
             } else {
                 console.warn("Ignoring unknown event")
             }
@@ -202,5 +214,9 @@ export class RemoteConnectorImpl<RemoteMove, Index, Prop> implements RemoteConne
 
     concedeGame(): void {
         backgammonConcedeGame(this.fetch, this.roomId).then(() => console.log("Game conceded"))
+    }
+
+    signalTimeout(): void {
+        backgammonSignalTimeout(this.fetch, this.roomId).then(() => console.log("Signalized timeout"))
     }
 }

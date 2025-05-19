@@ -18,7 +18,8 @@ export const FormWithValidation = observer(function FormWithValidation(
                     top: 0,
                     width: "100%",
                     height: "100%",
-                    backgroundColor: "#66666666"
+                    backgroundColor: "#66666666",
+                    borderRadius: 20
                 }}>
                 </div>}
         </fetcher.Form>

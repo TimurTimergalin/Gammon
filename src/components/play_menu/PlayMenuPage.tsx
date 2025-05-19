@@ -1,5 +1,5 @@
 import {observer} from "mobx-react-lite";
-import {CSSProperties} from "react";
+import {CSSProperties, useRef} from "react";
 import {useAuthContext} from "../../controller/auth_status/context";
 import {imageUri} from "../../requests/paths";
 import {PlayerIcon} from "../game/players/PlayerIcon";
@@ -9,6 +9,8 @@ import {RemoteGameTab} from "./control_panel/RemoteGameTab";
 import {LocalGameTab} from "./control_panel/LocalGameTab";
 import {GameContextHolder} from "../game/GameContextHolder";
 import {usePlayMenuLayout} from "../adapt/PlayMenuLayoutProvider";
+import {ControlPanelContext} from "../../controller/play_menu/ControlPanelContext";
+import {ControlPanelState} from "../../controller/play_menu/ControlPanelState";
 
 export const PlayMenuPage = observer(function PlayMenuPage() {
     const layout = usePlayMenuLayout().mode
@@ -33,11 +35,16 @@ export const PlayMenuPage = observer(function PlayMenuPage() {
         justifyContent: "space-evenly"
     }
 
+    const controlPanelState = useRef(new ControlPanelState())
+
     const controlPanel = (
-        <ControlPanel options={["Игра по сети", "Локальная игра"]}>
-            <RemoteGameTab/>
-            <LocalGameTab/>
-        </ControlPanel>
+        <ControlPanelContext.Provider value={controlPanelState.current}>
+            <ControlPanel options={["Игра по сети", "Локальная игра"]}>
+                <RemoteGameTab/>
+                <LocalGameTab/>
+            </ControlPanel>
+        </ControlPanelContext.Provider>
+
     )
 
     if (layout === "Present") {
@@ -54,7 +61,7 @@ export const PlayMenuPage = observer(function PlayMenuPage() {
             alignItems: "stretch"
         }
 
-        const skip = <div style={{flex: 1}} />
+        const skip = <div style={{flex: 1}}/>
         return (
             <div style={containerStyle}>
                 {skip}

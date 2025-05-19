@@ -16,7 +16,7 @@ export interface Config<Index, Prop> {
     placement: Board<Index, Prop>,
     player: Color,  // Цвет игрока, который ходит
     dice: [DiceStatus | null, DiceStatus | null],
-    userPlayer: Color  // Цвет пользователя,
+    userPlayer: Color | null  // Цвет пользователя,
     points: {
         white: number,
         black: number,
@@ -27,7 +27,12 @@ export interface Config<Index, Prop> {
         black: PlayerState
     },
     doubleCube: DoubleCubeConfig,
-    winner: Color | null
+    winner: Color | null,
+    time: {
+        white: number,
+        black: number,
+        increment: number
+    }
 }
 
 export interface ConfigParser<RemoteConfig, Index, Prop> {

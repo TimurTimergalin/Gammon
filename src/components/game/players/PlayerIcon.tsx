@@ -1,7 +1,6 @@
 import {observer} from "mobx-react-lite";
-import {ComponentProps, CSSProperties, useContext, useState} from "react";
-import {imgCacheContext} from "../img_cache/context";
-import {ImgCache} from "../img_cache/ImgCache";
+import {ComponentProps, CSSProperties, useContext, useEffect, useState} from "react";
+import {imgCacheContext, useImgCache, useImgPlaceholder} from "../../../controller/img_cache/context";
 
 export const PlayerIcon = observer(function PlayerIcon({username, iconSrc}:{
     username?: string,
@@ -22,20 +21,27 @@ export const PlayerIcon = observer(function PlayerIcon({username, iconSrc}:{
         height: "min-content",
         alignSelf: "center"
     }
-
+    
     const imgCache = useContext(imgCacheContext)
 
-    const [imgSrc, setImgSrc] = useState(imgCache === null ? iconSrc : imgCache.get(iconSrc))
+    const [imgSrc, setImgSrc] = useState(useImgCache(iconSrc))
 
+    useEffect(() => {
+        setImgSrc(imgCache?.get(iconSrc) ?? iconSrc)
+    }, [iconSrc, imgCache]);
+    
+
+    const placeholderData = useImgPlaceholder()
     const imgProps = {
         src: imgSrc,
         alt: "Icon",
         style: {backgroundColor: "#252323", padding: "2px", width: 30},
         onError: () => {
-            setImgSrc(imgCache?.getPlaceholder() ?? ImgCache.placeholder)
+            setImgSrc(placeholderData)
         }
     } satisfies ComponentProps<"img">
 
+    // noinspection HtmlRequiredAltAttribute
     const img = <img {...imgProps} />
 
     return (

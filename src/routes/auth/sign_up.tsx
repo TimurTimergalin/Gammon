@@ -57,7 +57,7 @@ const PlainSignUpForm = observer(function SignUpForm({className}: { className?: 
     const passwordRef = useRef<string>("")
 
     return (
-        <FormWithValidation className={className} method={"post"} fetcher={fetcher}>
+        <FormWithValidation className={className} method={"post"} fetcher={fetcher} action={"/sign-up"}>
             <p>Логин</p>
             <AuthFormInput validityCheck={required} index={0} name={"login"}/>
             <AuthFormInputMessage index={0}/>

@@ -1,5 +1,5 @@
 import {DoubleCubeConfig} from "../ConfigParser";
-import {Color, oppositeColor} from "../../../common/color";
+import {Color} from "../../../common/color";
 import {FetchType} from "../../../common/requests";
 import {usernames} from "../../../requests/requests";
 
@@ -65,13 +65,8 @@ export interface RemoteConfig {
     },
     doubleCubeValue: number | null,
     doubleCubePosition: RemoteDoubleCubePosition,
-    winner: RemoteColor | null
+    winner: RemoteColor | null,
+    remainWhiteTime: number,
+    remainBlackTime: number,
+    increment: number
 }
-
-export function inferTurnFromCubePosition(doubleCubePosition: RemoteDoubleCubePosition, turn: RemoteColor): Color {
-    return doubleCubePosition === "OFFERED_TO_WHITE" || doubleCubePosition === "OFFERED_TO_BLACK" ?
-            oppositeColor(mapRemoteColor(turn)) :
-            mapRemoteColor(turn)
-}
-
-

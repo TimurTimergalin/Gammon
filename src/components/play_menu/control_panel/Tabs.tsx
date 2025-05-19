@@ -1,5 +1,7 @@
 import styled from "styled-components";
-import {useEffect, useState} from "react";
+import {CSSProperties, useContext, useEffect, useState} from "react";
+import {observer} from "mobx-react-lite";
+import {ControlPanelContext} from "../../../controller/play_menu/ControlPanelContext";
 
 
 const PlainOptionTab = ({children, callback, className}: {
@@ -29,7 +31,8 @@ const OptionTab = styled(PlainOptionTab)<{ left: boolean, right: boolean, chosen
 
 const tabCallback = (i: number, callback: (i: number) => void) => () => callback(i)
 
-const PlainTabs = ({options, className, onChange}: { options: string[], className?: string, onChange: (choice: number) => void }) => {
+const PlainTabs = observer(({options, className, onChange}: { options: string[], className?: string, onChange: (choice: number) => void }) => {
+    const {enabled} = useContext(ControlPanelContext)
     useEffect(() => {
         console.assert(options.length !== 0)
     }, [options.length]);
@@ -55,11 +58,26 @@ const PlainTabs = ({options, className, onChange}: { options: string[], classNam
         ++i
     }
 
-    return <div className={className}>{tabs}</div>
-}
+    const screenStyle = {
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        backgroundColor: "#66666666"
+    } satisfies CSSProperties
+
+    return <div className={className}>
+        {tabs}
+        {!enabled &&
+            <div style={screenStyle} />
+        }
+    </div>
+})
 
 export const Tabs = styled(PlainTabs)`
     display: flex;
+    position: relative;
 `
 
 

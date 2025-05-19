@@ -1,16 +1,26 @@
 import {
+    addFriendUri,
+    analysisUri,
     backgammonAcceptDoubleUri,
     backgammonConcedeUri,
     backgammonConfigUri,
-    backgammonFinishTurnUri, backgammonHistoryUri,
+    backgammonFinishTurnUri,
+    backgammonHistoryUri,
     backgammonOfferDoubleUri,
     backgammonRollDiceUri,
+    backgammonTimeoutUri, canAddFriendUri,
     connectUri,
     disconnectUri,
     eventsUri,
+    friendRequestsUri, friendsListUri, gamesListUri,
+    getUserInfoUri,
+    historyLengthUri, isFriendUri,
     myUserInfoUri,
+    removeFriendUri,
     signInUrl,
     signUpUrl,
+    updateUserInfoUri,
+    uploadImgUri,
     usernamesUri
 } from "./paths";
 import {FetchType} from "../common/requests";
@@ -86,20 +96,32 @@ export function backgammonConcedeGame(fetch: FetchType, id: number) {
     })
 }
 
-// TODO - эта ручка должна быть не только для backgammon-а
-export function backgammonHistory(fetch: FetchType, id: number) {
-    return fetch(backgammonHistoryUri(id), {
+export function backgammonHistory(fetch: FetchType, matchId: number, gameId?: number) {
+    const uri = backgammonHistoryUri(matchId, gameId)
+    console.log(uri)
+    return fetch(uri, {
         credentials: "include"
     })
 }
 
-export const connect = (fetch: FetchType, gameType: string, points: number) =>
+export function backgammonSignalTimeout(fetch: FetchType, matchId: number) {
+    return fetch(
+        backgammonTimeoutUri(matchId),
+        {
+            credentials: "include",
+            method: "POST"
+        }
+    )
+}
+
+export const connect = (fetch: FetchType, gameType: string, points: number, blitz: boolean) =>
     fetch(connectUri, {
         credentials: "include",
         method: "POST",
         body: JSON.stringify({
             type: gameType,
-            points: points
+            points: points,
+            timePolicy: blitz ? "BLITZ" : "DEFAULT_TIMER"
         }),
         headers: {
             "Content-Type": "application/json"
@@ -140,9 +162,19 @@ export const signUp = (fetch: FetchType, credentials: SignUpCredentials) => fetc
     }
 })
 
+export type InvitePolicy = "ALL" | "FRIENDS_ONLY"
+
 export type UserInfo = {
     username: string,
-    id: number
+    login: string,
+    invitePolicy: InvitePolicy,
+    id: number,
+    rating: {
+        backgammonBlitz: number;
+        backgammonDefault: number;
+        nardeBlitz: number;
+        nardeDefault: number
+    }
 }
 
 export function myUserInfo(fetch: FetchType) {
@@ -151,6 +183,114 @@ export function myUserInfo(fetch: FetchType) {
     })
 }
 
+export function userInfo(fetch: FetchType, id: number) {
+    return fetch(getUserInfoUri(id))
+}
+
+export type UpdateUserInfoRequest = {
+    username: string,
+    login: string,
+    invitePolicy: InvitePolicy
+}
+
+export function updateUserInfo(fetch: FetchType, props: UpdateUserInfoRequest) {
+    return fetch(updateUserInfoUri, {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify(props),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+}
+
 export function usernames(fetch: FetchType, ids: number[]) {
     return fetch(usernamesUri(ids))
 }
+
+export function uploadImage(fetch: FetchType, data: Blob, filename: string) {
+    const formData = new FormData()
+    formData.append("file", data, filename)
+    return fetch(uploadImgUri, {credentials: "include", body: formData, method: "POST"})
+}
+
+export function getHistoryLength(fetch: FetchType, matchId: number) {
+    return fetch(historyLengthUri(matchId), {credentials: "include"})
+}
+
+export function getAnalysis(fetch: FetchType, matchId: number) {
+    return fetch(analysisUri(matchId), {credentials: "include"})
+}
+
+export function getFriendRequest(fetch: FetchType) {
+    return fetch(friendRequestsUri, {
+        credentials: "include"
+    })
+}
+
+export function addFriendById(fetch: FetchType, userId: number) {
+    return fetch(addFriendUri, {
+        credentials: "include",
+        method: "POST",
+        body: JSON.stringify({
+            type: "BY_ID",
+            friendId: userId
+        }),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+}
+
+export function addFriendByLogin(fetch: FetchType, login: string) {
+    return fetch(addFriendUri, {
+        credentials: "include",
+        method: "POST",
+        body: JSON.stringify({
+            type: "BY_LOGIN",
+            friendLogin: login
+        }),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+}
+
+export function removeFriend(fetch: FetchType, userId: number) {
+    return fetch(removeFriendUri, {
+        credentials: "include",
+        method: "DELETE",
+        body: JSON.stringify({
+            type: "BY_ID",
+            friendId: userId
+        }),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+}
+
+export function canAddFriend(fetch: FetchType, userId: number) {
+    return fetch(canAddFriendUri(userId), {
+        credentials: "include"
+    })
+}
+
+export function isFriend(fetch: FetchType, userId: number) {
+    return fetch(isFriendUri(userId), {
+        credentials: "include"
+    })
+}
+
+export function getFriendsList(fetch: FetchType, offset: number, limit: number) {
+    return fetch(friendsListUri(offset, limit), {
+        credentials: "include"
+    })
+}
+
+export function getGamesList(fetch: FetchType, userId: number, pageNumber: number, pageSize: number) {
+    return fetch(gamesListUri(userId, pageNumber, pageSize), {
+        credentials: "include"
+    })
+}
+

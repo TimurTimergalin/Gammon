@@ -8,10 +8,10 @@ import {ColumnTimer, MicroTimer, NormalTimer} from "../game/timer/Timer";
 import {ButtonPanel} from "../game/buttons/ButtonPanel";
 import {SideBar} from "../sidebar/SideBar";
 import {ControlPanel} from "../game/control_panel/ControlPanel";
-import {ImgCacheProvider} from "../game/img_cache/provider";
 import {useGamePageLayout} from "../adapt/GamePageLayoutProvider";
 import {getHeightTaken, getWidthTaken} from "../../controller/adapt/game_page/layout_calculator/common";
 import {getControlsSpaceTaken} from "../../controller/adapt/game_page/layout_modes";
+import {CanConcedeContext} from "./can_concede_context";
 
 export const GamePage = observer(function GamePage({displayTimer = false, displayControls = false, children}: {
     displayTimer?: boolean,
@@ -30,7 +30,6 @@ export const GamePage = observer(function GamePage({displayTimer = false, displa
     const availableWidth = width - getWidthTaken(layout)
     const availableHeight = height - getHeightTaken(layout)
 
-    console.log(availableWidth, availableHeight)
     const gameContainerStyle =
         availableHeight * boardAspectRatio <= availableWidth ? {
             height: availableHeight,
@@ -68,7 +67,7 @@ export const GamePage = observer(function GamePage({displayTimer = false, displa
             height: 400,
             display: "flex",
             maxHeight: "80vh"
-        } : historyLayout === "Down"? {
+        } : historyLayout === "Down" ? {
             marginLeft: "10%",
             marginRight: "10%",
             height: "fit-content",
@@ -128,7 +127,7 @@ export const GamePage = observer(function GamePage({displayTimer = false, displa
                 </div>
             </div>
         )
-    } else if(controlsLayout === "Micro") {
+    } else if (controlsLayout === "Micro") {
         const layer3Style: CSSProperties = {
             display: "flex",
             flexDirection: "column",
@@ -140,14 +139,14 @@ export const GamePage = observer(function GamePage({displayTimer = false, displa
         gamePart = (
             <div style={layer3Style}>
                 <div style={{display: "flex", marginBottom: 6, width: "100%"}}>
-                    {displayTimer && <MicroTimer index={0} />}
+                    {displayTimer && <MicroTimer index={0}/>}
                 </div>
                 <div style={gameContainerStyle}>
                     {children}
                 </div>
                 <div style={{display: "flex", marginTop: 6, width: "100%"}}>
-                    {displayTimer && <MicroTimer index={1} />}
-                    <div style={{flex: 1}} />
+                    {displayTimer && <MicroTimer index={1}/>}
+                    <div style={{flex: 1}}/>
                     {displayControls && <div style={{display: "flex"}}>
                         <ButtonPanel/>
                     </div>}
@@ -194,7 +193,7 @@ export const GamePage = observer(function GamePage({displayTimer = false, displa
                             {displayTimer && <ColumnTimer index={0}/>}
                         </>
                     }
-                    {controlsLayout === "MicroRight" &&
+                    {controlsLayout === "MicroRight" && displayTimer &&
                         <MicroTimer index={0}/>
                     }
                     <div style={{flex: 1}}/>
@@ -204,8 +203,8 @@ export const GamePage = observer(function GamePage({displayTimer = false, displa
                             <PlayerIcon iconSrc={player1.iconSrc}/>
                         </>
                     }
-                    {controlsLayout === "MicroRight" &&
-                        <MicroTimer index={1} />
+                    {controlsLayout === "MicroRight" && displayTimer &&
+                        <MicroTimer index={1}/>
                     }
                     {displayControls && <div style={buttonsContainerStyle}>
                         <ButtonPanel/>
@@ -216,16 +215,16 @@ export const GamePage = observer(function GamePage({displayTimer = false, displa
     }
 
     return (
-        <ImgCacheProvider>
-            <div style={layer1Style}>
-                <SideBar/>
-                <div style={layer2Style}>
-                    {gamePart}
-                    <div style={historyContainerStyle}>
+        <div style={layer1Style}>
+            <SideBar/>
+            <div style={layer2Style}>
+                {gamePart}
+                <div style={historyContainerStyle}>
+                    <CanConcedeContext.Provider value={displayControls}>
                         <ControlPanel/>
-                    </div>
+                    </CanConcedeContext.Provider>
                 </div>
             </div>
-        </ImgCacheProvider>
+        </div>
     )
 })

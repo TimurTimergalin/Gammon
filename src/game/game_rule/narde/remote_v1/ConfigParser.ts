@@ -2,12 +2,7 @@ import {Config, ConfigParser} from "../../ConfigParser";
 import {NardeRemoteConfig} from "./types";
 import {NardeIndex, NardeProp} from "../../../board/narde/types";
 import {FetchType} from "../../../../common/requests";
-import {
-    inferTurnFromCubePosition,
-    mapRemoteColor,
-    mapRemoteDoubleCube,
-    requestPlayers
-} from "../../common_remote/common";
+import {mapRemoteColor, mapRemoteDoubleCube, requestPlayers} from "../../common_remote/common";
 import {DiceStatus, makeDice} from "../../../dice_state/DiceStatus";
 import {NardeRemoteMoveMapper} from "./RemoteMoveMapper";
 import {NardeBoard} from "../../../board/narde/NardeBoard";
@@ -28,11 +23,14 @@ export class NardeConfigParser implements ConfigParser<NardeRemoteConfig, NardeI
                   players,
                   doubleCubePosition,
                   doubleCubeValue,
-                  winner
+                  winner,
+                  remainWhiteTime,
+                  remainBlackTime,
+                  increment
               }: NardeRemoteConfig): Config<NardeIndex, NardeProp> {
         const config = gameData
-        const player = inferTurnFromCubePosition(doubleCubePosition, config.turn)
-        const userPlayer = mapRemoteColor(config.color)
+        const player = mapRemoteColor(config.turn)
+        const userPlayer = config.color !== null ? mapRemoteColor(config.color) : null
         const dice: [DiceStatus | null, DiceStatus | null] = [
             config.zar[0] ? makeDice(config.zar[0], mapRemoteColor(config.turn)) : null,
             config.zar[1] ? makeDice(config.zar[1], mapRemoteColor(config.turn)) : null
@@ -66,7 +64,12 @@ export class NardeConfigParser implements ConfigParser<NardeRemoteConfig, NardeI
                 }
             },
             doubleCube: doubleCube,
-            winner: winner == null ? null : mapRemoteColor(winner)
+            winner: winner == null ? null : mapRemoteColor(winner),
+            time: {
+                white: remainWhiteTime,
+                black: remainBlackTime,
+                increment: increment
+            }
         }
     }
 

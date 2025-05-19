@@ -1,12 +1,8 @@
-import {ComponentProps, useEffect, useRef, useState} from "react";
-import {useNavigate} from "react-router";
-import {connect, disconnect} from "../../../../requests/requests";
-import {logResponseError} from "../../../../requests/util";
-import {AccentedButton} from "../../../../components/AccentedButton";
+import {ComponentProps} from "react";
+import {useNavigate, useParams} from "react-router";
 import {endWindowButtonStyle, endWindowContentStyle, returnToMenuButtonStyle} from "../../_deps/styles";
 import styled from "styled-components";
-import {useGameContext} from "../../../../game/GameContext";
-import {useFetch} from "../../../../common/hooks";
+import {AccentedButton} from "../../../../components/AccentedButton";
 
 
 const ReturnToMenuButton = (props: ComponentProps<"button">) => {
@@ -17,59 +13,28 @@ const ReturnToMenuButton = (props: ComponentProps<"button">) => {
     )
 }
 
-const NewGameButton = (props: ComponentProps<"button">) => {
-    const [disabled, setDisabled] = useState(false)
-    const navigate = useNavigate()
-    const endWindowState = useGameContext("endWindowState")
-    const scoreState = useGameContext("scoreState")
-
-    const startedConnection = useRef(false)
-    const [fetch, fetchCleanups] = useFetch()
-
-    const onClick = () => {
-        startedConnection.current = true
-        setDisabled(true)
-        connect(fetch, "SHORT_BACKGAMMON", scoreState.total)
-            .then(resp => {
-                startedConnection.current = false
-                return resp
-            })
-            .then(resp => {
-                logResponseError(resp, "connecting to a game")
-                return resp.text()
-            })
-            .then(parseInt)
-            .then(roomId => isNaN(roomId) ? console.error("Unable to get roomId") : navigate(`/play/${roomId}`))
-            .then(() => endWindowState.title = undefined)
-    }
-
-    useEffect(() => {
-        fetchCleanups.push(
-            async () => {
-                if (startedConnection.current) {
-                    await disconnect(fetch)
-                    console.debug("Disconnected")
-                }
-            }
-        )
-    }, [fetch, fetchCleanups]);
-
-    return (
-        <AccentedButton onClick={onClick} {...props} disabled={disabled}>Новая игра</AccentedButton>
-    )
-}
-
 const StyledReturnToMenuButton = styled(ReturnToMenuButton)`
     ${returnToMenuButtonStyle}
 `
 
-const StyledNewGameButton = styled(NewGameButton)`${endWindowButtonStyle}`
+const PlainAnalysisButton = ({className}: {className?: string}) => {
+    const navigate = useNavigate()
+    const {roomId} = useParams()
+
+    return (
+        <AccentedButton className={className} onClick={() => navigate(`/history/${roomId}`)}>Анализ</AccentedButton>
+    )
+}
+
+const AnalysisButton = styled(PlainAnalysisButton)`
+    ${endWindowButtonStyle}
+`
 
 const PlainRemotePlayEndWindowContent = ({className}: {className?: string}) => {
     return (
         <div style={{display: "flex", flexDirection: "column"}}>
             <div className={className}>
-                <StyledNewGameButton />
+                <AnalysisButton />
                 <StyledReturnToMenuButton />
             </div>
         </div>

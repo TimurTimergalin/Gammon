@@ -42,15 +42,6 @@ export const NormalScoreText = styled(PlainScoreText)`
     ${scoreTextStyle}
 `
 
-export const MicroScoreText = styled(PlainScoreText)`
-    & {
-        display: flex;
-        justify-content: center;
-        font-size: 20px;
-    }
-    ${scoreTextStyle}
-`
-
 
 const PlainScoreTab = observer(function PlainScoreTab({className}: { className?: string }) {
     const scoreState = useGameContext("scoreState")

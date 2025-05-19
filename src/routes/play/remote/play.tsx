@@ -21,6 +21,7 @@ const InnerRemoteGamePage = observer(function InnerNewRemoteGamePage(
 
     const [cleanup, setCleanup] = useState<undefined | { cleanup: () => void }>(undefined)
     const [gameLoaded, setGameLoaded] = useState(false)
+    const [isSpectator, setIsSpectator] = useState(false)
 
     useEffect(() => {
         if (cleanup !== undefined) {
@@ -40,16 +41,17 @@ const InnerRemoteGamePage = observer(function InnerNewRemoteGamePage(
             gameContext: gameContext,
             roomId: roomIdParsed,
             fetch: fetch
-        }).then(({cleanup, player1, player2}) => {
+        }).then(({cleanup, player1, player2, spectator}) => {
             setGameLoaded(true)
             setCleanup({cleanup: cleanup})
+            setIsSpectator(spectator)
             gameContext.playersInfo.player1 = player1
             gameContext.playersInfo.player2 = player2
         })
     }, [fetch, gameContext, roomIdParsed])
 
     return (
-        <GamePage displayControls={true}>
+        <GamePage displayControls={!isSpectator} displayTimer={true}>
             {gameLoaded &&
                 <GameView />
             }
