@@ -1,0 +1,43 @@
+worker_processes  1;
+events {
+    worker_connections  1024;
+}
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+    sendfile        on;
+    keepalive_timeout  10000;
+    proxy_read_timeout 10000;
+
+    server {
+        listen       80;
+        location / {
+            proxy_pass http://frontend:1026;
+        }
+        location /local-play/(.*) {
+	        proxy_pass http://frontend:1026/local-play/$1$is_args$args;
+	    }
+	    location ~ \/(.*\.svg) {
+            proxy_pass http://frontend:1026/$1;
+        }
+        location ~ \/game-events\/(\d*) {
+            proxy_set_header Connection '';
+            proxy_http_version 1.1;
+            chunked_transfer_encoding off;
+            proxy_buffering off;
+            proxy_cache off;
+            proxy_read_timeout 24h;
+            proxy_connect_timeout 30m;
+            proxy_pass http://${BACKEND_HOST}/game/backgammon/view/$1;
+        }
+        location ~ ^\/game\/(.*)$ {
+            proxy_pass http://${BACKEND_HOST}/game/$1$is_args$args;
+        }
+        location ~ ^\/menu\/(.*)$ {
+            proxy_pass http://${BACKEND_HOST}/menu/$1$is_args$args;
+        }
+        location ~ ^\/player\/(.*)$ {
+            proxy_pass http://${BACKEND_HOST}/player/$1$is_args$args;
+        }
+    }
+}
