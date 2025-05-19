@@ -1,4 +1,4 @@
-import {CSSProperties, ReactNode, useContext, useEffect, useState} from "react";
+import {CSSProperties, ReactNode, useCallback, useContext, useEffect, useState} from "react";
 import styled from "styled-components";
 import {AccentedButton} from "../AccentedButton";
 import {observer} from "mobx-react-lite";
@@ -7,8 +7,18 @@ import {useImgCache, useImgPlaceholder} from "../../controller/img_cache/context
 import {imageUri} from "../../requests/paths";
 import {useAuthContext} from "../../controller/auth_status/context";
 import {useNavigate} from "react-router";
-import {addFriendById, canAddFriend, isFriend, removeFriend} from "../../requests/requests";
+import {
+    addFriendById,
+    canAddFriend,
+    getBackgammonConfig,
+    getGamesList,
+    isFriend,
+    removeFriend
+} from "../../requests/requests";
 import {useFetch} from "../../common/hooks";
+import {makeAutoObservable, runInAction} from "mobx";
+import {ProfileStatus} from "../../controller/profile/ProfileStatus";
+import {UsernameLink} from "../friends_page/FriendsPage";
 
 export function EloIcon({iconSrc, value, title}: { iconSrc: string, value: number, title?: string }) {
     const imgStyle = {
@@ -95,20 +105,20 @@ const ProfileBar = observer(function ProfileBar() {
                     setFriendStatus("Already sent")
                 }}
             >Добавить в друзья</AccentedButton> :
-        friendStatus === "Remove" ?
-            <AccentedButton
-                type={"button"}
-                style={buttonStyle}
-                onClick={() => {
-                    removeFriend(fetch, profileStatus.id).then()
-                    setFriendStatus("Add")
-                }}
-            >Удалить из друзей</AccentedButton> :
-            <AccentedButton
-                type={"button"}
-                style={buttonStyle}
-                disabled={true}
-            >Запрос в друзья отправлен</AccentedButton>
+            friendStatus === "Remove" ?
+                <AccentedButton
+                    type={"button"}
+                    style={buttonStyle}
+                    onClick={() => {
+                        removeFriend(fetch, profileStatus.id).then()
+                        setFriendStatus("Add")
+                    }}
+                >Удалить из друзей</AccentedButton> :
+                <AccentedButton
+                    type={"button"}
+                    style={buttonStyle}
+                    disabled={true}
+                >Запрос в друзья отправлен</AccentedButton>
 
 
     useEffect(() => {
@@ -174,20 +184,31 @@ const ProfileBar = observer(function ProfileBar() {
 type MatchEntryProp = {
     gameModeIcon: string,
     whiteName: string,
+    whiteId: number
     whiteElo: number,
-    userWon: boolean,
+    userWon: boolean | null,
     blackElo: number,
-    blackName: string
+    blackId: number,
+    blackName: string,
+    gameId: number
 }
+
+const StopProp = ({children}: {children?: ReactNode | ReactNode[]}) => (
+    <div onClick={(e) => e.stopPropagation()}>
+        {children}
+    </div>
+)
+
 
 function PlainMatchEntry({
                              className,
                              gameModeIcon,
                              whiteName,
-                             whiteElo,
                              blackName,
-                             blackElo,
-                             userWon
+                             userWon,
+                             whiteId,
+                             blackId,
+                             gameId
                          }: MatchEntryProp & {
     className?: string
 }) {
@@ -212,7 +233,9 @@ function PlainMatchEntry({
         flex: 1
     } satisfies CSSProperties
 
-    const status = userWon ? "Победа" : "Поражение"
+    const status = userWon === null ? "В процессе" : userWon ? "Победа" : "Поражение"
+    const navigate = useNavigate()
+    const redirectTo = userWon === null ? `/play/${gameId}` : `/history/${gameId}`
 
     const statusStyle = {
         color: userWon ? "green" : "red",
@@ -225,7 +248,7 @@ function PlainMatchEntry({
     } satisfies CSSProperties
 
     return (
-        <div className={className}>
+        <div className={className} onClick={() => navigate(redirectTo)}>
             <span style={imgContainerStyle}>
                 <img style={imgStyle} src={gameModeIcon} alt={"Иконка режима"}/>
             </span>
@@ -234,9 +257,17 @@ function PlainMatchEntry({
                 <span style={statusStyle}>{status}</span>
             </span>
             <div style={flexContainerStyle}>
-                <span style={{flex: 1, textAlign: "left", whiteSpace: "nowrap"}}>{whiteName} ({whiteElo})</span>
+                <span style={{flex: 1, textAlign: "left", whiteSpace: "nowrap"}}>
+                    <StopProp>
+                        <UsernameLink to={`/profile/${whiteId}`}>{whiteName}</UsernameLink>
+                    </StopProp>
+                </span>
                 <span style={{flex: 1, textAlign: "center", fontSize: 15, whiteSpace: "nowrap"}}>VS</span>
-                <span style={{flex: 1, textAlign: "right", whiteSpace: "nowrap"}}>{blackName} ({blackElo})</span>
+                <span style={{flex: 1, textAlign: "right", whiteSpace: "nowrap"}}>
+                    <StopProp>
+                        <UsernameLink to={`/profile/${blackId}`}>{blackName}</UsernameLink>
+                    </StopProp>
+                </span>
             </div>
         </div>
     )
@@ -283,26 +314,116 @@ const MatchList = styled(PlainMatchList)`
             padding: 5px 20px;
             margin-bottom: 10px;
             width: 90%;
-            max-width: 500px;
+            max-width: 700px;
         }
     }
 `
 
-function PlainProfilePage({className}: { className?: string }) {
+const PlainProfilePage = observer(function PlainProfilePage({className}: { className?: string }) {
+    const [matchList] = useState<{ matches: MatchEntryProp[] }>(makeAutoObservable({matches: []}))
+    const profileStatus = useContext(ProfileStatusContext)!
+    const [fetch] = useFetch()
+
+    const getIcon = (gameType: string, timeControl: string) => {
+        return gameType === "SHORT_BACKGAMMON" ?
+            (timeControl === "BLITZ" ?
+                "/backgammon_blitz.svg" :
+                "/backgammon.svg") :
+            (timeControl === "BLITZ" ?
+                "/narde_blit.svg" :
+                "/narde.svg")
+    }
+
+    const getRating = (gameType: string, timeControl: string, rating: ProfileStatus["rating"]) => {
+        return gameType === "SHORT_BACKGAMMON" ?
+            (timeControl === "BLITZ" ?
+                rating.backgammonBlitz :
+                rating.backgammonDefault) :
+            (timeControl === "BLITZ" ?
+                rating.nardeBlitz :
+                rating.nardeDefault)
+    }
+
+    useEffect(() => {
+        runInAction(() => matchList.matches.splice(0, matchList.matches.length))
+    }, [profileStatus.id, matchList.matches]);
+
+    const loadData = useCallback((pageNumber: number) => {
+        const limit = 10
+        getGamesList(fetch, profileStatus.id, pageNumber, limit)
+            .then(resp => resp.json())
+            .then(matches => Promise.all([
+                matches,
+                Promise.allSettled(
+                    matches.map(
+                        (match: ReturnType<JSON["parse"]>) => getBackgammonConfig(fetch, match.gameId).then(resp => {
+                            if (!resp.ok) {
+                                throw new Error(String(resp.status))
+                            }
+                            return resp
+                        }))
+                )
+            ]))
+            .then(([matches, responses]) => {
+                const newMatches = []
+                const newResponses = []
+                for (let i = 0; i < matches.length; ++i) {
+                    const resp = responses[i]
+                    if (resp.status === "fulfilled") {
+                        newMatches.push(matches[i])
+                        newResponses.push(resp.value)
+                    }
+                }
+                return [newMatches, newResponses]
+            })
+            .then(([matches, responses]) => Promise.all([matches, Promise.all(responses.map(resp => resp.json()))]))
+            .then(([matches, configs]) => {
+                console.log(matches, configs)
+
+                runInAction(() => {
+                    for (let i = 0; i < matches.length; ++i) {
+                        const match = matches[i]
+                        const config = configs[i]
+
+                        const whiteUsername = config.players.WHITE === profileStatus.id ? profileStatus.username : match.opponentUserInfo.username
+                        const blackUsername = config.players.BLACK === profileStatus.id ? profileStatus.username : match.opponentUserInfo.username
+
+                        matchList.matches.push({
+                            whiteId: config.players.WHITE,
+                            whiteName: whiteUsername,
+                            blackId: config.players.BLACK,
+                            blackName: blackUsername,
+                            gameModeIcon: getIcon(match.gameType, match.timePolicy),
+                            userWon: config.winner === null ? null : (
+                                config.winner === "WHITE" ? config.players.WHITE === profileStatus.id : config.players.BLACK === profileStatus.id
+                            ),
+                            whiteElo: getRating(match.gameType, match.timePolicy, config.players.WHITE === profileStatus.id ? profileStatus.rating : match.opponentUserInfo.rating),
+                            blackElo: getRating(match.gameType, match.timePolicy, config.players.BLACK === profileStatus.id ? profileStatus.rating : match.opponentUserInfo.rating),
+                            gameId: match.gameId
+                        })
+                    }
+                })
+                if (matches.length >= limit) {
+                    loadData(pageNumber + 1)
+                }
+            })
+    }, [fetch, matchList.matches, profileStatus.id, profileStatus.rating, profileStatus.username])
+
+    useEffect(() => {
+        loadData(0)
+    }, [loadData]);
+
+    const matchEntries = matchList.matches.map(e => <MatchEntry {...e} key={e.gameId}/>)
+
     return (
         <div className={className}>
             <ProfileBar/>
             <MatchList>
-                <MatchEntry userWon={true} gameModeIcon={"/backgammon.svg"} blackElo={1000} whiteName={"u1"}
-                            blackName={"u2"} whiteElo={1000}/>
-                <MatchEntry userWon={false} gameModeIcon={"/backgammon_blitz.svg"} blackElo={1000} whiteName={"u1"}
-                            blackName={"u2"} whiteElo={1000}/>
-                <MatchEntry userWon={true} gameModeIcon={"/narde.svg"} blackElo={1000} whiteName={"u1"} blackName={"u2"}
-                            whiteElo={1000}/>
+                {matchEntries}
             </MatchList>
         </div>
     )
-}
+})
 
 export const ProfilePage = styled(PlainProfilePage)`
     & {

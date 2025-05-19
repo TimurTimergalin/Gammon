@@ -22,7 +22,7 @@ import {runInAction} from "mobx";
 
 type Rating = { backgammonBlitz: number; backgammonDefault: number; nardeBlitz: number; nardeDefault: number }
 
-const UsernameLink = styled(Link)`
+export const UsernameLink = styled(Link)`
     & {
         color: white;
         text-decoration: none;
@@ -82,6 +82,19 @@ const SearchBar = styled(PlainSearchBar)`
     }
 `
 
+const RemoveFriendButton = styled(AccentedButton)`
+    background-color: lightgray;
+    color: black;
+    
+    &:hover {
+        background-color: #bbb !important;
+    }
+    
+    &:active {
+        background-color: #ddd !important;
+    }
+`
+
 const PlainFriendsEntry = ({className, iconSrc, username, rating, id}: {
     className?: string,
     iconSrc: string,
@@ -91,6 +104,7 @@ const PlainFriendsEntry = ({className, iconSrc, username, rating, id}: {
 }) => {
     const icon = useImgCache(iconSrc)
     const placeholder = useImgPlaceholder()
+    const navigate = useNavigate()
     return (
         <div className={className}>
             <img src={icon} alt={"Аватар"} onError={(e) => e.currentTarget.src = placeholder}/>
@@ -106,6 +120,7 @@ const PlainFriendsEntry = ({className, iconSrc, username, rating, id}: {
                          title={"ELO - Длинные нарды (блиц)"}/>
             </div>
             <AccentedButton type={"button"}>Вызвать</AccentedButton>
+            <RemoveFriendButton type={"button"} onClick={() => {removeFriend(fetch, id).then(() => navigate(0)); }}>Удалить</RemoveFriendButton>
         </div>
     )
 }
@@ -136,6 +151,7 @@ const FriendsEntry = styled(PlainFriendsEntry)`
 
         ${AccentedButton} {
             aspect-ratio: 1;
+            width: 65px;
             margin-right: 10px;
             border-radius: 10px;
         }
@@ -160,7 +176,7 @@ const PlainFriendList = observer(({className}: { className?: string }) => {
                 runInAction(() => objects.forEach(o => friends.push(o)))
                 setInit(true)
                 if (objects.length >= limit) {
-                    setTimeout(() => loadData(offset + limit))
+                    setTimeout(() => loadData(offset + 1))
                 }
             })
     }, [fetch, friends])
@@ -231,7 +247,7 @@ const PlainFriendRequestEntry = observer(({className, iconSrc, username, id}: {
                 <p><UsernameLink to={`/profile/${id}`}>{username}</UsernameLink></p>
             </div>
             <AccentedButton type={"button"} onClick={onAccept}>Да</AccentedButton>
-            <AccentedButton type={"button"} onClick={onRefuse}>Нет</AccentedButton>
+            <RemoveFriendButton type={"button"} onClick={onRefuse}>Нет</RemoveFriendButton>
         </div>
     )
 })

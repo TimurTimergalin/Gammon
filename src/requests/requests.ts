@@ -12,7 +12,7 @@ import {
     connectUri,
     disconnectUri,
     eventsUri,
-    friendRequestsUri, friendsListUri,
+    friendRequestsUri, friendsListUri, gamesListUri,
     getUserInfoUri,
     historyLengthUri, isFriendUri,
     myUserInfoUri,
@@ -284,6 +284,12 @@ export function isFriend(fetch: FetchType, userId: number) {
 
 export function getFriendsList(fetch: FetchType, offset: number, limit: number) {
     return fetch(friendsListUri(offset, limit), {
+        credentials: "include"
+    })
+}
+
+export function getGamesList(fetch: FetchType, userId: number, pageNumber: number, pageSize: number) {
+    return fetch(gamesListUri(userId, pageNumber, pageSize), {
         credentials: "include"
     })
 }

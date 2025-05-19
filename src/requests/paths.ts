@@ -12,6 +12,11 @@ export const historyLengthUri = (id: number) => `/game/backgammon/${id}/count`
 export const analysisUri = (id: number) => `/game/backgammon/analysis/${id}`
 export const playUri = (id: number) => `/play/${id}`
 export const connectUri = "/menu/connect"
+export const gamesListUri = (id: number, pageNumber: number, pageSize: number) => "/menu/played-games?" + new URLSearchParams({
+    userId: String(id),
+    pageNumber: String(pageNumber),
+    pageSize: String(pageSize)
+})
 export const disconnectUri = "/menu/disconnect"
 export const signInUrl = "/player/login"
 export const signUpUrl = "/player/create"
