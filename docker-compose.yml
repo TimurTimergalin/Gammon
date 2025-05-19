@@ -15,3 +15,4 @@ services:
       - ./nginx:/etc/nginx/templates
     environment:
       - BACKEND_HOST=${SERVER_HOST}
+      - NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx
