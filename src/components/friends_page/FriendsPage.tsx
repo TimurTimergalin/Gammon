@@ -1,9 +1,16 @@
 import styled from "styled-components";
 import {useImgCache, useImgPlaceholder} from "../../controller/img_cache/context";
 import {AccentedButton} from "../AccentedButton";
-import {ReactNode, useCallback, useContext, useEffect, useState} from "react";
+import {ReactNode, useCallback, useContext, useEffect, useRef, useState} from "react";
 import {useFetch} from "../../common/hooks";
-import {addFriendById, getFriendRequest, getFriendsList, removeFriend, userInfo} from "../../requests/requests";
+import {
+    addFriendById,
+    addFriendByLogin,
+    getFriendRequest,
+    getFriendsList,
+    removeFriend,
+    userInfo
+} from "../../requests/requests";
 import {imageUri} from "../../requests/paths";
 import {FriendsStatusContext} from "../../controller/friend/context";
 import {FriendsStatus} from "../../controller/friend/FriendsStatus";
@@ -27,6 +34,51 @@ const UsernameLink = styled(Link)`
     
     &:active {
         text-decoration: underline;
+    }
+`
+
+const PlainSearchBar = ({className}: {className?: string}) => {
+    const [fetch] = useFetch()
+    const inputRef = useRef<HTMLInputElement | null>(null)
+
+    const onClick = useCallback(() => {
+        const login = inputRef.current!.value
+        if (login.length === 0) {
+            return
+        }
+        addFriendByLogin(fetch, login).then()
+        inputRef.current!.value = ""
+    }, [fetch])
+
+    return (
+        <div className={className}>
+            <input placeholder={"Логин пользователя"} ref={inputRef}/>
+            <AccentedButton onClick={onClick}>Добавить в друзья</AccentedButton>
+        </div>
+    )
+}
+
+const SearchBar = styled(PlainSearchBar)`
+    display: flex;
+    margin-bottom: 20px;
+    align-items: stretch;
+    input {
+        flex: 1;
+        background-color: #444;
+        border: 0;
+        margin-right: 10px;
+        color: white;
+        font-size: 18px;
+        padding-left: 3px;
+        
+        &:focus {
+            outline: 1px solid #ff7f2a;
+        }
+    }
+    
+    ${AccentedButton} {
+        height: 50px;
+        border-radius: 10px;
     }
 `
 
@@ -176,7 +228,7 @@ const PlainFriendRequestEntry = observer(({className, iconSrc, username, id}: {
         <div className={className}>
             <img src={icon} alt={"Аватар"} onError={(e) => e.currentTarget.src = placeholder}/>
             <div>
-                <p>{username}</p>
+                <p><UsernameLink to={`/profile/${id}`}>{username}</UsernameLink></p>
             </div>
             <AccentedButton type={"button"} onClick={onAccept}>Да</AccentedButton>
             <AccentedButton type={"button"} onClick={onRefuse}>Нет</AccentedButton>
@@ -290,7 +342,10 @@ const PlainFriendsPage = ({className}: { className?: string }) => {
         <>{checked &&
             <FriendsStatusContext.Provider value={friendsStatus}>
                 <div className={className}>
-                    <FriendList/>
+                    <div>
+                        <SearchBar />
+                        <FriendList/>
+                    </div>
                     <div>
                         <FriendRequests/>
                     </div>
@@ -310,7 +365,7 @@ export const FriendsPage = styled(PlainFriendsPage)`
         min-width: 0;
         overflow-y: auto;
 
-        > ${FriendList} {
+        > :nth-child(1) {
             width: 60%;
             margin: 20px;
         }

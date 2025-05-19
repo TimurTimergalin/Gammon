@@ -242,6 +242,20 @@ export function addFriendById(fetch: FetchType, userId: number) {
     })
 }
 
+export function addFriendByLogin(fetch: FetchType, login: string) {
+    return fetch(addFriendUri, {
+        credentials: "include",
+        method: "POST",
+        body: JSON.stringify({
+            type: "BY_LOGIN",
+            friendLogin: login
+        }),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+}
+
 export function removeFriend(fetch: FetchType, userId: number) {
     return fetch(removeFriendUri, {
         credentials: "include",
