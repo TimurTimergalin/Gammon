@@ -23,9 +23,15 @@ export const usernamesUri = (ids: number[]) => "/player/usernames?" + new URLSea
     ids: ids.join(",")
 })
 export const uploadImgUri = "/player/image"
-export const friendRequestsUri = "/player/requests"
-export const addFriendUri = `/player/add`
-export const removeFriendUri = "/player/remove"
-export const canAddFriendUri = (id: number) => `/player/can-add-friend/${id}`
-export const isFriendUri = (id: number) => `/player/check?` + new URLSearchParams({secondUser: String(id)})
+export const friendRequestsUri = "/player/friends/requests"
+export const addFriendUri = `/player/friends/add`
+export const removeFriendUri = "/player/friends/remove"
+export const canAddFriendUri = (id: number) => `/player/friends/can-add-friend/${id}`
+export const isFriendUri = (id: number) => `/player/friends/check?` + new URLSearchParams({secondUser: String(id)})
+export const friendsListUri = (offset: number, limit: number) => "/player/friends?" + new URLSearchParams(
+    {
+        offset: String(offset),
+        limit: String(limit)
+    }
+)
 

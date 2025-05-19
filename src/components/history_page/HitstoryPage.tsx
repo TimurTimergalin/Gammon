@@ -1,11 +1,18 @@
 import styled from "styled-components";
 import GameView from "../game/GameView";
-import {NormalTimer} from "../game/timer/Timer";
 import {GameContextHolder} from "../game/GameContextHolder";
-import {useState} from "react";
+import {FunctionComponent, useState} from "react";
 import {Option} from "./GameChoice";
 import {AnalysisPanel} from "./AnalysisPanel";
 import {SummaryContent, SummaryPanel} from "./SummaryPanel";
+
+
+const Hidden = <T extends FunctionComponent,>(comp: T) => styled(comp)<{hide: boolean}>`
+    ${({hide}) => hide ? "display: none;" : ""}
+`
+
+const HiddenSummaryPanel = Hidden(SummaryPanel)
+const HiddenAnalysisPanel = Hidden(AnalysisPanel)
 
 
 const PlainSidePanel = ({className, remoteHistory, analysis}: {
@@ -21,8 +28,8 @@ const PlainSidePanel = ({className, remoteHistory, analysis}: {
                 <Option onChoose={() => setChosenTab(0)} text={"Отчет"} chosen={chosenTab === 0}/>
                 <Option onChoose={() => setChosenTab(1)} text={"Анализ"} chosen={chosenTab === 1}/>
             </div>
-            {chosenTab === 0 && <SummaryPanel analysis={analysis} remoteHistory={remoteHistory}/>}
-            {chosenTab === 1 && <AnalysisPanel remoteHistory={remoteHistory} analysis={analysis}/>}
+            <HiddenSummaryPanel analysis={analysis} remoteHistory={remoteHistory} hide={chosenTab !== 0}/>
+            <HiddenAnalysisPanel remoteHistory={remoteHistory} analysis={analysis} hide={chosenTab !== 1} />
         </div>
     )
 }
@@ -43,7 +50,7 @@ const SidePanel = styled(PlainSidePanel)`
             }
         }
 
-        > :nth-child(2) {
+        > :nth-child(n + 2) {
             flex: 1;
             min-height: 0;
             >${SummaryContent} {
@@ -66,10 +73,6 @@ const PlainHistoryPage = ({className, remoteHistory, analysis}: {
                     <div>
                         <div>
                             <GameView/>
-                        </div>
-                        <div>
-                            <NormalTimer index={0}/>
-                            <NormalTimer index={1}/>
                         </div>
                     </div>
                     <span/>

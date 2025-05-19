@@ -44,7 +44,7 @@ const Page = observer(function Page({loaderData}: Route.ComponentProps) {
     const [unknown, setUnknown] = useState(false)
 
     useEffect(() => {
-        if (loaderData === null && authStatus.id === null) {
+        if (authStatus.id === null) {
             navigate("/sign-in")
         }
         if (loaderData === "Unknown user") {

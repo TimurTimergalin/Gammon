@@ -12,7 +12,7 @@ import {
     connectUri,
     disconnectUri,
     eventsUri,
-    friendRequestsUri,
+    friendRequestsUri, friendsListUri,
     getUserInfoUri,
     historyLengthUri, isFriendUri,
     myUserInfoUri,
@@ -264,6 +264,12 @@ export function canAddFriend(fetch: FetchType, userId: number) {
 
 export function isFriend(fetch: FetchType, userId: number) {
     return fetch(isFriendUri(userId), {
+        credentials: "include"
+    })
+}
+
+export function getFriendsList(fetch: FetchType, offset: number, limit: number) {
+    return fetch(friendsListUri(offset, limit), {
         credentials: "include"
     })
 }

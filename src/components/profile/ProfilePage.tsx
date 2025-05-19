@@ -7,10 +7,10 @@ import {useImgCache, useImgPlaceholder} from "../../controller/img_cache/context
 import {imageUri} from "../../requests/paths";
 import {useAuthContext} from "../../controller/auth_status/context";
 import {useNavigate} from "react-router";
-import {addFriendById, canAddFriend, isFriend} from "../../requests/requests";
+import {addFriendById, canAddFriend, isFriend, removeFriend} from "../../requests/requests";
 import {useFetch} from "../../common/hooks";
 
-function EloIcon({iconSrc, value, title}: { iconSrc: string, value: number, title?: string }) {
+export function EloIcon({iconSrc, value, title}: { iconSrc: string, value: number, title?: string }) {
     const imgStyle = {
         width: 30,
         aspectRatio: 1,
@@ -100,7 +100,7 @@ const ProfileBar = observer(function ProfileBar() {
                 type={"button"}
                 style={buttonStyle}
                 onClick={() => {
-                    addFriendById(fetch, profileStatus.id).then()
+                    removeFriend(fetch, profileStatus.id).then()
                     setFriendStatus("Add")
                 }}
             >Удалить из друзей</AccentedButton> :
@@ -112,7 +112,7 @@ const ProfileBar = observer(function ProfileBar() {
 
 
     useEffect(() => {
-        if (authStatus.id !== profileStatus.id) {
+        if (authStatus.id !== profileStatus.id && authStatus.id !== null) {
             Promise.all([
                 isFriend(fetch, profileStatus.id).then(
                     resp => resp.json()

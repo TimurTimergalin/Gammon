@@ -338,6 +338,7 @@ const PlainAnalysisPanel = ({className, remoteHistory, analysis}: {
     const boardState = useGameContext("boardState")
     const doubleCubeState = useGameContext("doubleCubeState")
     const diceState = useGameContext("diceState")
+    const labelState = useGameContext("labelState")
     const entries = useRef<GameHistoryEntry[]>([])
     const firstToMove = useRef<Color>(Color.WHITE)
 
@@ -363,7 +364,8 @@ const PlainAnalysisPanel = ({className, remoteHistory, analysis}: {
         entries.current = entries_
         firstToMove.current = firstToMove_
         doubleCubeState.positionMapper = ruleSet.doubleCubePositionMapperFactory(Color.WHITE)
-    }, [chosenGame, doubleCubeState, remoteHistory]);
+        labelState.labelMapper = ruleSet.labelMapperFactory(Color.WHITE)
+    }, [chosenGame, doubleCubeState, labelState, remoteHistory]);
 
     useEffect(() => {
         const type = remoteHistory[0].type
@@ -415,6 +417,7 @@ const PlainAnalysisPanel = ({className, remoteHistory, analysis}: {
                     diceState.dice2 = null
                 }
                 setPlayer(currentPlayer)
+                labelState.color = currentPlayer
 
                 const alerts = analysis.games[chosenGame].items[chosenMove].alerts
                 if (alerts !== undefined) {
@@ -476,8 +479,9 @@ const PlainAnalysisPanel = ({className, remoteHistory, analysis}: {
         if (chosenMove === -1) {
             diceState.dice1 = null
             diceState.dice2 = null
+            labelState.color = undefined
         }
-    }, [analysis, boardState, chosenGame, chosenMove, diceState, doubleCubeState, remoteHistory])
+    }, [analysis, boardState, chosenGame, chosenMove, diceState, doubleCubeState, labelState, remoteHistory])
 
     const lastMove = remoteHistory[chosenGame].items.length - 2
 
