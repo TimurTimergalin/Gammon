@@ -1,4 +1,4 @@
-import {CSSProperties, ReactNode, useCallback, useContext, useEffect, useState} from "react";
+import {CSSProperties, ReactNode, useContext, useEffect, useState} from "react";
 import styled from "styled-components";
 import {AccentedButton} from "../AccentedButton";
 import {observer} from "mobx-react-lite";
@@ -193,7 +193,7 @@ type MatchEntryProp = {
     gameId: number
 }
 
-const StopProp = ({children}: {children?: ReactNode | ReactNode[]}) => (
+const StopProp = ({children}: { children?: ReactNode | ReactNode[] }) => (
     <div onClick={(e) => e.stopPropagation()}>
         {children}
     </div>
@@ -348,70 +348,75 @@ const PlainProfilePage = observer(function PlainProfilePage({className}: { class
         runInAction(() => matchList.matches.splice(0, matchList.matches.length))
     }, [profileStatus.id, matchList.matches]);
 
-    const loadData = useCallback((pageNumber: number) => {
-        const limit = 10
-        getGamesList(fetch, profileStatus.id, pageNumber, limit)
-            .then(resp => resp.json())
-            .then(matches => Promise.all([
-                matches,
-                Promise.allSettled(
-                    matches.map(
-                        (match: ReturnType<JSON["parse"]>) => getBackgammonConfig(fetch, match.gameId).then(resp => {
-                            if (!resp.ok) {
-                                throw new Error(String(resp.status))
-                            }
-                            return resp
-                        }))
-                )
-            ]))
-            .then(([matches, responses]) => {
-                const newMatches = []
-                const newResponses = []
-                for (let i = 0; i < matches.length; ++i) {
-                    const resp = responses[i]
-                    if (resp.status === "fulfilled") {
-                        newMatches.push(matches[i])
-                        newResponses.push(resp.value)
-                    }
-                }
-                return [newMatches, newResponses]
-            })
-            .then(([matches, responses]) => Promise.all([matches, Promise.all(responses.map(resp => resp.json()))]))
-            .then(([matches, configs]) => {
-                console.log(matches, configs)
-
-                runInAction(() => {
+    useEffect(() => {
+        const loadData = (pageNumber: number) => {
+            const limit = 10
+            getGamesList(fetch, profileStatus.id, pageNumber, limit)
+                .then(resp => resp.json())
+                .then(matches => Promise.all([
+                    matches,
+                    Promise.allSettled(
+                        matches.map(
+                            (match: ReturnType<JSON["parse"]>) => getBackgammonConfig(fetch, match.gameId).then(resp => {
+                                if (!resp.ok) {
+                                    throw new Error(String(resp.status))
+                                }
+                                return resp
+                            }))
+                    )
+                ]))
+                .then(([matches, responses]) => {
+                    const newMatches = []
+                    const newResponses = []
                     for (let i = 0; i < matches.length; ++i) {
-                        const match = matches[i]
-                        const config = configs[i]
+                        const resp = responses[i]
+                        if (resp.status === "fulfilled") {
+                            newMatches.push(matches[i])
+                            newResponses.push(resp.value)
+                        }
+                    }
+                    return [newMatches, newResponses]
+                })
+                .then(([matches, responses]) => Promise.all([matches, Promise.all(responses.map(resp => resp.json()))]))
+                .then(([matches, configs]) => {
+                    console.log(matches, configs)
 
-                        const whiteUsername = config.players.WHITE === profileStatus.id ? profileStatus.username : match.opponentUserInfo.username
-                        const blackUsername = config.players.BLACK === profileStatus.id ? profileStatus.username : match.opponentUserInfo.username
+                    runInAction(() => {
+                        for (let i = 0; i < matches.length; ++i) {
+                            const match = matches[i]
+                            const config = configs[i]
 
-                        matchList.matches.push({
-                            whiteId: config.players.WHITE,
-                            whiteName: whiteUsername,
-                            blackId: config.players.BLACK,
-                            blackName: blackUsername,
-                            gameModeIcon: getIcon(match.gameType, match.timePolicy),
-                            userWon: config.winner === null ? null : (
-                                config.winner === "WHITE" ? config.players.WHITE === profileStatus.id : config.players.BLACK === profileStatus.id
-                            ),
-                            whiteElo: getRating(match.gameType, match.timePolicy, config.players.WHITE === profileStatus.id ? profileStatus.rating : match.opponentUserInfo.rating),
-                            blackElo: getRating(match.gameType, match.timePolicy, config.players.BLACK === profileStatus.id ? profileStatus.rating : match.opponentUserInfo.rating),
-                            gameId: match.gameId
-                        })
+                            const whiteUsername = config.players.WHITE === profileStatus.id ? profileStatus.username : match.opponentUserInfo.username
+                            const blackUsername = config.players.BLACK === profileStatus.id ? profileStatus.username : match.opponentUserInfo.username
+
+                            matchList.matches.push({
+                                whiteId: config.players.WHITE,
+                                whiteName: whiteUsername,
+                                blackId: config.players.BLACK,
+                                blackName: blackUsername,
+                                gameModeIcon: getIcon(match.gameType, match.timePolicy),
+                                userWon: config.winner === null ? null : (
+                                    config.winner === "WHITE" ? config.players.WHITE === profileStatus.id : config.players.BLACK === profileStatus.id
+                                ),
+                                whiteElo: getRating(match.gameType, match.timePolicy, config.players.WHITE === profileStatus.id ? profileStatus.rating : match.opponentUserInfo.rating),
+                                blackElo: getRating(match.gameType, match.timePolicy, config.players.BLACK === profileStatus.id ? profileStatus.rating : match.opponentUserInfo.rating),
+                                gameId: match.gameId
+                            })
+                        }
+                    })
+                    if (matches.length >= limit) {
+                        loadData(pageNumber + 1)
                     }
                 })
-                if (matches.length >= limit) {
-                    loadData(pageNumber + 1)
-                }
-            })
-    }, [fetch, matchList.matches, profileStatus.id, profileStatus.rating, profileStatus.username])
+        }
 
-    useEffect(() => {
+        console.log("triggered")
         loadData(0)
-    }, [loadData]);
+        return () => {
+            console.log("cleanup")
+            runInAction(() => matchList.matches.splice(0, matchList.matches.length))
+        }
+    }, [fetch, matchList, profileStatus]);
 
     const matchEntries = matchList.matches.map(e => <MatchEntry {...e} key={e.gameId}/>)
 

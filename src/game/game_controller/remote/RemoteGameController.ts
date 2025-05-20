@@ -20,6 +20,7 @@ import {GameHistoryState} from "../../game_history_state/GameHistoryState";
 import {HistoryEncoder} from "../../game_rule/HistoryEncoder";
 import {DragState} from "../../drag_state/DragState";
 import {TimerManager} from "../TimerManager";
+import {useRevalidator} from "react-router";
 
 
 export class RemoteGameController<Index, Prop> extends RulesGameController<Index, Prop> {
@@ -47,6 +48,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
     private gameHistoryState: GameHistoryState
     private historyEncoder: HistoryEncoder<Index>
     private timeManager: TimerManager
+    private revalidator: ReturnType<typeof useRevalidator>
 
     constructor({
                     connector,
@@ -57,6 +59,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
                     gameHistoryState,
                     historyEncoder,
                     timeManager,
+                    revalidator,
                     ...base
                 }: {
         board: BoardSynchronizer<Index, Prop>,
@@ -76,7 +79,8 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         gameHistoryState: GameHistoryState,
         historyEncoder: HistoryEncoder<Index>,
         dragState: DragState,
-        timeManager: TimerManager
+        timeManager: TimerManager,
+        revalidator: ReturnType<typeof useRevalidator>
     }) {
         const active = player === userPlayer
         super({...base, active: active});
@@ -89,6 +93,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         this.gameHistoryState = gameHistoryState
         this.historyEncoder = historyEncoder
         this.timeManager = timeManager
+        this.revalidator = revalidator
     }
 
     init(config: Config<Index, Prop>) {
@@ -271,6 +276,7 @@ export class RemoteGameController<Index, Prop> extends RulesGameController<Index
         this.timeManager.stop()
         if (newConfig === undefined) {
             this.endWindowState.title = this.winnerTitle(winner)
+            this.revalidator.revalidate().then(() => console.log("revalidate"))
             this.diceState.dice1 = null
             this.diceState.dice2 = null
             this.controlButtonsState.turnComplete = false

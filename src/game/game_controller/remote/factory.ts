@@ -18,6 +18,7 @@ import {nardeRuleSet} from "../../game_rule/narde/RuleSet";
 import {backgammonRemoteSetV1} from "../../game_rule/backgammon/remote_v1/RemoteSet";
 import {nardeRemoteSetV1} from "../../game_rule/narde/remote_v1/RemoteSet";
 import {TimerManager} from "../TimerManager";
+import {useRevalidator} from "react-router";
 
 
 type RemoteGameType = "SHORT_BACKGAMMON" | "REGULAR_GAMMON"
@@ -62,14 +63,15 @@ async function getHistory<RemoteMove, Index>(
 }
 
 async function remoteGameInitInner<RemoteConfig, Index, Prop, RemoteMove>(
-    {remoteSet, ruleSet, roomId, gameContext, fetch, remoteConfig, history}: {
+    {remoteSet, ruleSet, roomId, gameContext, fetch, remoteConfig, history, revalidator}: {
         remoteSet: RemoteSet<RemoteConfig, Index, Prop, RemoteMove>,
         ruleSet: RuleSet<Index, Prop>,
         roomId: number,
         gameContext: GameContext,
         fetch: FetchType,
         remoteConfig: RemoteConfig,
-        history: [GameHistoryEntry[], Color]
+        history: [GameHistoryEntry[], Color],
+        revalidator: ReturnType<typeof useRevalidator>
     }
 ) {
     const [historyEntries, firstToMove] = history
@@ -128,7 +130,8 @@ async function remoteGameInitInner<RemoteConfig, Index, Prop, RemoteMove>(
         gameHistoryState: gameContext.gameHistoryState,
         historyEncoder: ruleSet.historyEncoder,
         dragState: gameContext.dragState,
-        timeManager: timeManager
+        timeManager: timeManager,
+        revalidator: revalidator
     })
 
     gameContext.labelState.labelMapper = ruleSet.labelMapperFactory(config.userPlayer ?? Color.WHITE)
@@ -158,10 +161,11 @@ async function remoteGameInitInner<RemoteConfig, Index, Prop, RemoteMove>(
     }
 }
 
-export async function remoteGameInit({roomId, gameContext, fetch}: {
+export async function remoteGameInit({roomId, gameContext, fetch, revalidator}: {
     roomId: number,
     gameContext: GameContext,
-    fetch: FetchType
+    fetch: FetchType,
+    revalidator: ReturnType<typeof useRevalidator>
 }): Promise<{ cleanup: () => void, player1: PlayerState, player2: PlayerState, spectator: boolean }> {
     const [raw, gameType] = await getConfig(fetch, roomId)
     console.log(gameType)
@@ -179,6 +183,7 @@ export async function remoteGameInit({roomId, gameContext, fetch}: {
         history: history,
         remoteSet: remoteSet,
         ruleSet: ruleSet,
-        gameContext: gameContext
+        gameContext: gameContext,
+        revalidator: revalidator
     })
 }

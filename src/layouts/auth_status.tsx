@@ -5,20 +5,10 @@ import {useEffect, useRef, useState} from "react";
 import {AuthStatus} from "../controller/auth_status/AuthStatus";
 import {AuthContextProvider} from "../controller/auth_status/context";
 
-const module = "/layouts/auth_status.tsx"
-const shouldRevalidatePostfix = "-shouldRevalidate"
-const loaderDataPostfix = "-loaderData"
-
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function clientLoader(): Promise<UserInfo | null> {
     // Это обход бага в react-router-е (https://github.com/remix-run/react-router/issues/12607)
-    console.log("Auth loader")
-    if (sessionStorage.getItem(module + shouldRevalidatePostfix) !== "true") {
-        const res = JSON.parse(sessionStorage.getItem(module + loaderDataPostfix)!)
-        console.log(res)
-        return res
-    }
 
 
     try {
@@ -29,9 +19,6 @@ export async function clientLoader(): Promise<UserInfo | null> {
 
         try {
             const res = await resp.json()
-            sessionStorage.setItem(module + loaderDataPostfix, JSON.stringify(res))
-
-            console.log(res)
             return res || null
         } catch (e) {
             console.error(e)
@@ -65,12 +52,7 @@ function Provider({loaderData}: Route.ComponentProps) {
 
 // eslint-disable-next-line react-refresh/only-export-components
 export function shouldRevalidate({currentUrl, defaultShouldRevalidate}: ShouldRevalidateFunctionArgs) {
-    const res = currentUrl.pathname === "/sign-in" && defaultShouldRevalidate
-
-    // Это обход бага в react-router-е (https://github.com/remix-run/react-router/issues/12607)
-    sessionStorage.setItem(module + shouldRevalidatePostfix, String(res))
-
-    return res
+    return currentUrl.pathname === "/sign-in" && defaultShouldRevalidate
 }
 
 export default Provider

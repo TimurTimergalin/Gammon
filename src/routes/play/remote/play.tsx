@@ -9,6 +9,7 @@ import GameView from "../../../components/game/GameView";
 import {EndWindow} from "../../../components/game/end_window/EndWindow";
 import {RemotePlayEndWindowContent} from "./_deps/RemotePlayEndWindowContent";
 import {GameContextHolder} from "../../../components/game/GameContextHolder";
+import {useRevalidator} from "react-router";
 
 
 const InnerRemoteGamePage = observer(function InnerNewRemoteGamePage(
@@ -35,12 +36,14 @@ const InnerRemoteGamePage = observer(function InnerNewRemoteGamePage(
     }, [cleanup])
 
     const [fetch] = useFetch()
+    const revalidator = useRevalidator()
 
     useEffect(() => {
         remoteGameInit({
             gameContext: gameContext,
             roomId: roomIdParsed,
-            fetch: fetch
+            fetch: fetch,
+            revalidator: revalidator
         }).then(({cleanup, player1, player2, spectator}) => {
             setGameLoaded(true)
             setCleanup({cleanup: cleanup})
@@ -48,7 +51,7 @@ const InnerRemoteGamePage = observer(function InnerNewRemoteGamePage(
             gameContext.playersInfo.player1 = player1
             gameContext.playersInfo.player2 = player2
         })
-    }, [fetch, gameContext, roomIdParsed])
+    }, [fetch, gameContext, revalidator, roomIdParsed])
 
     return (
         <GamePage displayControls={!isSpectator} displayTimer={true}>
