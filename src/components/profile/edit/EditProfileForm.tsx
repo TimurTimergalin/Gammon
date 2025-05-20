@@ -7,7 +7,7 @@ import {required} from "../../../controller/forms/validators";
 import styled from "styled-components";
 import {formBaseStyle} from "../../../css/forms";
 import {SwitchSelect} from "../../play_menu/control_panel/SwitchSelect";
-import {useRef} from "react";
+import {useRef, useState} from "react";
 import {InvitePolicy} from "../../../requests/requests";
 import {AccentedButton} from "../../AccentedButton";
 import {GreyButton} from "./common";
@@ -19,22 +19,28 @@ const PlainEditProfileForm = observer(({className}: { className?: string }) => {
     const policyInputRef = useRef<HTMLInputElement | null>(null)
     const navigate = useNavigate()
     const formState = useFormState()
+    const [forcesEnabled, setForcedEnabled] = useState(false)
 
     const switchSelectCallback = (i: number) => {
         if (policyInputRef.current === null) {
             return
         }
 
+        setForcedEnabled(true)
         policyInputRef.current.value = (i === 0 ? "ALL" : "FRIENDS_ONLY") satisfies InvitePolicy
     }
 
-    let disabled = true
-    for (const e of formState.touched) {
-        if (e[1]) {
-            disabled = false
-            break
+    let disabled = !forcesEnabled
+    if (disabled) {
+        for (const e of formState.touched) {
+            if (e[1]) {
+                disabled = false
+                break
+            }
         }
     }
+
+    console.log(disabled)
 
     return (
         <FormWithValidation fetcher={fetcher} className={className} method={"post"}>
@@ -48,7 +54,7 @@ const PlainEditProfileForm = observer(({className}: { className?: string }) => {
             <p>Кому разрешать вызывать вас на поединок</p>
             <SwitchSelect options={["Всем", "Только друзьям"]} callback={switchSelectCallback}
                           initChosen={authStatus.invitePolicy === "ALL" ? 0 : 1}/>
-            <input name={"invitePolicy"} defaultValue={authStatus.invitePolicy!} style={{display: "none"}}/>
+            <input name={"invitePolicy"} defaultValue={authStatus.invitePolicy!} style={{display: "none"}} ref={policyInputRef}/>
             <p>{fetcher.data?.error || ""}</p>
             <div style={{display: "flex", justifyContent: "space-evenly"}}>
                 <GreyButton type={"button"} onClick={() => navigate("/profile")}>Назад</GreyButton>
