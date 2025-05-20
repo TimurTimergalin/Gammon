@@ -43,22 +43,31 @@ const PlainSearchBar = ({className}: { className?: string }) => {
     const [fetch] = useFetch()
     const inputRef = useRef<HTMLInputElement | null>(null)
     const messagesState = useContext(MessagesStateContext)
+    const authStatus = useAuthContext()
 
     const onClick = useCallback(() => {
         const login = inputRef.current!.value
         if (login.length === 0) {
             return
         }
+        if (login === authStatus.login) {
+            messagesState.insert(<ErrorMessage reason={"вы не можете добавить себя в друзья"}/>)
+            return
+        }
         addFriendByLogin(fetch, login)
             .then(resp => {
                 if (resp.ok) {
                     messagesState.insert(<SuccessMessage/>)
+                } else if (resp.status === 404) {
+                    messagesState.insert(<ErrorMessage reason={"игрок не найден"}/>)
+                } else if (resp.status === 422) {
+                    messagesState.insert(<ErrorMessage reason={"заявка уже отправлена"}/>)
                 } else {
-                    messagesState.insert(<ErrorMessage/>)
+                    messagesState.insert(<ErrorMessage />)
                 }
             })
         inputRef.current!.value = ""
-    }, [fetch, messagesState])
+    }, [authStatus, fetch, messagesState])
 
     return (
         <div className={className}>

@@ -6,6 +6,7 @@ const messageStyle = css`
     display: flex;
     align-items: center;
     padding-left: 10px;
+    padding-right: 30px;
     color: black;
 `
 
