@@ -80,19 +80,46 @@ const ProfileBar = observer(function ProfileBar() {
 
     const [init, setInit] = useState(authStatus.id === profileStatus.id)
     const [friendStatus, setFriendStatus] = useState<"Self" | "Already sent" | "Remove" | "Add">("Self")
+    const [challengeStatus, setChallengeStatus] = useState<{ type: "challenge" } | {
+        type: "spectate",
+        gameId: number
+    } | null>(null)
 
     const editProfileButton = authStatus.id !== profileStatus.id ? <></> :
         <AccentedButton type={"button"} style={buttonStyle}
                         onClick={() => navigate("/edit-profile")}>Редактировать</AccentedButton>
 
+    useEffect(() => {
+        if (authStatus.id !== profileStatus.id) {
+            getGamesList(fetch, profileStatus.id, 0, 1)
+                .then(resp => resp.json())
+                .then(([game]) => {
+                    console.log(game?.gameStatus)
+                    if (game === undefined) {
+                        setChallengeStatus({type: "challenge"})
+                    } else if (game.gameStatus === "IN_PROCESS") {
+                        setChallengeStatus({type: "spectate", gameId: game.gameId})
+                    } else {
+                        setChallengeStatus({type: "challenge"})
+                    }
+                })
+        }
+    }, [authStatus, fetch, profileStatus]);
+
     const challengeButtonDisabled = profileStatus.invitePolicy === "FRIENDS_ONLY" && friendStatus !== "Remove"
-    const challengeButton = authStatus.id === profileStatus.id ? <></> :
-        <AccentedButton
-            type={"button"}
-            style={buttonStyle}
-            disabled={challengeButtonDisabled}
-            title={challengeButtonDisabled ? "Этот пользователь принимает вызовы только от друзей" : ""}
-        >Вызвать на матч</AccentedButton>
+    const challengeButton = challengeStatus === null ? <></> :
+        challengeStatus.type === "challenge" ?
+            <AccentedButton
+                type={"button"}
+                style={buttonStyle}
+                disabled={challengeButtonDisabled}
+                title={challengeButtonDisabled ? "Этот пользователь принимает вызовы только от друзей" : ""}
+            >Вызвать на матч</AccentedButton> :
+            <AccentedButton
+                type={"button"}
+                style={buttonStyle}
+                onClick={() => navigate(`/play/${challengeStatus.gameId}`)}
+            >Наблюдать</AccentedButton>
 
     const friendButton = friendStatus === "Self" ?
         <></> :
@@ -238,7 +265,7 @@ function PlainMatchEntry({
     const redirectTo = userWon === null ? `/play/${gameId}` : `/history/${gameId}`
 
     const statusStyle = {
-        color: userWon ? "green" : "red",
+        color: userWon === null ? "white" : userWon ? "green" : "red",
         position: "absolute",
         left: 0,
         right: 0,
