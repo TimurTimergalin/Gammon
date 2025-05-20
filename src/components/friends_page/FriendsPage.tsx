@@ -19,6 +19,8 @@ import {Link, useNavigate} from "react-router";
 import {EloIcon} from "../profile/ProfilePage";
 import {observer} from "mobx-react-lite";
 import {runInAction} from "mobx";
+import {MessagesStateContext} from "../../controller/messages/context";
+import {ErrorMessage, SuccessMessage} from "./messages";
 
 type Rating = { backgammonBlitz: number; backgammonDefault: number; nardeBlitz: number; nardeDefault: number }
 
@@ -27,32 +29,44 @@ export const UsernameLink = styled(Link)`
         color: white;
         text-decoration: none;
     }
-    
+
     &:hover {
         text-decoration: underline;
     }
-    
+
     &:active {
         text-decoration: underline;
     }
 `
 
-const PlainSearchBar = ({className}: {className?: string}) => {
+const PlainSearchBar = ({className}: { className?: string }) => {
     const [fetch] = useFetch()
     const inputRef = useRef<HTMLInputElement | null>(null)
+    const messagesState = useContext(MessagesStateContext)
 
     const onClick = useCallback(() => {
         const login = inputRef.current!.value
         if (login.length === 0) {
             return
         }
-        addFriendByLogin(fetch, login).then()
+        addFriendByLogin(fetch, login)
+            .then(resp => {
+                if (resp.ok) {
+                    messagesState.insert(<SuccessMessage/>)
+                } else {
+                    messagesState.insert(<ErrorMessage/>)
+                }
+            })
         inputRef.current!.value = ""
-    }, [fetch])
+    }, [fetch, messagesState])
 
     return (
         <div className={className}>
-            <input placeholder={"Логин пользователя"} ref={inputRef}/>
+            <input placeholder={"Логин пользователя"} ref={inputRef} onKeyDown={e => {
+                if (e.key === "Enter") {
+                    onClick()
+                }
+            }}/>
             <AccentedButton onClick={onClick}>Добавить в друзья</AccentedButton>
         </div>
     )
@@ -62,6 +76,7 @@ const SearchBar = styled(PlainSearchBar)`
     display: flex;
     margin-bottom: 20px;
     align-items: stretch;
+
     input {
         flex: 1;
         background-color: #444;
@@ -70,12 +85,12 @@ const SearchBar = styled(PlainSearchBar)`
         color: white;
         font-size: 18px;
         padding-left: 3px;
-        
+
         &:focus {
             outline: 1px solid #ff7f2a;
         }
     }
-    
+
     ${AccentedButton} {
         height: 50px;
         border-radius: 10px;
@@ -85,11 +100,11 @@ const SearchBar = styled(PlainSearchBar)`
 const RemoveFriendButton = styled(AccentedButton)`
     background-color: lightgray;
     color: black;
-    
+
     &:hover {
         background-color: #bbb !important;
     }
-    
+
     &:active {
         background-color: #ddd !important;
     }
@@ -120,7 +135,9 @@ const PlainFriendsEntry = ({className, iconSrc, username, rating, id}: {
                          title={"ELO - Длинные нарды (блиц)"}/>
             </div>
             <AccentedButton type={"button"}>Вызвать</AccentedButton>
-            <RemoveFriendButton type={"button"} onClick={() => {removeFriend(fetch, id).then(() => navigate(0)); }}>Удалить</RemoveFriendButton>
+            <RemoveFriendButton type={"button"} onClick={() => {
+                removeFriend(fetch, id).then(() => navigate(0));
+            }}>Удалить</RemoveFriendButton>
         </div>
     )
 }
@@ -359,7 +376,7 @@ const PlainFriendsPage = ({className}: { className?: string }) => {
             <FriendsStatusContext.Provider value={friendsStatus}>
                 <div className={className}>
                     <div>
-                        <SearchBar />
+                        <SearchBar/>
                         <FriendList/>
                     </div>
                     <div>
