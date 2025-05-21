@@ -10,8 +10,6 @@ services:
   proxy:
     image: nginx:1.27.5
     network_mode: "host"
-    ports:
-      - "80:80"
     volumes:
       - ./nginx:/etc/nginx/templates
     environment:
