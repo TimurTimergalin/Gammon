@@ -3,14 +3,17 @@ import {ReactNode, useContext} from "react";
 import {MessageContainerContext} from "./MessageContainerContext";
 import {MessagesStateContext} from "../../controller/messages/context";
 
-const PlainMessageTemplate = ({className, children}: {className?: string, children?: ReactNode | ReactNode[]}) => {
+const PlainMessageTemplate = ({className, children, onClose=()=>{}}: {className?: string, children?: ReactNode | ReactNode[], onClose?: () => void}) => {
     const index = useContext(MessageContainerContext)
     const messagesState = useContext(MessagesStateContext)
 
     return (
         <div className={className}>
             {children}
-            <img src={"/close.svg"} alt={"Закрыть"} onClick={() => messagesState.remove(index)}/>
+            <img src={"/close.svg"} alt={"Закрыть"} onClick={() => {
+                onClose()
+                messagesState.remove(index)
+            }}/>
         </div>
     )
 }

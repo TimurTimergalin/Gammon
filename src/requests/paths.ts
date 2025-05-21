@@ -40,3 +40,7 @@ export const friendsListUri = (offset: number, limit: number) => "/player/friend
     }
 )
 
+export const challengeUri = (id: number) => `/menu/invite/${id}`
+export const cancelChallengeUri = (id: number) => `/menu/invite/cancel/${id}`
+export const answerChallengeUri = (id: number, accept: boolean) => `/menu/invite/answer/${id}?` + new URLSearchParams({accept: String(accept)})
+export const challengeEventsUri = "/menu/events"
