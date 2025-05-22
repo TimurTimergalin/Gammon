@@ -37,7 +37,7 @@ export const ChallengeEventHandler = observer(({children}: { children?: ReactNod
                             messagesState.insert(<ChallengeRejectedMessage username={json.username} />)
                         })
                 } else if (data.type === "ACCEPT_INVITE") {
-                    navigate(`/play/${data.matchId}`)
+                    navigate(`/play/${data.gameId}`)
                 } else {
                     console.warn(`Неизвестный тип сообщения: ${data.type}`)
                 }
