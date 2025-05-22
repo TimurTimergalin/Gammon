@@ -114,6 +114,7 @@ const ProfileBar = observer(function ProfileBar() {
                 style={buttonStyle}
                 disabled={challengeButtonDisabled}
                 title={challengeButtonDisabled ? "Этот пользователь принимает вызовы только от друзей" : ""}
+                onClick={() => navigate(`/challenge/${profileStatus.id}`)}
             >Вызвать на матч</AccentedButton> :
             <AccentedButton
                 type={"button"}

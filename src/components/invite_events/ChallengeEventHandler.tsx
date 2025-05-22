@@ -1,18 +1,21 @@
 import {ReactNode, useContext, useEffect, useRef} from "react";
 import {MessagesStateContext} from "../../controller/messages/context";
 import {challengeEventsUri} from "../../requests/paths";
-import {ChallengeReceivedMessage, ChallengeRejectedMessage, ConnectionErrorMessage} from "./messages";
+import {ChallengeReceivedMessage, ChallengeRejectedMessage} from "./messages";
 import {userInfo} from "../../requests/requests";
 import {useNavigate} from "react-router";
+import {useAuthContext} from "../../controller/auth_status/context";
+import {observer} from "mobx-react-lite";
 
-export const ChallengeEventHandler = ({children}: { children?: ReactNode | ReactNode[] }) => {
+export const ChallengeEventHandler = observer(({children}: { children?: ReactNode | ReactNode[] }) => {
     const messagesState = useContext(MessagesStateContext)
     const eventSource = useRef<EventSource | null>(null)
     const navigate = useNavigate()
+    const authStatus = useAuthContext()
 
     useEffect(() => {
         const eventSource_ = new EventSource(challengeEventsUri, {withCredentials: true})
-
+        console.log("Connecting to events")
         eventSource_.onmessage = ev => {
             try {
                 const data = JSON.parse(ev.data)
@@ -38,14 +41,19 @@ export const ChallengeEventHandler = ({children}: { children?: ReactNode | React
                 } else {
                     console.warn(`Неизвестный тип сообщения: ${data.type}`)
                 }
-            } catch {
-                messagesState.insert(<ConnectionErrorMessage/>)
+            } catch(e) {
+                console.error(e)
             }
         }
-        
-        eventSource_.onerror = () => messagesState.insert(<ConnectionErrorMessage />)
+
+        eventSource_.onerror = (e) => console.error(e)
         eventSource.current = eventSource_
-    }, [messagesState, navigate])
+        return () => {
+            console.log("Disconnecting from events")
+            eventSource_.close()
+            eventSource.current = null
+        }
+    }, [messagesState, navigate, authStatus.id])
 
     return children
-}
+})

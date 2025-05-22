@@ -4,8 +4,8 @@ export default [
     index("./routes/index.tsx"),
     layout("./layouts/img_cache.tsx", [
         layout("./layouts/message_layout.tsx", [
-            layout("./layouts/challenge_events.tsx", [
-                layout("./layouts/auth_status.tsx", [
+            layout("./layouts/auth_status.tsx", [
+                layout("./layouts/challenge_events.tsx", [
                     layout("./layouts/game_page_adapt.tsx", [
                         route("/local-play/backgammon", "./routes/play/local/backgammon.tsx"),
                         route("/local-play/narde", "./routes/play/local/narde.tsx"),

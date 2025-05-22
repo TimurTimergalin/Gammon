@@ -146,7 +146,7 @@ const PlainFriendsEntry = ({className, iconSrc, username, rating, id, gameId}: {
             </div>
             <AccentedButton
                 type={"button"}
-                onClick={gameId === undefined ? () => {} : () => navigate(`/play/${gameId}`)}
+                onClick={gameId === undefined ? () => navigate(`/challenge/${id}`) : () => navigate(`/play/${gameId}`)}
             >{gameId === undefined ? "Вызвать" : "Смотреть"}</AccentedButton>
             <RemoveFriendButton type={"button"} onClick={() => {
                 removeFriend(fetch, id).then(() => navigate(0));
@@ -209,6 +209,7 @@ const PlainFriendList = observer(({className}: { className?: string }) => {
                 ))
             ]))
             .then(([objects, currentGames]) => {
+                console.log(objects, currentGames)
                 runInAction(() => {
                     for (let i = 0; i < objects.length; ++i) {
                         friends.push({...objects[i], gameId: currentGames[i]})
