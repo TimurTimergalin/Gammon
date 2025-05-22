@@ -3,7 +3,6 @@ import {useFetcher, useNavigate} from "react-router";
 import {useAuthContext} from "../../../controller/auth_status/context";
 import {FormWithValidation} from "../../forms/FormWithValidation";
 import {AuthFormInput, AuthFormInputMessage} from "../../../routes/auth/_deps/common";
-import {required} from "../../../controller/forms/validators";
 import styled from "styled-components";
 import {formBaseStyle} from "../../../css/forms";
 import {SwitchSelect} from "../../play_menu/control_panel/SwitchSelect";
@@ -12,6 +11,7 @@ import {InvitePolicy} from "../../../requests/requests";
 import {AccentedButton} from "../../AccentedButton";
 import {GreyButton} from "./common";
 import {useFormState} from "../../../controller/forms/FormState";
+import {loginValidator, usernameValidator} from "../../../routes/auth/sign_up";
 
 const PlainEditProfileForm = observer(({className}: { className?: string }) => {
     const fetcher = useFetcher()
@@ -45,11 +45,11 @@ const PlainEditProfileForm = observer(({className}: { className?: string }) => {
     return (
         <FormWithValidation fetcher={fetcher} className={className} method={"post"}>
             <p>Отображаемое имя</p>
-            <AuthFormInput validityCheck={required} index={0} name={"username"}
+            <AuthFormInput validityCheck={usernameValidator} index={0} name={"username"}
                            defaultValue={authStatus.username!}/>
             <AuthFormInputMessage index={0}/>
             <p>Логин</p>
-            <AuthFormInput validityCheck={required} index={1} name={"login"} defaultValue={authStatus.login!}/>
+            <AuthFormInput validityCheck={loginValidator} index={1} name={"login"} defaultValue={authStatus.login!}/>
             <AuthFormInputMessage index={1}/>
             <p>Кому разрешать вызывать вас на поединок</p>
             <SwitchSelect options={["Всем", "Только друзьям"]} callback={switchSelectCallback}

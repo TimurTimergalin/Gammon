@@ -31,7 +31,10 @@ export async function clientAction({request}: Route.ClientActionArgs) {
 
     const resp = await signIn(cancellableFetch, credentials as SignInCredentials)
     if (!resp.ok) {
-        return {error: `Код ошибки: ${resp.status}`}
+        if (resp.status == 401) {
+            return {error: "Неверный логин или пароль"}
+        }
+        return {error: `Непредвиденная ошибка: ${resp.status}`}
     }
 
     return redirect("/")
