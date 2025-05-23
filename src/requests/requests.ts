@@ -1,6 +1,6 @@
 import {
     addFriendUri,
-    analysisUri,
+    analysisUri, answerChallengeUri,
     backgammonAcceptDoubleUri,
     backgammonConcedeUri,
     backgammonConfigUri,
@@ -8,7 +8,7 @@ import {
     backgammonHistoryUri,
     backgammonOfferDoubleUri,
     backgammonRollDiceUri,
-    backgammonTimeoutUri, canAddFriendUri,
+    backgammonTimeoutUri, canAddFriendUri, cancelChallengeUri, challengeUri,
     connectUri,
     disconnectUri,
     eventsUri,
@@ -293,4 +293,33 @@ export function getGamesList(fetch: FetchType, userId: number, pageNumber: numbe
         credentials: "include"
     })
 }
+export function sendChallenge(fetch: FetchType, userId: number, gameType: string, points: number, blitz: boolean) {
+    return fetch(challengeUri(userId), {
+        credentials: "include",
+        method: "POST",
+        body: JSON.stringify({
+            type: gameType,
+            points: points,
+            timePolicy: blitz ? "BLITZ" : "DEFAULT_TIMER"
+        }),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+}
+
+export function cancelChallenge(fetch: FetchType, userId: number) {
+    return fetch(cancelChallengeUri(userId), {
+        credentials: "include",
+        method: "POST"
+    })
+}
+
+export function answerChallenge(fetch: FetchType, userId: number, accept: boolean) {
+    return fetch(answerChallengeUri(userId, accept), {
+        credentials: "include",
+        method: "post"
+    })
+}
+
 

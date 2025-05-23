@@ -1,4 +1,4 @@
-import {CSSProperties, ReactNode, useCallback, useContext, useEffect, useState} from "react";
+import {CSSProperties, ReactNode, useContext, useEffect, useState} from "react";
 import styled from "styled-components";
 import {AccentedButton} from "../AccentedButton";
 import {observer} from "mobx-react-lite";
@@ -80,19 +80,49 @@ const ProfileBar = observer(function ProfileBar() {
 
     const [init, setInit] = useState(authStatus.id === profileStatus.id)
     const [friendStatus, setFriendStatus] = useState<"Self" | "Already sent" | "Remove" | "Add">("Self")
+    const [challengeStatus, setChallengeStatus] = useState<{ type: "challenge" } | {
+        type: "spectate",
+        gameId: number
+    } | null>(null)
 
     const editProfileButton = authStatus.id !== profileStatus.id ? <></> :
         <AccentedButton type={"button"} style={buttonStyle}
                         onClick={() => navigate("/edit-profile")}>Редактировать</AccentedButton>
 
+    useEffect(() => {
+        if (authStatus.id !== profileStatus.id) {
+            getGamesList(fetch, profileStatus.id, 0, 1)
+                .then(resp => resp.json())
+                .then(([game]) => {
+                    console.log(game?.gameStatus)
+                    if (game === undefined) {
+                        setChallengeStatus({type: "challenge"})
+                    } else if (game.gameStatus === "IN_PROCESS") {
+                        setChallengeStatus({type: "spectate", gameId: game.gameId})
+                    } else {
+                        setChallengeStatus({type: "challenge"})
+                    }
+                })
+        } else {
+            setChallengeStatus(null)
+        }
+    }, [authStatus, fetch, profileStatus.id]);
+
     const challengeButtonDisabled = profileStatus.invitePolicy === "FRIENDS_ONLY" && friendStatus !== "Remove"
-    const challengeButton = authStatus.id === profileStatus.id ? <></> :
-        <AccentedButton
-            type={"button"}
-            style={buttonStyle}
-            disabled={challengeButtonDisabled}
-            title={challengeButtonDisabled ? "Этот пользователь принимает вызовы только от друзей" : ""}
-        >Вызвать на матч</AccentedButton>
+    const challengeButton = challengeStatus === null ? <></> :
+        challengeStatus.type === "challenge" ?
+            <AccentedButton
+                type={"button"}
+                style={buttonStyle}
+                disabled={challengeButtonDisabled}
+                title={challengeButtonDisabled ? "Этот пользователь принимает вызовы только от друзей" : ""}
+                onClick={() => navigate(`/challenge/${profileStatus.id}`)}
+            >Вызвать на матч</AccentedButton> :
+            <AccentedButton
+                type={"button"}
+                style={buttonStyle}
+                onClick={() => navigate(`/play/${challengeStatus.gameId}`)}
+            >Наблюдать</AccentedButton>
 
     const friendButton = friendStatus === "Self" ?
         <></> :
@@ -146,6 +176,8 @@ const ProfileBar = observer(function ProfileBar() {
                     setInit(true)
                 }
             )
+        } else {
+            setFriendStatus("Self")
         }
     }, [authStatus.id, fetch, profileStatus.id]);
 
@@ -193,7 +225,7 @@ type MatchEntryProp = {
     gameId: number
 }
 
-const StopProp = ({children}: {children?: ReactNode | ReactNode[]}) => (
+const StopProp = ({children}: { children?: ReactNode | ReactNode[] }) => (
     <div onClick={(e) => e.stopPropagation()}>
         {children}
     </div>
@@ -238,7 +270,7 @@ function PlainMatchEntry({
     const redirectTo = userWon === null ? `/play/${gameId}` : `/history/${gameId}`
 
     const statusStyle = {
-        color: userWon ? "green" : "red",
+        color: userWon === null ? "white" : userWon ? "green" : "red",
         position: "absolute",
         left: 0,
         right: 0,
@@ -348,70 +380,75 @@ const PlainProfilePage = observer(function PlainProfilePage({className}: { class
         runInAction(() => matchList.matches.splice(0, matchList.matches.length))
     }, [profileStatus.id, matchList.matches]);
 
-    const loadData = useCallback((pageNumber: number) => {
-        const limit = 10
-        getGamesList(fetch, profileStatus.id, pageNumber, limit)
-            .then(resp => resp.json())
-            .then(matches => Promise.all([
-                matches,
-                Promise.allSettled(
-                    matches.map(
-                        (match: ReturnType<JSON["parse"]>) => getBackgammonConfig(fetch, match.gameId).then(resp => {
-                            if (!resp.ok) {
-                                throw new Error(String(resp.status))
-                            }
-                            return resp
-                        }))
-                )
-            ]))
-            .then(([matches, responses]) => {
-                const newMatches = []
-                const newResponses = []
-                for (let i = 0; i < matches.length; ++i) {
-                    const resp = responses[i]
-                    if (resp.status === "fulfilled") {
-                        newMatches.push(matches[i])
-                        newResponses.push(resp.value)
-                    }
-                }
-                return [newMatches, newResponses]
-            })
-            .then(([matches, responses]) => Promise.all([matches, Promise.all(responses.map(resp => resp.json()))]))
-            .then(([matches, configs]) => {
-                console.log(matches, configs)
-
-                runInAction(() => {
+    useEffect(() => {
+        const loadData = (pageNumber: number) => {
+            const limit = 10
+            getGamesList(fetch, profileStatus.id, pageNumber, limit)
+                .then(resp => resp.json())
+                .then(matches => Promise.all([
+                    matches,
+                    Promise.allSettled(
+                        matches.map(
+                            (match: ReturnType<JSON["parse"]>) => getBackgammonConfig(fetch, match.gameId).then(resp => {
+                                if (!resp.ok) {
+                                    throw new Error(String(resp.status))
+                                }
+                                return resp
+                            }))
+                    )
+                ]))
+                .then(([matches, responses]) => {
+                    const newMatches = []
+                    const newResponses = []
                     for (let i = 0; i < matches.length; ++i) {
-                        const match = matches[i]
-                        const config = configs[i]
+                        const resp = responses[i]
+                        if (resp.status === "fulfilled") {
+                            newMatches.push(matches[i])
+                            newResponses.push(resp.value)
+                        }
+                    }
+                    return [newMatches, newResponses]
+                })
+                .then(([matches, responses]) => Promise.all([matches, Promise.all(responses.map(resp => resp.json()))]))
+                .then(([matches, configs]) => {
+                    console.log(matches, configs)
 
-                        const whiteUsername = config.players.WHITE === profileStatus.id ? profileStatus.username : match.opponentUserInfo.username
-                        const blackUsername = config.players.BLACK === profileStatus.id ? profileStatus.username : match.opponentUserInfo.username
+                    runInAction(() => {
+                        for (let i = 0; i < matches.length; ++i) {
+                            const match = matches[i]
+                            const config = configs[i]
 
-                        matchList.matches.push({
-                            whiteId: config.players.WHITE,
-                            whiteName: whiteUsername,
-                            blackId: config.players.BLACK,
-                            blackName: blackUsername,
-                            gameModeIcon: getIcon(match.gameType, match.timePolicy),
-                            userWon: config.winner === null ? null : (
-                                config.winner === "WHITE" ? config.players.WHITE === profileStatus.id : config.players.BLACK === profileStatus.id
-                            ),
-                            whiteElo: getRating(match.gameType, match.timePolicy, config.players.WHITE === profileStatus.id ? profileStatus.rating : match.opponentUserInfo.rating),
-                            blackElo: getRating(match.gameType, match.timePolicy, config.players.BLACK === profileStatus.id ? profileStatus.rating : match.opponentUserInfo.rating),
-                            gameId: match.gameId
-                        })
+                            const whiteUsername = config.players.WHITE === profileStatus.id ? profileStatus.username : match.opponentUserInfo.username
+                            const blackUsername = config.players.BLACK === profileStatus.id ? profileStatus.username : match.opponentUserInfo.username
+
+                            matchList.matches.push({
+                                whiteId: config.players.WHITE,
+                                whiteName: whiteUsername,
+                                blackId: config.players.BLACK,
+                                blackName: blackUsername,
+                                gameModeIcon: getIcon(match.gameType, match.timePolicy),
+                                userWon: config.winner === null ? null : (
+                                    config.winner === "WHITE" ? config.players.WHITE === profileStatus.id : config.players.BLACK === profileStatus.id
+                                ),
+                                whiteElo: getRating(match.gameType, match.timePolicy, config.players.WHITE === profileStatus.id ? profileStatus.rating : match.opponentUserInfo.rating),
+                                blackElo: getRating(match.gameType, match.timePolicy, config.players.BLACK === profileStatus.id ? profileStatus.rating : match.opponentUserInfo.rating),
+                                gameId: match.gameId
+                            })
+                        }
+                    })
+                    if (matches.length >= limit) {
+                        loadData(pageNumber + 1)
                     }
                 })
-                if (matches.length >= limit) {
-                    loadData(pageNumber + 1)
-                }
-            })
-    }, [fetch, matchList.matches, profileStatus.id, profileStatus.rating, profileStatus.username])
+        }
 
-    useEffect(() => {
+        console.log("triggered")
         loadData(0)
-    }, [loadData]);
+        return () => {
+            console.log("cleanup")
+            runInAction(() => matchList.matches.splice(0, matchList.matches.length))
+        }
+    }, [fetch, matchList, profileStatus]);
 
     const matchEntries = matchList.matches.map(e => <MatchEntry {...e} key={e.gameId}/>)
 

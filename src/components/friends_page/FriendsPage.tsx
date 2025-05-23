@@ -7,7 +7,7 @@ import {
     addFriendById,
     addFriendByLogin,
     getFriendRequest,
-    getFriendsList,
+    getFriendsList, getGamesList,
     removeFriend,
     userInfo
 } from "../../requests/requests";
@@ -19,6 +19,8 @@ import {Link, useNavigate} from "react-router";
 import {EloIcon} from "../profile/ProfilePage";
 import {observer} from "mobx-react-lite";
 import {runInAction} from "mobx";
+import {MessagesStateContext} from "../../controller/messages/context";
+import {ErrorMessage, SuccessMessage} from "./messages";
 
 type Rating = { backgammonBlitz: number; backgammonDefault: number; nardeBlitz: number; nardeDefault: number }
 
@@ -27,32 +29,53 @@ export const UsernameLink = styled(Link)`
         color: white;
         text-decoration: none;
     }
-    
+
     &:hover {
         text-decoration: underline;
     }
-    
+
     &:active {
         text-decoration: underline;
     }
 `
 
-const PlainSearchBar = ({className}: {className?: string}) => {
+const PlainSearchBar = ({className}: { className?: string }) => {
     const [fetch] = useFetch()
     const inputRef = useRef<HTMLInputElement | null>(null)
+    const messagesState = useContext(MessagesStateContext)
+    const authStatus = useAuthContext()
 
     const onClick = useCallback(() => {
         const login = inputRef.current!.value
         if (login.length === 0) {
             return
         }
-        addFriendByLogin(fetch, login).then()
+        if (login === authStatus.login) {
+            messagesState.insert(<ErrorMessage reason={"вы не можете добавить себя в друзья"}/>)
+            return
+        }
+        addFriendByLogin(fetch, login)
+            .then(resp => {
+                if (resp.ok) {
+                    messagesState.insert(<SuccessMessage/>)
+                } else if (resp.status === 404) {
+                    messagesState.insert(<ErrorMessage reason={"игрок не найден"}/>)
+                } else if (resp.status === 422) {
+                    messagesState.insert(<ErrorMessage reason={"заявка уже отправлена"}/>)
+                } else {
+                    messagesState.insert(<ErrorMessage />)
+                }
+            })
         inputRef.current!.value = ""
-    }, [fetch])
+    }, [authStatus, fetch, messagesState])
 
     return (
         <div className={className}>
-            <input placeholder={"Логин пользователя"} ref={inputRef}/>
+            <input placeholder={"Логин пользователя"} ref={inputRef} onKeyDown={e => {
+                if (e.key === "Enter") {
+                    onClick()
+                }
+            }}/>
             <AccentedButton onClick={onClick}>Добавить в друзья</AccentedButton>
         </div>
     )
@@ -62,6 +85,7 @@ const SearchBar = styled(PlainSearchBar)`
     display: flex;
     margin-bottom: 20px;
     align-items: stretch;
+
     input {
         flex: 1;
         background-color: #444;
@@ -70,12 +94,12 @@ const SearchBar = styled(PlainSearchBar)`
         color: white;
         font-size: 18px;
         padding-left: 3px;
-        
+
         &:focus {
             outline: 1px solid #ff7f2a;
         }
     }
-    
+
     ${AccentedButton} {
         height: 50px;
         border-radius: 10px;
@@ -85,22 +109,23 @@ const SearchBar = styled(PlainSearchBar)`
 const RemoveFriendButton = styled(AccentedButton)`
     background-color: lightgray;
     color: black;
-    
+
     &:hover {
         background-color: #bbb !important;
     }
-    
+
     &:active {
         background-color: #ddd !important;
     }
 `
 
-const PlainFriendsEntry = ({className, iconSrc, username, rating, id}: {
+const PlainFriendsEntry = ({className, iconSrc, username, rating, id, gameId}: {
     className?: string,
     iconSrc: string,
     rating: Rating,
     username: string,
-    id: number
+    id: number,
+    gameId?: number
 }) => {
     const icon = useImgCache(iconSrc)
     const placeholder = useImgPlaceholder()
@@ -119,8 +144,13 @@ const PlainFriendsEntry = ({className, iconSrc, username, rating, id}: {
                 <EloIcon iconSrc={"/narde_blitz.svg"} value={rating.nardeBlitz}
                          title={"ELO - Длинные нарды (блиц)"}/>
             </div>
-            <AccentedButton type={"button"}>Вызвать</AccentedButton>
-            <RemoveFriendButton type={"button"} onClick={() => {removeFriend(fetch, id).then(() => navigate(0)); }}>Удалить</RemoveFriendButton>
+            <AccentedButton
+                type={"button"}
+                onClick={gameId === undefined ? () => navigate(`/challenge/${id}`) : () => navigate(`/play/${gameId}`)}
+            >{gameId === undefined ? "Вызвать" : "Смотреть"}</AccentedButton>
+            <RemoveFriendButton type={"button"} onClick={() => {
+                removeFriend(fetch, id).then(() => navigate(0));
+            }}>Удалить</RemoveFriendButton>
         </div>
     )
 }
@@ -150,9 +180,8 @@ const FriendsEntry = styled(PlainFriendsEntry)`
         }
 
         ${AccentedButton} {
-            aspect-ratio: 1;
-            width: 65px;
             margin-right: 10px;
+            height: 60%;
             border-radius: 10px;
         }
     }
@@ -172,8 +201,20 @@ const PlainFriendList = observer(({className}: { className?: string }) => {
                 return Promise.all(requests)
             })
             .then(responses => Promise.all(responses.map(r => r.json())))
-            .then(objects => {
-                runInAction(() => objects.forEach(o => friends.push(o)))
+            .then(objects => Promise.all([
+                objects,
+                Promise.all(objects.map(o => getGamesList(fetch, o.id, 0, 1)
+                    .then(resp => resp.json())
+                    .then(([game]) => game?.gameStatus === "IN_PROCESS" ? game?.gameId : undefined)
+                ))
+            ]))
+            .then(([objects, currentGames]) => {
+                console.log(objects, currentGames)
+                runInAction(() => {
+                    for (let i = 0; i < objects.length; ++i) {
+                        friends.push({...objects[i], gameId: currentGames[i]})
+                    }
+                })
                 setInit(true)
                 if (objects.length >= limit) {
                     setTimeout(() => loadData(offset + 1))
@@ -187,8 +228,8 @@ const PlainFriendList = observer(({className}: { className?: string }) => {
 
     const friendEntries: ReactNode[] = []
 
-    for (const {id, username, rating} of friends) {
-        friendEntries.push(<FriendsEntry username={username} iconSrc={imageUri(id)} rating={rating} id={id} key={id}/>)
+    for (const {id, username, rating, gameId} of friends) {
+        friendEntries.push(<FriendsEntry username={username} iconSrc={imageUri(id)} rating={rating} id={id} gameId={gameId} key={id}/>)
     }
 
     return (
@@ -359,7 +400,7 @@ const PlainFriendsPage = ({className}: { className?: string }) => {
             <FriendsStatusContext.Provider value={friendsStatus}>
                 <div className={className}>
                     <div>
-                        <SearchBar />
+                        <SearchBar/>
                         <FriendList/>
                     </div>
                     <div>
