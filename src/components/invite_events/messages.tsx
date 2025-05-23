@@ -106,6 +106,9 @@ export const ChallengeReceivedMessage = styled(PlainChallengeReceivedMessage)`
     >button:nth-of-type(1) {
         margin-left: auto;
     }
+    >button:nth-of-type(2) {
+        margin-left: 7px;
+    }
     >button {
         height: 50px;
         border-radius: 10px;
