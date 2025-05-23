@@ -106,7 +106,7 @@ const ProfileBar = observer(function ProfileBar() {
         } else {
             setChallengeStatus(null)
         }
-    }, [authStatus, fetch, profileStatus]);
+    }, [authStatus, fetch, profileStatus.id]);
 
     const challengeButtonDisabled = profileStatus.invitePolicy === "FRIENDS_ONLY" && friendStatus !== "Remove"
     const challengeButton = challengeStatus === null ? <></> :
