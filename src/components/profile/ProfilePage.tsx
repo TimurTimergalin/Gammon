@@ -103,6 +103,8 @@ const ProfileBar = observer(function ProfileBar() {
                         setChallengeStatus({type: "challenge"})
                     }
                 })
+        } else {
+            setChallengeStatus(null)
         }
     }, [authStatus, fetch, profileStatus]);
 
@@ -174,6 +176,8 @@ const ProfileBar = observer(function ProfileBar() {
                     setInit(true)
                 }
             )
+        } else {
+            setFriendStatus("Self")
         }
     }, [authStatus.id, fetch, profileStatus.id]);
 
