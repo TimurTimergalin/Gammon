@@ -106,6 +106,10 @@ export const ChallengeReceivedMessage = styled(PlainChallengeReceivedMessage)`
     >button:nth-of-type(1) {
         margin-left: auto;
     }
+    >button {
+        height: 50px;
+        border-radius: 10px;
+    }
 `
 
 const PlainChallengeRejectedMessage = ({className, username}: {className?: string, username: string}) => {
